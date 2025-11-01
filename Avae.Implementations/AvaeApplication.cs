@@ -4,8 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Avae.Implementations
 {
-    public class AvaeApplication : Application, IIocConfiguration
+    public abstract class AvaeApplication : Application, IIocConfiguration
     {
+        public abstract string IconUrl { get; }
+
         public AvaeApplication()
         {
             Container = new IocContainer(this);
@@ -21,6 +23,10 @@ namespace Avae.Implementations
         public virtual void Configure(IServiceCollection services)
         {
             services.AddSingleton<IIocConfiguration>(this);
+            services.AddSingleton<IDialogService>(provider =>
+            {
+                return new DialogService(IconUrl);
+            });
         }
 
         public void Configure(IServiceProvider provider)

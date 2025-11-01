@@ -12,7 +12,7 @@ namespace Example.ViewModels
         public async Task<string> ShowModal()
         {
             var result = await this.ShowDialogAsync<string, ModalViewModel>();
-            await DialogWrapper.ShowDialog(result);
+            await DialogWrapper.ShowOkAsync(result, "Result");
             return result;
         }
     }

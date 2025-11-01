@@ -39,6 +39,8 @@ namespace Example.ViewModels
         {
             if (await CanClose())
                 await Close(Text!);
+            else
+                await DialogWrapper.ShowOkAsync(Error, "Error");
         }
 
         [RelayCommand]

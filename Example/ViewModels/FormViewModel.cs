@@ -22,7 +22,7 @@ namespace Example.ViewModels
 
         protected override Task<bool> CanClose()
         {
-            return DialogWrapper.ShowDialog("Are you sure you want to close ?");
+            return DialogWrapper.ShowYesNoAsync("Are you sure you want to close ?", "Question"); 
         }
     }
 }

@@ -20,6 +20,8 @@ public partial class App : AvaeApplication, IIocConfiguration
         IconProvider.Current.Register<FontAwesomeIconProvider>();
     }
 
+    public override string IconUrl => "avares://Example/Assets/avalonia-logo.ico";
+
     public override void Configure(IIocContainer container)
     {
         container.Register<HomeView>();
@@ -34,7 +36,6 @@ public partial class App : AvaeApplication, IIocConfiguration
     {
         base.Configure(services);
 
-        services.AddSingleton<IDialogService, DialogService>();
         services.AddTransient<Router>();
         services.AddSingleton<HomeViewModel>();
         services.AddSingleton<MenuViewModel>();
