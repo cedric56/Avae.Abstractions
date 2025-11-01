@@ -15,7 +15,4 @@ public interface IIocConfiguration : IIoc
     IContextFor<TViewModel>? GetContextFor<TViewModel>(params object[] @params) where TViewModel : IViewModelBase;
 
     IModalFor<TViewModel>? GetModalFor<TViewModel>(params object[] @params) where TViewModel : IViewModelBase;
-
-
-    object? GetParent();
 }

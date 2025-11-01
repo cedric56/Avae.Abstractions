@@ -1,7 +1,5 @@
 ﻿using Avae.Abstractions;
-using Avae.Services;
-using Avalonia;
-using Avalonia.Controls;
+using Avae.Implementations;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
@@ -11,22 +9,18 @@ using Example.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
-using System;
 
 namespace Example;
 
-public partial class App : Application, IIocConfiguration
+public partial class App : AvaeApplication, IIocConfiguration
 {
     public App()
+        : base()
     {
-        Container = new IocContainer(this);
         IconProvider.Current.Register<FontAwesomeIconProvider>();
-
     }
 
-    public IocContainer Container { get; protected set; }
-
-    public void Configure(IIocContainer container)
+    public override void Configure(IIocContainer container)
     {
         container.Register<HomeView>();
         container.Register<MenuView>();
@@ -36,9 +30,10 @@ public partial class App : Application, IIocConfiguration
         container.Register<ModalWindow>();
     }
 
-    public void Configure(IServiceCollection services)
+    public override void Configure(IServiceCollection services)
     {
-        services.AddSingleton<IIocConfiguration>(this);
+        base.Configure(services);
+
         services.AddSingleton<IDialogService, DialogService>();
         services.AddTransient<Router>();
         services.AddSingleton<HomeViewModel>();
@@ -47,53 +42,6 @@ public partial class App : Application, IIocConfiguration
         services.AddTransient<FormPage1ViewModel>();
         services.AddTransient<FormPage2ViewModel>();
         services.AddTransient<ModalViewModel>();
-    }
-
-    public void Configure(IServiceProvider provider)
-    {
-        SimpleProvider.ConfigureServices(provider);
-    }
-
-    public object? GetView(string key, object[] @params)
-    {
-        return Container!.GetView(key, @params);
-    }
-
-    public IContextFor? GetContextFor(string key, params object[] @params)
-    {
-        return Container!.GetView(key, @params) as IContextFor;
-    }
-
-    /// <summary>
-    /// Obtain the view by the viewModel association
-    /// </summary>
-    /// <typeparam name="TViewModel"></typeparam>
-    /// <param name="params"></param>
-    /// <returns></returns>
-    public IContextFor<TViewModel>? GetContextFor<TViewModel>(params object[] @params) where TViewModel : IViewModelBase
-    {
-        return Container!.GetView(typeof(TViewModel).Name, @params) as IContextFor<TViewModel>;
-    }
-
-    /// <summary>
-    /// Obtain the view by the modalViewModel association
-    /// </summary>
-    /// <typeparam name="TViewModel"></typeparam>
-    /// <param name="params"></param>
-    /// <returns></returns>
-    public IModalFor<TViewModel>? GetModalFor<TViewModel>(params object[] @params) where TViewModel : IViewModelBase
-    {
-        return Container!.GetView(typeof(TViewModel).Name, @params) as IModalFor<TViewModel>;
-    }
-
-    /// <summary>
-    /// Obtain the parent
-    /// </summary>
-    /// <returns>The TopLevel visual</returns>
-    public object? GetParent()
-    {
-        var visual = TopLevelStateManager.GetActive();
-        return visual;
     }
 
     public override void Initialize()
@@ -111,7 +59,7 @@ public partial class App : Application, IIocConfiguration
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainViewModel(new Avae.Abstractions.Router())
+                DataContext = new MainViewModel(new Router())
             };
         }
 

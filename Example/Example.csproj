@@ -24,5 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
+    <ProjectReference Include="..\Avae.Implementations\Avae.Implementations.csproj" />
   </ItemGroup>
 </Project>
