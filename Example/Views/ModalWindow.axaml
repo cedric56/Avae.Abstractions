@@ -8,7 +8,7 @@
         WindowStartupLocation="CenterOwner"
         Title="ModalWindow">
     <Grid>
-	<TextBlock Text="Welcome to Avalonia!" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+	<TextBox Text="{Binding Text}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
 		<Button Content="Validate" Command="{Binding Validate}"/>
         <Button Content="Cancel" Command="{Binding Cancel}"/>
