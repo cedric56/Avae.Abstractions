@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Example.ViewModels"
+			 xmlns:behavior="using:Example"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:i="https://github.com/projektanker/icons.avalonia"
+             x:Class="Example.Views.MainView"
+             x:DataType="vm:MainViewModel">
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+    <vm:MainViewModel />
+  </Design.DataContext>
+
+  <Grid RowDefinitions="Auto,*" ColumnDefinitions="Auto, *">
+			<Button
+						Padding="15 10 15 10"
+						Height="35"
+						Width="40"
+						Command="{Binding TriggerMenuPaneCommand}">
+				<StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="4">
+					<Rectangle Height="2" Width="20" Fill="White"/>
+					<Rectangle Height="2" Width="20" Fill="White"/>
+					<Rectangle Height="2" Width="20" Fill="White"/>
+				</StackPanel>
+			</Button>
+
+			<SplitView DisplayMode="Overlay" IsPaneOpen="{Binding IsMenuPaneOpen}"
+					Grid.Row="1" Grid.RowSpan="2" OpenPaneLength="200" CompactPaneLength="100"   Grid.ColumnSpan="2">
+				<SplitView.Pane>
+
+					<StackPanel
+					   Spacing="5"
+					   Margin="5">
+						<ListBox
+							x:Name="MenuItemsListBox"
+							ItemsSource="{Binding Pages}"
+							SelectedItem="{Binding SelectedPage}"
+							behavior:PointerWheelChangedBehavior.Command="{Binding OnScrollChanged}">
+							<ListBox.Styles>
+								<Style Selector="ListBoxItem">
+									<Setter Property="Padding" Value="10" />
+								</Style>
+							</ListBox.Styles>
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<StackPanel
+										Spacing="10"
+										Orientation="Horizontal">
+										<i:Icon Value="{Binding Icon}"/>
+										<TextBlock Text="{Binding DisplayName}" />
+									</StackPanel>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</StackPanel>
+				</SplitView.Pane>
+				<SplitView.Content>
+					<TransitioningContentControl Content="{Binding CurrentPage}"/>
+				</SplitView.Content>
+			</SplitView>
+		</Grid>
+</UserControl>
