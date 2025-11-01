@@ -11,26 +11,19 @@ namespace Avae.Abstractions
     /// </summary>
     public class IocContainer : IIocContainer
     {
-        private readonly ServiceCollection _collection;
-
         /// <summary>
         /// A dictionary that contains all the registered factories for the views.
         /// </summary>
         readonly Dictionary<string, ViewFactory> _factories = [];
         private readonly Dictionary<string, Type> _pagesByKey = [];
 
-        /// <summary>
-        /// A simple container for registering and accessing pages in various frameworks such
-        /// as Windows, Windows Phone, Android, iOS etc.
-        /// </summary>
-        /// <param name="configuration"></param>
         public IocContainer(IIocConfiguration configuration)
         {
-            _collection = new ServiceCollection();
+            var services = new ServiceCollection();
 
-            configuration.Configure(_collection);
+            configuration.Configure(services);
             configuration.Configure(this);
-            configuration.Configure(_collection.BuildServiceProvider());
+            configuration.Configure(services.BuildServiceProvider());
         }
 
         /// <summary>

@@ -13,7 +13,7 @@ namespace Example.ViewModels
             {
                 return new ObservableCollection<PageViewModelBase>
                 {
-                    new PageViewModelBase(typeof(FormViewModel), "Form", "fa-solid fa-gear"),
+                    new PageViewModelBase<FormViewModel>("Form", "fa-solid fa-gear"),
                 };
             }
         }
@@ -21,7 +21,8 @@ namespace Example.ViewModels
         [RelayCommand]
         public void OpenForm()
         {
-            var viewModel = _router.GoTo<FormViewModel>(SimpleProvider.GetService<Router>());
+            //Another example how to use router without DI
+            var viewModel = _router.GoTo(() => new FormViewModel(SimpleProvider.GetService<Router>()));
             EventHandler<bool>? closeRequested = null!;
             viewModel.CloseRequested += closeRequested = (sender, e) =>
             {

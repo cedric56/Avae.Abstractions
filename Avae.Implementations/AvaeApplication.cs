@@ -9,7 +9,6 @@ namespace Avae.Implementations
         public AvaeApplication()
         {
             Container = new IocContainer(this);
-
         }
 
         public IocContainer Container { get; protected set; }

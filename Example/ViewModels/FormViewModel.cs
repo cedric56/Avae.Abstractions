@@ -14,8 +14,8 @@ namespace Example.ViewModels
             {
                 return new ObservableCollection<PageViewModelBase>
                 {
-                    new PageViewModelBase(typeof(FormPage1ViewModel), "Page One", "fa-solid fa-gear"),
-                    new PageViewModelBase(typeof(FormPage2ViewModel), "Page Two", "fa-solid fa-gear"),
+                    new PageViewModelBase<FormPage1ViewModel>("Page One", "fa-solid fa-gear"),
+                    new PageViewModelBase<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),
                 };
             }
         }

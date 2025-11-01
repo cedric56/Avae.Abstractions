@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Avae.Abstractions
+﻿namespace Avae.Abstractions
 {
     /// <summary>
     /// Class initially copied from https://github.com/sandreas/Avalonia.SimpleRouter/blob/main/Avalonia.SimpleRouter/HistoryRouter.cs
@@ -8,13 +6,7 @@ namespace Avae.Abstractions
     /// </summary>
     public sealed class Router
     {
-        public Router()
-        {
-
-        }
-
         private  readonly object _lock = new object();
-        public Guid Id { get; } = Guid.NewGuid();
         private int _currentIndex = -1;
         private List<IViewModelBase> _history = [];
         private const uint MaxHistorySize = 20;
@@ -79,8 +71,19 @@ namespace Avae.Abstractions
             lock (_lock)
             {
                 var viewModel = ViewModelFactory.Create<TBaseType>(viewModelType, parameters);
-                AddHistory(viewModel);
+                if (addHystory) AddHistory(viewModel);
                 return viewModel;
+            }
+        }
+
+        public T GoTo<T>(Func<T> factory) where T : IViewModelBase
+        {
+            lock (_lock)
+            {
+                var vm = factory();
+                AddHistory(vm);
+                OnCurrentViewModelChanged(vm);
+                return vm;
             }
         }
 

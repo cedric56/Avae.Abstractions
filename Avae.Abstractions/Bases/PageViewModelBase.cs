@@ -20,4 +20,10 @@ namespace Avae.Abstractions
 
         public object[] ViewModelParameters { get; set; } = [];
     }
+
+    public class PageViewModelBase<T>(string displayName, string icon) : 
+        PageViewModelBase(typeof(T), displayName, icon), IViewModelBase where T : IViewModelBase
+    {
+        
+    }
 }

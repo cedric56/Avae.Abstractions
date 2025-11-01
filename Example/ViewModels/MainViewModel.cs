@@ -22,8 +22,8 @@ public partial class MainViewModel(Router router) : PagesViewModelBase(router)
         {
             return new ObservableCollection<PageViewModelBase>
             {
-                new PageViewModelBase(typeof(HomeViewModel), "Home", "fa-solid fa-house"),
-                new PageViewModelBase(typeof(MenuViewModel), "Menu", "fa-solid fa-gear"),
+                new PageViewModelBase<HomeViewModel>("Home", "fa-solid fa-house"),
+                new PageViewModelBase<MenuViewModel>("Menu", "fa-solid fa-gear"),
             };
         }
     }
