@@ -4,6 +4,10 @@ using System.Reflection;
 
 namespace Avae.Abstractions
 {
+    /// <summary>
+    /// https://stackoverflow.com/questions/2112143/how-can-i-define-a-idataerrorinfo-error-property-for-multiple-bo-properties
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public static class InputValidation<T>
     {
         /// <summary>

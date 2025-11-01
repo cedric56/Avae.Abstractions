@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Avae.Abstractions
@@ -75,7 +76,10 @@ namespace Avae.Abstractions
         private ConstructorInfo GetConstructor(string key, object[] args, out object[] finalArgs)
         {
             if (!_pagesByKey.TryGetValue(key, out var type))
+            {
+                Debug.WriteLine($"No view registered with key '{key}'.");
                 throw new KeyNotFoundException($"No view registered with key '{key}'.");
+            }
 
             var constructors = type.GetTypeInfo().DeclaredConstructors;
 
