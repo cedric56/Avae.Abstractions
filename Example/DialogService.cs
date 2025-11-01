@@ -18,6 +18,7 @@ namespace Example
         {
             var box = MessageBoxManager.GetMessageBoxStandard(new MsBox.Avalonia.Dto.MessageBoxStandardParams()
             {
+                 MinWidth  = 400,
                 SizeToContent = SizeToContent.WidthAndHeight,
                 ContentMessage = message,
                 ButtonDefinitions = ButtonEnum.YesNo,
