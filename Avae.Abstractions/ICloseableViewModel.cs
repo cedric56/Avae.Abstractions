@@ -1,6 +1,6 @@
 ﻿namespace Avae.Abstractions;
 
-public interface ICloseableViewModel : IViewModelBase
+public interface ICloseableViewModel<TResult> : IViewModelBase
 {
-    public event EventHandler<bool>? CloseRequested;
+    public event EventHandler<TResult>? CloseRequested;
 }

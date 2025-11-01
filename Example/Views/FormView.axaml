@@ -39,7 +39,7 @@
 				</SplitView.Pane>
 				<SplitView.Content>
 					<Grid RowDefinitions="Auto, *">
-						<TextBlock x:Name="tb" Grid.Row="0" Text="{Binding Title}" HorizontalAlignment="Center" Grid.Column="1"/>							
+						<TextBlock Grid.Row="0" Text="{Binding Title}" HorizontalAlignment="Center" Grid.Column="1"/>							
 						<Button Content="X" Grid.Row="0" Command="{Binding CloseCommand}" Grid.Column="1" HorizontalAlignment="Right" />
 						<TransitioningContentControl Content="{Binding CurrentPage}" Padding="15" Grid.Row="1" />
 					</Grid>

@@ -2,7 +2,7 @@
 
 namespace Avae.Abstractions
 {
-    public abstract partial class FormViewModelBase : PagesViewModelBase, ICloseableViewModel
+    public abstract partial class FormViewModelBase : PagesViewModelBase, ICloseableViewModel<bool>
     {
         public FormViewModelBase(Router router)
             : base(router)
@@ -17,10 +17,15 @@ namespace Avae.Abstractions
         protected virtual Task<bool> CanClose() => Task.FromResult(true);
 
         [RelayCommand]
-        public async Task Close()
+        public Task Close()
+        {
+            return Close(default);
+        }
+
+        public async Task Close(bool value)
         {
             if (await CanClose())
-                CloseRequested?.Invoke(this, false);
+                CloseRequested?.Invoke(this, value);
         }
     }
 }

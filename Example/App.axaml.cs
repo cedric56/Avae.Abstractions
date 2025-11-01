@@ -33,6 +33,7 @@ public partial class App : Application, IIocConfiguration
         container.Register<FormView>();
         container.Register<FormPage1View>();
         container.Register<FormPage2View>();
+        container.Register<ModalWindow>();
     }
 
     public void Configure(IServiceCollection services)
@@ -45,6 +46,7 @@ public partial class App : Application, IIocConfiguration
         services.AddTransient<ViewModelBaseFactory<FormViewModel>>();
         services.AddTransient<FormPage1ViewModel>();
         services.AddTransient<FormPage2ViewModel>();
+        services.AddTransient<ModalViewModel>();
     }
 
     public void Configure(IServiceProvider provider)
