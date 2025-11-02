@@ -22,6 +22,8 @@ public partial class App : AvaeApplication, IIocConfiguration
 
     public override string IconUrl => "avares://Example/Assets/avalonia-logo.ico";
 
+    public override bool IsStandardDialog => false;
+
     public override void Configure(IIocContainer container)
     {
         container.Register<HomeView>();

@@ -33,47 +33,39 @@ namespace Avae.Abstractions
 
         public static IDialogService Instance => SimpleProvider.GetService<IDialogService>();
 
-        public static async Task ShowErrorAsync(Exception ex, string title = "Error", Action? callback = null)
+        public static async Task ShowErrorAsync(Exception ex, string title = "Error")
         {
             var message = ToFullBlownString(ex);
-            await Instance.ShowError(message, title,
-                buttonText: "Ok",
-                afterHideCallback: () => callback?.Invoke());
+            await Instance.ShowErrorAsync(ex, title);
         }
         public static async Task ShowOkAsync(string message, string title = "Title")
         {
-            await Instance.ShowError(message, title,
-                buttonText: "Ok", () => { });
+            await Instance.ShowOkAsync(message, title);
         }
 
         public static async Task<bool> ShowYesNoAsync(string message, string title = "Title")
         {
-            return await Instance.ShowMessage(message, title, "YesNo",
-                (o) => { }) == 0;
+            return await Instance.ShowYesNoAsync(message, title);
         }
 
         public static async Task<bool> ShowOkCancelAsync(string message, string title = "Title")
         {
-            return await Instance.ShowMessage(message, title,
-                "OkCancel",
-                (o) => { }) == 0;
+            return await Instance.ShowOkCancelAsync(message, title);
         }
 
         public static async Task<bool> ShowOkAbortAsync(string message, string title = "Title")
         {
-            return await Instance.ShowMessage(message, title,
-                "OkAbort",
-                (o) => { }) == 0;
+            return await Instance.ShowOkAbortAsync(message, title);
         }
 
         public static Task<int> ShowYesNoCancelAsync(string message, string title = "Title")
         {
-            return Instance.ShowMessage(message, title, "YesNoCancel", (o) => { });
+            return Instance.ShowYesNoCancelAsync(message, title);
         }
 
         public static Task<int> ShowYesNoAbortAsync(string message, string title = "Title")
         {
-            return Instance.ShowMessage(message, title, "YesNoAbort", (o) => { });
+            return Instance.ShowYesNoAbortAsync(message, title);
         }
     }
 }

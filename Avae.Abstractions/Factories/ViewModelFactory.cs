@@ -36,6 +36,7 @@
                 var viewModel = factory.Create(viewModelType, parameters);
                 if (viewModel is TBaseType vm)
                 {
+                    SimpleProvider.Services.Add(vm);
                     return vm;
                 }
                 throw new InvalidOperationException($"Unable to create {viewModelType.Name}.  Ensure that it is registered with the service provider.");
@@ -46,7 +47,13 @@
                 throw new InvalidOperationException("You must register a factory for view models with parameters.");
             }
 
-            return (TBaseType?)SimpleProvider.GetService(viewModelType) ?? throw new InvalidOperationException($"Unable to create {viewModelType.Name}.  Ensure that it is registered with the service provider and it derives from {typeof(IViewModelBase).FullName}.");
+            var service = (TBaseType?)SimpleProvider.GetService(viewModelType);
+            if (service != null) {
+                SimpleProvider.Services.Add(service);
+                return service;
+            }
+            
+            throw new InvalidOperationException($"Unable to create {viewModelType.Name}.  Ensure that it is registered with the service provider and it derives from {typeof(IViewModelBase).FullName}.");
         }
     }
 }

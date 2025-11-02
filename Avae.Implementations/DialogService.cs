@@ -13,41 +13,14 @@ namespace Avae.Implementations
     {
         public string IconUrl { get; private set; } = iconUrl;
 
-        public Task ShowError(string message, string title, string buttonText, Action afterHideCallback)
-        {
-            return ShowMessage(message, title, buttonText, afterHideCallback);
-        }
 
-        public Task ShowError(Exception error, string title, string buttonText, Action afterHideCallback)
-        {
-            return ShowMessage(error.Message, title, buttonText, afterHideCallback);
-        }
-
-        public Task ShowMessage(string message, string title)
-        {
-            return ShowMessage(message, title, "Ok", afterHideCallback: null);
-        }
-
-        public async Task ShowMessage(string message, string title, string buttonText, Action afterHideCallback)
+        public Task ShowSimpleMessage(string message, string title, string buttonText)
         {
             var @params = GetParams(title, message, buttonText.ToEnum<ButtonEnum>());
-            var result = await Show(@params);
-            afterHideCallback?.Invoke();
+            return Show(@params);
         }
 
-        public async Task<bool> ShowMessage(string message, string title, string buttonConfirmText, string buttonCancelText, Action<bool>? afterHideCallback)
-        {
-            var buttons = buttonConfirmText.ToEnum<ButtonEnum>();
-            var confirmButton = buttonConfirmText.ToEnum<ButtonResult>();
-            var @params = GetParams(title, message, buttons);
-            var result = await Show(@params);
-            afterHideCallback?.Invoke(result == confirmButton);
-            var isConfirmed = result == confirmButton;
-            afterHideCallback?.Invoke(isConfirmed);
-            return isConfirmed;
-        }
-
-        public async Task<int> ShowMessage(string message, string title, string buttonText, Action<int>? callback)
+        public async Task<int> ShowMessage(string message, string title, string buttonText)
         {
             var buttons = buttonText.ToEnum<ButtonEnum>();
             var splits = buttonText.SplitOnCapitals();
@@ -55,7 +28,6 @@ namespace Avae.Implementations
             var result = await Show(@params);
             var possibilities = splits.Select(s => s.ToEnum<ButtonResult>()).ToList();
             var index = possibilities.IndexOf(result);
-            callback?.Invoke(index);
             return index;
         }
 
@@ -101,6 +73,39 @@ namespace Avae.Implementations
             return @params;
         }
 
-        
+        public Task ShowErrorAsync(Exception ex, string title = "Error")
+        {
+            return ShowSimpleMessage(ex.Message, title, "Ok");
+        }
+
+        public Task ShowOkAsync(string message, string title = "Title")
+        {
+            return ShowSimpleMessage(message, title, "Ok");
+        }
+
+        public async Task<bool> ShowYesNoAsync(string message, string title = "Title")
+        {
+            return await ShowMessage(message, title, "YesNo") == 0;
+        }
+
+        public async Task<bool> ShowOkCancelAsync(string message, string title = "Title")
+        {
+            return await ShowMessage(message, title, "OkCancel") == 0;
+        }
+
+        public async Task<bool> ShowOkAbortAsync(string message, string title = "Title")
+        {
+            return await ShowMessage(message, title, "OkAbort") == 0;
+        }
+
+        public Task<int> ShowYesNoCancelAsync(string message, string title = "Title")
+        {
+            return ShowMessage(message, title, "YesNoCancel");
+        }
+
+        public Task<int> ShowYesNoAbortAsync(string message, string title = "Title")
+        {
+            return ShowMessage(message, title, "YesNoAbort");
+        }
     }
 }

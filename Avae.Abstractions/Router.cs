@@ -75,14 +75,13 @@
             }
         }
 
-        public T GoTo<T>(Func<T> factory) where T : IViewModelBase
+        public T GoTo<T>(T instance) where T : IViewModelBase
         {
             lock (_lock)
             {
-                var vm = factory();
-                AddHistory(vm);
-                OnCurrentViewModelChanged(vm);
-                return vm;
+                AddHistory(instance);
+                OnCurrentViewModelChanged(instance);
+                return instance;
             }
         }
 

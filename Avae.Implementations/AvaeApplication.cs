@@ -1,5 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avalonia;
+using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Avae.Implementations
@@ -7,6 +8,7 @@ namespace Avae.Implementations
     public abstract class AvaeApplication : Application, IIocConfiguration
     {
         public abstract string IconUrl { get; }
+        public abstract bool IsStandardDialog {  get; }
 
         public AvaeApplication()
         {
@@ -25,8 +27,11 @@ namespace Avae.Implementations
             services.AddSingleton<IIocConfiguration>(this);
             services.AddSingleton<IDialogService>(provider =>
             {
-                return new DialogService(IconUrl);
+                return IsStandardDialog ? new DialogService(IconUrl)
+                : new ContentDialogService();
             });
+            services.AddSingleton<IContentDialogService, ContentDialogService>();
+            services.AddSingleton<ITaskDialogService, TaskDialogService>();
         }
 
         public void Configure(IServiceProvider provider)
@@ -64,6 +69,13 @@ namespace Avae.Implementations
         public IModalFor<TViewModel>? GetModalFor<TViewModel>(params object[] @params) where TViewModel : IViewModelBase
         {
             return Container!.GetView(typeof(TViewModel).Name, @params) as IModalFor<TViewModel>;
+        }
+
+        public override void OnFrameworkInitializationCompleted()
+        {
+            base.OnFrameworkInitializationCompleted();
+
+            Styles.Add(new FluentAvaloniaTheme());
         }
     }
 }

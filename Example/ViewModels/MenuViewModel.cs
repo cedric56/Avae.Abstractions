@@ -22,7 +22,7 @@ namespace Example.ViewModels
         public void OpenForm()
         {
             //Another example how to use router without DI
-            var viewModel = _router.GoTo(() => new FormViewModel(SimpleProvider.GetService<Router>()));
+            var viewModel = _router.GoTo(new FormViewModel(SimpleProvider.GetService<Router>()));
             EventHandler<bool>? closeRequested = null!;
             viewModel.CloseRequested += closeRequested = (sender, e) =>
             {
