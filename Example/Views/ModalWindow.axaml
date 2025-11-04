@@ -1,18 +1,12 @@
-<Window xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Example.ModalWindow"
-        Width="400" Height="200"
-        WindowStartupLocation="CenterOwner"
-        Title="ModalWindow">
+        Width="200" Height="80">
     <Grid>
-	<TextBox Text="{Binding Text}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-		<Button Content="Validate" Command="{Binding Validate}"/>
-        <Button Content="Cancel" Command="{Binding Cancel}"/>
-    </StackPanel>
+	<TextBox Text="{Binding Text}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>    
     </Grid>
   
-</Window>
+</UserControl>

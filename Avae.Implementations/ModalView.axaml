@@ -1,0 +1,129 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Avae.Implementations.ModalView"
+             xmlns:converters="using:Avae.Implementations"
+             xmlns:behaviors="using:Avae.Implementations"
+             xmlns:viewModels="clr-namespace:MsBox.Avalonia.ViewModels;assembly=MsBox.Avalonia"
+             MaxWidth="{Binding MaxWidth}"
+             x:DataType="viewModels:MsBoxCustomViewModel"
+             Width="{Binding Width}"
+             MinHeight="{Binding MinHeight}"
+             MaxHeight="{Binding MaxHeight}"
+             Height="{Binding Height}"
+             FontFamily="{Binding FontFamily}">
+  <UserControl.Styles>
+    <Style Selector="TextBox.styled">
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="AcceptsReturn" Value="True" />
+      <Setter Property="IsReadOnly" Value="True" />
+      <Setter Property="CaretBrush" Value="Transparent" />
+      <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+      <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+    </Style>
+    <Style Selector="TextBox.styled:pointerover /template/ Border#border">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="TextBox.styled:pointerover /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="TextBox.styled:focus /template/ Border#border">
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="TextBox.styled:focus /template/ Border#PART_BorderElement">
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="TextBox.header">
+      <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    <Style Selector="Button">
+      <Setter Property="Margin" Value="15 0 0 0" />
+      <Setter Property="MinHeight" Value="24" />
+      <Setter Property="MinWidth" Value="75" />
+    </Style>
+    <Style Selector="TextBlock.hyperlink">
+      <Setter Property="Foreground" Value="#3483eb" />
+    </Style>
+    <Style Selector="TextBlock.hyperlink:pointerover">
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="TextDecorations" Value="Underline" />
+      <Setter Property="Foreground" Value="#3496eb" />
+    </Style>
+  </UserControl.Styles>
+  <UserControl.Resources>
+    <converters:WindowConverter x:Key="myWindowConverter"/>
+  </UserControl.Resources>
+  <Grid Classes="MsBoxCustomContainer">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="15" />
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="15" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="15" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="15" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="15" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="15" />
+    </Grid.RowDefinitions>
+    <!--Icon-->
+    <!--<Image Grid.Row="1" Grid.Column="1" MaxHeight="50" MaxWidth="50" VerticalAlignment="Top"
+           IsVisible="{Binding HasIcon}"
+           Source="{Binding ImagePath}" />-->
+    <Grid Grid.Row="1" Grid.Column="3" RowDefinitions="Auto,15,*,Auto">
+      <!--Bold text-->
+      <TextBox Grid.Row="0" Classes="header styled" FontFamily="{Binding FontFamily}" Text="{Binding ContentHeader}"
+               IsVisible="{Binding HasHeader}" />
+      <!--Content text-->
+      <Grid Grid.Row="2" Name="ContentTextBox" Classes="contentMessage styled" >
+      </Grid>
+    </Grid>
+    <!--Buttons-->
+    <ItemsControl Name="ButtonItemsPresenter" Classes="buttons-item-presenter"
+                  ItemsSource="{Binding ButtonDefinitions}" Grid.Row="4"
+                  Grid.Column="1" Grid.ColumnSpan="3"
+                  HorizontalAlignment="Right">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Center" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Button Name="Btn"
+                  HorizontalContentAlignment="Center"
+                  Classes.buttons="true"
+                  Classes.default="{Binding IsDefault}"
+                  Classes.cancel="{Binding IsCancel}"
+                  behaviors:ClickBehavior.Command="{Binding #ButtonItemsPresenter.DataContext.PreValidationCommand}"
+                  Content="{Binding Name}"
+                  Margin="0 0 5 0"
+                  IsDefault="{Binding IsDefault}"
+                  IsCancel="{Binding IsCancel}">
+            <behaviors:ClickBehavior.CommandParameter>
+              <MultiBinding Converter="{StaticResource myWindowConverter}">
+                <MultiBinding.Bindings>
+                  <Binding Path="Children[0].DataContext" ElementName="ContentTextBox"/>
+                  <Binding Path="Content" ElementName="Btn"/>
+                  <Binding Path="IsDefault"/>
+                </MultiBinding.Bindings>
+              </MultiBinding>
+            </behaviors:ClickBehavior.CommandParameter>
+          </Button>
+
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </Grid>
+</UserControl>

@@ -3,6 +3,7 @@ using Avae.Services;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
@@ -13,47 +14,45 @@ namespace Avae.Implementations
     {
         public string IconUrl { get; private set; } = iconUrl;
 
-
-        public Task ShowSimpleMessage(string message, string title, string buttonText)
-        {
-            var @params = GetParams(title, message, buttonText.ToEnum<ButtonEnum>());
-            return Show(@params);
-        }
-
         public async Task<int> ShowMessage(string message, string title, string buttonText)
         {
             var buttons = buttonText.ToEnum<ButtonEnum>();
             var splits = buttonText.SplitOnCapitals();
             var @params = GetParams(title, message, buttons);
-            var result = await Show(@params);
+            var result = await ShowMessage(@params);
             var possibilities = splits.Select(s => s.ToEnum<ButtonResult>()).ToList();
             var index = possibilities.IndexOf(result);
             return index;
         }
 
-        public async Task<ButtonResult> Show(MessageBoxStandardParams @params)
+        private Task<ButtonResult> ShowMessage(MessageBoxStandardParams @params)
         {
-            return await Dispatcher.UIThread.Invoke(async () =>
+            return Dispatcher.UIThread.Invoke(async () =>
             {
-                try
+                var box = MessageBoxManager.GetMessageBoxStandard(@params);
+                var owner = TopLevelStateManager.GetActive() as Window;
+                if (owner != null && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()))
                 {
-                    var box = MessageBoxManager.GetMessageBoxStandard(@params);
-                    var owner = TopLevelStateManager.GetActive() as Window;
-                    if (owner != null && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()))
-                    {
-                        var r = await box.ShowWindowDialogAsync(owner);
-                        return r;
-                    }
+                    return await box.ShowWindowDialogAsync(owner);
+                }
 
-                    var top = TopLevelStateManager.GetActive();
-                    var result = top != null ? await box.ShowAsPopupAsync(top) : await box.ShowAsync();
-                    return result;
-                }
-                catch
-                {
-                    return ButtonResult.None;
-                }
+                var top = CurrentDialogHost;
+                var result = top != null ? await box.ShowAsPopupAsync(top) : await box.ShowAsync();
+                return result;
             });
+        }
+
+        public static ContentControl? CurrentDialogHost
+        {
+            get
+            {
+                var topLevel = TopLevelStateManager.GetActive();
+                var dialogHost = topLevel?.GetVisualDescendants().OfType<DialogHostAvalonia.DialogHost>().LastOrDefault();
+                if (dialogHost != null) return dialogHost;
+                var fluent = topLevel?.GetVisualDescendants().OfType<FluentAvalonia.UI.Controls.DialogHost>().LastOrDefault();
+                if (fluent != null) return fluent;
+                return null;
+            }
         }
 
         private MessageBoxStandardParams GetParams(string title, string message, ButtonEnum buttonEnum)
@@ -64,7 +63,7 @@ namespace Avae.Implementations
                 ButtonDefinitions = buttonEnum,
                 ContentTitle = title,
                 ContentMessage = message,
-                WindowIcon = Extensions.GetIcon(IconUrl),
+                WindowIcon = GetIcon(IconUrl),
                 MinWidth = 300,
                 ShowInCenter = true,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
@@ -73,14 +72,27 @@ namespace Avae.Implementations
             return @params;
         }
 
+        public WindowIcon? GetIcon(string url)
+        {
+            try
+            {
+                return new WindowIcon(AssetLoader.Open(new Uri(url)));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
         public Task ShowErrorAsync(Exception ex, string title = "Error")
         {
-            return ShowSimpleMessage(ex.Message, title, "Ok");
+            return ShowMessage(ex.Message, title, "Ok");
         }
 
         public Task ShowOkAsync(string message, string title = "Title")
         {
-            return ShowSimpleMessage(message, title, "Ok");
+            return ShowMessage(message, title, "Ok");
         }
 
         public async Task<bool> ShowYesNoAsync(string message, string title = "Title")

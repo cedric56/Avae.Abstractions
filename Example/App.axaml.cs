@@ -22,7 +22,7 @@ public partial class App : AvaeApplication, IIocConfiguration
 
     public override string IconUrl => "avares://Example/Assets/avalonia-logo.ico";
 
-    public override bool IsStandardDialog => false;
+    public override bool IsStandard => true;
 
     public override void Configure(IIocContainer container)
     {
@@ -44,7 +44,7 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<ViewModelBaseFactory<FormViewModel>>();
         services.AddTransient<FormPage1ViewModel>();
         services.AddTransient<FormPage2ViewModel>();
-        services.AddTransient<ModalViewModel>();
+        services.AddTransient<ViewModels.ModalViewModel>();
     }
 
     public override void Initialize()

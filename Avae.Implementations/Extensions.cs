@@ -6,19 +6,6 @@ namespace Avae.Implementations
 {
     public static class Extensions
     {
-        public static WindowIcon? GetIcon(string url)
-        {
-            try
-            {
-                return new WindowIcon(AssetLoader.Open(new Uri(url)));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return null;
-            }
-        }
-
         public static IEnumerable<string> SplitOnCapitals(this string text)
         {
             var regex = new Regex(@"\p{Lu}\p{Ll}*");

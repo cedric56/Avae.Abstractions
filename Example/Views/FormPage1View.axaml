@@ -6,6 +6,6 @@
              x:Class="Example.FormPage1View">
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
   <TextBlock Text="{Binding Title}" />
-        <Button Content="Modal" Command="{Binding ShowModal}"/>
+        
         </StackPanel>
 </UserControl>

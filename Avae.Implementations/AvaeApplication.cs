@@ -1,5 +1,7 @@
 ﻿using Avae.Abstractions;
 using Avalonia;
+using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Themes.Fluent;
 using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,7 +10,7 @@ namespace Avae.Implementations
     public abstract class AvaeApplication : Application, IIocConfiguration
     {
         public abstract string IconUrl { get; }
-        public abstract bool IsStandardDialog {  get; }
+        public abstract bool IsStandard {  get; }
 
         public AvaeApplication()
         {
@@ -27,7 +29,7 @@ namespace Avae.Implementations
             services.AddSingleton<IIocConfiguration>(this);
             services.AddSingleton<IDialogService>(provider =>
             {
-                return IsStandardDialog ? new DialogService(IconUrl)
+                return IsStandard ? new DialogService(IconUrl)
                 : new ContentDialogService();
             });
             services.AddSingleton<IContentDialogService, ContentDialogService>();
@@ -66,15 +68,20 @@ namespace Avae.Implementations
         /// <typeparam name="TViewModel"></typeparam>
         /// <param name="params"></param>
         /// <returns></returns>
-        public IModalFor<TViewModel>? GetModalFor<TViewModel>(params object[] @params) where TViewModel : IViewModelBase
+        public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(params object[] @params) where TViewModel : IViewModelBase
         {
-            return Container!.GetView(typeof(TViewModel).Name, @params) as IModalFor<TViewModel>;
+            return Container!.GetView(typeof(TViewModel).Name, @params) as IModalFor<TViewModel, TResult>;
         }
 
         public override void OnFrameworkInitializationCompleted()
         {
             base.OnFrameworkInitializationCompleted();
 
+            Styles.Add(new StyleInclude(SimpleProvider.Default)
+            {
+                Source = new Uri("avares://Avae.Implementations/Modal/ModalStyle.axaml")
+            });
+            Styles.Add(new FluentTheme());
             Styles.Add(new FluentAvaloniaTheme());
         }
     }

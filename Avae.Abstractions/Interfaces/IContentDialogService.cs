@@ -8,12 +8,8 @@ namespace Avae.Abstractions
         /// Begins an asynchronous operation to show the dialog.
         /// </summary>
         Task<ContentDialogResult> ShowAsync(ContentDialogParams @params);
-
-        /// <summary>
-        /// Begins an asynchronous operation to show the dialog using the specified window
-        /// </summary>
-        Task<ContentDialogResult> ShowAsync(object owner, ContentDialogParams @params);
     }
+
     public class ContentDialogParams
     {
         public string? Title { get; set; }

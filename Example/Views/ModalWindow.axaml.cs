@@ -1,31 +1,20 @@
 using Avae.Abstractions;
-using Avae.Services;
-using Avalonia.Controls;
-using Example.ViewModels;
-using System;
-using System.Threading.Tasks;
+using Avae.Implementations;
 
 namespace Example;
 
-public partial class ModalWindow : Window, IModalFor<ModalViewModel>
+public partial class ModalWindow : 
+    DialogView<ViewModels.ModalViewModel,string>    
 {
+    protected override bool IsStandard =>  true;
+    protected override string Buttons => "Validate,Cancel";
+
     public ModalWindow()
     {
         InitializeComponent();
 
-        var viewModel = SimpleProvider.GetViewModel<ModalViewModel>();
-        EventHandler<string>? closeRequested = null!;
-        viewModel.CloseRequested += closeRequested = (sender, e) =>
-        {
-            viewModel.CloseRequested -= closeRequested;
-            Close(e);
-        };
-
+        var viewModel = SimpleProvider.GetViewModel<ViewModels.ModalViewModel>();
+        
         DataContext = viewModel;
-    }
-
-    public Task<TResult> ShowDialogAsync<TResult>()
-    {
-        return ShowDialog<TResult>((Window)TopLevelStateManager.GetActive());
     }
 }

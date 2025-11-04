@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Example.ViewModels
 {
-    internal partial class ModalViewModel : CloseableViewModelBase<string>, IDataErrorInfo
+    public partial class ModalViewModel : CloseableViewModelBase<string>, IDataErrorInfo
     {
         private string? _text;
 
@@ -35,6 +35,7 @@ namespace Example.ViewModels
         }
 
         [RelayCommand]
+        [Closeable(0)]
         public async Task Validate()
         {
             if (await CanClose())
@@ -44,6 +45,7 @@ namespace Example.ViewModels
         }
 
         [RelayCommand]
+        [Closeable(1)]
         public Task Cancel()
         {
             return Close("Cancel");

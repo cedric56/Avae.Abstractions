@@ -11,11 +11,11 @@ namespace Avae.Implementations
     public class ContentDialogService : IContentDialogService, IDialogService
     {
         public async Task<ContentDialogResult> ShowAsync(ContentDialogParams @params)
-        {
-            var topLevel = TopLevelStateManager.GetActive();
-            var dialog = GetContentDialog(@params, topLevel);
+        {   
             return await Dispatcher.UIThread.Invoke(async () =>
             {
+                var topLevel = TopLevelStateManager.GetActive();
+                var dialog = GetContentDialog(@params, topLevel);
                 var result = await dialog.ShowAsync(topLevel);
                 return Enum.TryParse(result.ToString(), out ContentDialogResult dialogResult)
                     ? dialogResult
@@ -23,33 +23,18 @@ namespace Avae.Implementations
             });
         }
 
-        public async Task<ContentDialogResult> ShowAsync(object owner, ContentDialogParams @params)
-        {
-            var topLevel = TopLevelStateManager.GetActive();
-            var window = topLevel ?? owner as Window ?? owner as TopLevel;
-            var dialog = GetContentDialog(@params, window);
-            return await Dispatcher.UIThread.Invoke(async () =>
-            {
-                var result = await dialog.ShowAsync(owner as Window ?? owner as TopLevel ?? topLevel);
-
-                return Enum.TryParse(result.ToString(), out ContentDialogResult dialogResult)
-                        ? dialogResult
-                        : ContentDialogResult.None;
-            });
-        }
-
-        private static ContentDialog GetContentDialog(ContentDialogParams @params, TopLevel topLevel)
+        private static ContentDialog GetContentDialog(ContentDialogParams @params, TopLevel? topLevel)
         {
             var dialog = new ContentDialog();
             if (@params != null)
             {
-                TypedEventHandler<ContentDialog, ContentDialogClosingEventArgs> closing = null;
-                TypedEventHandler<ContentDialog, EventArgs> opening = null;
-                TypedEventHandler<ContentDialog, EventArgs> opened = null;
-                TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs> closed = null;
-                TypedEventHandler<ContentDialog, ContentDialogButtonClickEventArgs> primaryButtonClick = null;
-                TypedEventHandler<ContentDialog, ContentDialogButtonClickEventArgs> secondaryButtonClick = null;
-                TypedEventHandler<ContentDialog, ContentDialogButtonClickEventArgs> closeButtonClick = null;
+                TypedEventHandler<ContentDialog, ContentDialogClosingEventArgs>? closing = null;
+                TypedEventHandler<ContentDialog, EventArgs>? opening = null;
+                TypedEventHandler<ContentDialog, EventArgs>? opened = null;
+                TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs>? closed = null;
+                TypedEventHandler<ContentDialog, ContentDialogButtonClickEventArgs>? primaryButtonClick = null;
+                TypedEventHandler<ContentDialog, ContentDialogButtonClickEventArgs>? secondaryButtonClick = null;
+                TypedEventHandler<ContentDialog, ContentDialogButtonClickEventArgs>? closeButtonClick = null;
 
                 dialog.Content = @params.Content;
                 //IsPrimaryButtonEnabled = @params.IsPrimaryButtonEnabled,
