@@ -11,7 +11,7 @@ namespace Avae.Abstractions
 
     public partial class CloseableViewModelBase<TResult> : ObservableObject, ICloseableViewModel<TResult>
     {
-        public event EventHandler<TResult>? CloseRequested;
+        public event EventHandler<TResult?>? CloseRequested;
 
         protected virtual Task<bool> CanClose() => Task.FromResult(true);
 
@@ -19,13 +19,10 @@ namespace Avae.Abstractions
         [RelayCommand]
         public async Task Close()
         {
-#pragma warning disable CS8604 // Existence possible d'un argument de référence null.
-            if (await CanClose())
-                await Close(default);
-#pragma warning restore CS8604 // Existence possible d'un argument de référence null.
+            await Close(default);
         }
 
-        public Task Close(TResult value)
+        public Task Close(TResult? value)
         {
             CloseRequested?.Invoke(this, value);
             return Task.CompletedTask;

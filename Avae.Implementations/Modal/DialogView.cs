@@ -2,7 +2,6 @@
 using Avae.Services;
 using Avalonia.Controls;
 using MsBox.Avalonia;
-using MsBox.Avalonia.Base;
 
 namespace Avae.Implementations;
 
