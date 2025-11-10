@@ -126,17 +126,17 @@ namespace Avae.Abstractions
         [RelayCommand]
         public void OnScrollChanged(object delta)
         {
-            if (delta is (double x, double y))
-            {
-                var index = (int)y;
+            //if (delta is (double x, double y))
+            //{
+            //    var index = (int)y;
 
-                if (index < 0)
-                    index = 0;
-                else if (index >= Pages.Count)
-                    index = Pages.Count - 1;
+            //    if (index < 0)
+            //        index = 0;
+            //    else if (index >= Pages.Count)
+            //        index = Pages.Count - 1;
 
-                SelectedPage = Pages[index];
-            }
+            //    SelectedPage = Pages[index];
+            //}
         }
     }
 }

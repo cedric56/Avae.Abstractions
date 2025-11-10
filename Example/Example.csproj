@@ -3,6 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <!--<ProduceReferenceAssembly>true</ProduceReferenceAssembly>-->
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,10 +19,15 @@
     <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="9.6.1" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.7" />
+    <PackageReference Include="System.Runtime" Version="4.3.1" />
+
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
+    <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj"
+                    OutputItemType="Analyzer"
+    ReferenceOutputAssembly="false"  />
+    <!---->
     <ProjectReference Include="..\Avae.Implementations\Avae.Implementations.csproj" />
   </ItemGroup>
 </Project>

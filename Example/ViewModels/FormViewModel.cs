@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Example.ViewModels
 {
-    internal class FormViewModel(Router router) : FormViewModelBase(router)
+    internal partial class FormViewModel(Router router) : FormViewModelBase(router)
     {
         public override string Title => "Form";
 

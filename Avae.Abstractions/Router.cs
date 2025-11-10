@@ -3,7 +3,7 @@
     /// <summary>
     /// Class initially copied from https://github.com/eten-tech/bible-well/blob/main/src/BibleWell.App/Router.cs
     /// </summary>
-    public sealed class Router
+    public partial class Router
     {
         private  readonly object _lock = new object();
         private int _currentIndex = -1;

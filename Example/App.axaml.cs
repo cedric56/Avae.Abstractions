@@ -25,7 +25,7 @@ public partial class App : AvaeApplication, IIocConfiguration
     public override bool IsStandard => true;
 
     public override void Configure(IIocContainer container)
-    {
+    {        
         container.Register<HomeView>();
         container.Register<MenuView>();
         container.Register<FormView>();

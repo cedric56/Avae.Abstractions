@@ -58,12 +58,9 @@ namespace Avae.Abstractions
         public void Register(string key, Type type)
         {
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
-            ArgumentNullException.ThrowIfNull(type);
+            if (type is null) throw new ArgumentNullException(nameof(type));
 
-            if (!_pagesByKey.TryAdd(key, type))
-            {
-                _pagesByKey[key] = type;
-            }
+            _pagesByKey.Add(key, type);
         }
 
         /// <summary>
