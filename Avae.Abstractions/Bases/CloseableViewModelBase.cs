@@ -13,9 +13,6 @@ namespace Avae.Abstractions
     {
         public event EventHandler<TResult?>? CloseRequested;
 
-        protected virtual Task<bool> CanClose() => Task.FromResult(true);
-
-
         [RelayCommand]
         public async Task Close()
         {

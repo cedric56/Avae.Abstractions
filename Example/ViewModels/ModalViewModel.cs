@@ -34,7 +34,7 @@ namespace Example.ViewModels
             }
         }
 
-        [RelayCommand]
+        [RelayCommand()]
         [Closeable(0)]
         public async Task Validate()
         {
@@ -51,7 +51,7 @@ namespace Example.ViewModels
             return Close("Cancel");
         }
 
-        protected override Task<bool> CanClose()
+        protected Task<bool> CanClose()
         {
             return Task.FromResult(string.IsNullOrWhiteSpace(Error));
         }

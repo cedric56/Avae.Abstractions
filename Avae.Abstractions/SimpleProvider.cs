@@ -33,27 +33,43 @@ namespace Avae.Abstractions
             return service;
         }
 
-        public static T GetViewModel<T>(params object[] parameters) where T : IViewModelBase
+        public static T GetViewModel<T>(params object[] parameters) where T : class, IViewModelBase
         {
-            object service = null;
+            return GetViewModel<T>(typeof(T), parameters);
+        }
 
-            if (provider == null)
-                throw new Exception("The service provider has not been configured. Call DefaultProvider.ConfigureServices at application startup.");
-            var factory = provider.GetService<ViewModelBaseFactory<T>>();
-            factory ??= provider.GetService<SingletonFactory<T>>();
+        public static TBaseType GetViewModel<TBaseType>(Type viewModelType, params object[] parameters) where TBaseType : class, IViewModelBase
+        {
+            var type = typeof(ViewModelBaseFactory<>).MakeGenericType(viewModelType);
+            var factory = GetService(type) as IViewModelBaseFactory;
+
+            type = typeof(SingletonFactory<>).MakeGenericType(viewModelType);
+            factory ??= GetService(type) as IViewModelBaseFactory;
+
             if (factory != null)
             {
-                service = factory?.Create(typeof(T), parameters);
-                Services.Add(service);
-                return (T)service;
+                var viewModel = factory.Create(viewModelType, parameters);
+                if (viewModel is TBaseType vm)
+                {
+                    Services.Add(vm);
+                    return vm;
+                }
+                throw new InvalidOperationException($"Unable to create {viewModelType.Name}.  Ensure that it is registered with the service provider.");
             }
+
             if (parameters.Length > 0)
             {
-                throw new Exception("You must register a factory for view models with parameters.");
+                throw new InvalidOperationException("You must register a factory for view models with parameters.");
             }
-            service = provider.GetService<T>();
-            Services.Add(service);
-            return (T)service;
+
+            var service = GetService(viewModelType) as TBaseType;
+            if (service != null)
+            {
+                Services.Add(service);
+                return service;
+            }
+
+            throw new InvalidOperationException($"Unable to create {viewModelType.Name}.  Ensure that it is registered with the service provider and it derives from {typeof(IViewModelBase).FullName}.");
         }
     }
 }

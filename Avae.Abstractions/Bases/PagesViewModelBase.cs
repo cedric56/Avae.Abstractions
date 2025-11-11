@@ -44,7 +44,7 @@ namespace Avae.Abstractions
                 var page = Pages.FirstOrDefault();
                 if (CurrentPage == null && page != null)
                 {
-                    OnRouterCurrentViewModelChanged(_router.Create<IViewModelBase>(page.ViewModelType, true, page.ViewModelParameters));
+                    OnRouterCurrentViewModelChanged(SimpleProvider.GetViewModel<IViewModelBase>(page.ViewModelType, page.ViewModelParameters));
                 }
             }
         }

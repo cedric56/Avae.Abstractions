@@ -54,24 +54,14 @@
         /// <typeparam name="TBaseType">The base type of the view model.</typeparam>
         /// <param name="viewModelType">The view model type.</param>
         /// <returns>The created view model cast to the <typeparamref name="TBaseType"/>.</returns>
-        public TBaseType GoTo<TBaseType>(Type viewModelType, params object[] parameters) where TBaseType : IViewModelBase
+        public TBaseType GoTo<TBaseType>(Type viewModelType, params object[] parameters) where TBaseType : class, IViewModelBase
         {
             lock (_lock)
             {
-                var destination = ViewModelFactory.Create<TBaseType>(viewModelType, parameters);
+                var destination = SimpleProvider.GetViewModel<TBaseType>(viewModelType, parameters);
                 AddHistory(destination);                
                 OnCurrentViewModelChanged(Current!);
                 return destination;
-            }
-        }
-
-        public TBaseType Create<TBaseType>(Type viewModelType, bool addHystory, params object[] parameters) where TBaseType : IViewModelBase
-        {
-            lock (_lock)
-            {
-                var viewModel = ViewModelFactory.Create<TBaseType>(viewModelType, parameters);
-                if (addHystory) AddHistory(viewModel);
-                return viewModel;
             }
         }
 
@@ -90,11 +80,11 @@
         /// </summary>
         /// <typeparam name="T">The type of the view model.</typeparam>
         /// <returns>The created view model.</returns>
-        public T GoTo<T>(params object[] parameters) where T : IViewModelBase
+        public T GoTo<T>(params object[] parameters) where T : class, IViewModelBase
         {
             lock (_lock)
             {
-                var destination = ViewModelFactory.Create<T>(parameters);
+                var destination = SimpleProvider.GetViewModel<T>(parameters);
                 AddHistory(destination);
                 OnCurrentViewModelChanged(Current!);
                 return destination;
@@ -105,7 +95,7 @@
         {
             lock (_lock)
             {
-                var destination = ViewModelFactory.Create<T>([router]);
+                var destination = SimpleProvider.GetViewModel<T>([router]);
                 AddHistory(destination);
                 OnCurrentViewModelChanged(Current!);
                 return destination;
