@@ -22,9 +22,6 @@
              MaxHeight="{Binding MaxHeight}"
              Height="{Binding Height}"
              >
-  <Grid.Resources>
-    <converters:ModalConverter x:Key="myWindowConverter"/>
-  </Grid.Resources>
   <Grid Classes="MsBoxCustomContainer">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="15" />
@@ -69,15 +66,6 @@
                   Command="{Binding Command}"
                   IsDefault="{Binding IsDefault}"
                   IsCancel="{Binding IsCancel}">
-            <behaviors:ClickBehavior.CommandParameter>
-              <MultiBinding Converter="{StaticResource myWindowConverter}">
-                <MultiBinding.Bindings>
-                   <Binding Path="Command" ElementName="Btn"/>
-                  <Binding Path="Content" ElementName="Btn"/>
-                  <Binding Path="IsDefault"/>
-                </MultiBinding.Bindings>
-              </MultiBinding>
-            </behaviors:ClickBehavior.CommandParameter>
           </Button>
 
         </DataTemplate>

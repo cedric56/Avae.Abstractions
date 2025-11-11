@@ -101,6 +101,19 @@
             }
         }
 
+        public T GoTo<T>(Router router) where T : PagesViewModelBase
+        {
+            lock (_lock)
+            {
+                var destination = ViewModelFactory.Create<T>([router]);
+                AddHistory(destination);
+                OnCurrentViewModelChanged(Current!);
+                return destination;
+            }
+        }
+
+        
+
         private void OnCurrentViewModelChanged(IViewModelBase viewModel)
         {
             CurrentViewModelChanged?.Invoke(viewModel);
