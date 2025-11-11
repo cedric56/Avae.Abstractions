@@ -12,9 +12,5 @@ public partial class ModalWindow :
     public ModalWindow()
     {
         InitializeComponent();
-
-        var viewModel = SimpleProvider.GetViewModel<ViewModels.ModalViewModel>();
-        
-        DataContext = viewModel;
     }
 }

@@ -5,13 +5,6 @@ using System.Text;
 
 namespace Avae.Abstractions
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class GenerateGoToAttribute : Attribute
-    {
-        // Optional: Customize overload prefix (default: "GoTo")
-        public string MethodName { get; set; } = "GoTo";
-    }
-
     [Generator]
     public class RouterGenerator : IIncrementalGenerator
     {
@@ -81,7 +74,7 @@ namespace Avae.Abstractions
 
                         sb.AppendLine($"        public static {vm.Name} GoTo{vm.Name.Replace("ViewModel", string.Empty)}(this Avae.Abstractions.Router abstractRouter,  {paramList})");
                         sb.AppendLine("        {");
-                        sb.AppendLine($"          return router.GoTo<{vm.Name}>(typeof({vm.Name}),[{string.Join(",", parameters.Select(p => p.Name))}]);");
+                        sb.AppendLine($"          return abstractRouter.GoTo<{vm.Name}>(typeof({vm.Name}),[{string.Join(",", parameters.Select(p => p.Name))}]);");
                         sb.AppendLine("        }");
                         sb.AppendLine();
                     }

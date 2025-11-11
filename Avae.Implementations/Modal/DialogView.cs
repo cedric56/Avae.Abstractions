@@ -10,18 +10,17 @@ public abstract class DialogViewBase : UserControl
 
 }
 
-public class DialogView<T, TResult> : DialogViewBase,
-    IModalFor<T, TResult>
-    where T : CloseableViewModelBase<TResult>
+public class DialogView<TViewModel, TResult> : DialogViewBase,
+    IModalFor<TViewModel, TResult>
+    where TViewModel : CloseableViewModelBase<TResult>
 {
     protected virtual string Title { get; } = string.Empty;
     protected virtual string Buttons { get; } = "Ok";
     protected virtual string Icon { get; } = "";
-
+    protected TViewModel? ViewModel { get { return DataContext as TViewModel ?? default; } }
     protected virtual bool IsStandard { get; } = true;
 
-
-    private ContentDialogParams CreateContentDialogParams(ModalParameters<T, TResult> parameters)
+    private ContentDialogParams CreateContentDialogParams(ModalParameters<TViewModel, TResult> parameters)
     {
         ContentDialogParams? @params = null;
 
@@ -29,10 +28,10 @@ public class DialogView<T, TResult> : DialogViewBase,
         {
             Content = this,
             Title = Title,            
-            PrimaryButtonText = parameters.Dic.ElementAt(0).Key,
-            PrimaryButtonCommand = parameters.Dic.ElementAt(0).Value,
-            SecondaryButtonText = parameters.Dic.ElementAtOrDefault(1).Key,
-            SecondaryButtonCommand = parameters.Dic.ElementAtOrDefault(1).Value,
+            PrimaryButtonText = parameters.Definitions.ElementAt(0).Name,
+            PrimaryButtonCommand = parameters.Definitions.ElementAt(0).Command,
+            SecondaryButtonText = parameters.Definitions.ElementAtOrDefault(1)?.Name,
+            SecondaryButtonCommand = parameters.Definitions.ElementAtOrDefault(1)?.Command,
             Closing = result =>
             {
                 bool value = true;
@@ -49,8 +48,8 @@ public class DialogView<T, TResult> : DialogViewBase,
 
         if (Buttons.Split(",").Length > 2)
         {
-            @params.CloseButtonText = parameters.Dic.LastOrDefault().Key;
-            @params.CloseButtonCommand = parameters.Dic.LastOrDefault().Value;
+            @params.CloseButtonText = parameters.Definitions.LastOrDefault()?.Name;
+            @params.CloseButtonCommand = parameters.Definitions.LastOrDefault()?.Command;
         }
 
         return @params;
@@ -59,9 +58,11 @@ public class DialogView<T, TResult> : DialogViewBase,
     public async Task<TResult?> ShowDialogAsync()
     {
         TResult? result = default;
-        var viewmodel = (T)DataContext;
+        var viewModel = ViewModel;
+        if(viewModel is null)
+            throw new ArgumentNullException(nameof(viewModel));
 
-        var modalParams = new ModalParameters<T, TResult>(Icon, Buttons, viewmodel)
+        var modalParams = new ModalParameters<TViewModel, TResult>(Icon, Buttons, viewModel)
         {
             Content = this,
             ContentTitle = Title,
@@ -73,10 +74,10 @@ public class DialogView<T, TResult> : DialogViewBase,
             var contentDialogParams = CreateContentDialogParams(modalParams);
             var _contentDialogService = SimpleProvider.GetService<IContentDialogService>();            
 
-            EventHandler<TResult>? closeRequested = null!;            
-            viewmodel.CloseRequested += closeRequested = (sender, e) =>
+            EventHandler<TResult>? closeRequested = null!;
+            viewModel.CloseRequested += closeRequested = (sender, e) =>
             {
-                viewmodel.CloseRequested -= closeRequested;
+                viewModel.CloseRequested -= closeRequested;
                 result = e;
             };
 
@@ -84,9 +85,9 @@ public class DialogView<T, TResult> : DialogViewBase,
         }
         else
         {
-            var viewModel = new ModalViewModel<T, TResult>(modalParams, viewmodel);
-            var box = new ModalView<T, TResult>(viewModel);
-            var modal = new MsBox<ModalView<T, TResult>, ModalViewModel<T, TResult>, TResult>(box, viewModel);
+            var modalViewModel = new ModalViewModel<TViewModel, TResult>(modalParams, viewModel);
+            var box = new ModalView<TViewModel, TResult>(modalViewModel);
+            var modal = new MsBox<ModalView<TViewModel, TResult>, ModalViewModel<TViewModel, TResult>, TResult>(box, modalViewModel);
             if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
                 result = await modal.ShowWindowDialogAsync((Window)TopLevelStateManager.GetActive());
             else

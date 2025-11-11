@@ -15,14 +15,16 @@ public class ModalButton : ButtonDefinition
 
 public abstract class ModalParameters : MessageBoxCustomParams
 {
+    public IEnumerable<ModalButton> Definitions
+    {
+        get { return ButtonDefinitions.Cast<ModalButton>(); }
+    }
     public UserControl? Content { get; set; }
 }
 
 public class ModalParameters<T, TResult> : ModalParameters
     where T : CloseableViewModelBase<TResult>
-{
-    public Dictionary<string, ICommand?> Dic = new Dictionary<string, ICommand?>();    
-  
+{  
     public ModalParameters(string icon, string buttons, T viewModel)
     {
         var type = typeof(T);
@@ -51,7 +53,6 @@ public class ModalParameters<T, TResult> : ModalParameters
                 IsDefault = names.IndexOf(name) == 0,
                 IsCancel = names.IndexOf(name) == names.Count - 1,
             };
-            Dic.Add(name, closeCommand);
             definitions.Add(bd);
         }
         ButtonDefinitions = definitions;

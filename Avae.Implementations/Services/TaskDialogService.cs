@@ -67,7 +67,7 @@ namespace Avae.Implementations
             var buttons = new List<TaskDialogButton>();
             foreach (var result in results)
             {
-                TaskDialogButton button = result switch
+                TaskDialogButton? button = result switch
                 {
                     TaskDialogStandardResult.OK => TaskDialogButton.OKButton,
                     TaskDialogStandardResult.Retry => TaskDialogButton.RetryButton,
