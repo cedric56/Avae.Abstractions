@@ -1,4 +1,5 @@
-﻿namespace Avae.Abstractions
+﻿#nullable disable
+namespace Avae.Abstractions
 {
     public interface IParameter
     {
