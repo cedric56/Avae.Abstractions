@@ -10,20 +10,40 @@ namespace Avae.Abstractions
     /// <param name="icon"></param>
     public class PageViewModelBase(Type viewModelType, string displayName, string icon) : ObservableObject, IViewModelBase
     {
+        public IViewModelBase? ViewModel { get; protected set; }
         public Type ViewModelType { get; } = viewModelType;
         public string DisplayName { get; } = displayName;
         public string Icon { get; } = icon;
 
-        public bool SetDataContext { get; set; } = true;
+        public IParameter[] FactoryParameters { get; set; } = [];
+        public IParameter[] ViewParameters { get; set; } = [];
+        public IParameter[] ViewModelParameters { get; set; } = [];
 
-        public object[] ViewParameters { get; set; } = [];
-
-        public object[] ViewModelParameters { get; set; } = [];
+        public IParameter[]  Parameters
+        {
+            get
+            {
+                var parameters = new  List<IParameter>();
+                parameters.AddRange(FactoryParameters);
+                parameters.AddRange(ViewParameters);
+                parameters.AddRange(ViewModelParameters);
+                return parameters.ToArray();
+            }
+        }
     }
 
-    public class PageViewModelBase<T>(string displayName, string icon) : 
-        PageViewModelBase(typeof(T), displayName, icon), IViewModelBase where T : IViewModelBase
+    public class PageViewModelBase<T> : PageViewModelBase, IViewModelBase where T : IViewModelBase
     {
-        
+        public PageViewModelBase(string displayName, string icon)
+            : base(typeof(T), displayName, icon)
+        {
+
+        }
+
+        public PageViewModelBase(T viewModel, string displayName, string icon)
+            : base(typeof(T), displayName, icon)
+        {
+            ViewModel = viewModel;
+        }
     }
 }

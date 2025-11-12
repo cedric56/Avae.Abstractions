@@ -4,8 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Example.FormPage1View">
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-  <TextBlock Text="{Binding Title}" />
-        
-        </StackPanel>
+    <Grid RowDefinitions="Auto, Auto">
+		<Grid ColumnDefinitions="Auto,*" Grid.Row="0">
+			<TextBlock VerticalAlignment="Center" Text="First name" />
+            <TextBox Text="{Binding Person.FirstName}" Grid.Column="1"/>
+        </Grid>
+        <Grid ColumnDefinitions="Auto,*" Grid.Row="1">
+			<TextBlock VerticalAlignment="Center" Text="Last name" />
+            <TextBox Text="{Binding Person.LastName}" Grid.Column="1"/>
+        </Grid>
+    </Grid>
 </UserControl>

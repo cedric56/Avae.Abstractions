@@ -6,7 +6,7 @@ using MsBox.Avalonia.ViewModels;
 
 namespace Avae.Implementations
 {
-    public partial class ModalView<T, TResult> : UserControl, IFullApi<TResult>, ISetCloseAction
+    internal partial class ModalView<T, TResult> : UserControl, IFullApi<TResult>, ISetCloseAction
         where T : CloseableViewModelBase<TResult>
     {
         public ModalView(ModalViewModel<T, TResult> viewModel)
@@ -18,7 +18,7 @@ namespace Avae.Implementations
                 viewModel.ViewModel.CloseRequested -= closeRequested;
                 SetButtonResult(e);
                 var window = this.Parent as Window;
-                if(window != null) window.Close();
+                window?.Close();
             };
         }
 

@@ -1,6 +1,5 @@
 ﻿#nullable disable
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -150,41 +149,19 @@ namespace Avae.Abstractions
         /// <param name="key">The registered key</param>
         /// <param name="parameter">The parameters</param>
         /// <returns>The view</returns>
-        public object GetView(string key, object[] @params)
+        public object GetView(string key, params IParameter[] parameters)
         {
             object view = null;
 
-            var parameters = GetParameters(out int count, @params);
             if (_factories.TryGetValue(key, out var factory) && factory != null)
                 view = factory([.. parameters]);
             else
             {
-                var constructor = GetConstructor(key, [.. parameters], out object[] finalParameters);
+                var constructor = GetConstructor(key, [.. parameters.OfType<ViewParameter>().Select(p => p.Value).ToArray()], out object[] finalParameters);
                 view = constructor?.Invoke([.. finalParameters]);
             }
 
             return view ?? throw new Exception("No such page. Did you forget to implement Configure ?");
-        }
-
-        /// <summary>
-        /// Retreived the parameters from passing parameter
-        /// </summary>
-        /// <param name="count">The parameters count</param>
-        /// <param name="parameter">The passing parameters</param>
-        /// <returns>The parameters as list</returns>
-        public static List<object> GetParameters(out int count, object parameter = null)
-        {
-            var parameters = new List<object>();
-            if (parameter is IEnumerable enumerable)
-            {
-                parameters.AddRange(enumerable.Cast<object>().Where(x => x != null).Select(x => x));
-            }
-            else if (parameter != null)
-            {
-                parameters.Add(parameter);
-            }
-            count = parameters.Count;
-            return parameters;
         }
 
         /// <summary>
@@ -194,14 +171,17 @@ namespace Avae.Abstractions
         /// <param name="factory">The ViewModel factory.</param>
         public void Register<T>(ViewFactory factory = null)
         {
-            var typeName = typeof(T).Name;
+            var viewForType = typeof(T);
+            var viewModelType = viewForType.GetInterface("IContextFor`1")?.GetGenericArguments().FirstOrDefault();
+            var name = viewModelType?.Name ?? viewForType.Name;
+
             if (factory != null)
             {
-                RegisterFactory(typeName, factory);
+                RegisterFactory(name, factory);
             }
             else
             {
-                Register(typeName, typeof(T));
+                Register(name, typeof(T));
             }
         }
 

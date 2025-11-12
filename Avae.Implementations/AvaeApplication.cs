@@ -41,12 +41,12 @@ namespace Avae.Implementations
             SimpleProvider.ConfigureServices(provider);
         }
 
-        public object? GetView(string key, object[] @params)
+        public object? GetView(string key, params IParameter[] @params)
         {
             return Container!.GetView(key, @params);
         }
 
-        public IContextFor? GetContextFor(string key, params object[] @params)
+        public IContextFor? GetContextFor(string key, params IParameter[] @params)
         {
             return Container!.GetView(key, @params) as IContextFor;
         }
@@ -57,7 +57,7 @@ namespace Avae.Implementations
         /// <typeparam name="TViewModel"></typeparam>
         /// <param name="params"></param>
         /// <returns></returns>
-        public IContextFor<TViewModel>? GetContextFor<TViewModel>(params object[] @params) where TViewModel : IViewModelBase
+        public IContextFor<TViewModel>? GetContextFor<TViewModel>(params IParameter[] @params) where TViewModel : IViewModelBase
         {
             return Container!.GetView(typeof(TViewModel).Name, @params) as IContextFor<TViewModel>;
         }
@@ -68,7 +68,7 @@ namespace Avae.Implementations
         /// <typeparam name="TViewModel"></typeparam>
         /// <param name="params"></param>
         /// <returns></returns>
-        public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(params object[] @params) where TViewModel : IViewModelBase
+        public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(params IParameter[] @params) where TViewModel : IViewModelBase
         {
             return Container!.GetView(typeof(TViewModel).Name, @params) as IModalFor<TViewModel, TResult>;
         }

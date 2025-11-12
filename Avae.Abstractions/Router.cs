@@ -5,7 +5,7 @@
     /// </summary>
     public partial class Router
     {
-        private  readonly object _lock = new object();
+        private readonly object _lock = new object();
         private int _currentIndex = -1;
         private List<IViewModelBase> _history = [];
         private const uint MaxHistorySize = 20;
@@ -31,7 +31,7 @@
             }
 
             _currentIndex--;
-            OnCurrentViewModelChanged(Current!);
+            CurrentViewModelChanged?.Invoke(Current!);
             return Current;
         }
 
@@ -43,7 +43,7 @@
             }
 
             _currentIndex++;
-            OnCurrentViewModelChanged(Current!);
+            CurrentViewModelChanged?.Invoke(Current!);
             return Current;
         }
 
@@ -54,59 +54,67 @@
         /// <typeparam name="TBaseType">The base type of the view model.</typeparam>
         /// <param name="viewModelType">The view model type.</param>
         /// <returns>The created view model cast to the <typeparamref name="TBaseType"/>.</returns>
-        public TBaseType GoTo<TBaseType>(Type viewModelType, params object[] parameters) where TBaseType : class, IViewModelBase
+        public IContextFor GoTo(Type viewModelType, params IParameter[] parameters)
+        {
+            return GoTo(viewModelType, out var _, parameters);
+        }
+
+        public IContextFor GoTo(Type viewModelType, out IViewModelBase viewModel,  params IParameter[] parameters)
         {
             lock (_lock)
             {
-                var destination = SimpleProvider.GetViewModel<TBaseType>(viewModelType, parameters);
-                AddHistory(destination);                
-                OnCurrentViewModelChanged(Current!);
-                return destination;
+                viewModel = SimpleProvider.GetViewModel(viewModelType, parameters);
+                AddHistory(viewModel);
+                CurrentViewModelChanged?.Invoke(viewModel);
+                return GetContext(viewModel, parameters);
             }
         }
 
-        public T GoTo<T>(T instance) where T : IViewModelBase
+        public IContextFor GoTo<TViewModel>(TViewModel viewModel, params IParameter[] parameters) where TViewModel : IViewModelBase
         {
             lock (_lock)
             {
-                AddHistory(instance);
-                OnCurrentViewModelChanged(instance);
-                return instance;
+                AddHistory(viewModel);
+                CurrentViewModelChanged?.Invoke(viewModel);
+                return GetContext(viewModel, parameters);
             }
         }
 
         /// <summary>
         /// Navigates to the view associated with the specified view model type.
         /// </summary>
-        /// <typeparam name="T">The type of the view model.</typeparam>
+        /// <typeparam name="TViewModel">The type of the view model.</typeparam>
         /// <returns>The created view model.</returns>
-        public T GoTo<T>(params object[] parameters) where T : class, IViewModelBase
+        public IContextFor GoTo<TViewModel>(params IParameter[] parameters) where TViewModel : class, IViewModelBase
+        {
+            return GoTo<TViewModel>(out var _, parameters);
+        }
+
+        public IContextFor GoTo<TViewModel>(out TViewModel viewModel, params IParameter[] parameters) where TViewModel : class, IViewModelBase
         {
             lock (_lock)
             {
-                var destination = SimpleProvider.GetViewModel<T>(parameters);
-                AddHistory(destination);
-                OnCurrentViewModelChanged(Current!);
-                return destination;
+                viewModel = SimpleProvider.GetViewModel<TViewModel>(parameters);
+                AddHistory(viewModel);
+                CurrentViewModelChanged?.Invoke(viewModel);
+                return GetContext(viewModel, parameters);
             }
         }
 
-        public T GoTo<T>(Router router) where T : PagesViewModelBase
+        public IContextFor GoTo<TViewModel>(Router router) where TViewModel : PagesViewModelBase
+        {
+            return GoTo<TViewModel>(router, out var _);
+        }
+
+        public IContextFor GoTo<TViewModel>(Router router, out TViewModel viewModel) where TViewModel : PagesViewModelBase
         {
             lock (_lock)
             {
-                var destination = SimpleProvider.GetViewModel<T>([router]);
-                AddHistory(destination);
-                OnCurrentViewModelChanged(Current!);
-                return destination;
+                viewModel = SimpleProvider.GetViewModel<TViewModel>(router.ForViewModel());
+                AddHistory(viewModel);
+                CurrentViewModelChanged?.Invoke(viewModel);
+                return GetContext(viewModel);
             }
-        }
-
-        
-
-        private void OnCurrentViewModelChanged(IViewModelBase viewModel)
-        {
-            CurrentViewModelChanged?.Invoke(viewModel);
         }
 
         private void AddHistory(IViewModelBase item)
@@ -128,6 +136,20 @@
             }
 
             _currentIndex = _history.Count - 1;
+        }
+
+        private IContextFor GetContext(IViewModelBase viewModel, params IParameter[] parameters)
+        {
+            var configuration = SimpleProvider.GetService<IIocConfiguration>();
+            var contextFor = configuration!.GetContextFor(viewModel.GetType().Name, parameters);
+            //Avoid binding error due to propagating context
+            if (contextFor != null)
+            {
+                contextFor.DataContext = null;
+                contextFor.DataContext = viewModel;
+            }
+
+            return contextFor ?? throw new NotImplementedException($"Unable to find view for {viewModel.GetType().Name}");
         }
     }
 }

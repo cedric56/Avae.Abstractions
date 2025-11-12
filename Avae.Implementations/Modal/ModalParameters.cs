@@ -8,12 +8,12 @@ using System.Windows.Input;
 
 namespace Avae.Implementations;
 
-public class ModalButton : ButtonDefinition
+internal class ModalButton : ButtonDefinition
 {
     public ICommand? Command { get; set; }
 }
 
-public abstract class ModalParameters : MessageBoxCustomParams
+internal abstract class ModalParameters : MessageBoxCustomParams
 {
     public IEnumerable<ModalButton> Definitions
     {
@@ -22,22 +22,20 @@ public abstract class ModalParameters : MessageBoxCustomParams
     public UserControl? Content { get; set; }
 }
 
-public class ModalParameters<T, TResult> : ModalParameters
+internal class ModalParameters<T, TResult> : ModalParameters
     where T : CloseableViewModelBase<TResult>
 {  
     public ModalParameters(string icon, string buttons, T viewModel)
     {
         var type = typeof(T);
         var commands = type.GetProperties().Where(m => m.PropertyType == typeof(ICommand) || m.PropertyType == typeof(IAsyncRelayCommand) || m.PropertyType == typeof(RelayCommand)).ToList();
+        var prop = commands.FirstOrDefault(c => c.Name == "CloseCommand");
+        var closeCommand = prop?.GetValue(viewModel) as ICommand;
         var indexes = type.GetMethods().Where(m => m.CustomAttributes.Any(c => c.AttributeType == typeof(CloseableAttribute))).ToList();
-
         var definitions = new List<ButtonDefinition>();
         var names = buttons.Split(",").ToList();
         foreach (var name in names)
         {
-            var prop = commands.FirstOrDefault(c => c.Name == "CloseCommand");
-            var closeCommand = prop?.GetValue(viewModel) as ICommand;
-
             var index = names.IndexOf(name);
             var attr = indexes.FirstOrDefault(a => indexes.IndexOf(a) == index);
             if (attr != null)
@@ -56,6 +54,14 @@ public class ModalParameters<T, TResult> : ModalParameters
             definitions.Add(bd);
         }
         ButtonDefinitions = definitions;
+        CloseOnClickAway = true;
+        WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        CanResize = false;
+        MaxWidth = 500;
+        MaxHeight = 800;
+        SizeToContent = SizeToContent.WidthAndHeight;
+        ShowInCenter = true;
+        Topmost = true;
 
         try
         {
@@ -65,13 +71,5 @@ public class ModalParameters<T, TResult> : ModalParameters
         {
 
         }
-        CloseOnClickAway = true;
-        WindowStartupLocation = WindowStartupLocation.CenterOwner;
-        CanResize = false;
-        MaxWidth = 500;
-        MaxHeight = 800;
-        SizeToContent = SizeToContent.WidthAndHeight;
-        ShowInCenter = true;
-        Topmost = true;
     }
 }

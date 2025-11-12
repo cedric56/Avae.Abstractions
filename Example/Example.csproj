@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>    
+    <PackageReference Include="Autofac" Version="8.4.0" />    
     <PackageReference Include="Avalonia" Version="11.3.7" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.7" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.7" />
@@ -24,10 +25,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj"
-                    OutputItemType="Analyzer"
-    ReferenceOutputAssembly="false"  />
-    <!---->
+    <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
+    <!--OutputItemType="Analyzer" ReferenceOutputAssembly="false" -->
     <ProjectReference Include="..\Avae.Implementations\Avae.Implementations.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\FormPage3View.axaml.cs">
+      <DependentUpon>FormPage3View.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

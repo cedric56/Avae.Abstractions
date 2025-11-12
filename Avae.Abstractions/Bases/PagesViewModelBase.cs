@@ -13,7 +13,7 @@ namespace Avae.Abstractions
         /// <summary>
         /// A dictionary to store the context for each page.
         /// </summary>
-        private readonly Dictionary<Type, IContextFor> dico = [];
+        private readonly Dictionary<PageViewModelBase, IContextFor> dico = [];
 
         /// <summary>
         /// The currently selected page in the menu.
@@ -36,64 +36,15 @@ namespace Avae.Abstractions
         {
             _router = router;
 
-            // Subscribe to the router's current view model changed event
-            _router.CurrentViewModelChanged += OnRouterCurrentViewModelChanged;
-
             if (initialize)
             {
                 var page = Pages.FirstOrDefault();
-                if (CurrentPage == null && page != null)
+                if (page != null)
                 {
-                    OnRouterCurrentViewModelChanged(SimpleProvider.GetViewModel<IViewModelBase>(page.ViewModelType, page.ViewModelParameters));
+                    OnSelectedPageChanged(page);
                 }
             }
         }
-
-        /// <summary>
-        /// This method is called when the current view model changes in the router.
-        /// </summary>
-        /// <param name="vm"></param>
-        private void OnRouterCurrentViewModelChanged(IViewModelBase vm)
-        {
-            var m = Pages.FirstOrDefault(mi => mi.ViewModelType == vm.GetType());// ?? throw new InvalidOperationException($"The view model {vm.GetType().Name} is not registered in the pages list.");
-            if (m == null)
-                return;
-
-            if (m.ViewModelType == SelectedPage?.ViewModelType)
-            {
-                AddOrUpdate();
-                return;
-            }
-
-            AddOrUpdate();
-
-            //Debug.WriteLine(_router.Current);
-
-            // If the page is not already in the dictionary, add it
-            void AddOrUpdate()
-            {
-                if (dico.TryGetValue(m.ViewModelType, out var context))
-                {
-                    CurrentPage = context;                    
-                }
-                else
-                {
-                    var configuration = SimpleProvider.GetService<IIocConfiguration>();
-                    var page = configuration!.GetContextFor(vm.GetType().Name, m.ViewParameters);
-                    //Avoid binding error due to propagating context
-                    if (page != null)
-                        page.DataContext = null;
-                    CurrentPage = page;
-                    dico[m.ViewModelType] = CurrentPage;
-                }
-
-                SelectedPage = m;
-
-                if (m.SetDataContext)
-                    CurrentPage.DataContext = vm;
-            }
-        }
-
 
         /// <summary>
         /// The list of pages to be displayed in the menu.
@@ -109,14 +60,29 @@ namespace Avae.Abstractions
             if (value == null)
                 return;
 
-            if (dico.TryGetValue(value.ViewModelType, out var context))
+            if (dico.TryGetValue(value, out var context))
             {
                 CurrentPage = context;
             }
             else
             {
-                _router.GoTo<IViewModelBase>(value.ViewModelType, value.ViewModelParameters);
+                dico.Add(value, CurrentPage = GoTo(value));
             }
+        }
+
+        protected virtual IContextFor GoTo(PageViewModelBase value)
+        {
+            IContextFor contextFor = null;
+            if (value.ViewModel != null)
+            {
+                contextFor = _router.GoTo(value.ViewModel, value.Parameters);
+            }
+            else
+            {
+                contextFor = _router.GoTo(value.ViewModelType, value.Parameters);
+            }
+
+            return contextFor;
         }
 
         /// <summary>

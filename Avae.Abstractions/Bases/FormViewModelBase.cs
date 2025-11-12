@@ -2,7 +2,7 @@
 
 namespace Avae.Abstractions
 {
-    public abstract partial class FormViewModelBase : PagesViewModelBase, ICloseableViewModel<bool>
+    public abstract partial class FormViewModelBase<TResult> : PagesViewModelBase, ICloseableViewModel<TResult>
     {
         public FormViewModelBase(Router router)
             : base(router)
@@ -10,22 +10,22 @@ namespace Avae.Abstractions
 
         }
 
-        public event EventHandler<bool>? CloseRequested;
+        public event EventHandler<TResult?>? CloseRequested;
 
         public abstract string Title { get; }
 
         protected virtual Task<bool> CanClose() => Task.FromResult(true);
 
         [RelayCommand]
-        public Task Close()
-        {
-            return Close(default);
-        }
-
-        public async Task Close(bool value)
+        public async Task Close()
         {
             if (await CanClose())
-                CloseRequested?.Invoke(this, value);
+                Close(default);
+        }
+
+        public void Close(TResult? value)
+        {
+            CloseRequested?.Invoke(this, value);
         }
     }
 }

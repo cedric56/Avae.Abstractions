@@ -2,7 +2,7 @@
 
 namespace Example.ViewModels
 {
-    internal class FormPage2ViewModel : CloseableViewModelBase<bool>
+    internal class FormPage2ViewModel() : IViewModelBase
     {
         public string Title => "Welcome to page 2";
     }

@@ -33,26 +33,22 @@ namespace Avae.Abstractions
             return service;
         }
 
-        public static T GetViewModel<T>(params object[] parameters) where T : class, IViewModelBase
+        public static T GetViewModel<T>(params IParameter[] parameters) where T : class, IViewModelBase
         {
-            return GetViewModel<T>(typeof(T), parameters);
+            return (T)GetViewModel(typeof(T), parameters);
         }
 
-        public static TBaseType GetViewModel<TBaseType>(Type viewModelType, params object[] parameters) where TBaseType : class, IViewModelBase
+        public static IViewModelBase GetViewModel(Type viewModelType, params IParameter[] parameters)
         {
-            var type = typeof(ViewModelBaseFactory<>).MakeGenericType(viewModelType);
+            var type = typeof(ViewModelFactory<>).MakeGenericType(viewModelType);
             var factory = GetService(type) as IViewModelBaseFactory;
-
-            type = typeof(SingletonFactory<>).MakeGenericType(viewModelType);
-            factory ??= GetService(type) as IViewModelBaseFactory;
-
             if (factory != null)
             {
-                var viewModel = factory.Create(viewModelType, parameters);
-                if (viewModel is TBaseType vm)
+                var viewModel = factory.Create(viewModelType, parameters.OfType<ViewModelParameter>().ToArray());
+                if (viewModel is not null)
                 {
-                    Services.Add(vm);
-                    return vm;
+                    Services.Add(viewModel);
+                    return viewModel;
                 }
                 throw new InvalidOperationException($"Unable to create {viewModelType.Name}.  Ensure that it is registered with the service provider.");
             }
@@ -62,7 +58,7 @@ namespace Avae.Abstractions
                 throw new InvalidOperationException("You must register a factory for view models with parameters.");
             }
 
-            var service = GetService(viewModelType) as TBaseType;
+            var service = GetService(viewModelType) as IViewModelBase;
             if (service != null)
             {
                 Services.Add(service);

@@ -1,7 +1,8 @@
-﻿using Avae.Abstractions;
+﻿using Autofac;
+using Autofac.Core;
+using Avae.Abstractions;
 using Avae.Implementations;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 
 using Example.ViewModels;
@@ -9,6 +10,8 @@ using Example.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Example;
 
@@ -28,9 +31,16 @@ public partial class App : AvaeApplication, IIocConfiguration
     {        
         container.Register<HomeView>();
         container.Register<MenuView>();
-        container.Register<FormView>();
-        container.Register<FormPage1View>();
+        container.Register<FormViewModel>(new ViewFactory(parameters =>
+        {
+            if(parameters.OfType<FactoryParameter<string>>().Any(p => p.Value == "Page"))
+            {
+                return new FormPage1View();
+            }
+            return new FormView();
+        }));
         container.Register<FormPage2View>();
+        container.Register<FormPage3View>();
         container.Register<ModalWindow>();
     }
 
@@ -41,10 +51,10 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<Router>();
         services.AddSingleton<HomeViewModel>();
         services.AddSingleton<MenuViewModel>();
-        services.AddTransient<ViewModelBaseFactory<FormViewModel>>();
-        services.AddTransient<FormPage1ViewModel>();
+        services.AddTransient<ViewModelFactory<FormViewModel>>();        
         services.AddTransient<FormPage2ViewModel>();
-        services.AddTransient<ViewModels.ModalViewModel>();
+        services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
+        services.AddTransient<ModalViewModel>();        
     }
 
     public override void Initialize()

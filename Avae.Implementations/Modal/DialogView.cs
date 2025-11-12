@@ -17,7 +17,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
     protected virtual string Title { get; } = string.Empty;
     protected virtual string Buttons { get; } = "Ok";
     protected virtual string Icon { get; } = "";
-    protected TViewModel? ViewModel { get { return DataContext as TViewModel ?? default; } }
+    protected TViewModel? ViewModel { get { return DataContext as TViewModel; } }
     protected virtual bool IsStandard { get; } = true;
 
     private ContentDialogParams CreateContentDialogParams(ModalParameters<TViewModel, TResult> parameters)
@@ -86,12 +86,12 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
         else
         {
             var modalViewModel = new ModalViewModel<TViewModel, TResult>(modalParams, viewModel);
-            var box = new ModalView<TViewModel, TResult>(modalViewModel);
-            var modal = new MsBox<ModalView<TViewModel, TResult>, ModalViewModel<TViewModel, TResult>, TResult>(box, modalViewModel);
+            var modalView = new ModalView<TViewModel, TResult>(modalViewModel);
+            var box = new MsBox<ModalView<TViewModel, TResult>, ModalViewModel<TViewModel, TResult>, TResult>(modalView, modalViewModel);
             if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
-                result = await modal.ShowWindowDialogAsync((Window)TopLevelStateManager.GetActive());
+                result = await box.ShowWindowDialogAsync((Window)TopLevelStateManager.GetActive());
             else
-                result = await modal.ShowAsync();
+                result = await box.ShowAsync();
         }
 
         await OnValidate(result);
