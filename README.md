@@ -1,1 +1,1 @@
-Yet another mvvm framework
+Yet another navigation framework
