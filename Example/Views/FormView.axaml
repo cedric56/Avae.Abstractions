@@ -18,7 +18,7 @@
 						<ListBox
 							ItemsSource="{Binding Pages}"
 							SelectedItem="{Binding SelectedPage}"
-							behavior:PointerWheelChangedBehavior.Command="{Binding OnScrollChanged}">
+						>
 							<ListBox.Styles>
 								<Style Selector="ListBoxItem">
 									<Setter Property="Padding" Value="10" />

@@ -37,8 +37,7 @@
 						<ListBox
 							x:Name="MenuItemsListBox"
 							ItemsSource="{Binding Pages}"
-							SelectedItem="{Binding SelectedPage}"
-							behavior:PointerWheelChangedBehavior.Command="{Binding OnScrollChanged}">
+							SelectedItem="{Binding SelectedPage}">
 							<ListBox.Styles>
 								<Style Selector="ListBoxItem">
 									<Setter Property="Padding" Value="10" />
