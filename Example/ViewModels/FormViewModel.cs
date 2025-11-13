@@ -37,10 +37,20 @@ namespace Example.ViewModels
                     new PageViewModelBase<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),
                     new PageViewModelBase<FormPage3ViewModel>("Page Three", "fa-solid fa-gear")
                     {
-                         ViewParameters = [Person.ForView()]
+                        //Possibility to set parameters on ctor
+                         //ViewParameters = [Person.ForView()]
                     }
                 };
             }
+        }
+
+        protected override IContextFor GoTo(PageViewModelBase value)
+        {
+            //Possibility to set parameters on call
+            if(value?.ViewModelType == typeof(FormPage3ViewModel))
+                value.ViewParameters = [Person.ForView()];
+
+            return base.GoTo(value);
         }
 
         public string Error => Person.Error;
