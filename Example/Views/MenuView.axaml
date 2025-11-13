@@ -20,8 +20,8 @@
 			  <ListBox.ItemTemplate>
 				  <DataTemplate>
                       <StackPanel Orientation="Horizontal">
-					    <TextBlock Text="{Binding FirstName}"/>
-                          <TextBlock Text="{Binding LastName}"/>
+					    <TextBlock Text="{Binding FirstName}" />
+                          <TextBlock Text="{Binding LastName}" Margin="10,0,0,0"/>
                         </StackPanel>
                   </DataTemplate>
               </ListBox.ItemTemplate>

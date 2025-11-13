@@ -62,13 +62,16 @@ internal class ModalParameters<T, TResult> : ModalParameters
         ShowInCenter = true;
         Topmost = true;
 
-        try
+        if (!string.IsNullOrWhiteSpace(icon))
         {
-            WindowIcon = new WindowIcon(AssetLoader.Open(new Uri(icon)));
-        }
-        catch
-        {
+            try
+            {
+                WindowIcon = new WindowIcon(AssetLoader.Open(new Uri(icon)));
+            }
+            catch
+            {
 
+            }
         }
     }
 }

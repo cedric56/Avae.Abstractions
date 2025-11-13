@@ -6,11 +6,11 @@
              x:Class="Example.FormPage1View">
     <Grid RowDefinitions="Auto, Auto">
 		<Grid ColumnDefinitions="Auto,*" Grid.Row="0">
-			<TextBlock VerticalAlignment="Center" Text="First name" />
-            <TextBox Text="{Binding Person.FirstName}" Grid.Column="1"/>
+			<TextBlock Text="First name" />
+            <TextBox x:Name="tb" Text="{Binding Person.FirstName}" Grid.Column="1"/>
         </Grid>
         <Grid ColumnDefinitions="Auto,*" Grid.Row="1">
-			<TextBlock VerticalAlignment="Center" Text="Last name" />
+			<TextBlock Text="Last name" />
             <TextBox Text="{Binding Person.LastName}" Grid.Column="1"/>
         </Grid>
     </Grid>
