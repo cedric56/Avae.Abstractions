@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using Avae.Abstractions.Commands;
+using System.Windows.Input;
 
 namespace Avae.Abstractions
 {
@@ -16,16 +17,24 @@ namespace Avae.Abstractions
 
         protected virtual Task<bool> CanClose() => Task.FromResult(true);
 
-        [RelayCommand]
-        public async Task Close()
+        private ICommand? closeCommand;
+
+        public ICommand CloseCommand
         {
-            if (await CanClose())
-                Close(default);
+            get
+            {
+                return closeCommand ?? (closeCommand = new AsyncRelayCommand(async () =>
+                {
+                    if (await CanClose())
+                        await Close(default);
+                }));
+            }
         }
 
-        public void Close(TResult? value)
+        public Task Close(TResult? value)
         {
             CloseRequested?.Invoke(this, value);
+            return Task.CompletedTask;
         }
     }
 }

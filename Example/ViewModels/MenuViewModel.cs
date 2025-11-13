@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace Example.ViewModels
 {
+    [ObservableObject]
     internal partial class MenuViewModel(Router router) : PagesViewModelBase(router, false), IViewModelBase
     {
         public ObservableCollection<Person> Persons { get; set; } = new();
@@ -74,6 +75,11 @@ namespace Example.ViewModels
             };
 
             CurrentPage = _router.GoTo(viewModel);            
+        }
+
+        protected override void NotifyPropertyChanged(string propertyName)
+        {
+            OnPropertyChanged(propertyName);
         }
     }
 }

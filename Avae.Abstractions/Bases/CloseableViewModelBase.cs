@@ -1,5 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+﻿using Avae.Abstractions.Commands;
+using System.Windows.Input;
 
 namespace Avae.Abstractions
 {
@@ -9,14 +9,18 @@ namespace Avae.Abstractions
         public int Index { get; } = index;
     }
 
-    public partial class CloseableViewModelBase<TResult> : ObservableObject, ICloseableViewModel<TResult>
+    public partial class CloseableViewModelBase<TResult> : ICloseableViewModel<TResult>
     {
         public event EventHandler<TResult?>? CloseRequested;
 
-        [RelayCommand]
-        public async Task Close()
+        private ICommand? closeCommand;
+
+        public ICommand CloseCommand
         {
-            await Close(default);
+            get
+            {
+                return closeCommand ?? (closeCommand = new AsyncRelayCommand(() => Close(default)));
+            }
         }
 
         public Task Close(TResult? value)

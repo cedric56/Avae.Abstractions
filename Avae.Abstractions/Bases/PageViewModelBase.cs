@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Avae.Abstractions
 {
@@ -8,7 +8,7 @@ namespace Avae.Abstractions
     /// <param name="viewModelType"></param>
     /// <param name="displayName"></param>
     /// <param name="icon"></param>
-    public class PageViewModelBase(Type viewModelType, string displayName, string icon) : ObservableObject, IViewModelBase
+    public class PageViewModelBase(Type viewModelType, string displayName, string icon) : IViewModelBase
     {
         public IViewModelBase? ViewModel { get; protected set; }
         public Type ViewModelType { get; } = viewModelType;
@@ -30,9 +30,11 @@ namespace Avae.Abstractions
                 return parameters.ToArray();
             }
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 
-    public class PageViewModelBase<T> : PageViewModelBase, IViewModelBase where T : IViewModelBase
+    public class PageViewModelBase<T> : PageViewModelBase where T : IViewModelBase
     {
         public PageViewModelBase(string displayName, string icon)
             : base(typeof(T), displayName, icon)

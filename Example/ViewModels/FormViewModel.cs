@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
 using System.Collections.ObjectModel;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Example.ViewModels
 {
+    [ObservableObject]
     internal partial class FormViewModel(Router router, Person person) : FormViewModelBase<Person>(router)
     {
         public Person Person { get; } = person;
@@ -41,6 +43,11 @@ namespace Example.ViewModels
         protected override Task<bool> CanClose()
         {
             return DialogWrapper.ShowYesNoAsync("Are you sure you want to close ?", "Question"); 
+        }
+
+        protected override void NotifyPropertyChanged(string propertyName)
+        {
+            OnPropertyChanged(propertyName);
         }
     }
 }

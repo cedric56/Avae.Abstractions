@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace Example.ViewModels;
 
+[ObservableObject]
 public partial class MainViewModel(Router router) : PagesViewModelBase(router)
 {
     [ObservableProperty]
@@ -14,6 +15,11 @@ public partial class MainViewModel(Router router) : PagesViewModelBase(router)
     private void TriggerMenuPane()
     {
         IsMenuPaneOpen = !IsMenuPaneOpen;
+    }
+
+    protected override void NotifyPropertyChanged(string propertyName)
+    {
+        OnPropertyChanged(propertyName);
     }
 
     public override ObservableCollection<PageViewModelBase> Pages

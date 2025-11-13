@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Example.ViewModels
 {
+    [ObservableObject]
     public partial class ModalViewModel : CloseableViewModelBase<string>, IDataErrorInfo
     {
         private string? _text;

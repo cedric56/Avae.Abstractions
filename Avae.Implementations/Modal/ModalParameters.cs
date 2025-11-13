@@ -1,7 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avalonia.Controls;
 using Avalonia.Platform;
-using CommunityToolkit.Mvvm.Input;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Models;
 using System.Windows.Input;
@@ -28,7 +27,7 @@ internal class ModalParameters<T, TResult> : ModalParameters
     public ModalParameters(string icon, string buttons, T viewModel)
     {
         var type = typeof(T);
-        var commands = type.GetProperties().Where(m => m.PropertyType == typeof(ICommand) || m.PropertyType == typeof(IAsyncRelayCommand) || m.PropertyType == typeof(RelayCommand)).ToList();
+        var commands = type.GetProperties().Where(m => typeof(ICommand).IsAssignableFrom(m.PropertyType)).ToList();
         var prop = commands.FirstOrDefault(c => c.Name == "CloseCommand");
         var closeCommand = prop?.GetValue(viewModel) as ICommand;
         var indexes = type.GetMethods().Where(m => m.CustomAttributes.Any(c => c.AttributeType == typeof(CloseableAttribute))).ToList();
@@ -40,8 +39,8 @@ internal class ModalParameters<T, TResult> : ModalParameters
             var attr = indexes.FirstOrDefault(a => indexes.IndexOf(a) == index);
             if (attr != null)
             {
-                prop = commands.ElementAt(index);
-                closeCommand = prop.GetValue(viewModel) as ICommand;
+                prop = commands.Count() > index ? commands.ElementAt(index) : commands.LastOrDefault();
+                closeCommand = prop?.GetValue(viewModel) as ICommand;
             }
 
             var bd = new ModalButton

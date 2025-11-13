@@ -2,6 +2,6 @@
 
 
 public interface ICloseableViewModel<TResult> : IViewModelBase
-{
-    public event EventHandler<TResult?>? CloseRequested;
+{    
+    event EventHandler<TResult?>? CloseRequested;
 }

@@ -1,6 +1,4 @@
 ﻿#nullable disable
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
 namespace Avae.Abstractions
@@ -8,8 +6,10 @@ namespace Avae.Abstractions
     /// <summary>
     /// This class is used to manage the pages in the application.
     /// </summary>
-    public abstract partial class PagesViewModelBase : ObservableObject, IViewModelBase
+    public abstract partial class PagesViewModelBase : IViewModelBase
     {
+        protected abstract void NotifyPropertyChanged(string propertyName);
+
         /// <summary>
         /// A dictionary to store the context for each page.
         /// </summary>
@@ -18,14 +18,31 @@ namespace Avae.Abstractions
         /// <summary>
         /// The currently selected page in the menu.
         /// </summary>
-        [ObservableProperty]
         private IContextFor _currentPage = null!;
+        public IContextFor CurrentPage 
+        { 
+            get { return _currentPage; } 
+            set 
+            { 
+                _currentPage = value;
+                NotifyPropertyChanged(nameof(CurrentPage)); 
+            } 
+        }
 
         /// <summary>
         /// The currently selected page in the menu.
         /// </summary>
-        [ObservableProperty]
         private PageViewModelBase _selectedPage;
+        public PageViewModelBase SelectedPage
+        {
+            get { return _selectedPage; }
+            set
+            {
+                _selectedPage = value;
+                OnSelectedPageChanged(value);
+                NotifyPropertyChanged(nameof(SelectedPage));
+            }
+        }
 
         /// <summary>
         /// The router used to navigate between pages.
@@ -55,7 +72,7 @@ namespace Avae.Abstractions
         /// This method is called when the selected page changes.
         /// </summary>
         /// <param name="value"></param>
-        partial void OnSelectedPageChanged(PageViewModelBase value)
+        protected void OnSelectedPageChanged(PageViewModelBase value)
         {
             if (value == null)
                 return;
@@ -83,26 +100,6 @@ namespace Avae.Abstractions
             }
 
             return contextFor;
-        }
-
-        /// <summary>
-        /// This method is called when the user scrolls the menu.
-        /// </summary>
-        /// <param name="delta"></param>
-        [RelayCommand]
-        public void OnScrollChanged(object delta)
-        {
-            if (delta is ValueTuple<double, double> tuple)
-            {
-                var index = (int)tuple.Item2;
-
-                if (index < 0)
-                    index = 0;
-                else if (index >= Pages.Count)
-                    index = Pages.Count - 1;
-
-                SelectedPage = Pages[index];
-            }
         }
     }
 }
