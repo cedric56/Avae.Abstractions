@@ -10,20 +10,21 @@
   </ItemGroup>
 
   <ItemGroup>    
-    <PackageReference Include="Autofac" Version="8.4.0" />    
     <PackageReference Include="Avalonia" Version="11.3.7" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.7" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.7" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />    
     <PackageReference Include="Projektanker.Icons.Avalonia" Version="9.6.1" />
     <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="9.6.1" />
+
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
-    <!--OutputItemType="Analyzer" ReferenceOutputAssembly="false" -->
+    <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />
+    <ProjectReference Include="..\Avae.Generator\Avae.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Avae.Implementations\Avae.Implementations.csproj" />
   </ItemGroup>
 </Project>

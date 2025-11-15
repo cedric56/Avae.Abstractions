@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Example.HomeView">
-    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" >
-  <TextBlock Text="{Binding Title}" />
-        <Button Content="Modal" Command="{Binding ShowModal}"/>
-        </StackPanel>
+    <Grid RowDefinitions="Auto,*">
+        <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Button Content="Modal" Command="{Binding ShowModal}" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1"/>	
+    </Grid>
+    
 </UserControl>

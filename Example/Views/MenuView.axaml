@@ -11,10 +11,13 @@
     <Grid>
         <TransitioningContentControl Content="{Binding CurrentPage}"/>    
         <Grid RowDefinitions="Auto, *" IsVisible="{Binding CurrentPage, Converter={StaticResource NullConverter}}">
-            <Grid ColumnDefinitions="Auto,Auto,Auto" HorizontalAlignment="Right" >
-                <Button Content="Add" Command="{Binding AddCommand}"/>
-                <Button Content="Update" Command="{Binding UpdateCommand}" Grid.Column="1"/>
-                <Button Content="Remove" Command="{Binding RemoveCommand}" Grid.Column="2"/>
+            <Grid>
+                <TextBlock Text="{Binding Title}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Grid ColumnDefinitions="Auto,Auto,Auto" HorizontalAlignment="Right" >
+                    <Button Content="Add" Command="{Binding AddCommand}"/>
+                    <Button Content="Update" Command="{Binding UpdateCommand}" Grid.Column="1"/>
+                    <Button Content="Remove" Command="{Binding RemoveCommand}" Grid.Column="2"/>
+                </Grid>
             </Grid>
           <ListBox Grid.Row="1" ItemsSource="{Binding Persons}" SelectedItem="{Binding SelectedPerson}">
 			  <ListBox.ItemTemplate>

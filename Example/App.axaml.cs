@@ -1,16 +1,18 @@
-﻿using Autofac;
-using Autofac.Core;
-using Avae.Abstractions;
+﻿using Avae.Abstractions;
+using Avae.DAL;
 using Avae.Implementations;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-
+using Example.Dal;
 using Example.ViewModels;
 using Example.Views;
+using Microsoft.Data.SqlClient;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
-using System.Collections.Generic;
+using System;
+using System.Data.Common;
 using System.Linq;
 
 namespace Example;
@@ -25,7 +27,7 @@ public partial class App : AvaeApplication, IIocConfiguration
 
     public override string IconUrl => "avares://Example/Assets/avalonia-logo.ico";
 
-    public override bool IsStandard => true;
+    public override eTypeDialog TypeDialog => eTypeDialog.Box;
 
     public override void Configure(IIocContainer container)
     {        
@@ -54,7 +56,10 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<ViewModelFactory<FormViewModel>>();        
         services.AddTransient<FormPage2ViewModel>();
         services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
-        services.AddTransient<ModalViewModel>();        
+        services.AddTransient<ModalViewModel>();
+
+        services.AddTransient< DbConnection>(_ => new SqliteConnection("Data Source=data.db;Foreign Keys=True"));
+        services.AddSingleton<IDataAccessLayer, DBBase>();
     }
 
     public override void Initialize()
@@ -62,8 +67,58 @@ public partial class App : AvaeApplication, IIocConfiguration
         AvaloniaXamlLoader.Load(this);
     }
 
+    private string GetCommandText(DbConnection connection)
+    {
+        if(connection is SqliteConnection sqlite)
+        {
+            return @"
+            CREATE TABLE IF NOT EXISTS Person(
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                FirstName TEXT,
+                LastName TEXT
+            );
+
+            CREATE TABLE IF NOT EXISTS Contact(
+                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            IdPerson INTEGER  NOT NULL,
+                            IdContact INTEGER  NOT NULL,
+                            CONSTRAINT FK_Contact_Person FOREIGN KEY(IdPerson) REFERENCES Person(Id),
+                            CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY(IdContact) REFERENCES Person(Id)
+                        );
+            ";
+        }
+        else if(connection is SqlConnection sqlServer)
+        {
+            return @"CREATE TABLE IF NOT EXISTS Person (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+                        FirstName NVARCHAR(255) NULL,
+                        LastName NVARCHAR(255) NULL,
+                        Photo VARBINARY(MAX) NULL
+                    );
+
+                    CREATE TABLE IF NOT EXISTS Contact (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+                        IdPerson INT NOT NULL,
+                        IdContact INT NOT NULL,
+                        CONSTRAINT FK_Contact_Person FOREIGN KEY (IdPerson) REFERENCES Person(Id),
+                        CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY (IdContact) REFERENCES Person(Id)
+                    );";
+        }
+
+        throw new NotImplementedException();
+    }
+
     public override void OnFrameworkInitializationCompleted()
     {
+        base.OnFrameworkInitializationCompleted();
+
+        using var connection = SimpleProvider.GetService<DbConnection>();
+        connection.Open();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = GetCommandText(connection);
+        cmd.ExecuteNonQuery();
+
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT
         //BindingPlugins.DataValidators.RemoveAt(0);
@@ -75,7 +130,14 @@ public partial class App : AvaeApplication, IIocConfiguration
                 DataContext = new MainViewModel(new Router())
             };
         }
+        else if(ApplicationLifetime is ISingleViewApplicationLifetime singleView)
+        {
+            singleView.MainView = new MainView()
+            {
+                DataContext = new MainViewModel(new Router())
+            };
+        }
 
-        base.OnFrameworkInitializationCompleted();
+        
     }
 }

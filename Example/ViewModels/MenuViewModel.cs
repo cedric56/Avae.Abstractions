@@ -1,16 +1,20 @@
 ﻿using Avae.Abstractions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Example.Dal;
 using Example.Models;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace Example.ViewModels
 {
     [ObservableObject]
     internal partial class MenuViewModel(Router router) : PagesViewModelBase(router, false), IViewModelBase
     {
-        public ObservableCollection<Person> Persons { get; set; } = new();
+        public string Title { get; set; } = "Persons";
+
+        public ObservableCollection<Person> Persons { get; set; } = new(DBBase.Instance.GetAll<Person>());
 
         [ObservableProperty]
         private Person? _selectedPerson = null;
@@ -47,10 +51,14 @@ namespace Example.ViewModels
             });
         }
 
-        [RelayCommand(CanExecute=nameof(CanExecute))]
-        public void Remove()
+        [RelayCommand(CanExecute = nameof(CanExecute))]
+        public async Task Remove()
         {
-            Persons.Remove(SelectedPerson!);
+            var result = await SelectedPerson!.RemoveAsync();
+            if (!result.Success)
+                await DialogWrapper.ShowOkAsync(result.Exception, "Error");
+            else
+                Persons.Remove(SelectedPerson);
         }
 
         private bool CanExecute()
@@ -68,7 +76,7 @@ namespace Example.ViewModels
                 viewModel.CloseRequested -= closeRequested;
                 if (e is not null)
                 {
-                    action(e);
+                    action(e);                    
                 }
 
                 CurrentPage = null!;

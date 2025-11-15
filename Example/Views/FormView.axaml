@@ -15,7 +15,8 @@
 					<StackPanel
 					   Spacing="5"
 					   Margin="5" >
-						<ListBox
+						
+						<ListBox Margin="5"
 							ItemsSource="{Binding Pages}"
 							SelectedItem="{Binding SelectedPage}"
 						>

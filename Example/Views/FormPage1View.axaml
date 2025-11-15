@@ -4,14 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Example.FormPage1View">
-    <Grid RowDefinitions="Auto, Auto">
+    <Grid RowDefinitions="Auto, Auto, Auto, *">
 		<Grid ColumnDefinitions="Auto,*" Grid.Row="0">
-			<TextBlock Text="First name" />
+			<TextBlock VerticalAlignment="Center" Text="First name" />
             <TextBox x:Name="tb" Text="{Binding Person.FirstName}" Grid.Column="1"/>
         </Grid>
         <Grid ColumnDefinitions="Auto,*" Grid.Row="1">
-			<TextBlock Text="Last name" />
+			<TextBlock VerticalAlignment="Center" Text="Last name" />
             <TextBox Text="{Binding Person.LastName}" Grid.Column="1"/>
         </Grid>
+        <TextBlock Text="Contacts" Grid.Row="2" HorizontalAlignment="Center"/>
+        <ListBox Grid.Row="3" ItemsSource="{Binding Persons}" Margin="5"
+             SelectionMode="Multiple" SelectedItems="{Binding SelectedItems}">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="100"/>
+              <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{Binding FirstName}"/>
+            <TextBlock Text="{Binding LastName}" Grid.Column="1"/>
+          </Grid>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
     </Grid>
 </UserControl>

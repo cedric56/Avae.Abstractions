@@ -17,8 +17,11 @@ namespace Avae.Implementations
             {
                 viewModel.ViewModel.CloseRequested -= closeRequested;
                 SetButtonResult(e);
-                var window = this.Parent as Window;
-                window?.Close();
+
+                if (this.Parent is Window window)
+                    window.Close();
+                else
+                    Close();
             };
         }
 

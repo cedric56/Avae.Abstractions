@@ -1,13 +1,29 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
-namespace Avae.Abstractions
+namespace Avae.Generator
 {
     [Generator]
     public class RouterGenerator : IIncrementalGenerator
     {
+        private class GoToData : AttributeData
+        {
+            protected override INamedTypeSymbol? CommonAttributeClass => throw new NotImplementedException();
+
+            protected override IMethodSymbol? CommonAttributeConstructor => throw new NotImplementedException();
+
+            protected override SyntaxReference? CommonApplicationSyntaxReference => throw new NotImplementedException();
+
+            protected override System.Collections.Immutable.ImmutableArray<TypedConstant> CommonConstructorArguments => throw new NotImplementedException();
+
+            protected override System.Collections.Immutable.ImmutableArray<KeyValuePair<string, TypedConstant>> CommonNamedArguments => throw new NotImplementedException();
+        }
+
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             // Collect all class declarations
@@ -34,8 +50,10 @@ namespace Avae.Abstractions
                 foreach (var classDecl in classes)
                 {
                     var model = compilation.GetSemanticModel(classDecl.SyntaxTree);
+                    var gotoData = new GoToData();
                     if (model.GetDeclaredSymbol(classDecl) is INamedTypeSymbol typeSymbol &&
-                        typeSymbol.AllInterfaces.Contains(viewModelBaseSymbol))
+                        typeSymbol.AllInterfaces.Contains(viewModelBaseSymbol) &&
+                        typeSymbol.GetAttributes().Contains(gotoData))
                     {
                         viewModels.Add(typeSymbol);
                     }

@@ -8,5 +8,6 @@
         x:Class="Example.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="Example">
+    <!---->
         <views:MainView />
 </Window>

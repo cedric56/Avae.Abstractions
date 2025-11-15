@@ -7,10 +7,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Avae.Implementations
 {
+    public enum eTypeDialog
+    {
+        Fluent,
+        Box
+    }
+
     public abstract class AvaeApplication : Application, IIocConfiguration
     {
         public abstract string IconUrl { get; }
-        public abstract bool IsStandard {  get; }
+        public abstract eTypeDialog TypeDialog {  get; }
 
         public AvaeApplication()
         {
@@ -29,8 +35,7 @@ namespace Avae.Implementations
             services.AddSingleton<IIocConfiguration>(this);
             services.AddSingleton<IDialogService>(provider =>
             {
-                return IsStandard ? new DialogService(IconUrl)
-                : new ContentDialogService();
+                return TypeDialog== eTypeDialog.Box ? new DialogService(IconUrl) : new ContentDialogService();
             });
             services.AddSingleton<IContentDialogService, ContentDialogService>();
             services.AddSingleton<ITaskDialogService, TaskDialogService>();

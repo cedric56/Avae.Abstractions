@@ -5,8 +5,5 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Example.ModalWindow"
         Width="200" Height="80">
-    <Grid>
-	<TextBox Text="{Binding Text}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>    
-    </Grid>
-  
+    <TextBox Text="{Binding Text}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>      
 </UserControl>

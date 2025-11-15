@@ -30,8 +30,6 @@ namespace Avae.Abstractions
                 return parameters.ToArray();
             }
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
     }
 
     public class PageViewModelBase<T> : PageViewModelBase where T : IViewModelBase
