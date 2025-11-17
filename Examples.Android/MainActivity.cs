@@ -1,6 +1,6 @@
 ﻿using Android.App;
 using Android.Content.PM;
-
+using Avae.Implementations;
 using Avalonia;
 using Avalonia.Android;
 using Example;
@@ -19,5 +19,13 @@ public class MainActivity : AvaloniaMainActivity<App>
     {
         return base.CustomizeAppBuilder(builder)
             .WithInterFont();
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        if (Avalonia.Application.Current is AvaeApplication app)
+            app.Dispose();
     }
 }

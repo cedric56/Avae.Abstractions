@@ -85,15 +85,5 @@ namespace Avae.DAL
             using var db = SimpleProvider.GetService<DbConnection>();
             return db.Query<T>(sql, parameters);
         }
-
-        //public Task<Result> DbTransSave(IDbModelBase modelBase)
-        //{
-        //    return modelBase.DbTransSave(this);
-        //}
-
-        //public Task<Result> DbTransRemove(IDbModelBase modelBase)
-        //{
-        //    return modelBase.DbTransRemove(this);
-        //}
     }
 }

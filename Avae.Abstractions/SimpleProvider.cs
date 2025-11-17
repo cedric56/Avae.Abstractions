@@ -6,7 +6,6 @@ namespace Avae.Abstractions
     public static class SimpleProvider
     {
         static IServiceProvider provider;
-        public static List<object> Services = new List<object>();
 
         public static IServiceProvider Default => provider;
 
@@ -19,18 +18,14 @@ namespace Avae.Abstractions
         {
             if (provider == null)
                 throw new Exception("The service provider has not been configured. Call DefaultProvider.ConfigureServices at application startup.");
-            var service = provider.GetService(serviceType);
-            Services.Add(service);
-            return service;
+            return provider.GetService(serviceType);
         }
 
         public static T GetService<T>()
         {
             if (provider == null)
                 throw new Exception("The service provider has not been configured. Call DefaultProvider.ConfigureServices at application startup.");
-            var service = provider.GetService<T>();
-            Services.Add(service);
-            return service;
+            return provider.GetService<T>();
         }
 
         public static T GetViewModel<T>(params IParameter[] parameters) where T : class, IViewModelBase
@@ -47,7 +42,6 @@ namespace Avae.Abstractions
                 var viewModel = factory.Create(viewModelType, parameters.OfType<ViewModelParameter>().ToArray());
                 if (viewModel is not null)
                 {
-                    Services.Add(viewModel);
                     return viewModel;
                 }
                 throw new InvalidOperationException($"Unable to create {viewModelType.Name}.  Ensure that it is registered with the service provider.");
@@ -61,7 +55,6 @@ namespace Avae.Abstractions
             var service = GetService(viewModelType) as IViewModelBase;
             if (service != null)
             {
-                Services.Add(service);
                 return service;
             }
 

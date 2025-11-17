@@ -213,17 +213,5 @@ namespace Avae.Abstractions
 
             RegisterFactory(key, new ViewFactory(action));
         }
-
-        public static IEnumerable<IDisposable> GetDisposablesServices()
-        {
-            var services = SimpleProvider.Services;
-            foreach (var service in services)
-            {
-                if (service is IDisposable disposable)
-                {
-                    yield return disposable;
-                }
-            }
-        }
     }
 }

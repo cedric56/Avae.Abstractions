@@ -7,7 +7,6 @@ namespace Avae.DAL
         UnaryResult<byte[]> GetAllAsync(string type);
 
         UnaryResult<byte[]> FindByAnyAsync(string type, object filters);
-
     }
 
     public interface IXmlHttpRequest

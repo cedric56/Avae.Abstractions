@@ -1,5 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Themes.Fluent;
 using FluentAvalonia.Styling;
@@ -13,7 +14,7 @@ namespace Avae.Implementations
         Box
     }
 
-    public abstract class AvaeApplication : Application, IIocConfiguration
+    public abstract class AvaeApplication : Application, IIocConfiguration, IDisposable
     {
         public abstract string IconUrl { get; }
         public abstract eTypeDialog TypeDialog {  get; }
@@ -39,8 +40,6 @@ namespace Avae.Implementations
             });
             services.AddSingleton<IContentDialogService, ContentDialogService>();
             services.AddSingleton<ITaskDialogService, TaskDialogService>();
-
-            
         }
 
         public void Configure(IServiceProvider provider)
@@ -90,6 +89,23 @@ namespace Avae.Implementations
             });
             Styles.Add(new FluentTheme());
             Styles.Add(new FluentAvaloniaTheme());
+
+            if(this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime classic)
+                classic.Exit += Classic_Exit;
+        }
+
+        private void Classic_Exit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+        {
+            if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime classic)
+                classic.Exit -= Classic_Exit;
+
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (SimpleProvider.Default is IDisposable disposable)
+                disposable.Dispose();
         }
     }
 }
