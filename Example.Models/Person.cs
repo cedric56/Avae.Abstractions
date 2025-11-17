@@ -1,35 +1,32 @@
 ﻿using Avae.Abstractions;
-using Avae.DAL;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Dapper.Contrib.Extensions;
-using Example.Dal;
-using System;
-using System.Collections.Generic;
+using MemoryPack;
+using MessagePack;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using KeyAttribute = Dapper.Contrib.Extensions.KeyAttribute;
-using TableAttribute = Dapper.Contrib.Extensions.TableAttribute;
+using System.Data.Common;
 
 namespace Example.Models
 {
-    [Table(nameof(Person))]
-    public class Person : ObservableObject, IModelBase, IDataErrorInfo
-    {
-        bool inTransaction = false;
-
+    [Dapper.Contrib.Extensions.Table(nameof(Person))]
+    //[MessagePackObject]
+    [MemoryPackable]
+    [MessagePackObject]
+    [ObservableObject]
+    public partial class Person : DbModelBase, IModelBase, IDataErrorInfo
+    {   
         private IList<Contact>? _contacts;
         private string? _firstName;
         private string? _lastName;
 
-        [Key]
-        //[MessagePackKey(0)]
-        public virtual int Id { get; set; }
+        [Dapper.Contrib.Extensions.Key]
+        [MessagePack.Key(0)]
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "FirstName must be set")]
-        //[MessagePackKey(1)]
-        public virtual string? FirstName
+        [MessagePack.Key(1)]
+        public string? FirstName
         {
             get => _firstName;
             set
@@ -41,7 +38,8 @@ namespace Example.Models
 
         [Required(ErrorMessage = "LastName must be set")]
         //[MessagePackKey(2)]
-        public virtual string? LastName
+        [MessagePack.Key(2)]
+        public string? LastName
         {
             get => _lastName; set
             {
@@ -49,8 +47,9 @@ namespace Example.Models
             }
         }
 
-        [Computed]
-        public virtual IList<Contact> Contacts
+        [Dapper.Contrib.Extensions.Computed]
+        [MessagePack.Key(3)]
+        public IList<Contact> Contacts
         {
             get
             {
@@ -59,7 +58,19 @@ namespace Example.Models
                     if (Id == 0)
                         _contacts = [];
                     else
-                        _contacts = [.. GetContacts(DBBase.Instance)];
+                    {
+                        var contacts = DBBase.Instance.FindByAny<Contact>(new { IdContact = Id });
+                        foreach (var contact in contacts)
+                        {
+                            var person = Repository.Instance.Persons.FirstOrDefault(p => p.Id == contact.IdPerson);
+                            if (person != null)
+                                contact.Person = person;
+
+                            contact.PersonContact = this;
+                        }
+
+                        _contacts = [.. contacts];
+                    }
                 }
                 return _contacts;
             }
@@ -67,84 +78,48 @@ namespace Example.Models
             {
                 _contacts = value;
             }
-        }
-
-        public async Task<IEnumerable<Contact>> GetContactsAsync(IDBBase instance)
-        {
-            return AvoidReadings(await instance.FindContactByAnyAsync(idContact: this.Id));
-        }
-
-        public IEnumerable<Contact> GetContacts(IDBBase instance)
-        {
-            return AvoidReadings(instance.FindContactByAny(idContact: this.Id));
-        }
-
-        private IEnumerable<Contact> AvoidReadings(IEnumerable<Contact> results)
-        {
-            foreach (var contact in results)
-            {
-                if (!inTransaction)
-                {
-                    var person = Repository.Instance.Persons.FirstOrDefault(p => p.Id == contact.IdPerson);
-                    if (person != null)
-                        contact.Person = person;
-                }
-
-                contact.PersonContact = this;
-            }
-            return results;
-        }
-
-        public Task<Result> SaveAsync()
-        {
-            return SavePersonAsync(DBBase.Instance);
-        }
-
-        public Task<Result> RemoveAsync()
-        {
-            return RemovePersonAsync(DBBase.Instance);
-        }
+        }       
         
-        public async Task<Result> SavePersonAsync(IDBBase instance)
+        public override async Task<Result> DbTransSave(IDataAccessLayer instance)
         {
             bool isSuccessful = false;
             string message = string.Empty;
-            using var connection = instance.DbConnection();
-            await instance.OpenAsync(connection);
+            using var connection = SimpleProvider.GetService<DbConnection>();
+            await connection.OpenAsync();
 
-            using (var transaction = instance.BeginTransaction(connection))
+            using (var transaction = connection.BeginTransaction())
             {
                 try
                 {
-                    inTransaction = true;
                     if (Id == 0)
                     {
-                        instance.Insert(this, connection, transaction);
+                        connection.Insert(this, transaction);                        
                     }
                     else
                     {
-                        instance.Update(this, connection, transaction);
+                        connection.Update(this, transaction);
                     }
 
-                    var before = await instance.FindContactByAnyAsync(idContact: Id);
+                    var before = await instance.FindByAnyAsync<Contact>(new { IdContact = Id });
 
                     if (_contacts == null)
                     {
-                        var contacts = await GetContactsAsync(instance);
-                        Contacts = [.. contacts];
+                        //var contacts = await GetContactsAsync(instance);
+                        Contacts = [.. before];
                     }
+
                     foreach (var contact in Contacts)
                     {
                         contact.IdContact = Id;
 
                         if (contact.Id == 0)
-                            instance.Insert(contact, connection, transaction);
+                            connection.Insert(contact, transaction);
                         else
-                            instance.Update(contact, connection, transaction);
+                            connection.Update(contact, transaction);
                     }
 
                     foreach (var contact in before.Where(c => !Contacts.Any(p => p.IdPerson == c.IdPerson)))
-                        instance.Delete(contact, connection, transaction);
+                        connection.Delete(contact, transaction);
 
                     transaction.Commit();
 
@@ -157,7 +132,6 @@ namespace Example.Models
                 }
                 finally
                 {
-                    inTransaction = false;
                     Repository.Instance.SetPersons(null!);
                 }
             }
@@ -169,29 +143,29 @@ namespace Example.Models
             };
         }
 
-        public async Task<Result> RemovePersonAsync(IDBBase instance)
+        public override async Task<Result> DbTransRemove(IDataAccessLayer instance)
         {
             string message = string.Empty;
 
             bool isSuccessful = false;
 
-            using var connection = instance.DbConnection();
-            await instance.OpenAsync(connection);
+            using var connection = SimpleProvider.GetService<DbConnection>();
+            await connection.OpenAsync();
 
-            using (var transaction = instance.BeginTransaction(connection))
+            using (var transaction = connection.BeginTransaction())
             {
                 try
                 {
                     if (_contacts == null)
                     {
-                        var contacts = await GetContactsAsync(instance);
+                        var contacts = await instance.FindByAnyAsync<Contact>(new { IdContact = Id });
                         Contacts = [.. contacts];
                     }
                     foreach (var contact in Contacts)
                     {
-                        instance.Delete(contact, connection, transaction);
+                        connection.Delete(contact, transaction);
                     }
-                    instance.Delete(this, connection, transaction);
+                    connection.Delete(this, transaction);
 
                     transaction.Commit();
 
@@ -226,7 +200,8 @@ namespace Example.Models
             return base.GetHashCode();
         }
 
-        [Computed]
+        [Dapper.Contrib.Extensions.Computed]
+        [MessagePack.IgnoreMember]
         public string Error
         {
             get
@@ -235,7 +210,8 @@ namespace Example.Models
             }
         }
 
-        [Computed]
+        [Dapper.Contrib.Extensions.Computed]
+        [MessagePack.IgnoreMember]
         public string this[string columnName]
         {
             get

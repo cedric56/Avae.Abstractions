@@ -1,7 +1,6 @@
 ﻿using Avae.Abstractions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Example.Dal;
 using Example.Models;
 using System;
 using System.Collections.ObjectModel;
@@ -54,7 +53,7 @@ namespace Example.ViewModels
         [RelayCommand(CanExecute = nameof(CanExecute))]
         public async Task Remove()
         {
-            var result = await SelectedPerson!.RemoveAsync();
+            var result = await DBBase.Instance.DbTransRemove(SelectedPerson);
             if (!result.Success)
                 await DialogWrapper.ShowOkAsync(result.Exception, "Error");
             else

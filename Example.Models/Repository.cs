@@ -1,7 +1,4 @@
-﻿using Example.Dal;
-using System.Collections.Generic;
-
-namespace Example.Models
+﻿namespace Example.Models
 {
     public class Repository
     {

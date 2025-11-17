@@ -71,7 +71,7 @@ namespace Example.ViewModels
                     PersonContact = Person
                 });
 
-                var result = await Person.SaveAsync();
+                var result = await DBBase.Instance.DbTransSave(Person);
                 if (!string.IsNullOrWhiteSpace(result.Exception))
                     await DialogWrapper.ShowOkAsync(result.Exception, "Error");
 

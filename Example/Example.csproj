@@ -3,6 +3,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <MagicOnionClientGenerate>true</MagicOnionClientGenerate>
+    <MagicOnionGenerateMessagePackFormatterAndResolver>true</MagicOnionGenerateMessagePackFormatterAndResolver>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +18,9 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />    
     <PackageReference Include="Projektanker.Icons.Avalonia" Version="9.6.1" />
     <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="9.6.1" />
-
+    <PackageReference Include="MagicOnion.Client" Version="6.1.7" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
+    <PackageReference Include="Grpc.Net.Client.Web" Version="2.71.0" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.7" />
   </ItemGroup>
@@ -26,5 +30,6 @@
     <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />
     <ProjectReference Include="..\Avae.Generator\Avae.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Avae.Implementations\Avae.Implementations.csproj" />
+    <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
   </ItemGroup>
 </Project>

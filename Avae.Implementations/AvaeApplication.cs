@@ -39,6 +39,8 @@ namespace Avae.Implementations
             });
             services.AddSingleton<IContentDialogService, ContentDialogService>();
             services.AddSingleton<ITaskDialogService, TaskDialogService>();
+
+            
         }
 
         public void Configure(IServiceProvider provider)

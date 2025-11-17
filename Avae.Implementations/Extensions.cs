@@ -1,5 +1,5 @@
-﻿using Avalonia.Controls;
-using Avalonia.Platform;
+﻿using Avalonia;
+using Microsoft.Extensions.DependencyInjection;
 using System.Text.RegularExpressions;
 
 namespace Avae.Implementations

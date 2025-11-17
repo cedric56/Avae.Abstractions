@@ -3,9 +3,13 @@ using Avae.DAL;
 using Avae.Implementations;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Example.Dal;
+using Example.Models;
 using Example.ViewModels;
 using Example.Views;
+using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
+using MagicOnion;
+using MagicOnion.Client;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +18,8 @@ using Projektanker.Icons.Avalonia.FontAwesome;
 using System;
 using System.Data.Common;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 
 namespace Example;
 
@@ -50,6 +56,7 @@ public partial class App : AvaeApplication, IIocConfiguration
     {
         base.Configure(services);
 
+        services.AddScoped<IOnionService>(_ => GetMagicOnion<IDbService>());
         services.AddTransient<Router>();
         services.AddSingleton<HomeViewModel>();
         services.AddSingleton<MenuViewModel>();
@@ -58,8 +65,23 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
         services.AddTransient<ModalViewModel>();
 
+        services.AddSingleton<IDbLayer>(_ => new DBOnionLayer());
         services.AddTransient< DbConnection>(_ => new SqliteConnection("Data Source=data.db;Foreign Keys=True"));
-        services.AddSingleton<IDataAccessLayer, DBBase>();
+    }
+
+    private static IGrpc GetMagicOnion<IGrpc>() where IGrpc : IService<IGrpc>
+    {
+        var client = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()))
+        {
+            DefaultRequestVersion = HttpVersion.Version20,
+            Timeout = TimeSpan.FromSeconds(5)
+        };
+        var channel = GrpcChannel.ForAddress(
+            OperatingSystem.IsBrowser() ? "http://localhost:5001": "http://localhost:5000", new GrpcChannelOptions()
+            {
+                HttpClient = client,
+            });
+        return MagicOnionClient.Create<IGrpc>(channel);//, MagicOnionSerializerProvider.Default, Array.Empty<IClientFilter>(), MagicOnionClientFactoryProvider.Default);
     }
 
     public override void Initialize()

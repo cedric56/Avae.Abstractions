@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Browser" Version="11.3.7" />
+    <PackageReference Include="Avalonia.Browser.Blazor" Version="11.3.7" />
   </ItemGroup>
 
   <ItemGroup>

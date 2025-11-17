@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.Browser", "Example
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.iOS", "Examples.iOS\Examples.iOS.csproj", "{99C741DA-DE5E-B6D7-9D7B-D59FFE077AB9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Server", "Example.Server\Example.Server.csproj", "{3AE20FB0-55AE-4DB0-999C-4B3C27829569}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Models", "Example.Models\Example.Models.csproj", "{47303CA2-EDCB-4D94-981D-C1E20B422191}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +71,14 @@ Global
 		{99C741DA-DE5E-B6D7-9D7B-D59FFE077AB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99C741DA-DE5E-B6D7-9D7B-D59FFE077AB9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{99C741DA-DE5E-B6D7-9D7B-D59FFE077AB9}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{3AE20FB0-55AE-4DB0-999C-4B3C27829569}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AE20FB0-55AE-4DB0-999C-4B3C27829569}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AE20FB0-55AE-4DB0-999C-4B3C27829569}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AE20FB0-55AE-4DB0-999C-4B3C27829569}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47303CA2-EDCB-4D94-981D-C1E20B422191}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47303CA2-EDCB-4D94-981D-C1E20B422191}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47303CA2-EDCB-4D94-981D-C1E20B422191}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47303CA2-EDCB-4D94-981D-C1E20B422191}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
