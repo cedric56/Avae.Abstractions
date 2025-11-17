@@ -55,8 +55,7 @@ public partial class App : AvaeApplication, IIocConfiguration
     public override void Configure(IServiceCollection services)
     {
         base.Configure(services);
-
-        services.AddScoped<IOnionService>(_ => GetMagicOnion<IDbService>());
+        
         services.AddTransient<Router>();
         services.AddSingleton<HomeViewModel>();
         services.AddSingleton<MenuViewModel>();
@@ -65,23 +64,8 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
         services.AddTransient<ModalViewModel>();
 
-        services.AddSingleton<IDbLayer>(_ => new DBOnionLayer());
+        services.AddSingleton<IDbLayer>(_ => new DBSqlLayer());
         services.AddTransient< DbConnection>(_ => new SqliteConnection("Data Source=data.db;Foreign Keys=True"));
-    }
-
-    private static IGrpc GetMagicOnion<IGrpc>() where IGrpc : IService<IGrpc>
-    {
-        var client = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()))
-        {
-            DefaultRequestVersion = HttpVersion.Version20,
-            Timeout = TimeSpan.FromSeconds(5)
-        };
-        var channel = GrpcChannel.ForAddress(
-            OperatingSystem.IsBrowser() ? "http://localhost:5001": "http://localhost:5000", new GrpcChannelOptions()
-            {
-                HttpClient = client,
-            });
-        return MagicOnionClient.Create<IGrpc>(channel);//, MagicOnionSerializerProvider.Default, Array.Empty<IClientFilter>(), MagicOnionClientFactoryProvider.Default);
     }
 
     public override void Initialize()

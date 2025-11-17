@@ -1,5 +1,4 @@
-﻿using Avae.Abstractions;
-using Avae.DAL;
+﻿using Avae.DAL;
 using MagicOnion;
 
 namespace Example.Models

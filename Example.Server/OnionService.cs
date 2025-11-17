@@ -1,5 +1,4 @@
-﻿using Avae.Abstractions;
-using Avae.DAL;
+﻿using Avae.DAL;
 using Example.Models;
 using MagicOnion;
 using MagicOnion.Server;
@@ -68,8 +67,6 @@ namespace Example.Server
 
             // Serialize to byte[]
             return MemoryPackSerializer.Serialize(typeof(List<>).MakeGenericType(orginal), result);
-
-            //return MemoryPackSerializer.Serialize(await Layer.GetAllAsync<Person>());
         }
 
         public UnaryResult<byte[]> GetAsync(Type type, int id)
