@@ -36,8 +36,7 @@ namespace Avae.Abstractions
         public static IViewModelBase GetViewModel(Type viewModelType, params IParameter[] parameters)
         {
             var type = typeof(ViewModelFactory<>).MakeGenericType(viewModelType);
-            var factory = GetService(type) as IViewModelBaseFactory;
-            if (factory != null)
+            if (GetService(type) is IViewModelBaseFactory factory)
             {
                 var viewModel = factory.Create(viewModelType, parameters.OfType<ViewModelParameter>().ToArray());
                 if (viewModel is not null)
@@ -52,8 +51,7 @@ namespace Avae.Abstractions
                 throw new InvalidOperationException("You must register a factory for view models with parameters.");
             }
 
-            var service = GetService(viewModelType) as IViewModelBase;
-            if (service != null)
+            if (GetService(viewModelType) is IViewModelBase service)
             {
                 return service;
             }
