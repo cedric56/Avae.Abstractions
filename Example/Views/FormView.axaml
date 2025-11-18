@@ -3,10 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:behavior="using:Example"
-			 			 xmlns:i="https://github.com/projektanker/icons.avalonia"
-
+			 xmlns:i="https://github.com/projektanker/icons.avalonia"
+			 xmlns:c="using:LoadingIndicators.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Example.FormView">		
+			 <Grid>
 			<SplitView DisplayMode="Inline" 
 			  OpenPaneLength="150"
 			  IsPaneOpen="True">
@@ -42,7 +43,7 @@
 					<Grid RowDefinitions="Auto, *, Auto">
 						<TextBlock Grid.Row="0" Text="{Binding Title}" HorizontalAlignment="Center" Grid.Column="1"/>							
 						<Button Content="X" Grid.Row="0" Command="{Binding CloseCommand}" Grid.Column="1" HorizontalAlignment="Right" />
-						<TransitioningContentControl Content="{Binding CurrentPage}" Padding="15" Grid.Row="1" />
+						<TransitioningContentControl Content="{Binding CurrentPage}" Padding="15" Grid.Row="1" />						
 						<StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
 							<Button Content="Validate" Command="{Binding ValidateCommand}" />	
 							<Button Content="Cancel" Command="{Binding CloseCommand}" />	
@@ -50,4 +51,6 @@
 					</Grid>
 				</SplitView.Content>
 			</SplitView>
+			<c:LoadingIndicator Mode="Arcs" IsVisible="{Binding IsBusy}" Height="100" Width="100" />
+		</Grid>
 </UserControl>

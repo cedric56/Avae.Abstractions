@@ -33,6 +33,9 @@ namespace Example.ViewModels
     [GoTo]
     internal partial class FormViewModel(Router router, Person person) : FormViewModelBase<Person>(router), IDataErrorInfo
     {
+        [ObservableProperty]
+        private bool _isBusy = false;
+
         public Person Person { get; } = person;
 
         public List<Person> Persons
@@ -71,7 +74,10 @@ namespace Example.ViewModels
                     PersonContact = Person
                 });
 
+                IsBusy = true;
+                await Task.Delay(2000);
                 var result = await DBBase.Instance.DbTransSave(Person);
+                IsBusy = false;
                 if (!string.IsNullOrWhiteSpace(result.Exception))
                     await DialogWrapper.ShowOkAsync(result.Exception, "Error");
 
