@@ -28,5 +28,10 @@ namespace Avae.Abstractions
             CloseRequested?.Invoke(this, value);
             return Task.CompletedTask;
         }
+
+        public virtual Task OnLaunched()
+        {
+            return Task.CompletedTask;
+        }
     }
 }

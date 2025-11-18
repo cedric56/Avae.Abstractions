@@ -33,6 +33,11 @@ namespace Example.ViewModels
     [GoTo]
     internal partial class FormViewModel(Router router, Person person) : FormViewModelBase<Person>(router), IDataErrorInfo
     {
+        public override async Task OnLaunched()
+        {
+            await Person.LoadContactsAsync();
+        }
+
         [ObservableProperty]
         private bool _isBusy = false;
 
@@ -108,7 +113,7 @@ namespace Example.ViewModels
             }
         }
 
-        protected override IContextFor GoTo(PageViewModelBase value)
+        protected override Task<IContextFor> GoTo(PageViewModelBase value)
         {
             //Possibility to set parameters on call
             if(value?.ViewModelType == typeof(FormPage3ViewModel))

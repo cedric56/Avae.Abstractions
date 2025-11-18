@@ -8,7 +8,6 @@ namespace Avae.DAL
     {
         private static IOnionService Service => SimpleProvider.GetService<IOnionService>();
 
-
         public IEnumerable<T> FindByAny<T>(Dictionary<string, object> filters) where T : class, new()
         {
             return AsyncHelper.RunSync(() => FindByAnyAsync<T>(filters));

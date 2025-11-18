@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 namespace Example.ViewModels
 {
     [ObservableObject]
-    internal partial class MenuViewModel(Router router) : PagesViewModelBase(router, false), IViewModelBase
+    internal partial class MenuViewModel(Router router) : PagesViewModelBase(router, false)
     {
         public string Title { get; set; } = "Persons";
 
         [ObservableProperty]
         private ObservableCollection<Person> _persons = [];
 
-        protected override async Task OnLaunched()
+        public override async Task OnLaunched()
         {
             Persons = new(await DBBase.Instance.GetAllAsync<Person>());
         }
@@ -42,15 +42,15 @@ namespace Example.ViewModels
         }
 
         [RelayCommand]
-        public void Add()
+        public async Task Add()
         {
-            OpenForm(new Person(), Persons.Add);
+            await OpenForm(new Person(), Persons.Add);
         }
 
         [RelayCommand(CanExecute = nameof(CanExecute))]
-        public void Update()
+        public async Task Update()
         {
-            OpenForm(SelectedPerson!, person =>
+            await OpenForm(SelectedPerson!, person =>
             {
                 Persons[Persons.IndexOf(SelectedPerson!)] = person;
             });
@@ -71,7 +71,7 @@ namespace Example.ViewModels
             return SelectedPerson != null;
         }
 
-        public void OpenForm(Person person, Action<Person> action)
+        public async Task OpenForm(Person person, Action<Person> action)
         {
             var viewModel = new FormViewModel(SimpleProvider.GetService<Router>(), person);
 
@@ -87,7 +87,7 @@ namespace Example.ViewModels
                 CurrentPage = null!;
             };
 
-            CurrentPage = _router.GoTo(viewModel);            
+            CurrentPage = await _router.GoTo(viewModel);            
         }
 
         protected override void NotifyPropertyChanged(string propertyName)

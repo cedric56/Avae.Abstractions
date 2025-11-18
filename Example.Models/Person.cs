@@ -62,15 +62,7 @@ namespace Example.Models
                     else
                     {
                         var contacts = DBBase.Instance.FindByAny<Contact>((nameof(Contact.IdContact), Id));
-                        foreach (var contact in contacts)
-                        {
-                            var person = Repository.Instance.Persons.FirstOrDefault(p => p.Id == contact.IdPerson);
-                            if (person != null)
-                                contact.Person = person;
-
-                            contact.PersonContact = this;
-                        }
-
+                        AvoidReadings(contacts);
                         _contacts = [.. contacts];
                     }
                 }
@@ -80,8 +72,35 @@ namespace Example.Models
             {
                 _contacts = value;
             }
-        }       
-        
+        }
+
+        private void AvoidReadings(IEnumerable<Contact> contacts)
+        {
+            foreach (var contact in contacts)
+            {
+                var person = Repository.Instance.Persons
+                    .FirstOrDefault(p => p.Id == contact.IdPerson);
+
+                if (person != null)
+                    contact.Person = person;
+
+                contact.PersonContact = this;
+            }
+        }
+
+        public async Task LoadContactsAsync()
+        {
+            if (_contacts != null || Id == 0)
+                return;
+
+            var contacts = await DBBase.Instance
+                .FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
+
+            AvoidReadings(contacts);
+
+            Contacts = contacts.ToList();
+        }
+
         public override async Task<Result> DbTransSave(IDataAccessLayer instance)
         {
             bool isSuccessful = false;

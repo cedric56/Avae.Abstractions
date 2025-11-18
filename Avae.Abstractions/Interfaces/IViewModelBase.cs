@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Avae.Abstractions;
+﻿namespace Avae.Abstractions;
 
 public interface IViewModelBase
 {

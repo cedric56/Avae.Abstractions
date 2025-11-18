@@ -28,12 +28,12 @@ namespace Avae.Abstractions
             return provider.GetService<T>();
         }
 
-        public static T GetViewModel<T>(params IParameter[] parameters) where T : class, IViewModelBase
+        public static async Task<T> GetViewModel<T>(params IParameter[] parameters) where T : class, IViewModelBase
         {
-            return (T)GetViewModel(typeof(T), parameters);
+            return (T)await GetViewModel(typeof(T), parameters);
         }
 
-        public static IViewModelBase GetViewModel(Type viewModelType, params IParameter[] parameters)
+        public static async Task<IViewModelBase> GetViewModel(Type viewModelType, params IParameter[] parameters)
         {
             var type = typeof(ViewModelFactory<>).MakeGenericType(viewModelType);
             if (GetService(type) is IViewModelBaseFactory factory)
@@ -41,6 +41,7 @@ namespace Avae.Abstractions
                 var viewModel = factory.Create(viewModelType, parameters.OfType<ViewModelParameter>().ToArray());
                 if (viewModel is not null)
                 {
+                    if (viewModel is ViewModelBase viewModelBase) await viewModelBase.OnLaunched();
                     return viewModel;
                 }
                 throw new InvalidOperationException($"Unable to create {viewModelType.Name}.  Ensure that it is registered with the service provider.");
@@ -53,6 +54,7 @@ namespace Avae.Abstractions
 
             if (GetService(viewModelType) is IViewModelBase service)
             {
+                if (service is ViewModelBase viewModelBase) await viewModelBase.OnLaunched();
                 return service;
             }
 

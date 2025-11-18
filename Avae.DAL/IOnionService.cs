@@ -8,6 +8,8 @@ namespace Avae.DAL
 
         UnaryResult<byte[]> FindByAnyAsync(string type, Dictionary<string, object> filters);
 
+        UnaryResult<byte[]> WhereAsync(string type, Dictionary<string, object> filters);
+
         UnaryResult<byte[]> GetAsync(string type, int id);
     }
 

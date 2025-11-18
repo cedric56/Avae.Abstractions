@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using System.Threading.Tasks;
 
 namespace Example.ViewModels
 {

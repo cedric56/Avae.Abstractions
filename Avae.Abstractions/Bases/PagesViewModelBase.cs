@@ -6,7 +6,7 @@ namespace Avae.Abstractions
     /// <summary>
     /// This class is used to manage the pages in the application.
     /// </summary>
-    public abstract partial class PagesViewModelBase : IViewModelBase
+    public abstract partial class PagesViewModelBase : ViewModelBase 
     {
         protected abstract void NotifyPropertyChanged(string propertyName);
 
@@ -53,8 +53,6 @@ namespace Avae.Abstractions
         {
             _router = router;
 
-            Task.Factory.StartNew(OnLaunched);
-
             if (initialize)
             {
                 var page = Pages.FirstOrDefault();
@@ -63,11 +61,6 @@ namespace Avae.Abstractions
                     OnSelectedPageChanged(page);
                 }
             }
-        }
-
-        protected virtual Task OnLaunched()
-        {
-            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -79,7 +72,7 @@ namespace Avae.Abstractions
         /// This method is called when the selected page changes.
         /// </summary>
         /// <param name="value"></param>
-        protected void OnSelectedPageChanged(PageViewModelBase value)
+        protected async void OnSelectedPageChanged(PageViewModelBase value)
         {
             if (value == null)
                 return;
@@ -90,20 +83,20 @@ namespace Avae.Abstractions
             }
             else
             {
-                dico.Add(value, CurrentPage = GoTo(value));
+                dico.Add(value, CurrentPage = await GoTo(value));
             }
         }
 
-        protected virtual IContextFor GoTo(PageViewModelBase value)
+        protected virtual async Task<IContextFor> GoTo(PageViewModelBase value)
         {
             IContextFor contextFor = null;
             if (value.ViewModel != null)
             {
-                contextFor = _router.GoTo(value.ViewModel, value.Parameters);
+                contextFor = await _router.GoTo(value.ViewModel, value.Parameters);
             }
             else
             {
-                contextFor = _router.GoTo(value.ViewModelType, value.Parameters);
+                contextFor = (await _router.GoTo(value.ViewModelType, value.Parameters)).context;
             }
 
             return contextFor;

@@ -17,8 +17,6 @@
         public bool IsFooterExpanded { get; set; }
         public object? Footer { get; set; }
 
-        public object? XamlRoot { get; set; }
-
         /// <summary>
         /// Occurs before the dialog is opened
         /// </summary>

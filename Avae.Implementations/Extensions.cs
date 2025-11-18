@@ -1,6 +1,4 @@
-﻿using Avalonia;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Avae.Implementations
 {
