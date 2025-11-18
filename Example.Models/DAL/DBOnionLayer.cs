@@ -7,12 +7,12 @@ namespace Example.Models
     {
         public IDbService Service = SimpleProvider.GetService<IOnionService>() as IDbService;
 
-        public async Task<Result> DbTransRemove(DbModelBase modelBase)
+        public async Task<Result> DbTransRemove(DBModelBase modelBase)
         {
             return await Service.DbTransRemove(modelBase);
         }
 
-        public async Task<Result> DbTransSave(DbModelBase modelBase)
+        public async Task<Result> DbTransSave(DBModelBase modelBase)
         {
             return await Service.DbTransSave(modelBase);
         }

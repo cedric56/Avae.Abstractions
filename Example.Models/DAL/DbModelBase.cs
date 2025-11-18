@@ -1,5 +1,4 @@
-﻿using Avae.Abstractions;
-using Avae.DAL;
+﻿using Avae.DAL;
 using MemoryPack;
 using MessagePack;
 
@@ -9,7 +8,7 @@ namespace Example.Models
     [MemoryPackUnion(0, typeof(Person))]
     [MessagePackObject]
     [Union(0, typeof(Person))]
-    public abstract partial class DbModelBase
+    public abstract partial class DBModelBase
     {
         public abstract Task<Result> DbTransSave(IDataAccessLayer layer);
         public abstract Task<Result> DbTransRemove(IDataAccessLayer layer);

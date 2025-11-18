@@ -31,9 +31,9 @@
         }
 
 
-        public void SetPersons(List<Person> values)
+        public async Task ClearPersons()
         {
-            _persons = values;
+            _persons = new(await DBBase.Instance.GetAllAsync<Person>());
         }
     }
 }

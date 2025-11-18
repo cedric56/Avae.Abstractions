@@ -32,23 +32,19 @@ namespace Avae.DAL
             return db.GetAsync<T>(id, transaction, commandTimeout);
         }
 
-        private string Create<T>(object filters, string condition, out DynamicParameters parameters)
+        private string Create<T>(Dictionary<string, object> filters, string condition, out DynamicParameters parameters)
         {
-            var props = filters.GetType().GetProperties();
-
             var conditions = new List<string>();
             parameters = new DynamicParameters();
 
-            foreach (var prop in props)
+            foreach (var pair in filters)
             {
-                var value = prop.GetValue(filters);
-
                 // Always add parameter
-                parameters.Add($"@{prop.Name}", value);
+                parameters.Add(pair.Key, pair.Value);
 
                 // Build: (@Param IS NOT NULL AND Column = @Param)
                 conditions.Add(
-                    $"(@{prop.Name} IS NOT NULL AND {prop.Name} = @{prop.Name})"
+                    $"(@{pair.Key} IS NOT NULL AND {pair.Key} = @{pair.Key})"
                 );
             }
 
@@ -58,28 +54,28 @@ namespace Avae.DAL
             return $"SELECT * FROM {typeof(T).Name} WHERE {where}";
         }
 
-        public Task<IEnumerable<T>> FindByAnyAsync<T>(object filters) where T : class, new()
+        public Task<IEnumerable<T>> FindByAnyAsync<T>(Dictionary<string, object> filters) where T : class, new()
         {
             var sql = Create<T>(filters, " OR ", out var parameters);
             using var db = SimpleProvider.GetService<DbConnection>();
             return db.QueryAsync<T>(sql, parameters);
         }
 
-        public IEnumerable<T> FindByAny<T>(object filters) where T : class, new()
+        public IEnumerable<T> FindByAny<T>(Dictionary<string, object> filters) where T : class, new()
         {
             var sql = Create<T>(filters, " OR ", out var parameters);
             using var db = SimpleProvider.GetService<DbConnection>();
             return db.Query<T>(sql, parameters);
         }
 
-        public Task<IEnumerable<T>> WhereAsync<T>(object filters) where T : class, new()
+        public Task<IEnumerable<T>> WhereAsync<T>(Dictionary<string, object> filters) where T : class, new()
         {
             var sql = Create<T>(filters, " AND ", out var parameters);
             using var db = SimpleProvider.GetService<DbConnection>();
             return db.QueryAsync<T>(sql, parameters);
         }
 
-        public IEnumerable<T> Where<T>(object filters) where T : class, new()
+        public IEnumerable<T> Where<T>(Dictionary<string, object> filters) where T : class, new()
         {
             var sql = Create<T>(filters, " AND ", out var parameters);
             using var db = SimpleProvider.GetService<DbConnection>();

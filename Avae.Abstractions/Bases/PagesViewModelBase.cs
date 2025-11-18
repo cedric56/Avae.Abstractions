@@ -53,6 +53,8 @@ namespace Avae.Abstractions
         {
             _router = router;
 
+            Task.Factory.StartNew(OnLaunched);
+
             if (initialize)
             {
                 var page = Pages.FirstOrDefault();
@@ -61,6 +63,11 @@ namespace Avae.Abstractions
                     OnSelectedPageChanged(page);
                 }
             }
+        }
+
+        protected virtual Task OnLaunched()
+        {
+            return Task.CompletedTask;
         }
 
         /// <summary>

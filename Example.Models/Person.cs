@@ -15,7 +15,7 @@ namespace Example.Models
     [MemoryPackable]
     [MessagePackObject]
     [ObservableObject]
-    public partial class Person : DbModelBase, IModelBase, IDataErrorInfo
+    public partial class Person : DBModelBase, IModelBase, IDataErrorInfo
     {   
         private IList<Contact>? _contacts;
         private string? _firstName;
@@ -50,6 +50,7 @@ namespace Example.Models
 
         [Dapper.Contrib.Extensions.Computed]
         [MessagePack.Key(3)]
+        [MemoryPackIgnore]
         public IList<Contact> Contacts
         {
             get
@@ -60,7 +61,7 @@ namespace Example.Models
                         _contacts = [];
                     else
                     {
-                        var contacts = DBBase.Instance.FindByAny<Contact>(new { IdContact = Id });
+                        var contacts = DBBase.Instance.FindByAny<Contact>((nameof(Contact.IdContact), Id));
                         foreach (var contact in contacts)
                         {
                             var person = Repository.Instance.Persons.FirstOrDefault(p => p.Id == contact.IdPerson);
@@ -75,7 +76,7 @@ namespace Example.Models
                 }
                 return _contacts;
             }
-            set
+            private set
             {
                 _contacts = value;
             }
@@ -101,7 +102,7 @@ namespace Example.Models
                         connection.Update(this, transaction);
                     }
 
-                    var before = await instance.FindByAnyAsync<Contact>(new { IdContact = Id });
+                    var before = await instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
 
                     if (_contacts == null)
                     {
@@ -133,7 +134,7 @@ namespace Example.Models
                 }
                 finally
                 {
-                    Repository.Instance.SetPersons(null!);
+                   await Repository.Instance.ClearPersons();
                 }
             }
 
@@ -159,7 +160,7 @@ namespace Example.Models
                 {
                     if (_contacts == null)
                     {
-                        var contacts = await instance.FindByAnyAsync<Contact>(new { IdContact = Id });
+                        var contacts = await instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
                         Contacts = [.. contacts];
                     }
                     foreach (var contact in Contacts)
@@ -180,7 +181,7 @@ namespace Example.Models
                 }
                 finally
                 {
-                    Repository.Instance.SetPersons(null!);
+                    await Repository.Instance.ClearPersons();
                 }
             }
 

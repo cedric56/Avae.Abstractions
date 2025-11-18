@@ -13,7 +13,13 @@ namespace Example.ViewModels
     {
         public string Title { get; set; } = "Persons";
 
-        public ObservableCollection<Person> Persons { get; set; } = new(DBBase.Instance.GetAll<Person>());
+        [ObservableProperty]
+        private ObservableCollection<Person> _persons = [];
+
+        protected override async Task OnLaunched()
+        {
+            Persons = new(await DBBase.Instance.GetAllAsync<Person>());
+        }
 
         [ObservableProperty]
         private Person? _selectedPerson = null;
