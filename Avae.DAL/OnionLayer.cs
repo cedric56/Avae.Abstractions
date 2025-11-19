@@ -1,6 +1,7 @@
 ﻿using Avae.Abstractions;
 using MemoryPack;
 using System.Data;
+using System.Text.Json;
 
 namespace Avae.DAL
 {
@@ -10,6 +11,12 @@ namespace Avae.DAL
 
         public IEnumerable<T> FindByAny<T>(Dictionary<string, object> filters) where T : class, new()
         {
+            if (OperatingSystem.IsBrowser())
+            {
+                var request = SimpleProvider.GetService<IXmlHttpRequest>();
+                var response = request.Send("http://localhost:5001/_/IDbService/FindbyAnyAsync", $"filters={JsonSerializer.Serialize(filters)}");
+                return MemoryPackSerializer.Deserialize<IEnumerable<T>>(response);
+            }
             return AsyncHelper.RunSync(() => FindByAnyAsync<T>(filters));
         }
 

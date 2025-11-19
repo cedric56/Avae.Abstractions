@@ -1,9 +1,11 @@
-﻿using MessagePack;
+﻿using MemoryPack;
+using MessagePack;
 
 namespace Example.Models
 {
     [MessagePackObject]
-    public class Result
+    [MemoryPackable]
+    public partial class Result
     {
         [Key(0)]
         public string? Exception { get; set; }

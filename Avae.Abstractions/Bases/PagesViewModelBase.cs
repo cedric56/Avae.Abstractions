@@ -6,7 +6,7 @@ namespace Avae.Abstractions
     /// <summary>
     /// This class is used to manage the pages in the application.
     /// </summary>
-    public abstract partial class PagesViewModelBase : ViewModelBase 
+    public abstract partial class PagesViewModelBase : IViewModelBase 
     {
         protected abstract void NotifyPropertyChanged(string propertyName);
 
@@ -83,20 +83,23 @@ namespace Avae.Abstractions
             }
             else
             {
-                dico.Add(value, CurrentPage = await GoTo(value));
+                dico.Add(value, CurrentPage = GoTo(value, out var viewModel));
+                await value.OnLaunched(viewModel);
             }
         }
 
-        protected virtual async Task<IContextFor> GoTo(PageViewModelBase value)
+        protected virtual IContextFor GoTo(PageViewModelBase value, out IViewModelBase viewModel)
         {
+            viewModel = value.ViewModel;
+
             IContextFor contextFor = null;
             if (value.ViewModel != null)
             {
-                contextFor = await _router.GoTo(value.ViewModel, value.Parameters);
+                contextFor = _router.GoTo(value.ViewModel, value.Parameters);
             }
             else
             {
-                contextFor = (await _router.GoTo(value.ViewModelType, value.Parameters)).context;
+                contextFor = _router.GoTo(value.ViewModelType, out viewModel, value.Parameters);
             }
 
             return contextFor;

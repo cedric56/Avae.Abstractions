@@ -6,20 +6,15 @@ using Avalonia.Markup.Xaml;
 using Example.Models;
 using Example.ViewModels;
 using Example.Views;
-using Grpc.Net.Client;
-using Grpc.Net.Client.Web;
-using MagicOnion;
-using MagicOnion.Client;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
 using System;
 using System.Data.Common;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 
 namespace Example;
 
@@ -55,7 +50,7 @@ public partial class App : AvaeApplication, IIocConfiguration
     public override void Configure(IServiceCollection services)
     {
         base.Configure(services);
-        
+
         services.AddTransient<Router>();
         services.AddSingleton<HomeViewModel>();
         services.AddSingleton<MenuViewModel>();
@@ -65,7 +60,7 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<ModalViewModel>();
 
         services.AddSingleton<IDbLayer>(_ => new DBSqlLayer());
-        services.AddTransient< DbConnection>(_ => new SqliteConnection("Data Source=data.db;Foreign Keys=True"));
+        services.AddTransient<DbConnection>(_ => new SqliteConnection("Data Source=data.db;Foreign Keys=True"));
     }
 
     public override void Initialize()

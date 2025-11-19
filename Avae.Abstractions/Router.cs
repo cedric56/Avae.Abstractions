@@ -53,17 +53,21 @@
         /// <typeparam name="TBaseType">The base type of the view model.</typeparam>
         /// <param name="viewModelType">The view model type.</param>
         /// <returns>The created view model cast to the <typeparamref name="TBaseType"/>.</returns>        
-        public async Task<(IContextFor context, IViewModelBase viewModel)> GoTo(Type viewModelType, params IParameter[] parameters)
+        public IContextFor GoTo(Type viewModelType, out IViewModelBase viewModel, params IParameter[] parameters)
         {
-            var viewModel = await SimpleProvider.GetViewModel(viewModelType, parameters);
+            viewModel = SimpleProvider.GetViewModel(viewModelType, parameters);
             AddHistory(viewModel);
             CurrentViewModelChanged?.Invoke(viewModel);
-            return (GetContext(viewModel, parameters), viewModel);
+            return GetContext(viewModel, parameters);
         }
 
-        public async Task<IContextFor> GoTo<TViewModel>(TViewModel viewModel, params IParameter[] parameters) where TViewModel : IViewModelBase
+        public IContextFor GoTo(Type viewModelType, params IParameter[] parameters)
         {
-            if(viewModel is ViewModelBase viewModelBase) await viewModelBase.OnLaunched();
+            return GoTo(viewModelType, out var _, parameters);
+        }
+
+        public IContextFor GoTo<TViewModel>(TViewModel viewModel, params IParameter[] parameters) where TViewModel : IViewModelBase
+        {
             AddHistory(viewModel);
             CurrentViewModelChanged?.Invoke(viewModel);
             return GetContext(viewModel, parameters);
@@ -74,12 +78,12 @@
         /// </summary>
         /// <typeparam name="TViewModel">The type of the view model.</typeparam>
         /// <returns>The created view model.</returns>
-        public async Task<(IContextFor context, TViewModel viewModel)> GoTo<TViewModel>(params IParameter[] parameters) where TViewModel : class, IViewModelBase
+        public IContextFor GoTo<TViewModel>(out TViewModel viewModel, params IParameter[] parameters) where TViewModel : class, IViewModelBase
         {
-            var viewModel = await SimpleProvider.GetViewModel<TViewModel>(parameters);
+            viewModel = SimpleProvider.GetViewModel<TViewModel>(parameters);
             AddHistory(viewModel);
             CurrentViewModelChanged?.Invoke(viewModel);
-            return (GetContext(viewModel, parameters), viewModel);
+            return GetContext(viewModel, parameters);
         }
 
         //public Task<IContextFor> GoTo<TViewModel>(Router router) where TViewModel : PagesViewModelBase

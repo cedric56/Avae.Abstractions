@@ -1,6 +1,7 @@
 ﻿using Avae.Abstractions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Example.Models;
 using System.Collections.ObjectModel;
 
 namespace Example.ViewModels;
@@ -29,7 +30,13 @@ public partial class MainViewModel(Router router) : PagesViewModelBase(router)
             return new ObservableCollection<PageViewModelBase>
             {
                 new PageViewModelBase<HomeViewModel>("Home", "fa-solid fa-house"),
-                new PageViewModelBase<MenuViewModel>("Menu", "fa-solid fa-gear"),
+                new PageViewModelBase<MenuViewModel>("Menu", "fa-solid fa-gear")
+                {
+                    Launched = async (viewModel) =>
+                    {
+                        viewModel.Persons = new(await DBBase.Instance.GetAllAsync<Person>());
+                    }
+                }
             };
         }
     }

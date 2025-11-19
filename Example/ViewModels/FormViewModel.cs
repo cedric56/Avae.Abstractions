@@ -33,10 +33,10 @@ namespace Example.ViewModels
     [GoTo]
     internal partial class FormViewModel(Router router, Person person) : FormViewModelBase<Person>(router), IDataErrorInfo
     {
-        public override async Task OnLaunched()
-        {
-            await Person.LoadContactsAsync();
-        }
+        //public override async Task OnLaunched()
+        //{
+        //    await Person.LoadContactsAsync();
+        //}
 
         [ObservableProperty]
         private bool _isBusy = false;
@@ -51,15 +51,18 @@ namespace Example.ViewModels
             }
         }
 
-        private List<Person>? _selectedItems;
+        private List<Person> _selectedItems= [];
         public List<Person> SelectedItems
         {
             get
             {
-                _selectedItems ??= Person.Contacts.Select(c => c.Person).ToList();
+                //_selectedItems ??= Person.Contacts.Select(c => c.Person).ToList();
                 return _selectedItems;
             }
-            set => _selectedItems = value;
+            set
+            {
+                SetProperty(ref  _selectedItems, value);
+            }
         }
 
         [RelayCommand]
@@ -101,7 +104,12 @@ namespace Example.ViewModels
                 {
                     new PageViewModelBase<FormViewModel>(this, "Page One", "fa-solid fa-gear")
                     {
-                         FactoryParameters = ["Page".ForFactory()]
+                         FactoryParameters = ["Page".ForFactory()],
+                         Launched = async (viewModel) =>
+                            {
+                                await Person.LoadContactsAsync();
+                                SelectedItems = Person.Contacts.Select(c => c.Person).ToList();
+                            }
                     },
                     new PageViewModelBase<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),
                     new PageViewModelBase<FormPage3ViewModel>("Page Three", "fa-solid fa-gear")
@@ -113,13 +121,13 @@ namespace Example.ViewModels
             }
         }
 
-        protected override Task<IContextFor> GoTo(PageViewModelBase value)
+        protected override IContextFor GoTo(PageViewModelBase value, out IViewModelBase viewModel)
         {
             //Possibility to set parameters on call
-            if(value?.ViewModelType == typeof(FormPage3ViewModel))
+            if (value?.ViewModelType == typeof(FormPage3ViewModel))
                 value.ViewParameters = [Person.ForView()];
 
-            return base.GoTo(value);
+            return base.GoTo(value, out viewModel);
         }
 
         public string Error => Person.Error;

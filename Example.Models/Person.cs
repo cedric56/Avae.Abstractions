@@ -105,7 +105,7 @@ namespace Example.Models
         {
             bool isSuccessful = false;
             string message = string.Empty;
-            using var connection = SimpleProvider.GetService<DbConnection>();
+            using var connection = new LoggedConnection();// SimpleProvider.GetService<DbConnection>();
             await connection.OpenAsync();
 
             using (var transaction = connection.BeginTransaction())
@@ -170,7 +170,7 @@ namespace Example.Models
 
             bool isSuccessful = false;
 
-            using var connection = SimpleProvider.GetService<DbConnection>();
+            using var connection = new LoggedConnection();
             await connection.OpenAsync();
 
             using (var transaction = connection.BeginTransaction())

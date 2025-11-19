@@ -9,6 +9,7 @@ namespace Avae.Abstractions
     /// <param name="icon"></param>
     public class PageViewModelBase(Type viewModelType, string displayName, string icon) : IViewModelBase
     {
+        public Func<IViewModelBase, Task>? Launched { get; set; }
         public IViewModelBase? ViewModel { get; protected set; }
         public Type ViewModelType { get; } = viewModelType;
         public string DisplayName { get; } = displayName;
@@ -29,10 +30,20 @@ namespace Avae.Abstractions
                 return parameters.ToArray();
             }
         }
+
+        public virtual Task OnLaunched(IViewModelBase viewModel)
+        {
+            if (Launched == null)
+                return Task.CompletedTask;
+
+            return Launched(viewModel);
+        }
     }
 
     public class PageViewModelBase<T> : PageViewModelBase where T : IViewModelBase
     {
+        public new Func<T, Task>? Launched { get; set; }
+
         public PageViewModelBase(string displayName, string icon)
             : base(typeof(T), displayName, icon)
         {
@@ -43,6 +54,14 @@ namespace Avae.Abstractions
             : base(typeof(T), displayName, icon)
         {
             ViewModel = viewModel;
+        }
+
+        public override Task OnLaunched(IViewModelBase viewModel)
+        {
+            if (Launched == null)
+                return Task.CompletedTask;
+
+            return Launched((T)viewModel);
         }
     }
 }

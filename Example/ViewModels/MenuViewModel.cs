@@ -16,11 +16,6 @@ namespace Example.ViewModels
         [ObservableProperty]
         private ObservableCollection<Person> _persons = [];
 
-        public override async Task OnLaunched()
-        {
-            Persons = new(await DBBase.Instance.GetAllAsync<Person>());
-        }
-
         [ObservableProperty]
         private Person? _selectedPerson = null;
 
@@ -42,15 +37,15 @@ namespace Example.ViewModels
         }
 
         [RelayCommand]
-        public async Task Add()
+        public void Add()
         {
-            await OpenForm(new Person(), Persons.Add);
+            OpenForm(new Person(), Persons.Add);
         }
 
         [RelayCommand(CanExecute = nameof(CanExecute))]
-        public async Task Update()
+        public void Update()
         {
-            await OpenForm(SelectedPerson!, person =>
+            OpenForm(SelectedPerson!, person =>
             {
                 Persons[Persons.IndexOf(SelectedPerson!)] = person;
             });
@@ -59,6 +54,7 @@ namespace Example.ViewModels
         [RelayCommand(CanExecute = nameof(CanExecute))]
         public async Task Remove()
         {
+            await SelectedPerson.LoadContactsAsync();
             var result = await DBBase.Instance.DbTransRemove(SelectedPerson);
             if (!result.Success)
                 await DialogWrapper.ShowOkAsync(result.Exception, "Error");
@@ -71,7 +67,7 @@ namespace Example.ViewModels
             return SelectedPerson != null;
         }
 
-        public async Task OpenForm(Person person, Action<Person> action)
+        public void OpenForm(Person person, Action<Person> action)
         {
             var viewModel = new FormViewModel(SimpleProvider.GetService<Router>(), person);
 
@@ -87,7 +83,7 @@ namespace Example.ViewModels
                 CurrentPage = null!;
             };
 
-            CurrentPage = await _router.GoTo(viewModel);            
+            CurrentPage = _router.GoTo(viewModel);            
         }
 
         protected override void NotifyPropertyChanged(string propertyName)

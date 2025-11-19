@@ -158,14 +158,14 @@ namespace Example.Server
 
         private static IDbLayer Layer = SimpleProvider.GetService<IDbLayer>();
 
-        public UnaryResult<Result> DbTransRemove(DBModelBase modelBase)
+        public async UnaryResult<Result> DbTransRemove(DBModelBase modelBase)
         {
-            return new UnaryResult<Result>(modelBase.DbTransRemove(Layer));
+            return await modelBase.DbTransRemove(Layer);
         }
 
-        public UnaryResult<Result> DbTransSave(DBModelBase modelBase)
+        public async UnaryResult<Result> DbTransSave(DBModelBase modelBase)
         {
-            return new UnaryResult<Result>(modelBase.DbTransSave(Layer));
+            return await modelBase.DbTransSave(Layer);
         }
 
         public async UnaryResult<byte[]> FindByAnyAsync(string type, Dictionary<string, object> filters)
