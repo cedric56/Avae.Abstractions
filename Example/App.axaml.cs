@@ -1,5 +1,4 @@
 ﻿using Avae.Abstractions;
-using Avae.DAL;
 using Avae.Implementations;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -9,11 +8,11 @@ using Example.Views;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
 using System;
 using System.Data.Common;
+using System.IO;
 using System.Linq;
 
 namespace Example;
@@ -60,7 +59,10 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<ModalViewModel>();
 
         services.AddSingleton<IDbLayer>(_ => new DBSqlLayer());
-        services.AddTransient<DbConnection>(_ => new SqliteConnection("Data Source=data.db;Foreign Keys=True"));
+
+        var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        var dbPath = Path.Combine(folder, "database.db");
+        services.AddTransient<DbConnection>(_ => new SqliteConnection($"Data Source={dbPath};Foreign Keys=True"));
     }
 
     public override void Initialize()
