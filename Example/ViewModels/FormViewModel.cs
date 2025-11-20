@@ -33,11 +33,6 @@ namespace Example.ViewModels
     [GoTo]
     internal partial class FormViewModel(Router router, Person person) : FormViewModelBase<Person>(router), IDataErrorInfo
     {
-        //public override async Task OnLaunched()
-        //{
-        //    await Person.LoadContactsAsync();
-        //}
-
         [ObservableProperty]
         private bool _isBusy = false;
 
@@ -56,7 +51,6 @@ namespace Example.ViewModels
         {
             get
             {
-                //_selectedItems ??= Person.Contacts.Select(c => c.Person).ToList();
                 return _selectedItems;
             }
             set
@@ -88,6 +82,8 @@ namespace Example.ViewModels
                 IsBusy = false;
                 if (!string.IsNullOrWhiteSpace(result.Exception))
                     await DialogWrapper.ShowOkAsync(result.Exception, "Error");
+                else
+                    await Repository.Instance.ClearPersons();
 
                 
                 await Close(result.Success ? Person : null);

@@ -2,9 +2,7 @@
 using Example.Models;
 using Grpc.Core;
 using Grpc.Net.Client;
-using MagicOnion;
 using MagicOnion.Server;
-using MemoryPack;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
@@ -18,7 +16,6 @@ builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
             .AllowAnyMethod()
             .AllowAnyHeader()
             .SetIsOriginAllowed(origin => true);
-    //.WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
 }));
 
 //// Add services to the container.
@@ -56,11 +53,9 @@ using var cmd = connection.CreateCommand();
 cmd.CommandText = GetCommandText(connection);
 cmd.ExecuteNonQuery();
 
-// 2. Activer CORS dans le pipeline
-//app.UseCors("AllowAvaloniaWasm");
 app.UseCors("AllowAll");
 app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
-app.MapMagicOnionService().EnableGrpcWeb();//.RequireCors("AllowAll");
+app.MapMagicOnionService().EnableGrpcWeb();
 app.MapMagicOnionHttpGateway("_", app.Services.GetService<MagicOnionServiceDefinition>().MethodHandlers, GrpcChannel.ForAddress("http://localhost:5000", new GrpcChannelOptions()
 {
     Credentials = ChannelCredentials.Insecure

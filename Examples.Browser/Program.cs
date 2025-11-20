@@ -61,13 +61,15 @@ internal sealed partial class Program
 
 public partial class XmlHttpRequest : IXmlHttpRequest
 {
+    const string URL = "http://localhost:5001/_/IDbService/";
+
     [JSImport("globalThis.eval")]
     public static partial string Invoke(string @params);
 
     public byte[] Send(string urlString, string data)
     {
         string escapedData = data.Replace("\\", "\\\\").Replace("'", "\\'");
-        string escapedUrl = urlString.Replace("\\", "\\\\").Replace("'", "\\'");
+        string escapedUrl = string.Concat(URL, urlString).Replace("\\", "\\\\").Replace("'", "\\'");
 
         var js = @$"const request = function (url, data) {{
         var xhr = new XMLHttpRequest();

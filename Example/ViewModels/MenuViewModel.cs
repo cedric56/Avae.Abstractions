@@ -54,12 +54,15 @@ namespace Example.ViewModels
         [RelayCommand(CanExecute = nameof(CanExecute))]
         public async Task Remove()
         {
-            await SelectedPerson.LoadContactsAsync();
+            await SelectedPerson!.LoadContactsAsync();
             var result = await DBBase.Instance.DbTransRemove(SelectedPerson);
             if (!result.Success)
-                await DialogWrapper.ShowOkAsync(result.Exception, "Error");
+                await DialogWrapper.ShowOkAsync(result.Exception!, "Error");
             else
+            {
                 Persons.Remove(SelectedPerson);
+                await Repository.Instance.ClearPersons();
+            }
         }
 
         private bool CanExecute()

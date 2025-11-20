@@ -6,7 +6,6 @@ using MemoryPack;
 using MessagePack;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Data.Common;
 
 namespace Example.Models
 {
@@ -151,10 +150,6 @@ namespace Example.Models
                     transaction.Rollback();
                     message = ex.Message;
                 }
-                finally
-                {
-                   await Repository.Instance.ClearPersons();
-                }
             }
 
             return new Result()
@@ -197,10 +192,6 @@ namespace Example.Models
                     transaction.Rollback();
                     message = $"Suppression impossible, cette personne fait partie des contacts d'un autre usager." +
                         "\n" + ex.Message;
-                }
-                finally
-                {
-                    await Repository.Instance.ClearPersons();
                 }
             }
 
