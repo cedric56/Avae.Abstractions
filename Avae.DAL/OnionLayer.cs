@@ -22,7 +22,7 @@ namespace Avae.DAL
 
         public async Task<IEnumerable<T>> FindByAnyAsync<T>(Dictionary<string, object> filters) where T : class, new()
         {
-            var bytes = await Service.FindByAnyAsync(typeof(T).Name, filters);//, transaction, commandTimeout);
+            var bytes = await Service.FindByAnyAsync(typeof(T).Name, filters);
             return MemoryPackSerializer.Deserialize<IEnumerable<T>>(bytes);
         }
 
@@ -50,23 +50,31 @@ namespace Avae.DAL
 
         public async Task<IEnumerable<T>> GetAllAsync<T>(IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
-            var bytes = await Service.GetAllAsync(typeof(T).Name);//, transaction, commandTimeout);
+            var bytes = await Service.GetAllAsync(typeof(T).Name);
             return MemoryPackSerializer.Deserialize<IEnumerable<T>>(bytes);
         }
 
-        public Task<T> GetAsync<T>(int id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
+        public async Task<T> GetAsync<T>(int id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
-            throw new NotImplementedException();
+            var bytes = await Service.GetAsync(typeof(T).Name, id);
+            return MemoryPackSerializer.Deserialize<T>(bytes);
         }
 
         public IEnumerable<T> Where<T>(Dictionary<string, object> filters) where T : class, new()
         {
-            throw new NotImplementedException();
+            if (OperatingSystem.IsBrowser())
+            {
+                var request = SimpleProvider.GetService<IXmlHttpRequest>();
+                var response = request.Send(nameof(WhereAsync), $"filters={JsonSerializer.Serialize(filters)}");
+                return MemoryPackSerializer.Deserialize<IEnumerable<T>>(response);
+            }
+            return AsyncHelper.RunSync(() => WhereAsync<T>(filters));
         }
 
-        public Task<IEnumerable<T>> WhereAsync<T>(Dictionary<string, object> filters) where T : class, new()
+        public async Task<IEnumerable<T>> WhereAsync<T>(Dictionary<string, object> filters) where T : class, new()
         {
-            throw new NotImplementedException();
+            var bytes = await Service.WhereAsync(typeof(T).Name, filters);
+            return MemoryPackSerializer.Deserialize<IEnumerable<T>>(bytes);
         }
     }
 }
