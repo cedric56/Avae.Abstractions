@@ -15,7 +15,7 @@ namespace Avae.DAL
             {
                 var request = SimpleProvider.GetService<IXmlHttpRequest>();
                 var response = request.Send(nameof(FindByAnyAsync), $"filters={JsonSerializer.Serialize(filters)}");
-                return MemoryPackSerializer.Deserialize<IEnumerable<T>>(response);
+                return MemoryPackSerializer.Deserialize<IEnumerable<T>>(response) ?? [];
             }
             return AsyncHelper.RunSync(() => FindByAnyAsync<T>(filters));
         }
@@ -23,10 +23,10 @@ namespace Avae.DAL
         public async Task<IEnumerable<T>> FindByAnyAsync<T>(Dictionary<string, object> filters) where T : class, new()
         {
             var bytes = await Service.FindByAnyAsync(typeof(T).Name, filters);
-            return MemoryPackSerializer.Deserialize<IEnumerable<T>>(bytes);
+            return MemoryPackSerializer.Deserialize<IEnumerable<T>>(bytes) ?? [];
         }
 
-        public T Get<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
+        public T? Get<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
             if (OperatingSystem.IsBrowser())
             {
@@ -43,7 +43,7 @@ namespace Avae.DAL
             {
                 var request = SimpleProvider.GetService<IXmlHttpRequest>();
                 var response = request.Send(nameof(GetAllAsync), $"type={typeof(T).Name}");
-                return MemoryPackSerializer.Deserialize<IEnumerable<T>>(response);
+                return MemoryPackSerializer.Deserialize<IEnumerable<T>>(response) ?? [];
             }
             return AsyncHelper.RunSync(() => GetAllAsync<T>(transaction, commandTimeout));
         }
@@ -51,10 +51,10 @@ namespace Avae.DAL
         public async Task<IEnumerable<T>> GetAllAsync<T>(IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
             var bytes = await Service.GetAllAsync(typeof(T).Name);
-            return MemoryPackSerializer.Deserialize<IEnumerable<T>>(bytes);
+            return MemoryPackSerializer.Deserialize<IEnumerable<T>>(bytes) ?? [];
         }
 
-        public async Task<T> GetAsync<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
+        public async Task<T?> GetAsync<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
             var bytes = await Service.GetAsync(typeof(T).Name, id);
             return MemoryPackSerializer.Deserialize<T>(bytes);
@@ -66,7 +66,7 @@ namespace Avae.DAL
             {
                 var request = SimpleProvider.GetService<IXmlHttpRequest>();
                 var response = request.Send(nameof(WhereAsync), $"filters={JsonSerializer.Serialize(filters)}");
-                return MemoryPackSerializer.Deserialize<IEnumerable<T>>(response);
+                return MemoryPackSerializer.Deserialize<IEnumerable<T>>(response) ?? [];
             }
             return AsyncHelper.RunSync(() => WhereAsync<T>(filters));
         }
@@ -74,7 +74,7 @@ namespace Avae.DAL
         public async Task<IEnumerable<T>> WhereAsync<T>(Dictionary<string, object> filters) where T : class, new()
         {
             var bytes = await Service.WhereAsync(typeof(T).Name, filters);
-            return MemoryPackSerializer.Deserialize<IEnumerable<T>>(bytes);
+            return MemoryPackSerializer.Deserialize<IEnumerable<T>>(bytes) ?? [];
         }
     }
 }

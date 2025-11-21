@@ -3,8 +3,7 @@ using MagicOnion;
 
 namespace Example.Models
 {
-    public interface IDbService : IService<IDbService>, 
-        IOnionService
+    public interface IDBOnionService : IService<IDBOnionService>, IOnionService
     {
         UnaryResult<Result> DbTransRemove(DBModelBase modelBase);
 

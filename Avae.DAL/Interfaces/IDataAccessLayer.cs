@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 
 namespace Avae.DAL
 {
     public interface IDataAccessLayer
     {
-        T Get<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new();
+        T? Get<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new();
 
-        Task<T> GetAsync<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new();
+        Task<T?> GetAsync<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new();
 
         IEnumerable<T> GetAll<T>(IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new();
 
@@ -44,6 +39,5 @@ namespace Avae.DAL
         {
             return Where<T>(filters.ToDictionary(x => x.key, y => y.value));
         }
-
     }
 }

@@ -6,13 +6,11 @@ using Avalonia.Markup.Xaml;
 using Example.Models;
 using Example.ViewModels;
 using Example.Views;
-using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
 using System;
-using System.Data.Common;
 using System.IO;
 using System.Linq;
 
@@ -59,25 +57,16 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
         services.AddTransient<ModalViewModel>();
 
-        services.AddSingleton<IDbLayer>(_ => new DBSqlLayer());
-        services.AddSingleton<IDataAccessLayer>(provider => provider.GetRequiredService<IDbLayer>());
-        services.AddSingleton<IDbFactory>(_ =>
+        services.UseDbLayer<IDBLayer, DBSqlLayer>();
+
+        var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        var dbPath = Path.Combine(folder, "database.db");
+        var connectionString = $"Data Source={dbPath};Foreign Keys=True";
+        services.UseSqlMonitors<SqliteConnection>(connectionString, factory =>
         {
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var dbPath = Path.Combine(folder, "database.db");
-            var factory = new SqlFactory<SqliteConnection>($"Data Source={dbPath};Foreign Keys=True");
-            factory.AddDbMonitor<Person>();
-            return factory;
-        });
-        services.AddTransient<DbConnection>(provider =>
-        {
-            var factory = provider.GetRequiredService<IDbFactory>();
-            return factory.CreateConnection()!;
-        });
-        services.AddSingleton<ISqlMonitorService<Person>>(provider =>
-        {
-            var factory = provider.GetRequiredService<IDbFactory>();
-            return (ISqlMonitorService<Person>)factory.Monitors.First(m => m is ISqlMonitorService<Person>);
+            var monitor = factory.AddDbMonitor<Person>();
+            monitor.AddSignalR("http://localhost:5001/PersonHub");
+            services.AddSingleton<ISqlMonitor<Person>>(monitor);            
         });
         services.AddSingleton<IBrokerService, BrokerService>();
     }
@@ -87,57 +76,9 @@ public partial class App : AvaeApplication, IIocConfiguration
         AvaloniaXamlLoader.Load(this);
     }
 
-    private string GetCommandText(DbConnection connection)
-    {
-        if(connection is SqliteConnection sqlite)
-        {
-            return @"
-            CREATE TABLE IF NOT EXISTS Person(
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                FirstName TEXT,
-                LastName TEXT
-            );
-
-            CREATE TABLE IF NOT EXISTS Contact(
-                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            IdPerson INTEGER  NOT NULL,
-                            IdContact INTEGER  NOT NULL,
-                            CONSTRAINT FK_Contact_Person FOREIGN KEY(IdPerson) REFERENCES Person(Id),
-                            CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY(IdContact) REFERENCES Person(Id)
-                        );
-            ";
-        }
-        else if(connection is SqlConnection sqlServer)
-        {
-            return @"CREATE TABLE IF NOT EXISTS Person (
-                        Id INT PRIMARY KEY IDENTITY(1,1),
-                        FirstName NVARCHAR(255) NULL,
-                        LastName NVARCHAR(255) NULL,
-                        Photo VARBINARY(MAX) NULL
-                    );
-
-                    CREATE TABLE IF NOT EXISTS Contact (
-                        Id INT PRIMARY KEY IDENTITY(1,1),
-                        IdPerson INT NOT NULL,
-                        IdContact INT NOT NULL,
-                        CONSTRAINT FK_Contact_Person FOREIGN KEY (IdPerson) REFERENCES Person(Id),
-                        CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY (IdContact) REFERENCES Person(Id)
-                    );";
-        }
-
-        throw new NotImplementedException();
-    }
-
     public override void OnFrameworkInitializationCompleted()
     {
         base.OnFrameworkInitializationCompleted();
-
-        using var connection = SimpleProvider.GetService<DbConnection>();
-        connection.Open();       
-
-        using var cmd = connection.CreateCommand();
-        cmd.CommandText = GetCommandText(connection);
-        cmd.ExecuteNonQuery();
 
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT

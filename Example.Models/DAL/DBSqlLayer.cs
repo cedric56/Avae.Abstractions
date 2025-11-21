@@ -2,7 +2,7 @@
 
 namespace Example.Models
 {
-    public class DBSqlLayer : SqlLayer, IDbLayer
+    public class DBSqlLayer : SqlLayer, IDBLayer
     {
         public Task<Result> DbTransRemove(DBModelBase modelBase)
         {

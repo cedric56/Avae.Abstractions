@@ -3,9 +3,9 @@ using Avae.DAL;
 
 namespace Example.Models
 {
-    public class DBOnionLayer : OnionLayer, IDbLayer
+    public class DBOnionLayer : OnionLayer, IDBLayer
     {
-        public IDbService Service = SimpleProvider.GetService<IOnionService>() as IDbService;
+        public IDBOnionService Service = SimpleProvider.GetService<IOnionService>() as IDBOnionService;
 
         public async Task<Result> DbTransRemove(DBModelBase modelBase)
         {

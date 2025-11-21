@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace Example.ViewModels;
 
@@ -32,9 +33,10 @@ public partial class MainViewModel(Router router) : PagesViewModelBase(router)
                 new PageViewModelBase<HomeViewModel>("Home", "fa-solid fa-house"),
                 new PageViewModelBase<MenuViewModel>("Menu", "fa-solid fa-gear")
                 {
-                    Launched = async (viewModel) =>
+                    Launched = (viewModel) =>
                     {
-                        viewModel.Persons = new(await DBBase.Instance.GetAllAsync<Person>());
+                        viewModel.Persons = new(Repository.Instance.Persons);
+                        return Task.CompletedTask;
                     }
                 }
             };

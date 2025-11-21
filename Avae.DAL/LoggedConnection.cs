@@ -1,14 +1,10 @@
 ﻿using Avae.Abstractions;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Avae.DAL
 {
@@ -33,7 +29,7 @@ namespace Avae.DAL
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
             => Inner.BeginTransaction(isolationLevel);
 
-        public override void EnlistTransaction(System.Transactions.Transaction transaction)
+        public override void EnlistTransaction(System.Transactions.Transaction? transaction)
             => Inner.EnlistTransaction(transaction);
 
         //public override bool CanRaiseEvents => false;

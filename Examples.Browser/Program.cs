@@ -1,5 +1,4 @@
-﻿using Avae.Abstractions;
-using Avae.DAL;
+﻿using Avae.DAL;
 using Avae.Services;
 using Avalonia;
 using Avalonia.Browser;
@@ -9,10 +8,8 @@ using Grpc.Net.Client;
 using Grpc.Net.Client.Web;
 using MagicOnion;
 using MagicOnion.Client;
-using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices.JavaScript;
@@ -33,22 +30,17 @@ internal sealed partial class Program
         public BrowserApp()
             : base()
         {
-            Task.Run(async () =>
-            {
-                var factory = SimpleProvider.GetService<IDbFactory>();
-                var monitor = factory.Monitors.OfType<SqlMonitor<Person>>().FirstOrDefault();
-                if (monitor != null)
-                    await monitor.AddSignalR("http://localhost:5001/PersonHub");
-            });
+            
         }
 
         public override void Configure(IServiceCollection services)
         {
             base.Configure(services);
 
-            services.AddScoped<IOnionService>(_ => GetMagicOnion<IDbService>());
-            services.AddSingleton<IDbLayer>(_ => new DBOnionLayer());
+            services.AddScoped<IOnionService>(_ => GetMagicOnion<IDBOnionService>());            
             services.AddTransient<IXmlHttpRequest, XmlHttpRequest>();
+
+            services.UseDbLayer<IDBLayer, DBOnionLayer>();
         }
 
         private static IGrpc GetMagicOnion<IGrpc>() where IGrpc : IService<IGrpc>

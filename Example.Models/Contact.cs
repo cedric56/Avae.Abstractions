@@ -16,7 +16,7 @@ namespace Example.Models
 
         [Dapper.Contrib.Extensions.Key]
         [MessagePack.Key(0)]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Computed]
         [IgnoreMember]
@@ -28,10 +28,10 @@ namespace Example.Models
         }
 
         [MessagePack.Key(1)]
-        public int IdPerson { get; set; }
+        public long IdPerson { get; set; }
 
         [MessagePack.Key(2)]
-        public int IdContact { get; set; }
+        public long IdContact { get; set; }
 
         [Computed]
         [IgnoreMember]

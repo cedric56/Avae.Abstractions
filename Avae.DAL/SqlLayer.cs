@@ -1,5 +1,4 @@
-﻿using Avae.Abstractions;
-using Dapper;
+﻿using Dapper;
 using Dapper.Contrib.Extensions;
 using System.Data;
 
@@ -7,7 +6,7 @@ namespace Avae.DAL
 {
     public class SqlLayer : IDataAccessLayer
     {
-        public T Get<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
+        public T? Get<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
             using var db = new LoggedConnection();
             return db.Get<T>(id, transaction, commandTimeout);
@@ -25,10 +24,10 @@ namespace Avae.DAL
             return db.GetAllAsync<T>(transaction, commandTimeout);
         }
 
-        public Task<T> GetAsync<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
+        public async Task<T?> GetAsync<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
             using var db = new LoggedConnection();
-            return db.GetAsync<T>(id, transaction, commandTimeout);
+            return await db.GetAsync<T>(id, transaction, commandTimeout);
         }
 
         private string Create<T>(Dictionary<string, object> filters, string condition, out DynamicParameters parameters)

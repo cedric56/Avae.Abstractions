@@ -22,7 +22,7 @@ namespace Example.Models
 
         [Dapper.Contrib.Extensions.Key]
         [MessagePack.Key(0)]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Required(ErrorMessage = "FirstName must be set")]
         [MessagePack.Key(1)]

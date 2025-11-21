@@ -2,7 +2,7 @@
 
 namespace Example.Models
 {
-    public interface IDbLayer : IDataAccessLayer
+    public interface IDBLayer : IDataAccessLayer
     {
         Task<Result> DbTransSave(DBModelBase modelBase);
         Task<Result> DbTransRemove(DBModelBase modelBase);

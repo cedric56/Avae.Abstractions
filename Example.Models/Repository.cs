@@ -5,11 +5,11 @@ namespace Example.Models
 {
     public class Repository : IDisposable
     {
-        private ISqlMonitorService<Person>? personMonitor;
+        private ISqlMonitor<Person>? personMonitor;
 
         private Repository()
         {
-            personMonitor = SimpleProvider.GetService<ISqlMonitorService<Person>>();
+            personMonitor = SimpleProvider.GetService<ISqlMonitor<Person>>();
             if (personMonitor != null)
             {
                 personMonitor.OnChanged += Monitor_OnChanged;

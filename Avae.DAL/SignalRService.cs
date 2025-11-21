@@ -55,7 +55,7 @@ namespace Avae.DAL
 
         public bool Connected => Hub.State == HubConnectionState.Connected;
 
-        public event EventHandler<bool> Reconnected;
+        public event EventHandler<bool>? Reconnected;
 
         public ValueTask DisposeAsync()
         {
@@ -232,7 +232,7 @@ namespace Avae.DAL
             return Hub.On(methodName, handler);
         }
 
-        public IDisposable On(string methodName, Type[] parameterTypes, Func<object?[], Task> handler)
+        public IDisposable On(string methodName, Type[] parameterTypes, Func<object[], Task> handler)
         {
             return Hub.On(methodName, parameterTypes, handler);
         }

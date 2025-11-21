@@ -39,7 +39,11 @@ namespace Example.ViewModels
         [RelayCommand]
         public void Add()
         {
-            OpenForm(new Person(), Persons.Add);
+            OpenForm(new Person(), person =>
+            {
+                Persons.Add(person);
+                SelectedPerson = person;
+            });
         }
 
         [RelayCommand(CanExecute = nameof(CanExecute))]
@@ -48,6 +52,7 @@ namespace Example.ViewModels
             OpenForm(SelectedPerson!, person =>
             {
                 Persons[Persons.IndexOf(SelectedPerson!)] = person;
+                SelectedPerson = person;
             });
         }
 
