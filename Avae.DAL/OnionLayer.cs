@@ -26,7 +26,7 @@ namespace Avae.DAL
             return MemoryPackSerializer.Deserialize<IEnumerable<T>>(bytes);
         }
 
-        public T Get<T>(int id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
+        public T Get<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
             if (OperatingSystem.IsBrowser())
             {
@@ -54,7 +54,7 @@ namespace Avae.DAL
             return MemoryPackSerializer.Deserialize<IEnumerable<T>>(bytes);
         }
 
-        public async Task<T> GetAsync<T>(int id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
+        public async Task<T> GetAsync<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
             var bytes = await Service.GetAsync(typeof(T).Name, id);
             return MemoryPackSerializer.Deserialize<T>(bytes);

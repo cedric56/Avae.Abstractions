@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using Avae.DAL;
 using Avae.Implementations;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -59,10 +60,26 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<ModalViewModel>();
 
         services.AddSingleton<IDbLayer>(_ => new DBSqlLayer());
-
-        var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        var dbPath = Path.Combine(folder, "database.db");
-        services.AddTransient<DbConnection>(_ => new SqliteConnection($"Data Source={dbPath};Foreign Keys=True"));
+        services.AddSingleton<IDataAccessLayer>(provider => provider.GetRequiredService<IDbLayer>());
+        services.AddSingleton<IDbFactory>(_ =>
+        {
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var dbPath = Path.Combine(folder, "database.db");
+            var factory = new SqlFactory<SqliteConnection>($"Data Source={dbPath};Foreign Keys=True");
+            factory.AddDbMonitor<Person>();
+            return factory;
+        });
+        services.AddTransient<DbConnection>(provider =>
+        {
+            var factory = provider.GetRequiredService<IDbFactory>();
+            return factory.CreateConnection()!;
+        });
+        services.AddSingleton<ISqlMonitorService<Person>>(provider =>
+        {
+            var factory = provider.GetRequiredService<IDbFactory>();
+            return (ISqlMonitorService<Person>)factory.Monitors.First(m => m is ISqlMonitorService<Person>);
+        });
+        services.AddSingleton<IBrokerService, BrokerService>();
     }
 
     public override void Initialize()
@@ -116,7 +133,7 @@ public partial class App : AvaeApplication, IIocConfiguration
         base.OnFrameworkInitializationCompleted();
 
         using var connection = SimpleProvider.GetService<DbConnection>();
-        connection.Open();
+        connection.Open();       
 
         using var cmd = connection.CreateCommand();
         cmd.CommandText = GetCommandText(connection);
@@ -140,7 +157,5 @@ public partial class App : AvaeApplication, IIocConfiguration
                 DataContext = new MainViewModel(new Router())
             };
         }
-
-        
     }
 }

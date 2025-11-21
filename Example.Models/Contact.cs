@@ -24,11 +24,12 @@ namespace Example.Models
         public Person Person
         {
             get { return person ??= DBBase.Instance.Get<Person>(IdPerson); }
-            set { person = value; }
+            set { SetProperty(ref person, value); }
         }
 
         [MessagePack.Key(1)]
         public int IdPerson { get; set; }
+
         [MessagePack.Key(2)]
         public int IdContact { get; set; }
 
@@ -38,7 +39,7 @@ namespace Example.Models
         public Person PersonContact
         {
             get { return contact ??= DBBase.Instance.Get<Person>(IdContact); }
-            set { contact = value; }
+            set { SetProperty(ref contact, value); }
         }
 
         public override bool Equals(object? obj)

@@ -10,7 +10,7 @@ namespace Avae.DAL
 
         UnaryResult<byte[]> WhereAsync(string type, Dictionary<string, object> filters);
 
-        UnaryResult<byte[]> GetAsync(string type, int id);
+        UnaryResult<byte[]> GetAsync(string type, long id);
     }
 
     public interface IXmlHttpRequest

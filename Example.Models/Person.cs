@@ -6,11 +6,11 @@ using MemoryPack;
 using MessagePack;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Example.Models
 {
     [Dapper.Contrib.Extensions.Table(nameof(Person))]
-    //[MessagePackObject]
     [MemoryPackable]
     [MessagePackObject]
     [ObservableObject]
@@ -37,7 +37,6 @@ namespace Example.Models
         }
 
         [Required(ErrorMessage = "LastName must be set")]
-        //[MessagePackKey(2)]
         [MessagePack.Key(2)]
         public string? LastName
         {
@@ -50,6 +49,7 @@ namespace Example.Models
         [Dapper.Contrib.Extensions.Computed]
         [MessagePack.Key(3)]
         [MemoryPackIgnore]
+        [JsonIgnore]
         public IList<Contact> Contacts
         {
             get
@@ -104,7 +104,7 @@ namespace Example.Models
         {
             bool isSuccessful = false;
             string message = string.Empty;
-            using var connection = new LoggedConnection();// SimpleProvider.GetService<DbConnection>();
+            using var connection = new LoggedConnection();
             await connection.OpenAsync();
 
             using (var transaction = connection.BeginTransaction())
@@ -124,7 +124,6 @@ namespace Example.Models
 
                     if (_contacts == null)
                     {
-                        //var contacts = await GetContactsAsync(instance);
                         Contacts = [.. before];
                     }
 

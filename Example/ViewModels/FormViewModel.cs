@@ -82,9 +82,6 @@ namespace Example.ViewModels
                 IsBusy = false;
                 if (!string.IsNullOrWhiteSpace(result.Exception))
                     await DialogWrapper.ShowOkAsync(result.Exception, "Error");
-                else
-                    await Repository.Instance.ClearPersons();
-
                 
                 await Close(result.Success ? Person : null);
             }

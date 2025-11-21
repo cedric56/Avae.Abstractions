@@ -1,7 +1,26 @@
-﻿namespace Example.Models
+﻿using Avae.Abstractions;
+using Avae.DAL;
+
+namespace Example.Models
 {
-    public class Repository
+    public class Repository : IDisposable
     {
+        private ISqlMonitorService<Person>? personMonitor;
+
+        private Repository()
+        {
+            personMonitor = SimpleProvider.GetService<ISqlMonitorService<Person>>();
+            if (personMonitor != null)
+            {
+                personMonitor.OnChanged += Monitor_OnChanged;
+            }
+        }
+
+        private async void Monitor_OnChanged(object? sender, IRecord<Person> e)
+        {
+            await ClearPersons();
+        }
+
         private List<Person>? _persons;
         private static readonly object _lock = new();
         
@@ -14,7 +33,10 @@
                 {
                     lock (_lock)
                     {
-                        _instance ??= new Repository();
+                        if (_instance is null)
+                        {
+                            _instance = new Repository();
+                        }
                     }
                 }
                 return _instance;
@@ -34,6 +56,12 @@
         public async Task ClearPersons()
         {
             _persons = new(await DBBase.Instance.GetAllAsync<Person>());
+        }
+
+        public void Dispose()
+        {
+            if (personMonitor != null)
+                personMonitor.OnChanged -= Monitor_OnChanged;
         }
     }
 }

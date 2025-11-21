@@ -1,7 +1,9 @@
 ﻿using Avae.Abstractions;
+using Avae.DAL;
 using Example.Models;
 using Grpc.Core;
 using Grpc.Net.Client;
+using MagicOnion;
 using MagicOnion.Server;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.SqlClient;
@@ -9,7 +11,7 @@ using Microsoft.Data.Sqlite;
 using System.Data.Common;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddSignalR();
 builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
 {
     builder.AllowAnyOrigin()
@@ -25,8 +27,22 @@ builder.Services.AddGrpc(opt =>
     opt.MaxReceiveMessageSize = int.MaxValue;
     opt.MaxSendMessageSize = int.MaxValue;
 });
-builder.Services.AddTransient<DbConnection>(_ => new SqliteConnection("Data Source=data.db;Foreign Keys=True"));
 builder.Services.AddSingleton<IDbLayer>(_ => new DBSqlLayer());
+builder.Services.AddSingleton<SqlHub<Person>>();
+builder.Services.AddSingleton<IDataAccessLayer>(provider => provider.GetRequiredService<IDbLayer>());
+builder.Services.AddSingleton<IDbFactory>(_ =>
+{
+    var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+    var dbPath = Path.Combine(folder, "database.db");
+    var factory = new SqlFactory<SqliteConnection>($"Data Source={dbPath};Foreign Keys=True");
+    factory.AddDbMonitor<Person>();
+    return factory;
+});
+builder.Services.AddTransient<DbConnection>(provider =>
+{
+    var factory = provider.GetRequiredService<IDbFactory>();
+    return factory.CreateConnection()!;
+});
 builder.Services.AddMagicOnion();
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -40,7 +56,7 @@ builder.WebHost.ConfigureKestrel(options =>
     //REST port
     options.ListenAnyIP(5001, o => o.Protocols = HttpProtocols.Http1AndHttp2);
 });
-builder.Services.AddTransient<DbConnection>(_ => new SqliteConnection("Data Source=data.db;Foreign Keys=True"));
+//builder.Services.AddTransient<DbConnection>(_ => new SqliteConnection("Data Source=data.db;Foreign Keys=True"));
 
 
 var app = builder.Build();
@@ -60,7 +76,7 @@ app.MapMagicOnionHttpGateway("_", app.Services.GetService<MagicOnionServiceDefin
 {
     Credentials = ChannelCredentials.Insecure
 }));
-
+app.MapHub<SqlHub<Person>>("/PersonHub");
 app.Run();
 
 string GetCommandText(DbConnection connection)

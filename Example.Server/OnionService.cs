@@ -122,7 +122,7 @@ namespace Example.Server
             public abstract Type Enumerable { get; }
 
             public abstract Task<object> GetAllAsync();
-            public abstract Task<object> GetAsync(int id);
+            public abstract Task<object> GetAsync(long id);
             public abstract Task<object> FindByAnyAsync(Dictionary<string, object> filters);
             public abstract Task<object> WhereAsync(Dictionary<string, object> filters);
         }
@@ -136,7 +136,7 @@ namespace Example.Server
             {
                 return await Layer.GetAllAsync<T>();
             }
-            public override async Task<object> GetAsync(int id)
+            public override async Task<object> GetAsync(long id)
             {
                 return await Layer.GetAsync<T>(id);
             }
@@ -180,7 +180,7 @@ namespace Example.Server
             return MemoryPackSerializer.Serialize(value.Enumerable, await value.GetAllAsync());
         }
 
-        public async UnaryResult<byte[]> GetAsync(string type, int id)
+        public async UnaryResult<byte[]> GetAsync(string type, long id)
         {
             var value = Dic.GetValueOrDefault(type);
             return MemoryPackSerializer.Serialize(value.Type, await value.GetAsync(id));

@@ -61,7 +61,6 @@ namespace Example.ViewModels
             else
             {
                 Persons.Remove(SelectedPerson);
-                await Repository.Instance.ClearPersons();
             }
         }
 
