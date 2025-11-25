@@ -12,7 +12,7 @@
         event Func<Exception, Task> Closed;
         event EventHandler<bool> Reconnected;
         ValueTask DisposeAsync();
-        IDisposable On(string methodName, Type[] parameterTypes, Func<object[], object, Task> handler, object state);
+        IDisposable On(string methodName, Type[] parameterTypes, Func<object?[], object, Task> handler, object state);
         void Remove(string methodName);
         Task SendCoreAsync(string methodName, object[] args, CancellationToken cancellationToken = default);
         Task StartAsync(CancellationToken cancellationToken = default);
@@ -50,7 +50,7 @@
         IDisposable On<T1, T2, T3>(string methodName, Action<T1, T2, T3> handler);
         IDisposable On<T1, T2>(string methodName, Action<T1, T2> handler);
         IDisposable On<T1>(string methodName, Action<T1> handler);
-        IDisposable On(string methodName, Type[] parameterTypes, Func<object[], Task> handler);
+        IDisposable On(string methodName, Type[] parameterTypes, Func<object?[], Task> handler);
         Task SendAsync(string methodName, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, object arg10, CancellationToken cancellationToken = default);
         Task SendAsync(string methodName, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, CancellationToken cancellationToken = default);
         Task SendAsync(string methodName, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, CancellationToken cancellationToken = default);

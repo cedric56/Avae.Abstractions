@@ -81,7 +81,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
                 result = e;
             };
 
-            await _contentDialogService?.ShowAsync(contentDialogParams);
+            await _contentDialogService.ShowAsync(contentDialogParams);
         }
         else
         {
@@ -89,7 +89,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
             var modalView = new ModalView<TViewModel, TResult>(modalViewModel);
             var box = new MsBox<ModalView<TViewModel, TResult>, ModalViewModel<TViewModel, TResult>, TResult>(modalView, modalViewModel);
             if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
-                result = await box.ShowWindowDialogAsync((Window)TopLevelStateManager.GetActive());
+                result = await box.ShowWindowDialogAsync((Window)TopLevelStateManager.GetActive()!);
             else
                 result = await box.ShowAsync();
         }

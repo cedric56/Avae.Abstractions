@@ -17,10 +17,10 @@ namespace Avae.Implementations
                 {
                     try
                     {
-                        TypedEventHandler<TaskDialog, EventArgs> opening = null;
-                        TypedEventHandler<TaskDialog, EventArgs> opened = null;
-                        TypedEventHandler<TaskDialog, TaskDialogClosingEventArgs> closing = null;
-                        TypedEventHandler<TaskDialog, EventArgs> closed = null;
+                        TypedEventHandler<TaskDialog, EventArgs>? opening = null;
+                        TypedEventHandler<TaskDialog, EventArgs>? opened = null;
+                        TypedEventHandler<TaskDialog, TaskDialogClosingEventArgs>? closing = null;
+                        TypedEventHandler<TaskDialog, EventArgs>? closed = null;
 
                         var taskDialog = new TaskDialog()
                         {
@@ -29,7 +29,7 @@ namespace Avae.Implementations
                             Title = @params.Title,
                             Header = @params.Header,
                             SubHeader = @params.SubHeader,
-                            IconSource = (IconSource)@params.IconSource,
+                            IconSource = @params.IconSource as IconSource,
                             ShowProgressBar = @params.ShowProgressBar,
                             FooterVisibility = Enum.Parse<FluentAvalonia.UI.Controls.TaskDialogFooterVisibility>(@params.FooterVisibility.ToString()),
                             IsFooterExpanded = @params.IsFooterExpanded,

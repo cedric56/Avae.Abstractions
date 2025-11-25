@@ -59,7 +59,7 @@ SimpleProvider.ConfigureServices(app.Services);
 app.UseCors("AllowAll");
 app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
 app.MapMagicOnionService().EnableGrpcWeb();
-var methods = app.Services.GetService<MagicOnionServiceDefinition>().MethodHandlers;
+var methods = app.Services.GetService<MagicOnionServiceDefinition>()?.MethodHandlers ?? [];
 app.MapMagicOnionSwagger("routes", methods, string.Empty);
 app.MapMagicOnionHttpGateway("routes", methods, GrpcChannel.ForAddress("http://localhost:5000", new GrpcChannelOptions()
 {

@@ -6,7 +6,6 @@ using MemoryPack;
 using MessagePack;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace Example.Models
@@ -17,12 +16,6 @@ namespace Example.Models
     [ObservableObject]
     public partial class Person : DBModelBase, IModelBase, IDataErrorInfo
     {
-        [ModuleInitializer]
-        public static void InitPerson()
-        {
-            InputValidation<Person>.Init();
-        }
-
         private IList<Contact>? _contacts;
         private string? _firstName;
         private string? _lastName;

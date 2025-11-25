@@ -1,4 +1,5 @@
-﻿using Avae.Abstractions;
+﻿#nullable disable
+using Avae.Abstractions;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using System.Data;
@@ -29,7 +30,7 @@ namespace Avae.DAL
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
             => Inner.BeginTransaction(isolationLevel);
 
-        public override void EnlistTransaction(System.Transactions.Transaction? transaction)
+        public override void EnlistTransaction(System.Transactions.Transaction transaction)
             => Inner.EnlistTransaction(transaction);
 
         //public override bool CanRaiseEvents => false;
@@ -48,7 +49,7 @@ namespace Avae.DAL
         private DbCommand _command = Command;
         private bool _disposed;
 
-        public override string? CommandText
+        public override string CommandText
         {
             get => _command.CommandText;
             set
@@ -82,7 +83,7 @@ namespace Avae.DAL
         }
 
 
-        protected override DbConnection? DbConnection
+        protected override DbConnection DbConnection
         {
             get => _command.Connection;
             set => _command.Connection = value;
@@ -92,7 +93,7 @@ namespace Avae.DAL
         protected override DbParameterCollection DbParameterCollection => _command.Parameters;
 
 
-        protected override DbTransaction? DbTransaction
+        protected override DbTransaction DbTransaction
         {
             get => _command.Transaction;
             set => _command.Transaction = value;
@@ -138,7 +139,7 @@ namespace Avae.DAL
         }
 
 
-        public override object? ExecuteScalar()
+        public override object ExecuteScalar()
         {
             LogCommandBeforeExecuted();
             return _command.ExecuteScalar();

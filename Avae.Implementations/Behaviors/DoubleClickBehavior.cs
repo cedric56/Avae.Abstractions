@@ -45,7 +45,7 @@ public class DoubleClickBehavior : AvaloniaObject
             interactElem.RemoveHandler(InputElement.DoubleTappedEvent, Handler);
         }
         // local handler fcn
-        static void Handler(object s, RoutedEventArgs e)
+        static void Handler(object? s, RoutedEventArgs e)
         {
             if (s is Interactive interactElem)
             {

@@ -16,6 +16,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 internal sealed partial class Program
@@ -73,7 +74,10 @@ public partial class XmlHttpRequest : IXmlHttpRequest
     [JSImport("globalThis.eval")]
     public static partial string Invoke(string @params);
 
-    public byte[] Send(string urlString, string data)
+    [JsonSerializable(typeof(byte[]))]
+    internal partial class SourceGenerationContext : JsonSerializerContext { }
+
+    public byte[]? Send(string urlString, string data)
     {
         Debug.WriteLine(urlString);
 
@@ -102,6 +106,6 @@ public partial class XmlHttpRequest : IXmlHttpRequest
     ";
 
         var response = Invoke(js);
-        return JsonSerializer.Deserialize<byte[]>(response);
+        return JsonSerializer.Deserialize<byte[]>(response, SourceGenerationContext.Default.ByteArray);
     }
 }

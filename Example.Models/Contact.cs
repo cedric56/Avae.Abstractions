@@ -21,7 +21,7 @@ namespace Example.Models
         [Computed]
         [IgnoreMember]
         [MemoryPackIgnore]
-        public Person Person
+        public Person? Person
         {
             get { return person ??= DBBase.Instance.Get<Person>(IdPerson); }
             set { SetProperty(ref person, value); }
@@ -36,7 +36,7 @@ namespace Example.Models
         [Computed]
         [IgnoreMember]
         [MemoryPackIgnore]
-        public Person PersonContact
+        public Person? PersonContact
         {
             get { return contact ??= DBBase.Instance.Get<Person>(IdContact); }
             set { SetProperty(ref contact, value); }

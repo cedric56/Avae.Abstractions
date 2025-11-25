@@ -107,7 +107,7 @@ namespace Example.ViewModels
                          Launched = async (viewModel) =>
                             {
                                 await Person.LoadContactsAsync();
-                                SelectedItems = Person.Contacts.Select(c => c.Person).ToList();
+                                SelectedItems = new(Person?.Contacts.Where(c=> c.Person is not null).Select(c => c.Person!) ?? []);
                             }
                     },
                     new PageViewModelBase<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),

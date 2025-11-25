@@ -182,7 +182,7 @@ namespace Avae.DAL
             return Hub.InvokeCoreAsync(methodName, args, cancellationToken);
         }
 
-        public IDisposable On(string methodName, Type[] parameterTypes, Func<object[], object, Task> handler, object state)
+        public IDisposable On(string methodName, Type[] parameterTypes, Func<object?[], object, Task> handler, object state)
         {
             return Hub.On(methodName, parameterTypes, handler, state);
         }
@@ -232,7 +232,7 @@ namespace Avae.DAL
             return Hub.On(methodName, handler);
         }
 
-        public IDisposable On(string methodName, Type[] parameterTypes, Func<object[], Task> handler)
+        public IDisposable On(string methodName, Type[] parameterTypes, Func<object?[], Task> handler)
         {
             return Hub.On(methodName, parameterTypes, handler);
         }

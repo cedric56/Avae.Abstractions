@@ -1,12 +1,8 @@
 ﻿using Avae.Abstractions;
-using Avae.DAL;
 using Example.Models;
 using MagicOnion;
 using MagicOnion.Server;
 using MemoryPack;
-using System.Buffers;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Example.Server
 {
@@ -18,7 +14,7 @@ namespace Example.Server
             public abstract Type Enumerable { get; }
 
             public abstract Task<object> GetAllAsync();
-            public abstract Task<object> GetAsync(long id);
+            public abstract Task<object?> GetAsync(long id);
             public abstract Task<object> FindByAnyAsync(Dictionary<string, object> filters);
             public abstract Task<object> WhereAsync(Dictionary<string, object> filters);
         }
@@ -32,7 +28,7 @@ namespace Example.Server
             {
                 return await Layer.GetAllAsync<T>();
             }
-            public override async Task<object> GetAsync(long id)
+            public override async Task<object?> GetAsync(long id)
             {
                 return await Layer.GetAsync<T>(id);
             }
@@ -66,32 +62,34 @@ namespace Example.Server
 
         public async UnaryResult<byte[]> FindByAnyAsync(string type, Dictionary<string, object> filters)
         {
-            var value = Dic.GetValueOrDefault(type);
-            return MemoryPackSerializer.Serialize(value.Enumerable, await value.FindByAnyAsync(filters));
+            var value = Dic.TryGetValue(type, out var handler) ?
+                MemoryPackSerializer.Serialize(handler.Enumerable, await handler.FindByAnyAsync(filters)) :
+                [];
+            return value;
         }
 
         public async UnaryResult<byte[]> GetAllAsync(string type)
         {
-            var value = Dic.GetValueOrDefault(type);
-            return MemoryPackSerializer.Serialize(value.Enumerable, await value.GetAllAsync());
+            var value = Dic.TryGetValue(type, out var handler) ?
+                MemoryPackSerializer.Serialize(handler.Enumerable, await handler.GetAllAsync()) :
+                [];
+            return value;
         }
 
         public async UnaryResult<byte[]> GetAsync(string type, long id)
         {
-            var value = Dic.GetValueOrDefault(type);
-            return MemoryPackSerializer.Serialize(value.Type, await value.GetAsync(id));
+            var value = Dic.TryGetValue(type, out var handler) ?
+                MemoryPackSerializer.Serialize(handler.Type, await handler.GetAsync(id)) :
+                [];
+            return value;
         }
 
         public async UnaryResult<byte[]> WhereAsync(string type, Dictionary<string, object> filters)
         {
-            var value = Dic.GetValueOrDefault(type);
-            return MemoryPackSerializer.Serialize(value.Enumerable, await value.WhereAsync(filters));
-        }
-
-        public async UnaryResult<string> GetAllAsyncAsString(string type)
-        {
-            var value = Dic.GetValueOrDefault(type);
-            return JsonSerializer.Serialize(await value.GetAllAsync());
+            var value = Dic.TryGetValue(type, out var handler) ?
+                MemoryPackSerializer.Serialize(handler.Enumerable, await handler.WhereAsync(filters)) :
+                [];
+            return value;
         }
     }
 }

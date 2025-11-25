@@ -24,7 +24,7 @@ namespace Example.ViewModels
             }
             finally
             {
-                await DialogWrapper.ShowOkAsync(result, "Result");
+                await DialogWrapper.ShowOkAsync(result ?? string.Empty, "Result");
             }
         }
     }

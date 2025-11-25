@@ -63,12 +63,13 @@ namespace Avae.Implementations
                 ButtonDefinitions = buttonEnum,
                 ContentTitle = title,
                 ContentMessage = message,
-                WindowIcon = GetIcon(IconUrl),
                 MinWidth = 300,
                 ShowInCenter = true,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
 
             };
+            if (!string.IsNullOrWhiteSpace(IconUrl))
+                @params.WindowIcon = GetIcon(IconUrl)!;
             return @params;
         }
 
