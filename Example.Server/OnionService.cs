@@ -42,13 +42,13 @@ namespace Example.Server
             }
         }
 
-        Dictionary<string, EntityHandler> Dic = new Dictionary<string, EntityHandler>()
+        readonly Dictionary<string, EntityHandler> Handlers = new()
         {
             { "Person", new EntityHandler<Person>() },
             { "Contact", new EntityHandler<Contact>() }
         };
 
-        private static IDBLayer Layer = SimpleProvider.GetService<IDBLayer>();
+        private static readonly IDBLayer Layer = SimpleProvider.GetService<IDBLayer>();
 
         public async UnaryResult<Result> DbTransRemove(DBModelBase modelBase)
         {
@@ -62,7 +62,7 @@ namespace Example.Server
 
         public async UnaryResult<byte[]> FindByAnyAsync(string type, Dictionary<string, object> filters)
         {
-            var value = Dic.TryGetValue(type, out var handler) ?
+            var value = Handlers.TryGetValue(type, out var handler) ?
                 MemoryPackSerializer.Serialize(handler.Enumerable, await handler.FindByAnyAsync(filters)) :
                 [];
             return value;
@@ -70,7 +70,7 @@ namespace Example.Server
 
         public async UnaryResult<byte[]> GetAllAsync(string type)
         {
-            var value = Dic.TryGetValue(type, out var handler) ?
+            var value = Handlers.TryGetValue(type, out var handler) ?
                 MemoryPackSerializer.Serialize(handler.Enumerable, await handler.GetAllAsync()) :
                 [];
             return value;
@@ -78,7 +78,7 @@ namespace Example.Server
 
         public async UnaryResult<byte[]> GetAsync(string type, long id)
         {
-            var value = Dic.TryGetValue(type, out var handler) ?
+            var value = Handlers.TryGetValue(type, out var handler) ?
                 MemoryPackSerializer.Serialize(handler.Type, await handler.GetAsync(id)) :
                 [];
             return value;
@@ -86,7 +86,7 @@ namespace Example.Server
 
         public async UnaryResult<byte[]> WhereAsync(string type, Dictionary<string, object> filters)
         {
-            var value = Dic.TryGetValue(type, out var handler) ?
+            var value = Handlers.TryGetValue(type, out var handler) ?
                 MemoryPackSerializer.Serialize(handler.Enumerable, await handler.WhereAsync(filters)) :
                 [];
             return value;

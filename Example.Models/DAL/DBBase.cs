@@ -9,7 +9,7 @@ namespace Example.Models
     {
         private static string GetCommandText(DbConnection connection)
         {
-            if (connection is SqliteConnection sqlite)
+            if (connection is SqliteConnection)
             {
                 return @"
             CREATE TABLE IF NOT EXISTS Person(
@@ -27,7 +27,7 @@ namespace Example.Models
                         );
             ";
             }
-            else if (connection is SqlConnection sqlServer)
+            else if (connection is SqlConnection)
             {
                 return @"CREATE TABLE IF NOT EXISTS Person (
                         Id INT PRIMARY KEY IDENTITY(1,1),
@@ -48,7 +48,7 @@ namespace Example.Models
             throw new NotImplementedException();
         }
 
-        private static object _lock = new object();
+        private static readonly object _lock = new();
         private static IDBLayer? _instance;
         public static IDBLayer Instance
         {
