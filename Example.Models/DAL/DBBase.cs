@@ -60,13 +60,19 @@ namespace Example.Models
                     {
                         if (_instance == null)
                         {
-                            //Create db
-                            using var connection = SimpleProvider.GetService<DbConnection>();
-                            connection.Open();
+                            if (!OperatingSystem.IsBrowser())
+                            {
+                                //Create db
+                                using var connection = SimpleProvider.GetService<DbConnection>();
+                                if (connection is not null)
+                                {
+                                    connection.Open();
 
-                            using var cmd = connection.CreateCommand();
-                            cmd.CommandText = GetCommandText(connection);
-                            cmd.ExecuteNonQuery();
+                                    using var cmd = connection.CreateCommand();
+                                    cmd.CommandText = GetCommandText(connection);
+                                    cmd.ExecuteNonQuery();
+                                }
+                            }
 
                             _instance = SimpleProvider.GetService<IDBLayer>();                            
                         }

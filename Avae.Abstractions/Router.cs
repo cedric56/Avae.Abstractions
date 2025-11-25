@@ -86,19 +86,6 @@
             return GetContext(viewModel, parameters);
         }
 
-        //public Task<IContextFor> GoTo<TViewModel>(Router router) where TViewModel : PagesViewModelBase
-        //{
-        //    return GoTo<TViewModel>(router, out var _);
-        //}
-
-        //public async Task<IContextFor> GoTo<TViewModel>(Router router, out TViewModel viewModel) where TViewModel : PagesViewModelBase
-        //{
-        //    viewModel = await SimpleProvider.GetViewModel<TViewModel>(router.ForViewModel());
-        //    AddHistory(viewModel);
-        //    CurrentViewModelChanged?.Invoke(viewModel);
-        //    return GetContext(viewModel);
-        //}
-
         private void AddHistory(IViewModelBase item)
         {
             // After navigating back the current index may not be the most forward position.

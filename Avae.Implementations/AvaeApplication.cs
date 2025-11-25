@@ -36,7 +36,8 @@ namespace Avae.Implementations
             services.AddSingleton<IIocConfiguration>(this);
             services.AddSingleton<IDialogService>(provider =>
             {
-                return TypeDialog== eTypeDialog.Box ? new DialogService(IconUrl) : new ContentDialogService();
+                return TypeDialog== eTypeDialog.Box ? new DialogService(IconUrl) : 
+                            new ContentDialogService();
             });
             services.AddSingleton<IContentDialogService, ContentDialogService>();
             services.AddSingleton<ITaskDialogService, TaskDialogService>();
@@ -89,6 +90,7 @@ namespace Avae.Implementations
             });
             Styles.Add(new FluentTheme());
             Styles.Add(new FluentAvaloniaTheme());
+            
 
             if(this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime classic)
                 classic.Exit += Classic_Exit;

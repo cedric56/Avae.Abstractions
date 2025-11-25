@@ -5,7 +5,8 @@ using Example.ViewModels;
 
 namespace Example;
 
-public partial class FormPage1View : UserControl, IContextFor<FormViewModel>
+public partial class FormPage1View : UserControl, 
+    IContextFor<FormViewModel>
 {
     public FormPage1View()
     {

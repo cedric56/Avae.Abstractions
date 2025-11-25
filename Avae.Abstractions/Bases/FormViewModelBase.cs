@@ -31,6 +31,8 @@ namespace Avae.Abstractions
             }
         }
 
+        public virtual CommandIndex[] Commands => [new() { Command = CloseCommand, Index = 0}];
+
         public Task Close(TResult? value)
         {
             CloseRequested?.Invoke(this, value);

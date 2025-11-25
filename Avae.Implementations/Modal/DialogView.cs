@@ -12,7 +12,7 @@ public abstract class DialogViewBase : UserControl
 
 public class DialogView<TViewModel, TResult> : DialogViewBase,
     IModalFor<TViewModel, TResult>
-    where TViewModel : CloseableViewModelBase<TResult>
+    where TViewModel : class, ICloseableViewModel<TResult>
 {
     protected virtual string Title { get; } = string.Empty;
     protected virtual string Buttons { get; } = "Ok";

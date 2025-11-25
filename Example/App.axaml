@@ -13,7 +13,6 @@
 
     <Application.Styles>
         <FluentTheme />
-
 	  <Style Selector="DataValidationErrors">
   <Setter Property="Template">
     <ControlTemplate>

@@ -1,6 +1,11 @@
 ﻿namespace Avae.DAL
 {
-    public interface ISqlMonitor<T> where T : class, new()
+    public interface ISqlMonitor
+    {
+
+    }
+
+    public interface ISqlMonitor<T> : ISqlMonitor where T : class, new()
     {
         event EventHandler<IRecord<T>> OnChanged;
     }

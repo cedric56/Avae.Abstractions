@@ -1,11 +1,12 @@
 ﻿using Avae.Abstractions;
 using Microsoft.Data.SqlClient;
 using SqlTableDependency.Extensions;
+using System.Diagnostics;
 using TableDependency.SqlClient.Base.EventArgs;
 
 namespace Avae.DAL
 {
-    public abstract class SqlMonitor : IDbMonitor
+    public abstract class SqlMonitor : ISqlMonitor
     {
         public abstract void OnSqliteChanged(ChangeType type, string database, string table, long rowid);
     }
@@ -33,9 +34,14 @@ namespace Avae.DAL
                     await signalRService.StartAsync();
                 }
                 catch (Exception ex) {
-                    Console.WriteLine(ex);
+                    Debug.WriteLine(ex);
                 }
             });
+        }
+
+        public SqlMonitor()
+        {
+
         }
 
         public SqlMonitor(string connectionString, Type connectionType)

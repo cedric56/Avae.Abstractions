@@ -1,6 +1,7 @@
 ﻿using System;
 using Avae.Services;
 using Avalonia;
+using ReactiveUI.Avalonia;
 
 namespace Example.Desktop;
 
@@ -17,6 +18,7 @@ class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .UseReactiveUI()
             .UseServices()
             .WithInterFont()
             .LogToTrace();

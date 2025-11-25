@@ -2,11 +2,14 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Example.ViewModels
@@ -31,8 +34,11 @@ namespace Example.ViewModels
 
     [ObservableObject]
     [GoTo]
-    internal partial class FormViewModel(Router router, Person person) : FormViewModelBase<Person>(router), IDataErrorInfo
+    internal partial class FormViewModel(Router router, Person person) : FormViewModelBase<Person>(router),         
+        IDataErrorInfo
     {
+        public const string KEY = "Page";
+
         [ObservableProperty]
         private bool _isBusy = false;
 
@@ -97,7 +103,7 @@ namespace Example.ViewModels
                 {
                     new PageViewModelBase<FormViewModel>(this, "Page One", "fa-solid fa-gear")
                     {
-                         FactoryParameters = ["Page".ForFactory()],
+                         FactoryParameters = [KEY.ForFactory()],
                          Launched = async (viewModel) =>
                             {
                                 await Person.LoadContactsAsync();
@@ -125,6 +131,7 @@ namespace Example.ViewModels
 
         public string Error => Person.Error;
 
+        
         public string this[string columnName] => Person[columnName];
 
         protected override Task<bool> CanClose()

@@ -9,7 +9,9 @@ using Grpc.Net.Client.Web;
 using MagicOnion;
 using MagicOnion.Client;
 using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI.Avalonia;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices.JavaScript;
@@ -22,7 +24,7 @@ internal sealed partial class Program
         BuildAvaloniaApp().WithInterFont().StartBrowserAppAsync("out");
     
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<BrowserApp>().UseServices();
+        => AppBuilder.Configure<BrowserApp>().UseServices().UseReactiveUI();
 
 
     public class BrowserApp : App
@@ -37,9 +39,13 @@ internal sealed partial class Program
         {
             base.Configure(services);
 
-            services.AddScoped<IOnionService>(_ => GetMagicOnion<IDBOnionService>());            
-            services.AddTransient<IXmlHttpRequest, XmlHttpRequest>();
+            var monitor = new SqlMonitor<Person>();
+            monitor.AddSignalR("http://localhost:5001/PersonHub");
+            services.AddSingleton<ISqlMonitor<Person>>(monitor);
 
+            services.AddScoped<IDBOnionService>(_ => GetMagicOnion<IDBOnionService>());
+            services.AddScoped<IOnionService>(provider => provider.GetRequiredService<IDBOnionService>());
+            services.AddTransient<IXmlHttpRequest, XmlHttpRequest>();
             services.UseDbLayer<IDBLayer, DBOnionLayer>();
         }
 
@@ -51,7 +57,7 @@ internal sealed partial class Program
                 Timeout = TimeSpan.FromSeconds(5)
             };
             var channel = GrpcChannel.ForAddress(
-                OperatingSystem.IsBrowser() ? "http://localhost:5001" : "http://localhost:5000", new GrpcChannelOptions()
+                "http://localhost:5001", new GrpcChannelOptions()
                 {
                     HttpClient = client,
                 });
@@ -62,13 +68,15 @@ internal sealed partial class Program
 
 public partial class XmlHttpRequest : IXmlHttpRequest
 {
-    const string URL = "http://localhost:5001/_/IDbService/";
+    const string URL = "http://localhost:5001/routes/IDBOnionService/";
 
     [JSImport("globalThis.eval")]
     public static partial string Invoke(string @params);
 
     public byte[] Send(string urlString, string data)
     {
+        Debug.WriteLine(urlString);
+
         string escapedData = data.Replace("\\", "\\\\").Replace("'", "\\'");
         string escapedUrl = string.Concat(URL, urlString).Replace("\\", "\\\\").Replace("'", "\\'");
 

@@ -4,6 +4,7 @@ using Example.Models;
 using Grpc.Core;
 using Grpc.Net.Client;
 using MagicOnion.Server;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
 
@@ -58,7 +59,9 @@ SimpleProvider.ConfigureServices(app.Services);
 app.UseCors("AllowAll");
 app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
 app.MapMagicOnionService().EnableGrpcWeb();
-app.MapMagicOnionHttpGateway("_", app.Services.GetService<MagicOnionServiceDefinition>().MethodHandlers, GrpcChannel.ForAddress("http://localhost:5000", new GrpcChannelOptions()
+var methods = app.Services.GetService<MagicOnionServiceDefinition>().MethodHandlers;
+app.MapMagicOnionSwagger("routes", methods, string.Empty);
+app.MapMagicOnionHttpGateway("routes", methods, GrpcChannel.ForAddress("http://localhost:5000", new GrpcChannelOptions()
 {
     Credentials = ChannelCredentials.Insecure
 }));

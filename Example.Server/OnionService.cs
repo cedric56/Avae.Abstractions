@@ -5,6 +5,8 @@ using MagicOnion;
 using MagicOnion.Server;
 using MemoryPack;
 using System.Buffers;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Example.Server
 {
@@ -84,6 +86,12 @@ namespace Example.Server
         {
             var value = Dic.GetValueOrDefault(type);
             return MemoryPackSerializer.Serialize(value.Enumerable, await value.WhereAsync(filters));
+        }
+
+        public async UnaryResult<string> GetAllAsyncAsString(string type)
+        {
+            var value = Dic.GetValueOrDefault(type);
+            return JsonSerializer.Serialize(await value.GetAllAsync());
         }
     }
 }

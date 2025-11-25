@@ -13,6 +13,7 @@ using Projektanker.Icons.Avalonia.FontAwesome;
 using System;
 using System.IO;
 using System.Linq;
+using Ursa.Themes.Semi;
 
 namespace Example;
 
@@ -20,7 +21,7 @@ public partial class App : AvaeApplication, IIocConfiguration
 {
     public App()
         : base()
-    {
+    {        
         IconProvider.Current.Register<FontAwesomeIconProvider>();
     }
 
@@ -29,19 +30,19 @@ public partial class App : AvaeApplication, IIocConfiguration
     public override eTypeDialog TypeDialog => eTypeDialog.Box;
 
     public override void Configure(IIocContainer container)
-    {        
+    {
         container.Register<HomeView>();
         container.Register<MenuView>();
-        container.Register<FormViewModel>(new ViewFactory(parameters =>
+        container.Register<FormViewModel>(parameters =>
         {
-            if(parameters.OfType<FactoryParameter<string>>().Any(p => p.Value == "Page"))
+            if (parameters.OfType<FactoryParameter<string>>().Any(p => p.Value == FormViewModel.KEY))
             {
                 return new FormPage1View();
             }
             return new FormView();
-        }));
+        });
         container.Register<FormPage2View>();
-        container.Register<FormPage3View>();
+        container.Register<FormPage3View, Person>(person => new FormPage3View(person));
         container.Register<ModalWindow>();
     }
 
@@ -52,22 +53,25 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<Router>();
         services.AddSingleton<HomeViewModel>();
         services.AddSingleton<MenuViewModel>();
-        services.AddTransient<ViewModelFactory<FormViewModel>>();        
+        services.AddTransient<ViewModelFactory<FormViewModel>>();
         services.AddTransient<FormPage2ViewModel>();
         services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
         services.AddTransient<ModalViewModel>();
 
         services.UseDbLayer<IDBLayer, DBSqlLayer>();
 
-        var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        var dbPath = Path.Combine(folder, "database.db");
-        var connectionString = $"Data Source={dbPath};Foreign Keys=True";
-        services.UseSqlMonitors<SqliteConnection>(connectionString, factory =>
+        if (!OperatingSystem.IsBrowser())
         {
-            var monitor = factory.AddDbMonitor<Person>();
-            monitor.AddSignalR("http://localhost:5001/PersonHub");
-            services.AddSingleton<ISqlMonitor<Person>>(monitor);            
-        });
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var dbPath = Path.Combine(folder, "database.db");
+            var connectionString = $"Data Source={dbPath};Foreign Keys=True";
+            services.UseSqlMonitors<SqliteConnection>(connectionString, factory =>
+            {
+                var monitor = factory.AddDbMonitor<Person>();
+                monitor.AddSignalR("http://localhost:5001/PersonHub");
+                services.AddSingleton<ISqlMonitor<Person>>(monitor);
+            });
+        }
         services.AddSingleton<IBrokerService, BrokerService>();
     }
 
@@ -79,6 +83,8 @@ public partial class App : AvaeApplication, IIocConfiguration
     public override void OnFrameworkInitializationCompleted()
     {
         base.OnFrameworkInitializationCompleted();
+
+        Styles.Add(new SemiTheme());
 
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT

@@ -5,15 +5,15 @@ namespace Example.Models
 {
     public class DBOnionLayer : OnionLayer, IDBLayer
     {
-        public IDBOnionService Service = SimpleProvider.GetService<IOnionService>() as IDBOnionService;
-
         public async Task<Result> DbTransRemove(DBModelBase modelBase)
         {
+            IDBOnionService Service = SimpleProvider.GetService<IDBOnionService>();
             return await Service.DbTransRemove(modelBase);
         }
 
         public async Task<Result> DbTransSave(DBModelBase modelBase)
         {
+            IDBOnionService Service = SimpleProvider.GetService<IDBOnionService>();
             return await Service.DbTransSave(modelBase);
         }
     }

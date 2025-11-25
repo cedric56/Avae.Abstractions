@@ -8,40 +8,26 @@ public delegate object ViewFactory(params object[] parameters);
 /// </summary>
 public interface IIocContainer
 {
-    /// <summary>
-    /// Registers a view based on viewmodel
-    /// </summary>
-    /// <typeparam name="TView">Type of the view</typeparam>
-    /// <typeparam name="TViewModel">Type of the viewModel</typeparam>
-    void Register<TViewModel, TView>();
+    void Register(string key, Func<object[], object> factory);
 
-    /// <summary>
-    /// Registers a iviewfor
-    /// </summary>
-    /// <typeparam name="TView">Type of the view</typeparam>
-    void Register<TViewFor>() where TViewFor : IContextFor;
+    void Register<TView>() where TView : IContextFor, new();
 
-    /// <summary>
-    /// Registers a view based on a key
-    /// </summary>
-    /// <param name="key">Key to registered</param>
-    /// <param name="type">Type to registered</param>
-    void Register(string key, Type type);
+    void Register<TViewModel>(Func<object[], object> factory);
 
-    /// <summary>
-    /// Registers the View factory for the specified viewmodel type.
-    /// </summary>
-    /// <typeparam name="T">The type</typeparam>
-    /// <param name="factory">The view factory.</param>
-    void Register<T>(ViewFactory? factory = null);
+    void Register<TView>(Func<object[], TView> factory) where TView : IContextFor;
 
-    /// <summary>
-    /// Registers the View factory for the specified key.
-    /// </summary>
-    /// <param name="key">The key</param>
-    /// <param name="factory">The view factory.</param>
-    void RegisterFactory(string key, ViewFactory factory);
+    void Register<TView, TArg1>(Func<TArg1, TView> func)
+        where TView : IContextFor;
 
-    void Register(string key, Func<object[], object> action);
+    void Register<TView, TArg1, TArg2>(Func<TArg1, TArg2, TView> func)
+        where TView : IContextFor;
 
+    void Register<TView, TArg1, TArg2, TArgs3>(Func<TArg1, TArg2, TArgs3, TView> func)
+        where TView : IContextFor;
+
+    void Register<TView, TArg1, TArg2, TArgs3, TArgs4>(Func<TArg1, TArg2, TArgs3, TArgs4, TView> func)
+        where TView : IContextFor;
+
+    void Register<TView, TArg1, TArg2, TArgs3, TArgs4, TArgs5>(Func<TArg1, TArg2, TArgs3, TArgs4, TArgs5, TView> func)
+        where TView : IContextFor;
 }

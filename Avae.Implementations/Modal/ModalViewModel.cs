@@ -22,7 +22,7 @@ internal abstract class ModalViewModelBase(ModalParameters parameters) :
 
 internal class ModalViewModel<T, TResult>(ModalParameters<T,TResult> parameters, T viewModel) :
     ModalViewModelBase(parameters), ISetFullApi<TResult>
-    where T : CloseableViewModelBase<TResult>
+    where T : ICloseableViewModel<TResult>
 {
     public new T ViewModel { get; } = viewModel;
 

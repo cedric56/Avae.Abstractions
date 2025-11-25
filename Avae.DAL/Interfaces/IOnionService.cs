@@ -4,6 +4,8 @@ namespace Avae.DAL
 {
     public interface IOnionService
     {
+        UnaryResult<string> GetAllAsyncAsString(string type);
+
         UnaryResult<byte[]> GetAllAsync(string type);
 
         UnaryResult<byte[]> FindByAnyAsync(string type, Dictionary<string, object> filters);

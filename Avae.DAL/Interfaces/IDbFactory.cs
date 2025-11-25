@@ -4,7 +4,7 @@ namespace Avae.DAL
 {
     public interface IDbFactory
     {
-        List<IDbMonitor> Monitors { get; }
+        List<ISqlMonitor> Monitors { get; }
         DbConnection? CreateConnection();
     }
 }

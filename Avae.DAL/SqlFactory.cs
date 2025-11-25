@@ -8,7 +8,7 @@ namespace Avae.DAL
         IDbFactory
         where TDbConnection : DbConnection, new()
     {
-        public List<IDbMonitor> Monitors { get; } = [];
+        public List<ISqlMonitor> Monitors { get; } = [];
 
         public override DbConnection? CreateConnection()
         {

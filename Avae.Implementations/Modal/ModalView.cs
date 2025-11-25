@@ -7,7 +7,7 @@ using MsBox.Avalonia.ViewModels;
 namespace Avae.Implementations
 {
     internal partial class ModalView<T, TResult> : UserControl, IFullApi<TResult>, ISetCloseAction
-        where T : CloseableViewModelBase<TResult>
+        where T : ICloseableViewModel<TResult>
     {
         public ModalView(ModalViewModel<T, TResult> viewModel)
         {
