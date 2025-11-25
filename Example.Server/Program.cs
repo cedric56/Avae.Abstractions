@@ -4,7 +4,6 @@ using Example.Models;
 using Grpc.Core;
 using Grpc.Net.Client;
 using MagicOnion.Server;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
 

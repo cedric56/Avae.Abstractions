@@ -1,11 +1,11 @@
 ﻿using Avae.Abstractions;
-using Avae.DAL;
+using Avae.DAL.Interfaces;
 
 namespace Example.Models
 {
     public class Repository : IDisposable
     {
-        private ISqlMonitor<Person>? personMonitor;
+        private readonly ISqlMonitor<Person>? personMonitor;
 
         private Repository()
         {

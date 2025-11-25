@@ -38,7 +38,7 @@ namespace Avae.Abstractions
             var type = typeof(ViewModelFactory<>).MakeGenericType(viewModelType);
             if (GetService(type) is IViewModelBaseFactory factory)
             {
-                var viewModel = factory.Create(viewModelType, parameters.OfType<ViewModelParameter>().ToArray());
+                var viewModel = factory.Create(viewModelType, [.. parameters.OfType<ViewModelParameter>()]);
                 if (viewModel is not null)
                 {
                     return viewModel;

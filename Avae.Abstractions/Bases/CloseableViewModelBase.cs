@@ -13,7 +13,7 @@ namespace Avae.Abstractions
         {
             get
             {
-                return closeCommand ?? (closeCommand = new AsyncRelayCommand(() => Close(default)));
+                return closeCommand ??= new AsyncRelayCommand(() => Close(default));
             }
         }
 

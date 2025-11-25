@@ -3,14 +3,8 @@ using System.Windows.Input;
 
 namespace Avae.Abstractions
 {
-    public abstract partial class FormViewModelBase<TResult> : PagesViewModelBase, ICloseableViewModel<TResult>
+    public abstract partial class FormViewModelBase<TResult>(Router router) : PagesViewModelBase(router), ICloseableViewModel<TResult>
     {
-        public FormViewModelBase(Router router)
-            : base(router)
-        {
-
-        }
-
         public event EventHandler<TResult?>? CloseRequested;
 
         public abstract string Title { get; }
@@ -23,11 +17,11 @@ namespace Avae.Abstractions
         {
             get
             {
-                return closeCommand ?? (closeCommand = new AsyncRelayCommand(async () =>
+                return closeCommand ??= new AsyncRelayCommand(async () =>
                 {
                     if (await CanClose())
                         await Close(default);
-                }));
+                });
             }
         }
 

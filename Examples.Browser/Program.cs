@@ -1,9 +1,11 @@
 ﻿using Avae.DAL;
+using Avae.DAL.Interfaces;
 using Avae.Services;
 using Avalonia;
 using Avalonia.Browser;
 using Example;
 using Example.Models;
+using Examples.Browser;
 using Grpc.Net.Client;
 using Grpc.Net.Client.Web;
 using MagicOnion;
@@ -11,12 +13,8 @@ using MagicOnion.Client;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI.Avalonia;
 using System;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices.JavaScript;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 internal sealed partial class Program
@@ -64,48 +62,5 @@ internal sealed partial class Program
                 });
             return MagicOnionClient.Create<IGrpc>(channel);
         }
-    }
-}
-
-public partial class XmlHttpRequest : IXmlHttpRequest
-{
-    const string URL = "http://localhost:5001/routes/IDBOnionService/";
-
-    [JSImport("globalThis.eval")]
-    public static partial string Invoke(string @params);
-
-    [JsonSerializable(typeof(byte[]))]
-    internal partial class SourceGenerationContext : JsonSerializerContext { }
-
-    public byte[]? Send(string urlString, string data)
-    {
-        Debug.WriteLine(urlString);
-
-        string escapedData = data.Replace("\\", "\\\\").Replace("'", "\\'");
-        string escapedUrl = string.Concat(URL, urlString).Replace("\\", "\\\\").Replace("'", "\\'");
-
-        var js = @$"const request = function (url, data) {{
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', url, false); 
-        xhr.onload = function () {{
-            //console.log(this.responseText);
-        }};
-        if (data)
-            //Send the proper header information along with the request
-            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.send(data);
-
-        if (xhr.status === 200) {{
-            return xhr.responseText;
-        }} else {{
-            throw new Error(xhr.statusText);
-        }}
-    }}
-
-    request('{escapedUrl}', '{escapedData}');
-    ";
-
-        var response = Invoke(js);
-        return JsonSerializer.Deserialize<byte[]>(response, SourceGenerationContext.Default.ByteArray);
     }
 }

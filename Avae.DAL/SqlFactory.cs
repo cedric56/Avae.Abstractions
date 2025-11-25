@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Avae.DAL.Interfaces;
+using Microsoft.Data.Sqlite;
 using SQLitePCL;
 using System.Data.Common;
 
@@ -20,7 +21,7 @@ namespace Avae.DAL
             if (connection is SqliteConnection sqlite)
             {
                 //Sqlite only raise database changes on current connection
-                raw.sqlite3_update_hook(sqlite.Handle, (object user_data, int type, string database, string table, long rowid) =>
+                raw.sqlite3_update_hook(sqlite.Handle, (user_data, type, database, table, rowid) =>
                 {
                     foreach (var monitor in Monitors.OfType<SqlMonitor>())
                         monitor.OnSqliteChanged(type switch

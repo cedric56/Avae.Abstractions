@@ -29,10 +29,10 @@ namespace Example.ViewModels
         {
             get
             {
-                return new ObservableCollection<PageViewModelBase>
-                {
+                return
+                [
                     new PageViewModelBase<FormViewModel>("Form", "fa-solid fa-gear")
-                };
+                ];
             }
         }
 

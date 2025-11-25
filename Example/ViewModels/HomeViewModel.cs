@@ -8,7 +8,7 @@ namespace Example.ViewModels
 {
     internal partial class HomeViewModel : ObservableObject, IViewModelBase
     {
-        public string Title => "Welcome to home";
+        public static string Title => "Welcome to home";
 
         [RelayCommand()]
         public async Task ShowModal()

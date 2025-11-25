@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Avae.DAL
+namespace Avae.DAL.Interfaces
 {
     public interface IDataAccessLayer
     {

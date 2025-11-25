@@ -25,13 +25,12 @@ namespace Avae.Implementations
             return index;
         }
 
-        private Task<ButtonResult> ShowMessage(MessageBoxStandardParams @params)
+        private static Task<ButtonResult> ShowMessage(MessageBoxStandardParams @params)
         {
             return Dispatcher.UIThread.Invoke(async () =>
             {
                 var box = MessageBoxManager.GetMessageBoxStandard(@params);
-                var owner = TopLevelStateManager.GetActive() as Window;
-                if (owner != null && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()))
+                if (TopLevelStateManager.GetActive() is Window owner)
                 {
                     return await box.ShowWindowDialogAsync(owner);
                 }
@@ -73,7 +72,7 @@ namespace Avae.Implementations
             return @params;
         }
 
-        public WindowIcon? GetIcon(string url)
+        public static WindowIcon? GetIcon(string url)
         {
             try
             {

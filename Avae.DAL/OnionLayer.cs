@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using Avae.DAL.Interfaces;
 using MemoryPack;
 using System.Data;
 using System.Text.Json;

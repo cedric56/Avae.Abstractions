@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using Avae.DAL.Interfaces;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Avae.DAL
 {
@@ -329,6 +330,8 @@ namespace Avae.DAL
             Hub.Closed -= OnClosedAsync;
             Hub.Reconnecting -= OnReconnectingAsync;
             Hub.Reconnected -= OnReconnectedAsync;
+
+            GC.SuppressFinalize(this);
         }
     }
 }

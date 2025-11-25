@@ -4,6 +4,6 @@ namespace Example.ViewModels
 {
     internal class FormPage2ViewModel() : IViewModelBase
     {
-        public string Title => "Welcome to page 2";
+        public static string Title => "Welcome to page 2";
     }
 }

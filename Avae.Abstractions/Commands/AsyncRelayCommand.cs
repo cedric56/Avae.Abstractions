@@ -2,16 +2,10 @@
 
 namespace Avae.Abstractions.Commands
 {
-    public class AsyncRelayCommand : ICommand
+    public class AsyncRelayCommand(Func<Task> execute, Func<bool>? canExecute = null) : ICommand
     {
-        private readonly Func<Task> _execute;
-        private readonly Func<bool>? _canExecute;
-
-        public AsyncRelayCommand(Func<Task> execute, Func<bool>? canExecute = null)
-        {
-            _execute = execute;
-            _canExecute = canExecute;
-        }
+        private readonly Func<Task> _execute = execute;
+        private readonly Func<bool>? _canExecute = canExecute;
 
         public bool CanExecute(object? parameter) => _canExecute?.Invoke() ?? true;
 

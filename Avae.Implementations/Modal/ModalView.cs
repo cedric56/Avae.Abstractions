@@ -27,7 +27,7 @@ namespace Avae.Implementations
 
         protected override Type StyleKeyOverride => typeof(DialogViewBase);
 
-        private TResult _buttonResult = default;
+        private TResult _buttonResult =  default;
         private Action _closeAction= () => { };
 
         public void SetButtonResult(TResult bdName)

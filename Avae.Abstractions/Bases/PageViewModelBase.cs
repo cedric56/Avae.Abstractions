@@ -27,7 +27,7 @@ namespace Avae.Abstractions
                 parameters.AddRange(FactoryParameters);
                 parameters.AddRange(ViewParameters);
                 parameters.AddRange(ViewModelParameters);
-                return parameters.ToArray();
+                return [.. parameters];
             }
         }
 

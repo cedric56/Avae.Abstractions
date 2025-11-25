@@ -1,5 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
+using Avae.DAL.Interfaces;
 using Avae.Implementations;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -27,7 +28,7 @@ public partial class App : AvaeApplication, IIocConfiguration
 
     public override string IconUrl => "avares://Example/Assets/avalonia-logo.ico";
 
-    public override eTypeDialog TypeDialog => eTypeDialog.Box;
+    public override TypeDialog TypeDialog => TypeDialog.Box;
 
     public override void Configure(IIocContainer container)
     {

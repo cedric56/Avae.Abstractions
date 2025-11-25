@@ -1,6 +1,6 @@
 ﻿using MagicOnion;
 
-namespace Avae.DAL
+namespace Avae.DAL.Interfaces
 {
     public interface IOnionService
     {

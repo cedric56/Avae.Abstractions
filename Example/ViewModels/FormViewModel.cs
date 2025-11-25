@@ -48,7 +48,7 @@ namespace Example.ViewModels
         {
             get
             {
-                return Repository.Instance.Persons.Where(p => p.Id != Person.Id).ToList();
+                return [.. Repository.Instance.Persons.Where(p => p.Id != Person.Id)];
             }
         }
 
@@ -99,15 +99,15 @@ namespace Example.ViewModels
         {
             get
             {
-                return new ObservableCollection<PageViewModelBase>
-                {
+                return
+                [
                     new PageViewModelBase<FormViewModel>(this, "Page One", "fa-solid fa-gear")
                     {
                          FactoryParameters = [KEY.ForFactory()],
                          Launched = async (viewModel) =>
                             {
                                 await Person.LoadContactsAsync();
-                                SelectedItems = new(Person?.Contacts.Where(c=> c.Person is not null).Select(c => c.Person!) ?? []);
+                                SelectedItems = [.. Person?.Contacts.Where(c=> c.Person is not null).Select(c => c.Person!) ?? []];
                             }
                     },
                     new PageViewModelBase<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),
@@ -116,7 +116,7 @@ namespace Example.ViewModels
                         //Possibility to set parameters on ctor
                          //ViewParameters = [Person.ForView()]
                     }
-                };
+                ];
             }
         }
 

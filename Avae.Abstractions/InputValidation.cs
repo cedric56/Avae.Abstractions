@@ -29,7 +29,7 @@ namespace Avae.Abstractions
         }
 
         // Registered validators (AOT-safe)
-        private static readonly Dictionary<string, ValidatorEntry> _validators = new();
+        private static readonly Dictionary<string, ValidatorEntry> _validators = [];
 
         public static void Register<TValue>(
             string propertyName,

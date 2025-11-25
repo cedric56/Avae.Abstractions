@@ -18,7 +18,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
     protected virtual string Buttons { get; } = "Ok";
     protected virtual string Icon { get; } = "";
     protected TViewModel? ViewModel { get { return DataContext as TViewModel; } }
-    protected virtual eTypeDialog TypeDialog { get; } = eTypeDialog.Box;
+    protected virtual TypeDialog TypeDialog { get; } = TypeDialog.Box;
 
     private ContentDialogParams CreateContentDialogParams(ModalParameters<TViewModel, TResult> parameters)
     {
@@ -69,7 +69,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
             CloseOnClickAway = true
         };
 
-        if (TypeDialog == eTypeDialog.Fluent)
+        if (TypeDialog == TypeDialog.Fluent)
         {
             var contentDialogParams = CreateContentDialogParams(modalParams);
             var _contentDialogService = SimpleProvider.GetService<IContentDialogService>();            

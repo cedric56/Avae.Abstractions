@@ -1,8 +1,9 @@
 ﻿using Avae.Abstractions;
+using Avae.DAL.Interfaces;
 using Microsoft.Data.SqlClient;
-using SqlTableDependency.Extensions;
 using System.Diagnostics;
-using TableDependency.SqlClient.Base.EventArgs;
+using TableDependencyCore.SqlClient;
+using TableDependencyCore.SqlClient.Base.EventArgs;
 
 namespace Avae.DAL
 {
@@ -18,7 +19,7 @@ namespace Avae.DAL
         where TObject : class, new()
     {
         private SignalRService? signalRService;
-        private SqlTableDependencyEx<TObject>? sqlDependencyExService;
+        private readonly SqlTableDependencyCore<TObject>? sqlDependency;
 
         public void AddSignalR(string url)
         {
@@ -48,9 +49,9 @@ namespace Avae.DAL
         {
             if (connectionType == typeof(SqlConnection))
             {
-                sqlDependencyExService = new SqlTableDependencyEx<TObject>(connectionString);
-                sqlDependencyExService.OnChanged += SqlDependencyExService_OnChanged;
-                sqlDependencyExService.Start();
+                sqlDependency = new SqlTableDependencyCore<TObject>(connectionString);
+                sqlDependency.OnChanged += SqlDependencyExService_OnChanged;
+                sqlDependency.Start();
             }
         }
 
@@ -82,7 +83,7 @@ namespace Avae.DAL
             }
         }
 
-        private void RaiseHub(Record<TObject> record)
+        private static void RaiseHub(Record<TObject> record)
         {
             Task.Run(async () =>
             {
@@ -102,12 +103,14 @@ namespace Avae.DAL
                     await signalRService.DisposeAsync();
                 });
             }
-            if (sqlDependencyExService is not null)
+            if (sqlDependency is not null)
             {
-                sqlDependencyExService.OnChanged -= SqlDependencyExService_OnChanged;
-                sqlDependencyExService.Stop();
-                sqlDependencyExService.Dispose();
+                sqlDependency.OnChanged -= SqlDependencyExService_OnChanged;
+                sqlDependency.Stop();
+                sqlDependency.Dispose();
             }
+
+            GC.SuppressFinalize(this);
         }
     }
 

@@ -107,7 +107,7 @@
             _currentIndex = _history.Count - 1;
         }
 
-        private IContextFor GetContext(IViewModelBase viewModel, params IParameter[] parameters)
+        private static IContextFor GetContext(IViewModelBase viewModel, params IParameter[] parameters)
         {
             var configuration = SimpleProvider.GetService<IIocConfiguration>();
             var contextFor = configuration!.GetContextFor(viewModel.GetType().Name, parameters);

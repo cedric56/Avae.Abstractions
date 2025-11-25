@@ -7,8 +7,14 @@ namespace Example;
 
 public partial class FormPage3View : UserControl, IContextFor<FormPage3ViewModel>
 {
-    public FormPage3View(Person person)
+    public FormPage3View()
     {
         InitializeComponent();
+    }
+
+    public FormPage3View(Person person)
+        :this()
+    {
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
+using Avae.DAL.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Dapper.Contrib.Extensions;
 using MemoryPack;
@@ -97,7 +98,7 @@ namespace Example.Models
 
             AvoidReadings(contacts);
 
-            Contacts = contacts.ToList();
+            Contacts = [.. contacts];
         }
 
         public override async Task<Result> DbTransSave(IDataAccessLayer instance)

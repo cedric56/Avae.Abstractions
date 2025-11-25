@@ -1,4 +1,4 @@
-﻿using Avae.DAL;
+﻿using Avae.DAL.Interfaces;
 using MemoryPack;
 using MessagePack;
 

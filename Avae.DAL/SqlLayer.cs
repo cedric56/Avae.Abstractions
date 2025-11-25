@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using Avae.DAL.Interfaces;
+using Dapper;
 using Dapper.Contrib.Extensions;
 using System.Data;
 
@@ -30,7 +31,7 @@ namespace Avae.DAL
             return await db.GetAsync<T>(id, transaction, commandTimeout);
         }
 
-        private string Create<T>(Dictionary<string, object> filters, string condition, out DynamicParameters parameters)
+        private static string Create<T>(Dictionary<string, object> filters, string condition, out DynamicParameters parameters)
         {
             var conditions = new List<string>();
             parameters = new DynamicParameters();

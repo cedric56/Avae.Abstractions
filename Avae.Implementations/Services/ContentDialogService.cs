@@ -15,7 +15,7 @@ namespace Avae.Implementations
             return await Dispatcher.UIThread.Invoke(async () =>
             {
                 var topLevel = TopLevelStateManager.GetActive();
-                var dialog = GetContentDialog(@params, topLevel);
+                var dialog = GetContentDialog(@params);
                 var result = await dialog.ShowAsync(topLevel);
                 return Enum.TryParse(result.ToString(), out ContentDialogResult dialogResult)
                     ? dialogResult
@@ -23,7 +23,7 @@ namespace Avae.Implementations
             });
         }
 
-        private static ContentDialog GetContentDialog(ContentDialogParams @params, TopLevel? topLevel)
+        private static ContentDialog GetContentDialog(ContentDialogParams @params)
         {
             var dialog = new ContentDialog();
             if (@params != null)

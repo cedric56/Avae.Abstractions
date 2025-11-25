@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Avae.Implementations
 {
-    public enum eTypeDialog
+    public enum TypeDialog
     {
         Fluent,
         Box
@@ -17,7 +17,7 @@ namespace Avae.Implementations
     public abstract class AvaeApplication : Application, IIocConfiguration, IDisposable
     {
         public abstract string IconUrl { get; }
-        public abstract eTypeDialog TypeDialog {  get; }
+        public abstract TypeDialog TypeDialog {  get; }
 
         public AvaeApplication()
         {
@@ -36,7 +36,7 @@ namespace Avae.Implementations
             services.AddSingleton<IIocConfiguration>(this);
             services.AddSingleton<IDialogService>(provider =>
             {
-                return TypeDialog== eTypeDialog.Box ? new DialogService(IconUrl) : 
+                return TypeDialog== TypeDialog.Box ? new DialogService(IconUrl) : 
                             new ContentDialogService();
             });
             services.AddSingleton<IContentDialogService, ContentDialogService>();
@@ -108,6 +108,8 @@ namespace Avae.Implementations
         {
             if (SimpleProvider.Default is IDisposable disposable)
                 disposable.Dispose();
+
+            GC.SuppressFinalize(this);
         }
     }
 }

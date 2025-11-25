@@ -2,11 +2,11 @@
 
 namespace Avae.Implementations
 {
-    public static class Extensions
+    public static partial class Extensions
     {
         public static IEnumerable<string> SplitOnCapitals(this string text)
         {
-            var regex = new Regex(@"\p{Lu}\p{Ll}*");
+            var regex = CapitalizedWordRegex();
             foreach (Match match in regex.Matches(text))
             {
                 yield return match.Value;
@@ -24,5 +24,8 @@ namespace Avae.Implementations
         }
 
         public static T TryParse<T>(this Enum val) where T : struct => Enum.TryParse(val.ToString(), out T value) ? value : default;
+
+        [GeneratedRegex(@"\p{Lu}\p{Ll}*")]
+        private static partial Regex CapitalizedWordRegex();
     }
 }

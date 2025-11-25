@@ -174,7 +174,7 @@ namespace Avae.DAL
             }
             Debug.WriteLine(request);
             Console.WriteLine(request);
-            _logger?.LogDebug(request);
+            _logger?.LogDebug("Request: {Request}", request);
         }
 
         public static string ReplaceWholeWord(string s, string word, string bywhat)

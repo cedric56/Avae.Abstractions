@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Avae.DAL.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using System.Data.Common;
 
 namespace Avae.DAL

@@ -19,7 +19,7 @@ namespace Avae.Abstractions
             config.Configure(services.BuildServiceProvider());
         }
 
-        private T GetParameter<T>(object parameter)
+        private static T GetParameter<T>(object parameter)
         {
             return (((ViewParameter<T>)parameter).Value);
         }

@@ -28,8 +28,8 @@ public partial class MainViewModel(Router router) : PagesViewModelBase(router)
     {
         get
         {
-            return new ObservableCollection<PageViewModelBase>
-            {
+            return
+            [
                 new PageViewModelBase<HomeViewModel>("Home", "fa-solid fa-house"),
                 new PageViewModelBase<MenuViewModel>("Menu", "fa-solid fa-gear")
                 {
@@ -39,7 +39,7 @@ public partial class MainViewModel(Router router) : PagesViewModelBase(router)
                         return Task.CompletedTask;
                     }
                 }
-            };
+            ];
         }
     }
 }
