@@ -4,7 +4,6 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics;
 using System.Text;
 
 namespace Avae.DAL
@@ -170,54 +169,10 @@ namespace Avae.DAL
             {
                 if (parameter.Direction == ParameterDirection.Output ||
                   parameter.Direction == ParameterDirection.ReturnValue) continue;
-                request = ReplaceWholeWord(request, $"@{parameter.ParameterName}", parameter.Value?.ToString());
+                request = request.ReplaceWholeWord($"@{parameter.ParameterName}", parameter.Value?.ToString());
             }
 
             _logger?.LogInformation("Request: {Request}", request);
-        }
-
-        public static string ReplaceWholeWord(string s, string word, string bywhat)
-        {
-            char firstLetter = word[0];
-            var sb = new StringBuilder();
-            bool previousWasLetterOrDigit = false;
-            int i = 0;
-            while (i < s.Length - word.Length + 1)
-            {
-                bool wordFound = false;
-                char c = s[i];
-                if (c == firstLetter)
-                    if (!previousWasLetterOrDigit)
-                        if (s.Substring(i, word.Length).Equals(word))
-                        {
-                            wordFound = true;
-                            bool wholeWordFound = true;
-                            if (s.Length > i + word.Length)
-                            {
-                                if (char.IsLetterOrDigit(s[i + word.Length]))
-                                    wholeWordFound = false;
-                            }
-
-                            if (wholeWordFound)
-                                sb.Append(bywhat);
-                            else
-                                sb.Append(word);
-
-                            i += word.Length;
-                        }
-
-                if (!wordFound)
-                {
-                    previousWasLetterOrDigit = char.IsLetterOrDigit(c);
-                    sb.Append(c);
-                    i++;
-                }
-            }
-
-            if (s.Length - i > 0)
-                sb.Append(s.AsSpan(i));
-
-            return sb.ToString();
         }
     }
 }
