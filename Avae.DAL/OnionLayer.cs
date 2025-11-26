@@ -15,9 +15,9 @@ namespace Avae.DAL
             if (OperatingSystem.IsBrowser())
             {
                 var request = SimpleProvider.GetService<IXmlHttpRequest>();
-                var response = request.Send(nameof(FindByAnyAsync), $"filters={JsonSerializer.Serialize(filters)}");
+                var response = request.Send(nameof(FindByAnyAsync), $"type={typeof(T).Name}&filters={JsonSerializer.Serialize(filters)}");
                 return MemoryPackSerializer.Deserialize<IEnumerable<T>>(response) ?? [];
-            }
+            }    
             return AsyncHelper.RunSync(() => FindByAnyAsync<T>(filters));
         }
 
@@ -66,7 +66,7 @@ namespace Avae.DAL
             if (OperatingSystem.IsBrowser())
             {
                 var request = SimpleProvider.GetService<IXmlHttpRequest>();
-                var response = request.Send(nameof(WhereAsync), $"filters={JsonSerializer.Serialize(filters)}");
+                var response = request.Send(nameof(WhereAsync), $"type={typeof(T).Name}&filters={JsonSerializer.Serialize(filters)}");
                 return MemoryPackSerializer.Deserialize<IEnumerable<T>>(response) ?? [];
             }
             return AsyncHelper.RunSync(() => WhereAsync<T>(filters));

@@ -39,14 +39,19 @@ namespace Avae.Abstractions
             _factories[key] = new ViewFactory(factory);
         }
 
-        public void Register<TView>() where TView : IContextFor, new()
-        {
-            Register(args => new TView());
-        }
-
         public void Register<TView>(Func<object[], TView> factory) where TView : IContextFor
         {
             _factories[TView.Name] = new ViewFactory(args => factory.Invoke(args));
+        }
+
+        public void Register<TViewModel>(Func<object[], object> factory)
+        {
+            Register(typeof(TViewModel).Name, factory);
+        }
+
+        public void Register<TView>() where TView : IContextFor, new()
+        {
+            Register(args => new TView());
         }
 
         public void Register<TView, TArg1>(Func<TArg1, TView> func) where TView : IContextFor
@@ -72,11 +77,6 @@ namespace Avae.Abstractions
         public void Register<TView, TArg1, TArg2, TArgs3, TArgs4, TArgs5>(Func<TArg1, TArg2, TArgs3, TArgs4, TArgs5, TView> func) where TView : IContextFor
         {
             Register(args => func(GetParameter<TArg1>(args[0]), GetParameter<TArg2>(args[1]), GetParameter<TArgs3>(args[2]), GetParameter<TArgs4>(args[3]), GetParameter<TArgs5>(args[4])));
-        }
-
-        public void Register<TViewModel>(Func<object[], object> factory)
-        {
-            _factories[typeof(TViewModel).Name] = new ViewFactory(factory);
         }
     }
 }

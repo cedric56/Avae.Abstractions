@@ -10,24 +10,24 @@ public interface IIocContainer
 {
     void Register(string key, Func<object[], object> factory);
 
-    void Register<TView>() where TView : IContextFor, new();
+    void Register<TContextFor>() where TContextFor : IContextFor, new();
 
-    void Register<TViewModel>(Func<object[], object> factory);
+    void Register<T>(Func<object[], object> factory);
 
-    void Register<TView>(Func<object[], TView> factory) where TView : IContextFor;
+    void Register<TContextFor>(Func<object[], TContextFor> factory) where TContextFor : IContextFor;
 
-    void Register<TView, TArg1>(Func<TArg1, TView> func)
-        where TView : IContextFor;
+    void Register<TContextFor, TArg1>(Func<TArg1, TContextFor> func)
+        where TContextFor : IContextFor;
 
-    void Register<TView, TArg1, TArg2>(Func<TArg1, TArg2, TView> func)
-        where TView : IContextFor;
+    void Register<TContextFor, TArg1, TArg2>(Func<TArg1, TArg2, TContextFor> func)
+        where TContextFor : IContextFor;
 
-    void Register<TView, TArg1, TArg2, TArgs3>(Func<TArg1, TArg2, TArgs3, TView> func)
-        where TView : IContextFor;
+    void Register<TContextFor, TArg1, TArg2, TArgs3>(Func<TArg1, TArg2, TArgs3, TContextFor> func)
+        where TContextFor : IContextFor;
 
-    void Register<TView, TArg1, TArg2, TArgs3, TArgs4>(Func<TArg1, TArg2, TArgs3, TArgs4, TView> func)
-        where TView : IContextFor;
+    void Register<TContextFor, TArg1, TArg2, TArgs3, TArgs4>(Func<TArg1, TArg2, TArgs3, TArgs4, TContextFor> func)
+        where TContextFor : IContextFor;
 
-    void Register<TView, TArg1, TArg2, TArgs3, TArgs4, TArgs5>(Func<TArg1, TArg2, TArgs3, TArgs4, TArgs5, TView> func)
-        where TView : IContextFor;
+    void Register<TContextFor, TArg1, TArg2, TArgs3, TArgs4, TArgs5>(Func<TArg1, TArg2, TArgs3, TArgs4, TArgs5, TContextFor> func)
+        where TContextFor : IContextFor;
 }
