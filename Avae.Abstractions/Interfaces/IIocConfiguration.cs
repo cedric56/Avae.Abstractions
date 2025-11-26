@@ -8,7 +8,7 @@ public interface IIocConfiguration : IIoc
 {
     void Configure(IIocContainer container);
 
-    object? GetView(string key, params IParameter[] @params);
+    object? GetView(string key, params object[] @params);
 
     IContextFor? GetContextFor(string key, params IParameter[] @params);
 

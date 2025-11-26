@@ -6,7 +6,11 @@
              x:Class="Example.HomeView">
     <Grid RowDefinitions="Auto,*">
         <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Button Content="Modal" Command="{Binding ShowModal}" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1"/>	
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1">
+		    <Button Content="Modal" Command="{Binding ShowModal}" />		
+            <Button Content="TaskDialog" Command="{Binding ShowTaskDialog}" />		
+        </StackPanel>
+        
     </Grid>
     
 </UserControl>

@@ -61,7 +61,7 @@ namespace Avae.Implementations
             SimpleProvider.ConfigureServices(provider);
         }
 
-        public object? GetView(string key, params IParameter[] @params)
+        public object? GetView(string key, params object[] @params)
         {
             return Container!.GetView(key, @params);
         }

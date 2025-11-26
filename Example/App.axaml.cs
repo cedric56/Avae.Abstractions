@@ -2,11 +2,13 @@
 using Avae.DAL;
 using Avae.DAL.Interfaces;
 using Avae.Implementations;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Example.Models;
 using Example.ViewModels;
 using Example.Views;
+using FluentAvalonia.UI.Controls;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Projektanker.Icons.Avalonia;
@@ -35,6 +37,16 @@ public partial class App : AvaeApplication, IIocConfiguration
 
     public override void Configure(IIocContainer container)
     {
+        container.Register(HomeViewModel.TaskDialogKey, parameters =>
+        {
+            return parameters[0] switch
+            {
+                "Footer" => new TextBlock() { Text= "This is a footer" },
+                "IconSource" => new BitmapIconSource() { UriSource = new Uri(IconUrl) },
+                "Content" => new TextBlock() { Text = "Here is content", FontSize = 27 },
+                _ => throw new NotImplementedException()
+            };
+        });
         container.Register<HomeView>();
         container.Register<MenuView>();
         container.Register<FormViewModel>(parameters =>

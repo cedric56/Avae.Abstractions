@@ -45,7 +45,7 @@ namespace Avae.DAL
 
         }
 
-        public SqlMonitor(string connectionString, Type connectionType)
+        internal SqlMonitor(string connectionString, Type connectionType)
         {
             if (connectionType == typeof(SqlConnection))
             {

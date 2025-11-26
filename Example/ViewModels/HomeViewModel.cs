@@ -10,7 +10,7 @@ namespace Example.ViewModels
     {
         public static string Title => "Welcome to home";
 
-        [RelayCommand()]
+        [RelayCommand]
         public async Task ShowModal()
         {
             string? result = string.Empty;
@@ -26,6 +26,27 @@ namespace Example.ViewModels
             {
                 await DialogWrapper.ShowOkAsync(result ?? string.Empty, "Result");
             }
+        }
+
+        public const string TaskDialogKey = "TaskDialog";
+
+        [RelayCommand]
+        public async Task ShowTaskDialog()
+        {
+            var configuration = SimpleProvider.GetService<IIocConfiguration>();
+            var service = SimpleProvider.GetService<ITaskDialogService>();
+            await service.ShowAsync(new TaskDialogParams()
+            {
+                Header = "Header",
+                Footer = configuration.GetView(TaskDialogKey, "Footer"),
+                IconSource = configuration.GetView(TaskDialogKey, "IconSource"),
+                Title = "Title",
+                SubHeader = "SubHeader",
+                Content = configuration.GetView(TaskDialogKey, "Content"),
+                FooterVisibility = TaskDialogFooterVisibility.Auto
+            },
+            TaskDialogStandardResult.OK,
+            TaskDialogStandardResult.Cancel);
         }
     }
 }

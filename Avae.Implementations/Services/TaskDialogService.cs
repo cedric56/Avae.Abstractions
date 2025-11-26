@@ -1,5 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avae.Services;
+using Avalonia.Diagnostics;
 using Avalonia.Threading;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
@@ -39,7 +40,7 @@ namespace Avae.Implementations
 
                         taskDialog.Opening += opening = (sender, args) => @params.Opening?.Invoke();
                         taskDialog.Opened += opened = (sender, args) => @params.Opening?.Invoke();
-                        taskDialog.Closing += closing = (sender, args) => args.Cancel = @params.Closing?.Invoke() ?? true;
+                        taskDialog.Closing += closing = (sender, args) => args.Cancel = @params.Closing?.Invoke() ?? false;
                         taskDialog.Closed += closed = (sender, args) =>
                         {
                             @params.Closed?.Invoke();

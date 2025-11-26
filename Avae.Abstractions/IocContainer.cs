@@ -24,7 +24,7 @@ namespace Avae.Abstractions
             return (((ViewParameter<T>)parameter).Value);
         }
 
-        public object GetView(string key, params IParameter[] parameters)
+        public object GetView(string key, params object[] parameters)
         {
             if (_factories.TryGetValue(key, out var factory))
             {
