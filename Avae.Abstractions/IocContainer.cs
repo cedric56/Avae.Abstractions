@@ -39,42 +39,42 @@ namespace Avae.Abstractions
             _factories[key] = new ViewFactory(factory);
         }
 
-        public void Register<TView>(Func<object[], TView> factory) where TView : IContextFor
+        public void Register<TContextFor>(Func<object[], TContextFor> factory) where TContextFor : IContextFor
         {
-            _factories[TView.Name] = new ViewFactory(args => factory.Invoke(args));
+            _factories[TContextFor.Name] = new ViewFactory(args => factory.Invoke(args));
         }
 
-        public void Register<TViewModel>(Func<object[], object> factory)
+        public void Register<T>(Func<object[], object> factory)
         {
-            Register(typeof(TViewModel).Name, factory);
+            Register(typeof(T).Name, factory);
         }
 
-        public void Register<TView>() where TView : IContextFor, new()
+        public void Register<TContextFor>() where TContextFor : IContextFor, new()
         {
-            Register(args => new TView());
+            Register(args => new TContextFor());
         }
 
-        public void Register<TView, TArg1>(Func<TArg1, TView> func) where TView : IContextFor
+        public void Register<TContextFor, TArg1>(Func<TArg1, TContextFor> func) where TContextFor : IContextFor
         {
             Register(args => func(GetParameter<TArg1>(args[0])));
         }
 
-        public void Register<TView, TArg1, TArg2>(Func<TArg1, TArg2, TView> func) where TView : IContextFor
+        public void Register<TContextFor, TArg1, TArg2>(Func<TArg1, TArg2, TContextFor> func) where TContextFor : IContextFor
         {
             Register(args => func(GetParameter<TArg1>(args[0]), GetParameter<TArg2>(args[1])));
         }
 
-        public void Register<TView, TArg1, TArg2, TArgs3>(Func<TArg1, TArg2, TArgs3, TView> func) where TView : IContextFor
+        public void Register<TContextFor, TArg1, TArg2, TArgs3>(Func<TArg1, TArg2, TArgs3, TContextFor> func) where TContextFor : IContextFor
         {
             Register(args => func(GetParameter<TArg1>(args[0]), GetParameter<TArg2>(args[1]), GetParameter<TArgs3>(args[2])));
         }
 
-        public void Register<TView, TArg1, TArg2, TArgs3, TArgs4>(Func<TArg1, TArg2, TArgs3, TArgs4, TView> func) where TView : IContextFor
+        public void Register<TContextFor, TArg1, TArg2, TArgs3, TArgs4>(Func<TArg1, TArg2, TArgs3, TArgs4, TContextFor> func) where TContextFor : IContextFor
         {
             Register(args => func(GetParameter<TArg1>(args[0]), GetParameter<TArg2>(args[1]), GetParameter<TArgs3>(args[2]), GetParameter<TArgs4>(args[3])));
         }
 
-        public void Register<TView, TArg1, TArg2, TArgs3, TArgs4, TArgs5>(Func<TArg1, TArg2, TArgs3, TArgs4, TArgs5, TView> func) where TView : IContextFor
+        public void Register<TContextFor, TArg1, TArg2, TArgs3, TArgs4, TArgs5>(Func<TArg1, TArg2, TArgs3, TArgs4, TArgs5, TContextFor> func) where TContextFor : IContextFor
         {
             Register(args => func(GetParameter<TArg1>(args[0]), GetParameter<TArg2>(args[1]), GetParameter<TArgs3>(args[2]), GetParameter<TArgs4>(args[3]), GetParameter<TArgs5>(args[4])));
         }

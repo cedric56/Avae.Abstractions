@@ -2,39 +2,18 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
-using ReactiveUI;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Example.ViewModels
 {
-    public static class CollectionExtensions
-    {
-        public static void Update<X, Y>(this IList<Y> items, IList<X> selected, Func<X, Y, bool> predicate, Func<X, Y> add)
-        {
-            foreach (var x in selected)
-                if (!items.Any(y => predicate(x, y)))
-                    items.Add(add(x));
-
-            var deleted = new List<Y>();
-            foreach (var item in items)
-                if (!selected.Any(x => predicate(x, item)))
-                    deleted.Add(item);
-
-            foreach (var item in deleted)
-                items.Remove(item);
-        }
-    }
-
     [ObservableObject]
     [GoTo]
-    internal partial class FormViewModel(Router router, Person person) : FormViewModelBase<Person>(router),         
+    public partial class FormViewModel(Router router, Person person) : FormViewModelBase<Person>(router),         
         IDataErrorInfo
     {
         public const string KEY = "Page";
@@ -106,7 +85,7 @@ namespace Example.ViewModels
                          FactoryParameters = [KEY.ForFactory()],
                          Launched = async (viewModel) =>
                             {
-                                //await Person.LoadContactsAsync();
+                                await Person.LoadContactsAsync();
                                 SelectedItems = [.. Person.Contacts.Select(c => c.Person)];
                             }
                     },

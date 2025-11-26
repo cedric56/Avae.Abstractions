@@ -49,8 +49,6 @@ builder.WebHost.ConfigureKestrel(options =>
     //REST port
     options.ListenAnyIP(5001, o => o.Protocols = HttpProtocols.Http1AndHttp2);
 });
-//builder.Services.AddTransient<DbConnection>(_ => new SqliteConnection("Data Source=data.db;Foreign Keys=True"));
-
 
 var app = builder.Build();
 SimpleProvider.ConfigureServices(app.Services);

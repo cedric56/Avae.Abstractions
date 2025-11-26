@@ -30,16 +30,11 @@ namespace Example.ViewModels
                 .InvokeCommand(ValidateCommand);
         }
 
+        [ReactiveUI.SourceGenerators.Reactive]
+        [Required(ErrorMessage = "You have to enter a value.")]
         private string? _text;
 
         public event EventHandler<string?>? CloseRequested;
-
-        [Required(ErrorMessage = "You have to enter a value.")]
-        public string? Text
-        {
-            get { return _text; }
-            set { this.RaiseAndSetIfChanged(ref _text, value); } 
-        }
 
         public string Error
         {

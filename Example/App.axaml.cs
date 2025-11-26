@@ -69,7 +69,7 @@ public partial class App : AvaeApplication, IIocConfiguration
             services.UseSqlMonitors<SqliteConnection>(connectionString, factory =>
             {
                 var monitor = factory.AddDbMonitor<Person>();
-                monitor.AddSignalR("http://localhost:5001/PersonHub");
+                //monitor.AddSignalR("http://localhost:5001/PersonHub");
                 services.AddSingleton<ISqlMonitor<Person>>(monitor);
             });
         }
