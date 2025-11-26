@@ -28,11 +28,7 @@ internal sealed partial class Program
 
     public class BrowserApp : App
     {
-        public BrowserApp()
-            : base()
-        {
-            
-        }
+        protected override string Logs => string.Empty;
 
         public override void Configure(IServiceCollection services)
         {

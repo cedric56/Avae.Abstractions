@@ -1,6 +1,5 @@
 ﻿using Android.App;
 using Android.Content.PM;
-using Avae.Implementations;
 using Avalonia;
 using Avalonia.Android;
 using Example;
@@ -13,7 +12,7 @@ namespace Examples.Android;
     Icon = "@drawable/icon",
     MainLauncher = true,
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
-public class MainActivity : AvaloniaMainActivity<App>
+public class MainActivity : AvaloniaMainActivity<AndroidApp>
 {
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
@@ -25,7 +24,12 @@ public class MainActivity : AvaloniaMainActivity<App>
     {
         base.OnDestroy();
 
-        if (Avalonia.Application.Current is AvaeApplication app)
+        if (Avalonia.Application.Current is AndroidApp app)
             app.Dispose();
     }
+}
+
+public class AndroidApp : App
+{
+    protected override string Logs => string.Empty;
 }

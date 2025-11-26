@@ -72,7 +72,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
         if (TypeDialog == TypeDialog.Fluent)
         {
             var contentDialogParams = CreateContentDialogParams(modalParams);
-            var _contentDialogService = SimpleProvider.GetService<IContentDialogService>();            
+            var service = SimpleProvider.GetService<IContentDialogService>();            
 
             EventHandler<TResult>? closeRequested = null!;
             viewModel.CloseRequested += closeRequested = (sender, e) =>
@@ -81,7 +81,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
                 result = e;
             };
 
-            await _contentDialogService.ShowAsync(contentDialogParams);
+            await service.ShowAsync(contentDialogParams);
         }
         else
         {

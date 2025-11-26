@@ -5,6 +5,7 @@ using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Themes.Fluent;
 using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Avae.Implementations
 {
@@ -16,6 +17,7 @@ namespace Avae.Implementations
 
     public abstract class AvaeApplication : Application, IIocConfiguration, IDisposable
     {
+        protected virtual string Logs { get; }
         public abstract string IconUrl { get; }
         public abstract TypeDialog TypeDialog {  get; }
 
@@ -41,6 +43,17 @@ namespace Avae.Implementations
             });
             services.AddSingleton<IContentDialogService, ContentDialogService>();
             services.AddSingleton<ITaskDialogService, TaskDialogService>();
+            services.AddSingleton<ILogger>(LoggerFactory.Create(builder =>
+            {
+#if DEBUG
+                builder.AddDebug();
+#endif
+                builder.AddConsole();
+
+                if (!string.IsNullOrWhiteSpace(Logs))
+                    builder.AddProvider(new FileLoggerProvider(Logs));
+
+            }).CreateLogger<AvaeApplication>());
         }
 
         public void Configure(IServiceProvider provider)

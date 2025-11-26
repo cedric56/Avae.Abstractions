@@ -172,9 +172,8 @@ namespace Avae.DAL
                   parameter.Direction == ParameterDirection.ReturnValue) continue;
                 request = ReplaceWholeWord(request, $"@{parameter.ParameterName}", parameter.Value?.ToString());
             }
-            Debug.WriteLine(request);
-            Console.WriteLine(request);
-            _logger?.LogDebug("Request: {Request}", request);
+
+            _logger?.LogInformation("Request: {Request}", request);
         }
 
         public static string ReplaceWholeWord(string s, string word, string bywhat)

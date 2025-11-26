@@ -30,6 +30,9 @@ public partial class App : AvaeApplication, IIocConfiguration
 
     public override TypeDialog TypeDialog => TypeDialog.Box;
 
+    protected override string Logs =>
+        Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Example"), "logs");
+
     public override void Configure(IIocContainer container)
     {
         container.Register<HomeView>();
