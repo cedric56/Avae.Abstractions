@@ -155,7 +155,7 @@ namespace Example.Models
             return new Result()
             {
                 Exception = message,
-                Success = isSuccessful
+                Successful = isSuccessful
             };
         }
 
@@ -198,7 +198,7 @@ namespace Example.Models
             return new Result()
             {
                 Exception = message,
-                Success = isSuccessful
+                Successful = isSuccessful
             };
         }
 

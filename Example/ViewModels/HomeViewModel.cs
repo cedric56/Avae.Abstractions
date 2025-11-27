@@ -48,5 +48,18 @@ namespace Example.ViewModels
             TaskDialogStandardResult.OK,
             TaskDialogStandardResult.Cancel);
         }
+
+        [RelayCommand]
+        public async Task ShowContentDialog()
+        {
+            var configuration = SimpleProvider.GetService<IIocConfiguration>();
+            var service = SimpleProvider.GetService<IContentDialogService>();
+            await service.ShowAsync(new ContentDialogParams()
+            {
+                Title = "Title",
+                CloseButtonText = "Close",
+                Content = configuration.GetView(TaskDialogKey, "Content"),
+            });
+        }
     }
 }

@@ -68,7 +68,7 @@ namespace Example.ViewModels
                 if (!string.IsNullOrWhiteSpace(result.Exception))
                     await DialogWrapper.ShowOkAsync(result.Exception, "Error");
                 
-                await Close(result.Success ? Person : null);
+                await Close(result.Successful ? Person : null);
             }
         }
 

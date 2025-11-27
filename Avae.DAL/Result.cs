@@ -1,7 +1,7 @@
 ﻿using MemoryPack;
 using MessagePack;
 
-namespace Example.Models
+namespace Avae.DAL
 {
     [MessagePackObject]
     [MemoryPackable]
@@ -11,6 +11,9 @@ namespace Example.Models
         public string? Exception { get; set; }
 
         [Key(1)]
-        public bool Success { get; set; }
+        public bool Successful { get; set; }
+
+        [Key(2)]
+        public byte[]? Data { get; set; }
     }
 }

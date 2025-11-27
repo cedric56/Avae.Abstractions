@@ -1,7 +1,8 @@
-﻿using System;
-using Avae.Services;
+﻿using Avae.Services;
 using Avalonia;
+using Avalonia.Labs.Notifications;
 using ReactiveUI.Avalonia;
+using System;
 
 namespace Example.Desktop;
 
@@ -17,6 +18,11 @@ class Program
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
+            .WithAppNotifications(new AppNotificationOptions()
+            {
+                AppIcon = "C:\\Users\\cedri\\source\\repos\\AvaloniaSample\\AvaloniaSample\\Assets\\avalonia-logo.ico",
+                AppName = "AvaloniaSample",
+            })
             .UsePlatformDetect()
             .UseReactiveUI()
             .UseServices()

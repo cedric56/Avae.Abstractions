@@ -26,7 +26,7 @@ namespace Example.ViewModels
                 .Skip(1)// ⛔ ignore the initial value
                 .Throttle(TimeSpan.FromSeconds(1))
                 .Where(string.IsNullOrWhiteSpace)
-                .ObserveOn(SynchronizationContext.Current!)
+                .ObserveOn(RxApp.MainThreadScheduler)
                 .InvokeCommand(ValidateCommand);
         }
 

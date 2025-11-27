@@ -74,10 +74,10 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
         services.AddTransient<ModalViewModel>();
 
-        services.UseDbLayer<IDBLayer, DBSqlLayer>();
-
         if (!OperatingSystem.IsBrowser())
         {
+            services.UseDbLayer<IDBLayer, DBSqlLayer>();
+
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             var dbPath = Path.Combine(folder, "database.db");
             var connectionString = $"Data Source={dbPath};Foreign Keys=True";

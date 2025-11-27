@@ -61,7 +61,7 @@ namespace Example.ViewModels
         {
             await SelectedPerson!.LoadContactsAsync();
             var result = await DBBase.Instance.DbTransRemove(SelectedPerson);
-            if (!result.Success)
+            if (!result.Successful)
                 await DialogWrapper.ShowOkAsync(result.Exception!, "Error");
             else
             {

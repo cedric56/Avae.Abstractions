@@ -42,41 +42,70 @@ namespace Avae.DAL.Interfaces
 
     public interface IOnionService
     {
-        async UnaryResult<byte[]> FindByAnyAsync(string type, Dictionary<string, object> filters)
+        async UnaryResult<Result> FindByAnyAsync(string type, Dictionary<string, object> filters)
         {
-            var value = EntityHandler.Handlers.TryGetValue(type, out var handler) ?
-                MemoryPackSerializer.Serialize(handler.Enumerable, await handler.FindByAnyAsync(filters)) :
-                [];
-            return value;
+            if (string.IsNullOrWhiteSpace(type))
+                return new Result() { Successful = false, Exception = "Type parameter is required" };
+
+            if (!EntityHandler.Handlers.TryGetValue(type, out var handler))
+                return new Result() { Successful = false, Exception = "Unable to find entity handler" };
+
+            return new Result()
+            {
+                Successful = true,
+                Data = MemoryPackSerializer.Serialize(handler.Enumerable, await handler.FindByAnyAsync(filters))
+            };
         }
 
-        async UnaryResult<byte[]> GetAllAsync(string type)
+        async UnaryResult<Result> GetAllAsync(string type)
         {
-            var value = EntityHandler.Handlers.TryGetValue(type, out var handler) ?
-                MemoryPackSerializer.Serialize(handler.Enumerable, await handler.GetAllAsync()) :
-                [];
-            return value;
+            if (string.IsNullOrWhiteSpace(type))
+                return new Result() { Successful = false, Exception = "Type parameter is required" };
+
+            if (!EntityHandler.Handlers.TryGetValue(type, out var handler))
+                return new Result() { Successful = false, Exception = "Unable to find entity handler" };
+
+
+            return new Result()
+            {
+                Successful = true,
+                Data = MemoryPackSerializer.Serialize(handler.Enumerable, await handler.GetAllAsync())
+            };
         }
 
-        async UnaryResult<byte[]> GetAsync(string type, long id)
+        async UnaryResult<Result> GetAsync(string type, long id)
         {
-            var value = EntityHandler.Handlers.TryGetValue(type, out var handler) ?
-                MemoryPackSerializer.Serialize(handler.Type, await handler.GetAsync(id)) :
-                [];
-            return value;
+            if (string.IsNullOrWhiteSpace(type))
+                return new Result() { Successful = false, Exception = "Type parameter is required" };
+
+            if (!EntityHandler.Handlers.TryGetValue(type, out var handler))
+                return new Result() { Successful = false, Exception = "Unable to find entity handler" };
+
+            return new Result()
+            {
+                Successful = true,
+                Data = MemoryPackSerializer.Serialize(handler.Type, await handler.GetAsync(id))
+            };
         }
 
-        async UnaryResult<byte[]> WhereAsync(string type, Dictionary<string, object> filters)
+        async UnaryResult<Result> WhereAsync(string type, Dictionary<string, object> filters)
         {
-            var value = EntityHandler.Handlers.TryGetValue(type, out var handler) ?
-                MemoryPackSerializer.Serialize(handler.Enumerable, await handler.WhereAsync(filters)) :
-                [];
-            return value;
+            if (string.IsNullOrWhiteSpace(type))
+                return new Result() { Successful = false, Exception = "Type parameter is required" };
+
+            if (!EntityHandler.Handlers.TryGetValue(type, out var handler))
+                return new Result() { Successful = false, Exception = "Unable to find entity handler" };
+
+            return new Result()
+            {
+                Successful = true,
+                Data = MemoryPackSerializer.Serialize(handler.Enumerable, await handler.WhereAsync(filters))
+            };
         }
     }
 
     public interface IXmlHttpRequest
     {
-        byte[]? Send(string url, string data);
+        Result Send(string url, string data);
     }
 }

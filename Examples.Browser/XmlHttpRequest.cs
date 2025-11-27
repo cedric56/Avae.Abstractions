@@ -1,4 +1,5 @@
-﻿using Avae.DAL.Interfaces;
+﻿using Avae.DAL;
+using Avae.DAL.Interfaces;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
@@ -13,10 +14,10 @@ namespace Examples.Browser
         [JSImport("globalThis.eval")]
         public static partial string Invoke(string @params);
 
-        [JsonSerializable(typeof(byte[]))]
+        [JsonSerializable(typeof(Result))]
         internal partial class SourceGenerationContext : JsonSerializerContext { }
 
-        public byte[]? Send(string urlString, string data)
+        public Result Send(string urlString, string data)
         {
             Debug.WriteLine(urlString);
 
@@ -45,7 +46,11 @@ namespace Examples.Browser
     ";
 
             var response = Invoke(js);
-            return JsonSerializer.Deserialize<byte[]>(response, SourceGenerationContext.Default.ByteArray);
+            return JsonSerializer.Deserialize<Result>(response, SourceGenerationContext.Default.Result) ?? new Result()
+            {
+                Successful = false,
+                Exception = $"Unable to access webservice on {escapedUrl}?{escapedData}"
+            };
         }
     }
 }

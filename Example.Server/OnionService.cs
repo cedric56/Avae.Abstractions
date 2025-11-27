@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using Avae.DAL;
 using Avae.DAL.Interfaces;
 using Example.Models;
 using MagicOnion;

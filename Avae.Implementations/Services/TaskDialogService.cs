@@ -1,5 +1,8 @@
 ﻿using Avae.Abstractions;
 using Avae.Services;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Diagnostics;
 using Avalonia.Threading;
 using FluentAvalonia.Core;

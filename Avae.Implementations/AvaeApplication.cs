@@ -6,6 +6,7 @@ using Avalonia.Themes.Fluent;
 using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace Avae.Implementations
 {
@@ -17,7 +18,7 @@ namespace Avae.Implementations
 
     public abstract class AvaeApplication : Application, IIocConfiguration, IDisposable
     {
-        protected virtual string Logs { get; }
+        protected virtual string Logs { get; } = "";
         public abstract string IconUrl { get; }
         public abstract TypeDialog TypeDialog {  get; }
 
@@ -36,22 +37,25 @@ namespace Avae.Implementations
         public virtual void Configure(IServiceCollection services)
         {
             services.AddSingleton<IIocConfiguration>(this);
-            services.AddSingleton<IDialogService>(provider =>
+            services.AddSingleton<IDialogService>(_ =>
             {
                 return TypeDialog== TypeDialog.Box ? new DialogService(IconUrl) : 
                             new ContentDialogService();
             });
-            services.AddSingleton<IContentDialogService, ContentDialogService>();
-            services.AddSingleton<ITaskDialogService, TaskDialogService>();
+            services.AddSingleton<IContentDialogService>(_ => new ContentDialogService());
+            services.AddSingleton<ITaskDialogService>(_ => new TaskDialogService());
             services.AddSingleton<ILogger>(LoggerFactory.Create(builder =>
             {
-#if DEBUG
-                builder.AddDebug();
-#endif
-                builder.AddConsole();
+//                if (!OperatingSystem.IsBrowser())
+//                {
+//#if DEBUG
+//                    builder.AddDebug();
+//#endif
+//                    builder.AddConsole();
 
-                if (!string.IsNullOrWhiteSpace(Logs))
-                    builder.AddProvider(new FileLoggerProvider(Logs));
+//                    //if (!string.IsNullOrWhiteSpace(Logs))
+//                      //  builder.AddProvider(new FileLoggerProvider(Logs));
+//                }
 
             }).CreateLogger<AvaeApplication>());
         }

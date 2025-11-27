@@ -1,4 +1,5 @@
-﻿using Avae.DAL.Interfaces;
+﻿using Avae.DAL;
+using Avae.DAL.Interfaces;
 using MagicOnion;
 
 namespace Example.Models

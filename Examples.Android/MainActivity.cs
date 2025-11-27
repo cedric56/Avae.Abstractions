@@ -1,8 +1,10 @@
 ﻿using Android.App;
 using Android.Content.PM;
+using Avae.Services;
 using Avalonia;
 using Avalonia.Android;
 using Example;
+using ReactiveUI.Avalonia;
 
 namespace Examples.Android;
 
@@ -17,7 +19,9 @@ public class MainActivity : AvaloniaMainActivity<AndroidApp>
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
         return base.CustomizeAppBuilder(builder)
-            .WithInterFont();
+            .WithInterFont()
+            .UseServices()
+            .UseReactiveUI();
     }
 
     protected override void OnDestroy()

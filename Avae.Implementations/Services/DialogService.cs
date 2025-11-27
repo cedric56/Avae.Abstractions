@@ -35,8 +35,9 @@ namespace Avae.Implementations
                     return await box.ShowWindowDialogAsync(owner);
                 }
 
-                var top = CurrentDialogHost;
-                var result = top != null ? await box.ShowAsPopupAsync(top) : await box.ShowAsync();
+                //var top = CurrentDialogHost;
+                //var result = top != null ? await box.ShowAsPopupAsync(top) : await box.ShowAsync();
+                var result = await box.ShowAsync();
                 return result;
             });
         }
@@ -45,7 +46,7 @@ namespace Avae.Implementations
         {
             get
             {
-                var topLevel = TopLevelStateManager.GetActive();
+                TopLevel? topLevel = TopLevelStateManager.GetActive();
                 var dialogHost = topLevel?.GetVisualDescendants().OfType<DialogHostAvalonia.DialogHost>().LastOrDefault();
                 if (dialogHost != null) return dialogHost;
                 var fluent = topLevel?.GetVisualDescendants().OfType<FluentAvalonia.UI.Controls.DialogHost>().LastOrDefault();
