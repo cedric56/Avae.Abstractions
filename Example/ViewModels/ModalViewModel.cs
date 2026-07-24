@@ -11,8 +11,8 @@ using System.Windows.Input;
 
 namespace Example.ViewModels
 {
-    public partial class ModalViewModel : ReactiveObject, 
-        ICloseableViewModel<string>,
+    public partial class ModalViewModel(IDialogService dialogService) : ReactiveObject, 
+        ICloseableViewModel<string?>,
         IDataErrorInfo
     {
         static ModalViewModel()
@@ -20,15 +20,15 @@ namespace Example.ViewModels
             InputValidation<ModalViewModel>.Init();
         }
 
-        public ModalViewModel()
-        {
-            this.WhenAnyValue(x => x.Text)
-                .Skip(1)// ⛔ ignore the initial value
-                .Throttle(TimeSpan.FromSeconds(1))
-                .Where(string.IsNullOrWhiteSpace)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .InvokeCommand(ValidateCommand);
-        }
+        //public ModalViewModel()
+        //{
+        //    this.WhenAnyValue(x => x.Text)
+        //        .Skip(1)// ⛔ ignore the initial value
+        //        .Throttle(TimeSpan.FromSeconds(1))
+        //        .Where(string.IsNullOrWhiteSpace)
+        //        .ObserveOn(RxApp.MainThreadScheduler)
+        //        .InvokeCommand(ValidateCommand);
+        //}
 
         [ReactiveUI.SourceGenerators.Reactive]
         [Required(ErrorMessage = "You have to enter a value.")]
@@ -67,13 +67,13 @@ namespace Example.ViewModels
             if (await CanClose())
                 await Close(Text!);
             else
-                await DialogWrapper.ShowOkAsync(Error, "Error");
+                await dialogService.ShowOkAsync(Error, "Error");
         }
 
         [RelayCommand]
         public Task Cancel()
         {
-            return Close("Cancel");
+            return Close(null);
         }
 
         protected Task<bool> CanClose()

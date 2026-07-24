@@ -1,5 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Example.Models
 {
@@ -7,9 +8,9 @@ namespace Example.Models
     {
         private readonly ISqlMonitor<Person>? personMonitor;
 
-        private Repository()
+        private Repository(IServiceProvider provider)
         {
-            personMonitor = SimpleProvider.GetService<ISqlMonitor<Person>>();
+            personMonitor = provider.GetService<ISqlMonitor<Person>>();
             if (personMonitor != null)
             {
                 personMonitor.OnChanged += Monitor_OnChanged;
@@ -35,7 +36,7 @@ namespace Example.Models
                     {
                         if (_instance is null)
                         {
-                            _instance = new Repository();
+                            _instance = new Repository(ServiceLocator.Default);
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avae.Services;
+using Avalonia;
 using Avalonia.Controls;
 using MsBox.Avalonia;
 
@@ -14,6 +15,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
     IModalFor<TViewModel, TResult>
     where TViewModel : class, ICloseableViewModel<TResult>
 {
+    public object? Context { get => DataContext; set => DataContext = value; }
     protected virtual string Title { get; } = string.Empty;
     protected virtual string Buttons { get; } = "Ok";
     protected virtual string Icon { get; } = "";
@@ -72,8 +74,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
         if (TypeDialog == TypeDialog.Fluent)
         {
             var contentDialogParams = CreateContentDialogParams(modalParams);
-            var service = SimpleProvider.GetService<IContentDialogService>();            
-
+            var contentDialogService = ServiceLocator.GetService<IContentDialogService>();
             EventHandler<TResult>? closeRequested = null!;
             viewModel.CloseRequested += closeRequested = (sender, e) =>
             {
@@ -81,7 +82,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
                 result = e;
             };
 
-            await service.ShowAsync(contentDialogParams);
+            await contentDialogService.ShowAsync(contentDialogParams);
         }
         else
         {

@@ -63,7 +63,7 @@ namespace Example.Models
                             if (!OperatingSystem.IsBrowser())
                             {
                                 //Create db
-                                using var connection = SimpleProvider.GetService<DbConnection>();
+                                using var connection = ServiceLocator.GetService<DbConnection>();
                                 if (connection is not null)
                                 {
                                     connection.Open();
@@ -74,7 +74,7 @@ namespace Example.Models
                                 }
                             }
 
-                            _instance = SimpleProvider.GetService<IDBLayer>();                            
+                            _instance = ServiceLocator.GetService<IDBLayer>();                            
                         }
                     }
                 }

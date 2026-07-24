@@ -16,13 +16,12 @@ namespace Avae.DAL
             services.AddTransient(_ => factory.CreateConnection()!);
         }
 
-        public static void UseDbLayer<IDbLayer, TDbLayer>(this IServiceCollection services)
+        public static void UseDbLayer<IDbLayer>(this IServiceCollection services, Func<IServiceProvider, IDbLayer> getLayer)
             where IDbLayer : class, IDataAccessLayer
-            where TDbLayer : IDbLayer, IDataAccessLayer, new()
+            //where TDbLayer : IDbLayer, IDataAccessLayer, new()
         {
-            var layer = new TDbLayer();
-            services.AddSingleton<IDbLayer>(layer);
-            services.AddSingleton<IDataAccessLayer>(layer);
+            services.AddSingleton<IDbLayer>(sp => getLayer(sp));
+            services.AddSingleton<IDataAccessLayer>(sp => sp.GetRequiredService<IDbLayer>());
         }
     }
 }

@@ -39,9 +39,9 @@ namespace Avae.DAL
             return connection;
         }
 
-        public SqlMonitor<T> AddDbMonitor<T>() where T : class, new()
+        public SqlMonitor<T> AddDbMonitor<T>(IServiceProvider provider) where T : class, new()
         {
-            var monitor = new SqlMonitor<T>(connectionString, typeof(TDbConnection));
+            var monitor = new SqlMonitor<T>(provider, connectionString, typeof(TDbConnection));
             Monitors.Add(monitor);
             return monitor;
         }

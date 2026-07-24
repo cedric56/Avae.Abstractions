@@ -8,6 +8,7 @@ namespace Example;
 public partial class FormPage1View : UserControl, 
     IContextFor<FormViewModel>
 {
+    public object? Context { get => DataContext; set => DataContext = value; }
     public FormPage1View()
     {
         InitializeComponent();

@@ -3,11 +3,12 @@ using Avae.Services;
 using Avalonia.Threading;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using ContentDialogResult = Avae.Abstractions.ContentDialogResult;
 
 namespace Avae.Implementations
 {
-    public class ContentDialogService : IContentDialogService, IDialogService
+    public class ContentDialogService(IServiceProvider serviceProvider) : IContentDialogService, IDialogService
     {
         public async Task<ContentDialogResult> ShowAsync(ContentDialogParams @params)
         {   
@@ -168,6 +169,15 @@ namespace Avae.Implementations
                 ContentDialogResult.Secondary => 1,
                 _ => 2
             };
+        }
+
+        Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(params IParameter[] parameters) where TResult : default
+        {
+            var viewModel = serviceProvider.GetViewModel<TViewModel>(parameters);
+            var container = serviceProvider.GetRequiredService<IIocConfiguration>();
+            var view = container.GetModalFor<TViewModel, TResult>(parameters) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
+            view.Context = viewModel;
+            return view.ShowDialogAsync();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL.Interfaces;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using TableDependencyCore.SqlClient;
 using TableDependencyCore.SqlClient.Base.EventArgs;
@@ -18,6 +19,7 @@ namespace Avae.DAL
         IDisposable
         where TObject : class, new()
     {
+        IServiceProvider provider;
         private SignalRService? signalRService;
         private readonly SqlTableDependencyCore<TObject>? sqlDependency;
 
@@ -40,13 +42,14 @@ namespace Avae.DAL
             });
         }
 
-        public SqlMonitor()
+        public SqlMonitor(IServiceProvider provider)
         {
-
+            this.provider = provider;
         }
 
-        internal SqlMonitor(string connectionString, Type connectionType)
+        internal SqlMonitor(IServiceProvider provider, string connectionString, Type connectionType)
         {
+            this.provider = provider;
             if (connectionType == typeof(SqlConnection))
             {
                 sqlDependency = new SqlTableDependencyCore<TObject>(connectionString);
@@ -83,11 +86,11 @@ namespace Avae.DAL
             }
         }
 
-        private static void RaiseHub(Record<TObject> record)
+        private void RaiseHub(Record<TObject> record)
         {
             Task.Run(async () =>
             {
-                var hub = SimpleProvider.GetService<SqlHub<TObject>>();
+                var hub = provider.GetService<SqlHub<TObject>>();
                 if (hub is not null)
                     await hub.SendMessage(record);
             });

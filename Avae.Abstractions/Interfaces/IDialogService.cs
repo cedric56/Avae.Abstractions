@@ -14,5 +14,7 @@ public interface IDialogService
     Task<int> ShowYesNoCancelAsync(string message, string title = "Title");
 
     Task<int> ShowYesNoAbortAsync(string message, string title = "Title");
+
+    Task<TResult?> ShowModalAsync<TViewModel, TResult>(params IParameter[] parameters) where TViewModel : class, IViewModelBase;
 }
 

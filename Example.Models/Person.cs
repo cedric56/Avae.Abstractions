@@ -105,7 +105,7 @@ namespace Example.Models
         {
             bool isSuccessful = false;
             string message = string.Empty;
-            using var connection = new LoggedConnection();
+            using var connection = new LoggedConnection(ServiceLocator.Default);
             await connection.OpenAsync();
 
             using (var transaction = connection.BeginTransaction())
@@ -165,7 +165,7 @@ namespace Example.Models
 
             bool isSuccessful = false;
 
-            using var connection = new LoggedConnection();
+            using var connection = new LoggedConnection(ServiceLocator.Default);
             await connection.OpenAsync();
 
             using (var transaction = connection.BeginTransaction())

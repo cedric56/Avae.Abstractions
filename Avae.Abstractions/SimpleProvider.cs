@@ -1,42 +1,20 @@
-﻿#nullable disable
+﻿//#nullable disable
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Avae.Abstractions
 {
-    public static class SimpleProvider
+    public static class ServiceProviderExtensions
     {
-        static IServiceProvider provider;
 
-        public static IServiceProvider Default => provider;
-
-        public static void ConfigureServices(IServiceProvider serviceProvider)
+        public static T GetViewModel<T>(this IServiceProvider provider, params IParameter[] parameters) where T : class, IViewModelBase
         {
-            provider = serviceProvider;
+            return (T)GetViewModel(provider,typeof(T), parameters);
         }
 
-        public static object GetService(Type serviceType)
-        {
-            if (provider == null)
-                throw new Exception("The service provider has not been configured. Call DefaultProvider.ConfigureServices at application startup.");
-            return provider.GetService(serviceType);
-        }
-
-        public static T GetService<T>()
-        {
-            if (provider == null)
-                throw new Exception("The service provider has not been configured. Call DefaultProvider.ConfigureServices at application startup.");
-            return provider.GetService<T>();
-        }
-
-        public static T GetViewModel<T>(params IParameter[] parameters) where T : class, IViewModelBase
-        {
-            return (T) GetViewModel(typeof(T), parameters);
-        }
-
-        public static  IViewModelBase GetViewModel(Type viewModelType, params IParameter[] parameters)
+        public static IViewModelBase GetViewModel(this IServiceProvider provider, Type viewModelType, params IParameter[] parameters)
         {
             var type = typeof(ViewModelFactory<>).MakeGenericType(viewModelType);
-            if (GetService(type) is IViewModelBaseFactory factory)
+            if (provider.GetService(type) is IViewModelBaseFactory factory)
             {
                 var viewModel = factory.Create(viewModelType, [.. parameters.OfType<ViewModelParameter>()]);
                 if (viewModel is not null)
@@ -51,12 +29,31 @@ namespace Avae.Abstractions
                 throw new InvalidOperationException("You must register a factory for view models with parameters.");
             }
 
-            if (GetService(viewModelType) is IViewModelBase service)
+            if (provider.GetService(viewModelType) is IViewModelBase service)
             {
-               return service;
+                return service;
             }
 
             throw new InvalidOperationException($"Unable to create {viewModelType.Name}.  Ensure that it is registered with the service provider and it derives from {typeof(IViewModelBase).FullName}.");
+        }
+    }
+
+    public static class ServiceLocator
+    {
+        static IServiceProvider? provider;
+
+        public static IServiceProvider Default => provider ?? throw new InvalidOperationException("The service provider has not been configured.");
+
+        public static void SetDefault(IServiceProvider serviceProvider)
+        {
+            provider = serviceProvider;
+        }
+
+        public static T GetService<T>() where T : notnull
+        {
+            if (provider == null)
+                throw new Exception("The service provider has not been configured. Call DefaultProvider.ConfigureServices at application startup.");
+            return provider.GetRequiredService<T>();
         }
     }
 }

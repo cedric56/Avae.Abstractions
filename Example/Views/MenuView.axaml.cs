@@ -10,4 +10,6 @@ public partial class MenuView : UserControl, IContextFor<MenuViewModel>
     {
         InitializeComponent();
     }
+
+    public object? Context { get => DataContext; set => DataContext = value; }
 }

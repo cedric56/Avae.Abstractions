@@ -53,14 +53,9 @@ internal class ModalParameters<T, TResult> : ModalParameters
 
         if (!string.IsNullOrWhiteSpace(icon))
         {
-            try
-            {
-                WindowIcon = new WindowIcon(AssetLoader.Open(new Uri(icon)));
-            }
-            catch
-            {
-
-            }
+            var uri = new Uri(icon);
+            if (AssetLoader.Exists(uri))
+                WindowIcon = new WindowIcon(AssetLoader.Open(uri));
         }
     }
 }

@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Example.ViewModels
 {
-    internal partial class HomeViewModel : ObservableObject, IViewModelBase
+    internal partial class HomeViewModel(
+        IDialogService dialogService,
+        IContentDialogService contentDialogService,
+        ITaskDialogService taskDialogService,
+        IIocConfiguration iocConfiguration) : ObservableObject, IViewModelBase
     {
         public static string Title => "Welcome to home";
 
@@ -16,7 +20,7 @@ namespace Example.ViewModels
             string? result = string.Empty;
             try
             {
-                result = await this.ShowDialogAsync<ModalViewModel, string>();
+                result = await dialogService.ShowModalAsync<ModalViewModel, string>();
             }
             catch(Exception ex)
             {
@@ -24,7 +28,7 @@ namespace Example.ViewModels
             }
             finally
             {
-                await DialogWrapper.ShowOkAsync(result ?? string.Empty, "Result");
+                await dialogService.ShowOkAsync(result ?? string.Empty, "Result");
             }
         }
 
@@ -33,16 +37,14 @@ namespace Example.ViewModels
         [RelayCommand]
         public async Task ShowTaskDialog()
         {
-            var configuration = SimpleProvider.GetService<IIocConfiguration>();
-            var service = SimpleProvider.GetService<ITaskDialogService>();
-            await service.ShowAsync(new TaskDialogParams()
+            await taskDialogService.ShowAsync(new TaskDialogParams()
             {
                 Header = "Header",
-                Footer = configuration.GetView(TaskDialogKey, "Footer"),
-                IconSource = configuration.GetView(TaskDialogKey, "IconSource"),
+                Footer = iocConfiguration.GetView(TaskDialogKey, "Footer"),
+                IconSource = iocConfiguration.GetView(TaskDialogKey, "IconSource"),
                 Title = "Title",
                 SubHeader = "SubHeader",
-                Content = configuration.GetView(TaskDialogKey, "Content"),
+                Content = iocConfiguration.GetView(TaskDialogKey, "Content"),
                 FooterVisibility = TaskDialogFooterVisibility.Auto
             },
             TaskDialogStandardResult.OK,
@@ -52,13 +54,11 @@ namespace Example.ViewModels
         [RelayCommand]
         public async Task ShowContentDialog()
         {
-            var configuration = SimpleProvider.GetService<IIocConfiguration>();
-            var service = SimpleProvider.GetService<IContentDialogService>();
-            await service.ShowAsync(new ContentDialogParams()
+            await contentDialogService.ShowAsync(new ContentDialogParams()
             {
                 Title = "Title",
                 CloseButtonText = "Close",
-                Content = configuration.GetView(TaskDialogKey, "Content"),
+                Content = iocConfiguration.GetView(TaskDialogKey, "Content"),
             });
         }
     }

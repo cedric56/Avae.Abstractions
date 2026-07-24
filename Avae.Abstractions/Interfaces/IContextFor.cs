@@ -2,7 +2,8 @@
 
 public interface IContextFor
 {
-    object? DataContext { get; set; }
+    object? Context { get; set; }
+
     static virtual string Name => throw new NotImplementedException();
 }
 

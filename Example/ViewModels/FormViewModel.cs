@@ -13,7 +13,7 @@ namespace Example.ViewModels
 {
     [ObservableObject]
     [GoTo]
-    public partial class FormViewModel(Router router, Person person) : FormViewModelBase<Person>(router),         
+    public partial class FormViewModel(IDialogService dialogService, Router router, Person person) : FormViewModelBase<Person>(router),         
         IDataErrorInfo
     {
         public const string KEY = "Page";
@@ -48,7 +48,7 @@ namespace Example.ViewModels
         public async Task Validate()
         {
             if (!string.IsNullOrWhiteSpace(Error))
-                await DialogWrapper.ShowOkAsync(Error, "Error");
+                await dialogService.ShowOkAsync(Error, "Error");
             else
             {
                 Person.Contacts.Update(
@@ -66,7 +66,7 @@ namespace Example.ViewModels
                 var result = await DBBase.Instance.DbTransSave(Person);
                 IsBusy = false;
                 if (!string.IsNullOrWhiteSpace(result.Exception))
-                    await DialogWrapper.ShowOkAsync(result.Exception, "Error");
+                    await dialogService.ShowOkAsync(result.Exception, "Error");
                 
                 await Close(result.Successful ? Person : null);
             }
@@ -115,7 +115,7 @@ namespace Example.ViewModels
 
         protected override Task<bool> CanClose()
         {
-            return DialogWrapper.ShowYesNoAsync("Are you sure you want to close ?", "Question"); 
+            return dialogService.ShowYesNoAsync("Are you sure you want to close ?", "Question"); 
         }
 
         protected override void NotifyPropertyChanged(string propertyName)

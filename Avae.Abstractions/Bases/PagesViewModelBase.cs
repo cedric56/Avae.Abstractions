@@ -93,9 +93,9 @@ namespace Avae.Abstractions
             viewModel = value.ViewModel;
 
             IContextFor contextFor;
-            if (value.ViewModel != null)
+            if (viewModel != null)
             {
-                contextFor = _router.GoTo(value.ViewModel, value.Parameters);
+                contextFor = _router.GoTo(viewModel, value.Parameters);
             }
             else
             {

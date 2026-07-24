@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using Avae.Abstractions;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Data.Common;
@@ -8,13 +9,12 @@ using System.Text;
 
 namespace Avae.DAL
 {
-    public class LoggedConnection : DbConnection
+    public class LoggedConnection(IServiceProvider provider) : DbConnection
     {
-        public readonly DbConnection Inner = SimpleProvider.GetService<DbConnection>();
-        private readonly ILogger _logger = SimpleProvider.GetService<ILogger>();
-
+        public readonly DbConnection Inner = provider.GetRequiredService<DbConnection>();
+        
         protected override DbCommand CreateDbCommand()
-            => new LoggedDbCommand(_logger, Inner.CreateCommand());
+            => new LoggedDbCommand(provider.GetRequiredService<ILogger>(), Inner.CreateCommand());
 
         // Everything else MUST pass-through 1:1
         public override string ConnectionString { get => Inner.ConnectionString; set => Inner.ConnectionString = value; }

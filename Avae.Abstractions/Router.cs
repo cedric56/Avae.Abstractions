@@ -1,9 +1,11 @@
-﻿namespace Avae.Abstractions
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace Avae.Abstractions
 {
     /// <summary>
     /// Class initially copied from https://github.com/eten-tech/bible-well/blob/main/src/BibleWell.App/Router.cs
     /// </summary>
-    public partial class Router
+    public partial class Router(IServiceProvider provider)
     {
         private int _currentIndex = -1;
         private List<IViewModelBase> _history = [];
@@ -55,7 +57,7 @@
         /// <returns>The created view model cast to the <typeparamref name="TBaseType"/>.</returns>        
         public IContextFor GoTo(Type viewModelType, out IViewModelBase viewModel, params IParameter[] parameters)
         {
-            viewModel = SimpleProvider.GetViewModel(viewModelType, parameters);
+            viewModel = provider.GetViewModel(viewModelType, parameters);
             AddHistory(viewModel);
             CurrentViewModelChanged?.Invoke(viewModel);
             return GetContext(viewModel, parameters);
@@ -80,7 +82,7 @@
         /// <returns>The created view model.</returns>
         public IContextFor GoTo<TViewModel>(out TViewModel viewModel, params IParameter[] parameters) where TViewModel : class, IViewModelBase
         {
-            viewModel = SimpleProvider.GetViewModel<TViewModel>(parameters);
+            viewModel = provider.GetViewModel<TViewModel>(parameters);
             AddHistory(viewModel);
             CurrentViewModelChanged?.Invoke(viewModel);
             return GetContext(viewModel, parameters);
@@ -107,15 +109,15 @@
             _currentIndex = _history.Count - 1;
         }
 
-        private static IContextFor GetContext(IViewModelBase viewModel, params IParameter[] parameters)
+        private IContextFor GetContext(IViewModelBase viewModel, params IParameter[] parameters)
         {
-            var configuration = SimpleProvider.GetService<IIocConfiguration>();
-            var contextFor = configuration!.GetContextFor(viewModel.GetType().Name, parameters);
+            var configuration = provider.GetRequiredService<IIocConfiguration>();
+            var contextFor = configuration.GetContextFor(viewModel.GetType().Name, parameters);
             //Avoid binding error due to propagating context
             if (contextFor != null)
             {
-                contextFor.DataContext = null;
-                contextFor.DataContext = viewModel;
+                contextFor.Context = null;
+                contextFor.Context = viewModel;
             }
 
             return contextFor ?? throw new NotImplementedException($"Unable to find view for {viewModel.GetType().Name}");

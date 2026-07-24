@@ -5,29 +5,29 @@ using System.Data;
 
 namespace Avae.DAL
 {
-    public class SqlLayer : IDataAccessLayer
+    public class SqlLayer(IServiceProvider provider) : IDataAccessLayer
     {
         public T? Get<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
-            using var db = new LoggedConnection();
+            using var db = new LoggedConnection(provider);
             return db.Get<T>(id, transaction, commandTimeout);
         }
 
         public IEnumerable<T> GetAll<T>(IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
-            using var db = new LoggedConnection();
+            using var db = new LoggedConnection(provider);
             return db.GetAll<T>(transaction, commandTimeout);
         }
 
         public Task<IEnumerable<T>> GetAllAsync<T>(IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
-            using var db = new LoggedConnection();
+            using var db = new LoggedConnection(provider);
             return db.GetAllAsync<T>(transaction, commandTimeout);
         }
 
         public async Task<T?> GetAsync<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
-            using var db = new LoggedConnection();
+            using var db = new LoggedConnection(provider);
             return await db.GetAsync<T>(id, transaction, commandTimeout);
         }
 
@@ -56,28 +56,28 @@ namespace Avae.DAL
         public Task<IEnumerable<T>> FindByAnyAsync<T>(Dictionary<string, object> filters) where T : class, new()
         {
             var sql = Create<T>(filters, " OR ", out var parameters);
-            using var db = new LoggedConnection();
+            using var db = new LoggedConnection(provider);
             return db.QueryAsync<T>(sql, parameters);
         }
 
         public IEnumerable<T> FindByAny<T>(Dictionary<string, object> filters) where T : class, new()
         {
             var sql = Create<T>(filters, " OR ", out var parameters);
-            using var db = new LoggedConnection();
+            using var db = new LoggedConnection(provider);
             return db.Query<T>(sql, parameters);
         }
 
         public Task<IEnumerable<T>> WhereAsync<T>(Dictionary<string, object> filters) where T : class, new()
         {
             var sql = Create<T>(filters, " AND ", out var parameters);
-            using var db = new LoggedConnection();
+            using var db = new LoggedConnection(provider);
             return db.QueryAsync<T>(sql, parameters);
         }
 
         public IEnumerable<T> Where<T>(Dictionary<string, object> filters) where T : class, new()
         {
             var sql = Create<T>(filters, " AND ", out var parameters);
-            using var db = new LoggedConnection();
+            using var db = new LoggedConnection(provider);
             return db.Query<T>(sql, parameters);
         }
     }

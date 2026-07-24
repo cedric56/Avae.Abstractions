@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace Example.ViewModels
 {
     [ObservableObject]
-    internal partial class MenuViewModel(Router router) : PagesViewModelBase(router, false)
+    internal partial class MenuViewModel(IServiceProvider provider, Router router) : PagesViewModelBase(router, false)
     {
         public string Title { get; set; } = "Persons";
 
@@ -62,7 +63,10 @@ namespace Example.ViewModels
             await SelectedPerson!.LoadContactsAsync();
             var result = await DBBase.Instance.DbTransRemove(SelectedPerson);
             if (!result.Successful)
-                await DialogWrapper.ShowOkAsync(result.Exception!, "Error");
+            {
+                var dialogService = provider.GetRequiredService<IDialogService>();
+                await dialogService.ShowOkAsync(result.Exception!, "Error");
+            }
             else
             {
                 Persons.Remove(SelectedPerson);
@@ -76,7 +80,7 @@ namespace Example.ViewModels
 
         public void OpenForm(Person person, Action<Person> action)
         {
-            var viewModel = new FormViewModel(SimpleProvider.GetService<Router>(), person);
+            var viewModel = new FormViewModel(provider.GetRequiredService<IDialogService>(), provider.GetRequiredService<Router>(), person);
 
             EventHandler<Person>? closeRequested = null!;
             viewModel.CloseRequested += closeRequested = (sender, e) =>
