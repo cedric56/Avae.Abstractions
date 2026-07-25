@@ -15,21 +15,7 @@ namespace Avae.Abstractions
         public string DisplayName { get; } = displayName;
         public string Icon { get; } = icon;
 
-        public IParameter[] FactoryParameters { get; set; } = [];
-        public IParameter[] ViewParameters { get; set; } = [];
-        public IParameter[] ViewModelParameters { get; set; } = [];
-
-        public IParameter[]  Parameters
-        {
-            get
-            {
-                var parameters = new  List<IParameter>();
-                parameters.AddRange(FactoryParameters);
-                parameters.AddRange(ViewParameters);
-                parameters.AddRange(ViewModelParameters);
-                return [.. parameters];
-            }
-        }
+        public NavigationContext NavigationContext { get; set; } = new NavigationContext();
 
         public virtual Task OnLaunched(IViewModelBase viewModel)
         {

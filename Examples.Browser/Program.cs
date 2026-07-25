@@ -34,14 +34,18 @@ internal sealed partial class Program
         {
             base.Configure(services);
 
-            var monitor = new SqlMonitor<Person>();
-            monitor.AddSignalR("http://localhost:5001/PersonHub");
-            services.AddSingleton<ISqlMonitor<Person>>(monitor);
+
+            services.AddSingleton<ISqlMonitor<Person>>(provider =>
+            {
+                var monitor = new SqlMonitor<Person>(provider);
+                monitor.AddSignalR("http://localhost:5001/PersonHub");
+                return monitor;
+            });
 
             services.AddScoped<IDBOnionService>(_ => GetMagicOnion<IDBOnionService>());
             services.AddScoped<IOnionService>(provider => provider.GetRequiredService<IDBOnionService>());
             services.AddTransient<IXmlHttpRequest, XmlHttpRequest>();
-            services.UseDbLayer<IDBLayer, DBOnionLayer>();
+            services.UseDbLayer<IDBLayer>(provider => new DBOnionLayer(provider));
         }
 
         private static IGrpc GetMagicOnion<IGrpc>() where IGrpc : IService<IGrpc>

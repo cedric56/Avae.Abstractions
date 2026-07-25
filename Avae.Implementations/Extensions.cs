@@ -2,7 +2,7 @@
 
 namespace Avae.Implementations
 {
-    public static partial class Extensions
+    internal static partial class Extensions
     {
         public static IEnumerable<string> SplitOnCapitals(this string text)
         {

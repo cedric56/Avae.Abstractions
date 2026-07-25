@@ -4,7 +4,36 @@ namespace Avae.Abstractions
 {
     public static class Extensions
     {
-        
+        public static T GetViewModel<T>(this IServiceProvider provider, NavigationContext? context = null) where T : class, IViewModelBase
+        {
+            return (T)GetViewModel(provider, typeof(T), context);
+        }
+
+        public static IViewModelBase GetViewModel(this IServiceProvider provider, Type viewModelType, NavigationContext? context = null)
+        {
+            var type = typeof(ViewModelFactory<>).MakeGenericType(viewModelType);
+            if (provider.GetService(type) is IViewModelBaseFactory factory)
+            {
+                var viewModel = factory.Create(viewModelType, [.. context?.ViewModelParameters ?? []]);
+                if (viewModel is not null)
+                {
+                    return viewModel;
+                }
+                throw new InvalidOperationException($"Unable to create {viewModelType.Name}.  Ensure that it is registered with the service provider.");
+            }
+
+            if (context?.ViewModelParameters.Length > 0)
+            {
+                throw new InvalidOperationException("You must register a factory for view models with parameters.");
+            }
+
+            if (provider.GetService(viewModelType) is IViewModelBase service)
+            {
+                return service;
+            }
+
+            throw new InvalidOperationException($"Unable to create {viewModelType.Name}.  Ensure that it is registered with the service provider and it derives from {typeof(IViewModelBase).FullName}.");
+        }
 
         public static string ReplaceWholeWord(this string s, string word, string bywhat)
         {
@@ -63,21 +92,6 @@ namespace Avae.Abstractions
 
             foreach (var item in deleted)
                 items.Remove(item);
-        }
-
-        public static ViewModelParameter<T> ForViewModel<T>(this T obj)
-        {
-            return new ViewModelParameter<T>(obj);
-        }
-
-        public static ViewParameter<T> ForView<T>(this T obj)
-        {
-            return new ViewParameter<T>(obj);
-        }
-
-        public static FactoryParameter<T> ForFactory<T>(this T obj)
-        {
-            return new FactoryParameter<T>(obj);
         }
     }
 }

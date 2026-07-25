@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using Avae.Abstractions.Interfaces;
 using Avae.DAL;
 using Avae.DAL.Interfaces;
 using Avae.Implementations;
@@ -49,9 +50,9 @@ public partial class App : AvaeApplication, IIocConfiguration
         });
         container.Register<HomeView>();
         container.Register<MenuView>();
-        container.Register<FormViewModel>((sp, parameters) =>
+        container.Register<FormViewModel>((sp, context) =>
         {
-            if (parameters.OfType<FactoryParameter<string>>().Any(p => p.Value == FormViewModel.KEY))
+            if (context.FactoryParameters.OfType<string>().Any(p => p == FormViewModel.KEY))
             {
                 return new FormPage1View();
             }
@@ -87,8 +88,7 @@ public partial class App : AvaeApplication, IIocConfiguration
                 //monitor.AddSignalR("http://localhost:5001/PersonHub");
                 services.AddSingleton<ISqlMonitor<Person>>(provider => factory.AddDbMonitor<Person>(provider));
             });
-        }
-        services.AddSingleton<IBrokerService, BrokerService>();
+        }   
     }
 
     public override void Initialize()

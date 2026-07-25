@@ -9,13 +9,13 @@ namespace Avae.DAL
 {
     public partial class OnionLayer(IServiceProvider provider) : IDataAccessLayer
     {
-        private IOnionService Service => provider.GetService<IOnionService>();
+        private IOnionService Service => provider.GetRequiredService<IOnionService>();
 
         public IEnumerable<T> FindByAny<T>(Dictionary<string, object> filters) where T : class, new()
         {
             if (OperatingSystem.IsBrowser())
             {
-                var request = provider.GetService<IXmlHttpRequest>();
+                var request = provider.GetRequiredService<IXmlHttpRequest>();
                 var result = request.Send(nameof(FindByAnyAsync), $"type={typeof(T).Name}&filters={JsonSerializer.Serialize(filters)}");
                 if (!result.Successful) throw new Exception(result.Exception);
                 return MemoryPackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
@@ -35,7 +35,7 @@ namespace Avae.DAL
         {
             if (OperatingSystem.IsBrowser())
             {
-                var request = provider.GetService<IXmlHttpRequest>();
+                var request = provider.GetRequiredService<IXmlHttpRequest>();
                 var result = request.Send(nameof(GetAsync), $"type={typeof(T).Name}&id={id}");
                 if (!result.Successful) throw new Exception(result.Exception);
                 return MemoryPackSerializer.Deserialize<T>(result.Data);
@@ -47,7 +47,7 @@ namespace Avae.DAL
         {
             if (OperatingSystem.IsBrowser())
             {
-                var request = provider.GetService<IXmlHttpRequest>();
+                var request = provider.GetRequiredService<IXmlHttpRequest>();
                 var result = request.Send(nameof(GetAllAsync), $"type={typeof(T).Name}");
                 if (!result.Successful) throw new Exception(result.Exception);
                 return MemoryPackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
@@ -73,7 +73,7 @@ namespace Avae.DAL
         {
             if (OperatingSystem.IsBrowser())
             {
-                var request = provider.GetService<IXmlHttpRequest>();
+                var request = provider.GetRequiredService<IXmlHttpRequest>();
                 var result = request.Send(nameof(WhereAsync), $"type={typeof(T).Name}&filters={JsonSerializer.Serialize(filters)}");
                 if (!result.Successful) throw new Exception(result.Exception);
                 return MemoryPackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];

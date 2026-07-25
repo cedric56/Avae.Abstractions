@@ -35,7 +35,8 @@ namespace Avae.Implementations
         }
 
         public virtual void Configure(IServiceCollection services)
-        {            
+        {
+            services.AddSingleton<IBrokerService, BrokerService>();
             services.AddSingleton<IIocConfiguration>(this);
             services.AddSingleton<IDialogService>(sp =>
             {
@@ -71,9 +72,9 @@ namespace Avae.Implementations
             return Container.GetView(key, @params);
         }
 
-        public IContextFor? GetContextFor(string key, params IParameter[] @params)
+        public IContextFor? GetContextFor(string key, NavigationContext context)
         {
-            return Container.GetView(key, @params) as IContextFor;
+            return Container.GetView(key, [context]) as IContextFor;
         }
 
         /// <summary>
@@ -82,9 +83,9 @@ namespace Avae.Implementations
         /// <typeparam name="TViewModel"></typeparam>
         /// <param name="params"></param>
         /// <returns></returns>
-        public IContextFor<TViewModel>? GetContextFor<TViewModel>(params IParameter[] @params) where TViewModel : IViewModelBase
+        public IContextFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase
         {
-            return Container.GetView(typeof(TViewModel).Name, @params) as IContextFor<TViewModel>;
+            return Container.GetView(typeof(TViewModel).Name, [context]) as IContextFor<TViewModel>;
         }
 
         /// <summary>
@@ -93,9 +94,9 @@ namespace Avae.Implementations
         /// <typeparam name="TViewModel"></typeparam>
         /// <param name="params"></param>
         /// <returns></returns>
-        public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(params IParameter[] @params) where TViewModel : IViewModelBase
+        public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : IViewModelBase
         {
-            var view = Container.GetView(typeof(TViewModel).Name, @params);
+            var view = Container.GetView(typeof(TViewModel).Name, [context]);
             
             // Now verify the TResult type matches
             Type viewType = view.GetType();

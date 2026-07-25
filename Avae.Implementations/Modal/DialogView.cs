@@ -57,7 +57,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
         return @params;
     }
 
-    public async Task<TResult?> ShowDialogAsync()
+    public async Task<TResult?> ShowModalAsync()
     {
         TResult? result = default;
         var viewModel = ViewModel;

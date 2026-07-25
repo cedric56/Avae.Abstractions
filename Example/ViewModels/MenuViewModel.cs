@@ -26,15 +26,12 @@ namespace Example.ViewModels
             RemoveCommand.NotifyCanExecuteChanged();
         }
 
-        public override ObservableCollection<PageViewModelBase> Pages
+        protected override ObservableCollection<PageViewModelBase> GetPages()
         {
-            get
-            {
-                return
-                [
+            return
+            [
                     new PageViewModelBase<FormViewModel>("Form", "fa-solid fa-gear")
-                ];
-            }
+            ];
         }
 
         [RelayCommand]

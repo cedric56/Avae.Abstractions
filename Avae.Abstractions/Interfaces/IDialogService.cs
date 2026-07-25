@@ -15,6 +15,11 @@ public interface IDialogService
 
     Task<int> ShowYesNoAbortAsync(string message, string title = "Title");
 
-    Task<TResult?> ShowModalAsync<TViewModel, TResult>(params IParameter[] parameters) where TViewModel : class, IViewModelBase;
+    Task<TResult?> ShowModalAsync<TViewModel, TResult>() where TViewModel : class, IViewModelBase
+    {
+        return ShowModalAsync<TViewModel, TResult>(new NavigationContext());
+    }
+
+    Task<TResult?> ShowModalAsync<TViewModel, TResult>(NavigationContext context) where TViewModel : class, IViewModelBase;
 }
 

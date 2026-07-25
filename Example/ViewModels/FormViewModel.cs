@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 namespace Example.ViewModels
 {
     [ObservableObject]
-    [GoTo]
     public partial class FormViewModel(IDialogService dialogService, Router router, Person person) : FormViewModelBase<Person>(router),         
         IDataErrorInfo
     {
@@ -74,15 +73,16 @@ namespace Example.ViewModels
 
         public override string Title => "Form";
 
-        public override ObservableCollection<PageViewModelBase> Pages
+        protected override ObservableCollection<PageViewModelBase> GetPages()
         {
-            get
-            {
-                return
-                [
+            return new ObservableCollection<PageViewModelBase>
+                {
                     new PageViewModelBase<FormViewModel>(this, "Page One", "fa-solid fa-gear")
                     {
-                         FactoryParameters = [KEY.ForFactory()],
+                         NavigationContext = new NavigationContext
+                         {
+                             FactoryParameters = [KEY]
+                         },
                          Launched = async (viewModel) =>
                             {
                                 await Person.LoadContactsAsync();
@@ -93,17 +93,16 @@ namespace Example.ViewModels
                     new PageViewModelBase<FormPage3ViewModel>("Page Three", "fa-solid fa-gear")
                     {
                         //Possibility to set parameters on ctor
-                         //ViewParameters = [Person.ForView()]
+                        //ViewParameters = [Person]
                     }
-                ];
-            }
+                };
         }
 
         protected override IContextFor GoTo(PageViewModelBase value, out IViewModelBase viewModel)
         {
             //Possibility to set parameters on call
-            if (value?.ViewModelType == typeof(FormPage3ViewModel))
-                value.ViewParameters = [Person.ForView()];
+            if (value.ViewModelType == typeof(FormPage3ViewModel))
+                value.NavigationContext.ViewParameters = [Person];
 
             return base.GoTo(value, out viewModel);
         }
