@@ -11,7 +11,7 @@ namespace Avae.DAL
 {
     public class LoggedConnection(IServiceProvider provider) : DbConnection
     {
-        public readonly DbConnection Inner = provider.GetRequiredService<DbConnection>();
+        public readonly DbConnection Inner = provider.GetRequiredService<IDbConnection>() as DbConnection;
         
         protected override DbCommand CreateDbCommand()
             => new LoggedDbCommand(provider.GetRequiredService<ILogger>(), Inner.CreateCommand());

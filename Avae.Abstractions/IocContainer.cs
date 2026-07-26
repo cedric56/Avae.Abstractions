@@ -9,15 +9,24 @@ namespace Avae.Abstractions
     /// </summary>
     public class IocContainer : IIocContainer
     {
-        public IServiceProvider Provider { get; private set; }
+        private IServiceProvider? _provider;
+        public IServiceProvider Provider { get { return _provider ??= ServiceLocator.Default; } private set { _provider = value; } }
         private readonly ConcurrentDictionary<string, ViewFactory> _factories = [];
 
-        public IocContainer(IIocConfiguration config)
+        public IocContainer(IIocConfiguration config, bool buildServiceProvider = true)
         {
             var services = new ServiceCollection();
             config.Configure(services);
             config.Configure(this);
-            config.Configure(Provider = services.BuildServiceProvider());
+            if (buildServiceProvider)
+            {
+                config.Configure(_provider = services.BuildServiceProvider());
+            }
+        }
+
+        public void SetProvider(IServiceProvider provider)
+        {
+            _provider = provider;
         }
 
         public object GetView(string key, object[] context)

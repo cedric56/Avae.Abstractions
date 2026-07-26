@@ -36,5 +36,6 @@
     <!--OutputItemType="Analyzer" ReferenceOutputAssembly="false"-->
     <ProjectReference Include="..\Avae.Implementations\Avae.Implementations.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
+    <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
   </ItemGroup>
 </Project>

@@ -4,5 +4,5 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Example.FormPage3View">
-    <Button Command="{Binding BackCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Title}"/>
+    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Title}"/>
 </UserControl>

@@ -1,0 +1,24 @@
+﻿<FlyoutPage x:Class="Example.Maui.MainPage"
+            Title="Home">
+    <FlyoutPage.Flyout>
+        <ContentPage Title="Menu">
+            <CollectionView Grid.Row="1"
+				x:Name="MenuCollectionView"
+				ItemsSource="{Binding Pages}"
+				SelectionMode="Single"
+				SelectedItem="{Binding SelectedPage}"
+				BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding DisplayName}"
+									   FontSize="16"
+									   TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </ContentPage>
+    </FlyoutPage.Flyout>
+    <FlyoutPage.Detail>
+        <ContentPage Content="{Binding CurrentPage}"/>
+    </FlyoutPage.Detail>
+</FlyoutPage>

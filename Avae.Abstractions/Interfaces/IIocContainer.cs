@@ -1,13 +1,6 @@
 ﻿namespace Avae.Abstractions;
 
-public interface IFactory
-{
-
-}   
-
 public delegate object ViewFactory(IServiceProvider serviceProvider, params object[] context);
-
-public delegate IFactory NavigationFactory(IServiceProvider serviceProvider, NavigationContext context);
 
 /// <summary>
 /// An interface defining how a page can be configured in various frameworks such

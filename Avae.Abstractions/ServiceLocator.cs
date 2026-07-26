@@ -7,7 +7,7 @@ namespace Avae.Abstractions
     {
         static IServiceProvider? provider;
 
-        public static IServiceProvider Default => provider ?? throw new InvalidOperationException("The service provider has not been configured.");
+        public static IServiceProvider Default => provider ?? throw new InvalidOperationException("ServiceLocator.SetDefault is not been called.");
 
         public static void SetDefault(IServiceProvider serviceProvider)
         {
@@ -17,7 +17,7 @@ namespace Avae.Abstractions
         public static T GetService<T>() where T : notnull
         {
             if (provider == null)
-                throw new Exception("The service provider has not been configured. Call DefaultProvider.ConfigureServices at application startup.");
+                throw new InvalidOperationException("ServiceLocator.SetDefault is not been called.");
             return provider.GetRequiredService<T>();
         }
     }

@@ -122,11 +122,11 @@ namespace Avae.Implementations
             return ShowMessage(message, title, "YesNoAbort");
         }
 
-        Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigationContext context) where TResult : default
+        Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigationContext? context = null) where TResult : default
         {
             var viewModel = serviceProvider.GetViewModel<TViewModel>(context);
             var container = serviceProvider.GetRequiredService<IIocConfiguration>();
-            var view = container.GetModalFor<TViewModel, TResult>(context) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
+            var view = container.GetModalFor<TViewModel, TResult>(context ?? new NavigationContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
             view.Context = viewModel;
             return view.ShowModalAsync();
         }

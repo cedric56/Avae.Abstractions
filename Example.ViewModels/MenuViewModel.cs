@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Example.ViewModels
 {
     [ObservableObject]
-    internal partial class MenuViewModel(IServiceProvider provider, Router router) : PagesViewModelBase(router, false)
+    public partial class MenuViewModel(IServiceProvider provider, Router router) : PagesViewModelBase(router, false)
     {
         public string Title { get; set; } = "Persons";
 

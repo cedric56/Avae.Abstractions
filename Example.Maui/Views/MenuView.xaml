@@ -1,0 +1,23 @@
+<ContentView x:Class="Example.Maui.Views.MenuView">
+    <VerticalStackLayout>
+        <Grid>
+            <Label Text="{Binding Title}" />
+            <Grid ColumnDefinitions="Auto,Auto,Auto" >
+                <Button Text="Add" Command="{Binding AddCommand}"/>
+                <Button Text="Update" Command="{Binding UpdateCommand}" Grid.Column="1"/>
+                <Button Text="Remove" Command="{Binding RemoveCommand}" Grid.Column="2"/>
+            </Grid>
+        </Grid>
+        <CollectionView ItemsSource="{Binding Persons}" SelectedItem="{Binding SelectedPerson}"
+                    SelectionMode="Single">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{Binding FirstName}" />
+                        <Label Text="{Binding LastName}" Margin="10,0,0,0"/>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentView>

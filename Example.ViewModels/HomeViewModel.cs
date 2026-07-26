@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Example.ViewModels
 {
-    internal partial class HomeViewModel(
+    public partial class HomeViewModel(
         IDialogService dialogService,
         IContentDialogService contentDialogService,
         ITaskDialogService taskDialogService,

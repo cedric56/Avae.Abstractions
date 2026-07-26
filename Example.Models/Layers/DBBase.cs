@@ -1,13 +1,14 @@
 ﻿using Avae.Abstractions;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
+using System.Data;
 using System.Data.Common;
 
 namespace Example.Models
 {
     public class DBBase
     {
-        private static string GetCommandText(DbConnection connection)
+        private static string GetCommandText(IDbConnection connection)
         {
             if (connection is SqliteConnection)
             {
@@ -63,7 +64,7 @@ namespace Example.Models
                             if (!OperatingSystem.IsBrowser())
                             {
                                 //Create db
-                                using var connection = ServiceLocator.GetService<DbConnection>();
+                                using var connection = ServiceLocator.GetService<IDbConnection>();
                                 if (connection is not null)
                                 {
                                     connection.Open();
