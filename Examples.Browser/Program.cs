@@ -37,7 +37,7 @@ internal sealed partial class Program
 
             services.AddSingleton<ISqlMonitor<Person>>(provider =>
             {
-                var monitor = new SqlMonitor<Person>(provider);
+                var monitor = new SqlMonitor<Person>();
                 monitor.AddSignalR("http://localhost:5001/PersonHub");
                 return monitor;
             });

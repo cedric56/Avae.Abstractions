@@ -1,7 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL.Interfaces;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using TableDependencyCore.SqlClient;
 using TableDependencyCore.SqlClient.Base.EventArgs;
@@ -19,14 +18,13 @@ namespace Avae.DAL
         IDisposable
         where TObject : class, new()
     {
-        IServiceProvider provider;
         private SignalRService? signalRService;
         private readonly SqlTableDependencyCore<TObject>? sqlDependency;
 
         public void AddSignalR(string url)
         {
             signalRService = new SignalRService(url);
-            signalRService.On<Record<TObject>>(SqlHub<TObject>.Message, record =>
+            signalRService.On<Record<TObject>>(Messages.DBMessage, record =>
             {
                 OnChanged?.Invoke(this, record);
             });
@@ -42,14 +40,13 @@ namespace Avae.DAL
             });
         }
 
-        public SqlMonitor(IServiceProvider provider)
+        public SqlMonitor()
         {
-            this.provider = provider;
+            
         }
 
-        internal SqlMonitor(IServiceProvider provider, string connectionString, Type connectionType)
+        internal SqlMonitor(string connectionString, Type connectionType)
         {
-            this.provider = provider;
             if (connectionType == typeof(SqlConnection))
             {
                 sqlDependency = new SqlTableDependencyCore<TObject>(connectionString);
@@ -65,7 +62,7 @@ namespace Avae.DAL
                 var record = new Record<TObject>(model.Id, Enum.Parse<ChangeType>(e.ChangeType.ToString()));
                 OnChanged?.Invoke(this, record);
                 //Inside client, we notify multiprocess
-                signalRService?.SendAsync(SqlHub<TObject>.Message, record);
+                signalRService?.SendAsync(Messages.DBMessage, record);
                 //Inside server, we notify clients
                 RaiseHub(record);
             }
@@ -80,7 +77,7 @@ namespace Avae.DAL
                 var record = new Record<TObject>(rowid, type);
                 OnChanged?.Invoke(this, record);
                 //Inside client, we notify multiprocess
-                signalRService?.SendAsync(SqlHub<TObject>.Message, record);
+                signalRService?.SendAsync(Messages.DBMessage, record);
                 //Inside server, we notify clients
                 RaiseHub(record);
             }
@@ -90,7 +87,8 @@ namespace Avae.DAL
         {
             Task.Run(async () =>
             {
-                var hub = provider.GetService<SqlHub<TObject>>();
+                Console.WriteLine(record);
+                var hub = ServiceLocator.GetService<SqlHub<TObject>>();
                 if (hub is not null)
                     await hub.SendMessage(record);
             });

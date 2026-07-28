@@ -1,6 +1,8 @@
-﻿<FlyoutPage x:Class="Example.Maui.MainPage"
-            Title="Home">
-    <FlyoutPage.Flyout>
+﻿<local:FlyoutEx x:Class="Example.Maui.MainPage"
+            Title="Home"
+            xmlns:local="clr-namespace:Example.Maui"
+            CurrentPage="{Binding CurrentPage}">
+    <local:FlyoutEx.Flyout>
         <ContentPage Title="Menu">
             <CollectionView Grid.Row="1"
 				x:Name="MenuCollectionView"
@@ -17,8 +19,14 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </ContentPage>
-    </FlyoutPage.Flyout>
-    <FlyoutPage.Detail>
-        <ContentPage Content="{Binding CurrentPage}"/>
-    </FlyoutPage.Detail>
-</FlyoutPage>
+    </local:FlyoutEx.Flyout>
+    <!--<local:FlyoutEx>
+        <ContentPage>
+            <ContentPage.ControlTemplate>
+                <ControlTemplate>
+                    <ContentPresenter Content="{Binding CurrentPage}"/>
+                </ControlTemplate>
+            </ContentPage.ControlTemplate>
+        </ContentPage>
+    </local:FlyoutEx.Detail>-->
+</local:FlyoutEx>

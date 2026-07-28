@@ -67,7 +67,7 @@ namespace Example.ViewModels
             if (await CanClose())
                 await Close(Text!);
             else
-                await dialogService.ShowOkAsync(Error, "Error");
+                await dialogService.ShowYesNoAbortAsync(Error, "Error");
         }
 
         [RelayCommand]

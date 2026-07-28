@@ -1,4 +1,4 @@
-<ContentView x:Class="Example.Maui.Views.HomeView">
+<ContentPage x:Class="Example.Maui.Views.HomeView">
     <!--<VerticalStackLayout>-->
         <Button 
             Text="Welcome to .NET MAUI!"
@@ -6,4 +6,4 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
     <!--</VerticalStackLayout>-->
-</ContentView>
+</ContentPage>

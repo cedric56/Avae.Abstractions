@@ -9,7 +9,7 @@ namespace Example.Server
 {
     public class OnionService : ServiceBase<IDBOnionService>, IDBOnionService
     {
-        private static readonly IDBLayer Layer = SimpleProvider.GetService<IDBLayer>();
+        private static readonly IDBLayer Layer = ServiceLocator.GetService<IDBLayer>();
 
         static OnionService()
         {

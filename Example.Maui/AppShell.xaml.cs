@@ -9,7 +9,22 @@ namespace Example.Maui
         {
             InitializeComponent();
             
-            BindingContext = new MainViewModel(new Avae.Abstractions.Router(ServiceLocator.Default));
+            var vm = new MainViewModel(new Avae.Abstractions.Router(ServiceLocator.Default));
+
+            BindingContext = vm;
+
+            foreach(var page in vm.Pages)
+            {
+                this.Items.Add(new ShellContent()
+                {
+                    Title = page.DisplayName,
+                    ContentTemplate = new DataTemplate(() =>
+                    {
+                        vm.SelectedPage = page;
+                        return vm.CurrentPage;
+                    })
+                });
+            }
         }
     }
 }

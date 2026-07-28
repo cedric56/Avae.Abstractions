@@ -82,11 +82,14 @@ public partial class App : AvaeApplication, IIocConfiguration
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             var dbPath = Path.Combine(folder, "database.db");
             var connectionString = $"Data Source={dbPath};Foreign Keys=True";
-            services.UseSqlMonitors<SqliteConnection>(connectionString, factory =>
+            services.UseSqlMonitors<SqliteConnection>(connectionString, (factory) =>
             {
-                //var monitor = factory.AddDbMonitor<Person>(services);
-                //monitor.AddSignalR("http://localhost:5001/PersonHub");
-                services.AddSingleton<ISqlMonitor<Person>>(provider => factory.AddDbMonitor<Person>(provider));
+                var monitor = factory.AddDbMonitor<Person>();
+                monitor.AddSignalR("http://localhost:5001/PersonHub");
+                services.AddSingleton<ISqlMonitor<Person>>(provider =>
+                {
+                    return monitor;
+                });
             });
         }   
     }

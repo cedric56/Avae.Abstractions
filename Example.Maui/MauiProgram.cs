@@ -1,6 +1,8 @@
 ﻿using Avae.Abstractions;
+using Avae.Abstractions.Interfaces;
 using Avae.DAL;
-using CommunityToolkit.Maui;
+using Avae.DAL.Interfaces;
+using Avalonia.Controls.Maui;
 using Example.Maui.Views;
 using Example.Models;
 using Example.ViewModels;
@@ -8,7 +10,6 @@ using MagicOnion;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using System.Data;
-using System.Data.Common;
 
 namespace Example.Maui
 {
@@ -18,13 +19,25 @@ namespace Example.Maui
         {
             var builder = MauiApp.CreateBuilder();
             builder
+#if !NET11_0
                 .UseMauiCommunityToolkit()
-                .ConfigureViews<App>(container =>
+#endif
+                .UseAvaloniaApp()
+                .ConfigureContainer<App>(container =>
                 {
                     container.Register<MainPage>();
                     container.Register<HomeView>();
                     container.Register<MenuView>();
-                    container.Register<ModalViewModel>((sp, context) => new ModalView(sp.GetRequiredService<ICurrentPage>()));
+                    container.Register<ModalView>((sp, context) => new ModalView(sp.GetRequiredService<ICurrentPage>()));
+                    //container.Register<FormView>();
+                    container.Register<FormViewModel>((sp, context) =>
+                    {
+                        if (context.FactoryParameters.OfType<string>().Any(p => p == FormViewModel.KEY))
+                        {
+                            return new Label() { Text = "Hello "};
+                        }
+                        return new FormView();
+                    });
                 })
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
@@ -37,13 +50,24 @@ namespace Example.Maui
             builder.Services.AddSingleton<HomeViewModel>();
             builder.Services.AddSingleton<MenuViewModel>();
             builder.Services.AddSingleton<ModalViewModel>();
-            
+            builder.Services.AddSingleton<FormViewModel>();
+
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var dbPath = Path.Combine(folder, "database.db");
+            var connectionString = $"Data Source={dbPath};Foreign Keys=True";
+
             builder.Services.UseDbLayer<IDBLayer>(sp => new DBSqlLayer(sp));
+            builder.Services.UseSqlMonitors<SqliteConnection>(connectionString, (factory) =>
+            {
+                var monitor = factory.AddDbMonitor<Person>();
+                monitor.AddSignalR("http://localhost:5001/PersonHub");
+                builder.Services.AddSingleton<ISqlMonitor<Person>>(sp =>
+                {
+                    return monitor;
+                });
+            });
             builder.Services.AddTransient<IDbConnection>(sp =>
             {
-                var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                var dbPath = Path.Combine(folder, "database.db");
-                var connectionString = $"Data Source={dbPath};Foreign Keys=True";
                 return new SqliteConnection(connectionString);
             });
 #if DEBUG
@@ -63,9 +87,9 @@ namespace Example.Maui
 
     public static class AvaeExtensions
     {
-        class IocConfiguration(IServiceProvider serviceProvider, Func<IocContainer> getContainer, Action<IIocContainer>? configure = null) : 
+        class IocConfiguration(IServiceProvider serviceProvider, Func<IocContainer> getContainer, Action<IIocContainer>? configure = null) :
             IIocConfiguration, ITaskDialogService, IContentDialogService, IDialogService,
-            ICurrentPage
+            ICurrentPage, ISystemNotificationService
         {
             IocContainer? _container = null;
             IocContainer Container { get => _container ??= getContainer(); }
@@ -84,7 +108,7 @@ namespace Example.Maui
 
             public void Configure(IServiceProvider provider)
             {
-                
+
             }
 
             public object? GetView(string key, params object[] @params)
@@ -94,7 +118,10 @@ namespace Example.Maui
 
             public IContextFor? GetContextFor(string key, NavigationContext context)
             {
-                return Container.GetView(key, [context]) as IContextFor;
+                var view = Container.GetView(key, [context]);
+                if (view is not null && view is not IContextFor)
+                    throw new InvalidOperationException("View must implement IContextFor");
+                return view as IContextFor;
             }
 
             public IContextFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase
@@ -147,7 +174,7 @@ namespace Example.Maui
 
             public Task ShowErrorAsync(Exception ex, string title = "Error")
             {
-                throw new NotImplementedException();
+                return Current.DisplayAlertAsync(title, ex.Message, "Ok");
             }
 
             public Task ShowOkAsync(string message, string title = "Title")
@@ -157,27 +184,27 @@ namespace Example.Maui
 
             public Task<bool> ShowYesNoAsync(string message, string title = "Title")
             {
-                throw new NotImplementedException();
+                return Current.DisplayAlertAsync(title, message, "Yes", "No");
             }
 
             public Task<bool> ShowOkCancelAsync(string message, string title = "Title")
             {
-                throw new NotImplementedException();
+                return Current.DisplayAlertAsync(title, message, "Ok", "Cancel");
             }
 
             public Task<bool> ShowOkAbortAsync(string message, string title = "Title")
             {
-                throw new NotImplementedException();
+                return Current.DisplayAlertAsync(title, message, "Ok", "Abort");
             }
 
             public Task<int> ShowYesNoCancelAsync(string message, string title = "Title")
             {
-                throw new NotImplementedException();
+                return DisplayThreeButtons(message, title, "Yes", "No", "Cancel");
             }
 
             public Task<int> ShowYesNoAbortAsync(string message, string title = "Title")
             {
-                throw new NotImplementedException();
+                return DisplayThreeButtons(message, title, "Yes", "No", "Abort");
             }
 
             Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigationContext? context) where TResult : default
@@ -185,12 +212,103 @@ namespace Example.Maui
                 var viewModel = serviceProvider.GetViewModel<TViewModel>(context);
                 var view = GetModalFor<TViewModel, TResult>(context ?? new NavigationContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
                 view.Context = viewModel;
-                return view.ShowModalAsync();                
+                return view.ShowModalAsync();
+            }
+
+            async Task<int> DisplayThreeButtons(string message, string title, string button1, string button2, string button3)
+            {
+                var taskCompletionSource = new TaskCompletionSource<int>();
+#if ANDROID                
+                var alertBuilder = new Android.App.AlertDialog.Builder(Platform.CurrentActivity);
+
+                alertBuilder.SetTitle(title);
+                alertBuilder.SetMessage(message);
+
+                alertBuilder.SetPositiveButton(button1, (senderAlert, args) =>
+                {
+                    taskCompletionSource.SetResult(0);
+                });
+
+                alertBuilder.SetNegativeButton(button2, (senderAlert, args) =>
+                {
+                    taskCompletionSource.SetResult(1);
+                });
+
+                alertBuilder.SetNeutralButton(button3, (senderAlery, args) =>
+                {
+                    taskCompletionSource.SetResult(2);
+                });
+
+                var alertDialog = alertBuilder.Create();
+                alertDialog?.Show();
+
+                return await taskCompletionSource.Task;
+#elif IOS
+                var alertController = UIKit.UIAlertController.Create(title, message, UIKit.UIAlertControllerStyle.Alert);
+                alertController.AddAction(UIKit.UIAlertAction.Create(button1, UIKit.UIAlertActionStyle.Default, _ =>
+                {
+                    taskCompletionSource.SetResult(0);
+                }));
+                alertController.AddAction(UIKit.UIAlertAction.Create(button2, UIKit.UIAlertActionStyle.Default, _ =>
+                {
+                    taskCompletionSource.SetResult(1);
+                }));
+                alertController.AddAction(UIKit.UIAlertAction.Create(button3, UIKit.UIAlertActionStyle.Default, _ =>
+                {
+                    taskCompletionSource.SetResult(2);
+                }));
+                var rootViewController = UIKit.UIApplication.SharedApplication.KeyWindow?.RootViewController;
+                rootViewController?.PresentViewController(alertController, true, null);
+                return await taskCompletionSource.Task;
+#elif WINDOWS
+                var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
+                {
+                    Title = title,
+                    Content = message,
+                    PrimaryButtonText = button1,
+                    SecondaryButtonText = button2,
+                    CloseButtonText = button3,
+                    XamlRoot = Current.ToPlatform() is Microsoft.UI.Xaml.UIElement page ? page.XamlRoot : null
+                };
+                dialog.PrimaryButtonClick += (s, e) => taskCompletionSource.SetResult(0);
+                dialog.SecondaryButtonClick += (s, e) => taskCompletionSource.SetResult(1);
+                dialog.CloseButtonClick += (s, e) => taskCompletionSource.SetResult(2);
+                await dialog.ShowAsync();
+                return await taskCompletionSource.Task;
+#elif MACCATALYST
+                var alert = new UIKit.UIAlertController
+                {
+                    Title = title,
+                    Message = message,
+                    //PreferredStyle = UIKit.UIAlertControllerStyle.Alert
+                };
+                alert.AddAction(UIKit.UIAlertAction.Create(button1, UIKit.UIAlertActionStyle.Default, _ =>
+                {
+                    taskCompletionSource.SetResult(0);
+                }));
+                alert.AddAction(UIKit.UIAlertAction.Create(button2, UIKit.UIAlertActionStyle.Default, _ =>
+                {
+                    taskCompletionSource.SetResult(1);
+                }));
+                alert.AddAction(UIKit.UIAlertAction.Create(button3, UIKit.UIAlertActionStyle.Default, _ =>
+                {
+                    taskCompletionSource.SetResult(2);
+                }));
+                var rootViewController = UIKit.UIApplication.SharedApplication.KeyWindow?.RootViewController;
+                rootViewController?.PresentViewController(alert, true, null);
+                return await taskCompletionSource.Task;
+#endif
+                throw new NotImplementedException();
+            }
+
+            public ISystemNotification CreateNotification(string action, string title, string message, SystemNotificationAction[] actions)
+            {
+                throw new NotImplementedException();
             }
         }
 
-        public static MauiAppBuilder ConfigureViews<TApp>(this MauiAppBuilder builder,
-            Action<IIocContainer>? configure = null)
+        public static MauiAppBuilder ConfigureContainer<TApp>(this MauiAppBuilder builder,
+            Action<IIocContainer>? configure = null, Action<ILoggingBuilder>? build =null )
             where TApp : Application
 
         {            
@@ -201,8 +319,10 @@ namespace Example.Maui
             builder.Services.AddSingleton<IContentDialogService>(GetConfiguration);
             builder.Services.AddSingleton<ITaskDialogService>(GetConfiguration);
             builder.Services.AddTransient<ICurrentPage>(GetConfiguration);
+            builder.Services.AddSingleton<ISystemNotificationService>(GetConfiguration);
             builder.Services.AddSingleton<ILogger>(LoggerFactory.Create(builder =>
             {
+                build?.Invoke(builder);
 
             }).CreateLogger<TApp>());
             return builder;

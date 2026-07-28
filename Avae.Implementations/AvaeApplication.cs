@@ -34,6 +34,11 @@ namespace Avae.Implementations
 
         }
 
+        protected virtual void ConfigureLogging(ILoggingBuilder builder)
+        {
+
+        }
+
         public virtual void Configure(IServiceCollection services)
         {
             services.AddSingleton<IBrokerService, BrokerService>();
@@ -46,20 +51,7 @@ namespace Avae.Implementations
             });
             services.AddSingleton<IContentDialogService>(sp => new ContentDialogService(sp));
             services.AddSingleton<ITaskDialogService, TaskDialogService>();
-            services.AddSingleton<ILogger>(LoggerFactory.Create(builder =>
-            {
-//                if (!OperatingSystem.IsBrowser())
-//                {
-//#if DEBUG
-//                    builder.AddDebug();
-//#endif
-//                    builder.AddConsole();
-
-//                    //if (!string.IsNullOrWhiteSpace(Logs))
-//                      //  builder.AddProvider(new FileLoggerProvider(Logs));
-//                }
-
-            }).CreateLogger<AvaeApplication>());
+            services.AddSingleton<ILogger>(LoggerFactory.Create(ConfigureLogging).CreateLogger<AvaeApplication>());
         }
 
         public void Configure(IServiceProvider provider)

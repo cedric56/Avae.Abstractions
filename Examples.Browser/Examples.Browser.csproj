@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
   <PropertyGroup>
-    <TargetFramework>net9.0-browser</TargetFramework>
+    <TargetFramework>net11.0-browser</TargetFramework>
     <OutputType>Exe</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Browser" Version="11.3.7" />
-    <PackageReference Include="Avalonia.Browser.Blazor" Version="11.3.7" />
-    <PackageReference Include="MagicOnion.Client" Version="6.1.7" />
+    <!--<PackageReference Include="Avalonia.Browser.Blazor" Version="11.3.7" />-->
+    <PackageReference Include="MagicOnion.Client" Version="7.10.2" />
     <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
     <PackageReference Include="Grpc.Net.Client.Web" Version="2.71.0" />
   </ItemGroup>

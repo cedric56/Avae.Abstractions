@@ -9,8 +9,6 @@ namespace Avae.DAL
 {
     public partial class OnionLayer(IServiceProvider provider) : IDataAccessLayer
     {
-        private IOnionService Service => provider.GetRequiredService<IOnionService>();
-
         public IEnumerable<T> FindByAny<T>(Dictionary<string, object> filters) where T : class, new()
         {
             if (OperatingSystem.IsBrowser())
@@ -25,7 +23,8 @@ namespace Avae.DAL
 
         public async Task<IEnumerable<T>> FindByAnyAsync<T>(Dictionary<string, object> filters) where T : class, new()
         {
-            var result = await Service.FindByAnyAsync(typeof(T).Name, filters);
+            var service = provider.GetRequiredService<IOnionService>();
+            var result = await service.FindByAnyAsync(typeof(T).Name, filters);
             if (!result.Successful)
                 throw new Exception(result.Exception);
             return MemoryPackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
@@ -57,14 +56,16 @@ namespace Avae.DAL
 
         public async Task<IEnumerable<T>> GetAllAsync<T>(IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
-            var result = await Service.GetAllAsync(typeof(T).Name);
+            var service = provider.GetRequiredService<IOnionService>();
+            var result = await service.GetAllAsync(typeof(T).Name);
             if (!result.Successful) throw new Exception(result.Exception);
             return MemoryPackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
         }
 
         public async Task<T?> GetAsync<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
-            var result = await Service.GetAsync(typeof(T).Name, id);
+            var service = provider.GetRequiredService<IOnionService>();
+            var result = await service.GetAsync(typeof(T).Name, id);
             if (!result.Successful) throw new Exception(result.Exception);
             return MemoryPackSerializer.Deserialize<T>(result.Data);
         }
@@ -83,7 +84,8 @@ namespace Avae.DAL
 
         public async Task<IEnumerable<T>> WhereAsync<T>(Dictionary<string, object> filters) where T : class, new()
         {
-            var result = await Service.WhereAsync(typeof(T).Name, filters);
+            var service = provider.GetRequiredService<IOnionService>();
+            var result = await service.WhereAsync(typeof(T).Name, filters);
             if (!result.Successful) throw new Exception(result.Exception);
             return MemoryPackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
         }

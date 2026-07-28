@@ -1,8 +1,10 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
+using Avae.DAL.Interfaces;
 using Example.Models;
 using Grpc.Core;
 using Grpc.Net.Client;
+using MagicOnion;
 using MagicOnion.Server;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
@@ -26,15 +28,16 @@ builder.Services.AddGrpc(opt =>
 });
 
 builder.Services.AddSingleton<SqlHub<Person>>();
-builder.Services.UseDbLayer<IDBLayer, DBSqlLayer>();
+builder.Services.UseDbLayer<IDBLayer>(sp => new DBSqlLayer(sp));
 
 var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 var dbPath = Path.Combine(folder, "database.db");
 var connectionString = $"Data Source={dbPath};Foreign Keys=True";
 
-builder.Services.UseSqlMonitors<SqliteConnection>(connectionString, factory =>
+builder.Services.UseSqlMonitors<SqliteConnection>(connectionString, (factory) =>
 {
-    factory.AddDbMonitor<Person>();
+    var monitor = factory.AddDbMonitor<Person>();
+    builder.Services.AddSingleton<ISqlMonitor<Person>>(provider => monitor);
 });
 builder.Services.AddMagicOnion();
 builder.WebHost.ConfigureKestrel(options =>
@@ -51,7 +54,7 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 var app = builder.Build();
-SimpleProvider.ConfigureServices(app.Services);
+ServiceLocator.SetDefault(app.Services);
 
 app.UseCors("AllowAll");
 app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });

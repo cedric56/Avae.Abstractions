@@ -1,5 +1,6 @@
 ﻿<Application xmlns:local="clr-namespace:Example.Maui"
-             x:Class="Example.Maui.App">
+             x:Class="Example.Maui.App"
+             UserAppTheme="Dark">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

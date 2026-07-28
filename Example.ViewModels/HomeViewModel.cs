@@ -1,8 +1,6 @@
 ﻿using Avae.Abstractions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Threading.Tasks;
 
 namespace Example.ViewModels
 {
@@ -28,7 +26,7 @@ namespace Example.ViewModels
             }
             finally
             {
-                await dialogService.ShowOkAsync(result ?? string.Empty, "Result");
+                await dialogService.ShowYesNoAbortAsync(result ?? string.Empty, "Result");
             }
         }
 

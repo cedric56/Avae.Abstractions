@@ -13,10 +13,12 @@ namespace Example.Maui
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new NavigationPage(new MainPage() 
-            { 
-                BindingContext = new MainViewModel(new Avae.Abstractions.Router(ServiceLocator.Default)),
-            }));
+            return new Window(new AppShell());
+
+            //return new Window(new NavigationPage(new MainPage()
+            //{
+            //    BindingContext = new MainViewModel(new Avae.Abstractions.Router(ServiceLocator.Default)),
+            //}));
         }
     }
 }

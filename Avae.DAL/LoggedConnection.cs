@@ -1,20 +1,18 @@
-﻿#nullable disable
-using Avae.Abstractions;
+﻿using Avae.Abstractions;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Data.Common;
-using System.Text;
 
 namespace Avae.DAL
 {
     public class LoggedConnection(IServiceProvider provider) : DbConnection
     {
-        public readonly DbConnection Inner = provider.GetRequiredService<IDbConnection>() as DbConnection;
+        public readonly DbConnection Inner = (DbConnection)provider.GetRequiredService<IDbConnection>();
         
         protected override DbCommand CreateDbCommand()
-            => new LoggedDbCommand(provider.GetRequiredService<ILogger>(), Inner.CreateCommand());
+            => new LoggedDbCommand(provider.GetService<ILogger>(), Inner.CreateCommand());
 
         // Everything else MUST pass-through 1:1
         public override string ConnectionString { get => Inner.ConnectionString; set => Inner.ConnectionString = value; }
@@ -29,7 +27,7 @@ namespace Avae.DAL
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
             => Inner.BeginTransaction(isolationLevel);
 
-        public override void EnlistTransaction(System.Transactions.Transaction transaction)
+        public override void EnlistTransaction(System.Transactions.Transaction? transaction)
             => Inner.EnlistTransaction(transaction);
 
         //public override bool CanRaiseEvents => false;
@@ -42,67 +40,65 @@ namespace Avae.DAL
         }
     }
 
-    public class LoggedDbCommand(ILogger Logger, DbCommand Command) : DbCommand
+    public class LoggedDbCommand(ILogger? logger, DbCommand command) : DbCommand
     {
-        private readonly ILogger _logger = Logger;
-        private DbCommand _command = Command;
         private bool _disposed;
 
         public override string CommandText
         {
-            get => _command.CommandText;
+            get => command.CommandText;
             set
             {
-                if (_command.Connection is SqliteConnection)
-                    value = value?.Replace("SCOPE_IDENTITY", "last_insert_rowid");
+                if (command.Connection is SqliteConnection)
+                    value = value.Replace("SCOPE_IDENTITY", "last_insert_rowid");
 
-                _command.CommandText = value;
+                command.CommandText = value;
             }
         }
 
 
         public override int CommandTimeout
         {
-            get => _command.CommandTimeout;
-            set => _command.CommandTimeout = value;
+            get => command.CommandTimeout;
+            set => command.CommandTimeout = value;
         }
 
 
         public override CommandType CommandType
         {
-            get => _command.CommandType;
-            set => _command.CommandType = value;
+            get => command.CommandType;
+            set => command.CommandType = value;
         }
 
 
         public override UpdateRowSource UpdatedRowSource
         {
-            get => _command.UpdatedRowSource;
-            set => _command.UpdatedRowSource = value;
+            get => command.UpdatedRowSource;
+            set => command.UpdatedRowSource = value;
         }
 
 
-        protected override DbConnection DbConnection
+        protected override DbConnection? DbConnection
         {
-            get => _command.Connection;
-            set => _command.Connection = value;
+            get => command.Connection;
+            set => command.Connection = value;
         }
 
 
-        protected override DbParameterCollection DbParameterCollection => _command.Parameters;
+        protected override DbParameterCollection DbParameterCollection => command.Parameters;
 
 
-        protected override DbTransaction DbTransaction
+        protected override DbTransaction? DbTransaction
         {
-            get => _command.Transaction;
-            set => _command.Transaction = value;
+            get => command.Transaction;
+            set => command.Transaction = value;
         }
 
 
         public override bool DesignTimeVisible
         {
-            get => _command.DesignTimeVisible;
-            set => _command.DesignTimeVisible = value;
+            get => command.DesignTimeVisible;
+            set => command.DesignTimeVisible = value;
         }
 
         ~LoggedDbCommand() => Dispose(false);
@@ -116,8 +112,8 @@ namespace Avae.DAL
                 // No managed resources to release.
             }
             // Release unmanaged resources.
-            _command?.Dispose();
-            _command = null;
+            command?.Dispose();
+            //command = null;
             // Do not release logger.  Its lifetime is controlled by caller.
             _disposed = true;
         }
@@ -126,53 +122,53 @@ namespace Avae.DAL
         public override void Cancel()
         {
             //_logger.LogDebug("Cancelling database command.");
-            _command.Cancel();
+            command.Cancel();
         }
 
 
         public override int ExecuteNonQuery()
         {
             LogCommandBeforeExecuted();
-            int result = _command.ExecuteNonQuery();
+            int result = command.ExecuteNonQuery();
             return result;
         }
 
 
-        public override object ExecuteScalar()
+        public override object? ExecuteScalar()
         {
             LogCommandBeforeExecuted();
-            return _command.ExecuteScalar();
+            return command.ExecuteScalar();
         }
 
 
         public override void Prepare()
         {
             //_logger.LogDebug("Preparing database command.");
-            _command.Prepare();
+            command.Prepare();
         }
 
 
-        protected override DbParameter CreateDbParameter() => _command.CreateParameter();
+        protected override DbParameter CreateDbParameter() => command.CreateParameter();
 
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior Behavior)
         {
             LogCommandBeforeExecuted();
-            return _command.ExecuteReader(Behavior);
+            return command.ExecuteReader(Behavior);
         }
 
 
         private void LogCommandBeforeExecuted()
         {
-            string request = _command.CommandText;
-            foreach (IDataParameter parameter in _command.Parameters)
+            string request = command.CommandText;
+            foreach (IDataParameter parameter in command.Parameters)
             {
                 if (parameter.Direction == ParameterDirection.Output ||
                   parameter.Direction == ParameterDirection.ReturnValue) continue;
-                request = request.ReplaceWholeWord($"@{parameter.ParameterName}", parameter.Value?.ToString());
+                request = request.ReplaceWholeWord($"@{parameter.ParameterName}", parameter.Value?.ToString() ?? string.Empty);
             }
 
-            _logger?.LogInformation("Request: {Request}", request);
+            logger?.LogInformation("Request: {Request}", request);
         }
     }
 }
