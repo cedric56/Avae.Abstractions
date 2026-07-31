@@ -17,7 +17,6 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
 {
     public object? Context { get => DataContext; set => DataContext = value; }
     protected virtual string Title { get; } = string.Empty;
-    protected virtual string Buttons { get; } = "Ok";
     protected virtual string Icon { get; } = "";
     protected TViewModel? ViewModel { get { return DataContext as TViewModel; } }
     protected virtual TypeDialog TypeDialog { get; } = TypeDialog.Box;
@@ -48,7 +47,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
             }
         };
 
-        if (Buttons.Split(",").Length > 2)
+        if (ViewModel?.Commands.Count > 2)
         {
             @params.CloseButtonText = parameters.Definitions.LastOrDefault()?.Name;
             @params.CloseButtonCommand = parameters.Definitions.LastOrDefault()?.Command;
@@ -64,7 +63,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
         if(viewModel is null)
             throw new ArgumentNullException(nameof(viewModel));
 
-        var modalParams = new ModalParameters<TViewModel, TResult>(Icon, Buttons, viewModel)
+        var modalParams = new ModalParameters<TViewModel, TResult>(Icon, viewModel)
         {
             Content = this,
             ContentTitle = Title,
@@ -90,7 +89,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
             var modalView = new ModalView<TViewModel, TResult>(modalViewModel);
             var box = new MsBox<ModalView<TViewModel, TResult>, ModalViewModel<TViewModel, TResult>, TResult>(modalView, modalViewModel);
             if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
-                result = await box.ShowWindowDialogAsync((Window)TopLevelStateManager.GetActive()!);
+                result = await box.ShowWindowDialogAsync((Window)TopLevelStateManager.Default.GetActive()!);
             else
                 result = await box.ShowAsync();
         }

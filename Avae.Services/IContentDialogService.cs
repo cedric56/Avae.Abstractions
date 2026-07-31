@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace Avae.Abstractions
+namespace Avae.Services
 {
     public interface IContentDialogService
     {

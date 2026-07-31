@@ -25,7 +25,6 @@ class Program
             })
             .UsePlatformDetect()
             .UseReactiveUI()
-            .UseServices()
             .WithInterFont()
             .LogToTrace();
 

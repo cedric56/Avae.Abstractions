@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using Avae.Services;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml.Styling;
@@ -86,7 +87,7 @@ namespace Avae.Implementations
         /// <typeparam name="TViewModel"></typeparam>
         /// <param name="params"></param>
         /// <returns></returns>
-        public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : IViewModelBase
+        public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : ICloseableViewModel<TResult>
         {
             var view = Container.GetView(typeof(TViewModel).Name, [context]);
             
@@ -129,7 +130,8 @@ namespace Avae.Implementations
             });
             Styles.Add(new FluentTheme());
             Styles.Add(new FluentAvaloniaTheme());
-            
+
+            TopLevelStateManager.Initialize();
 
             if(this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime classic)
                 classic.Exit += Classic_Exit;

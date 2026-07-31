@@ -1,4 +1,4 @@
-﻿using Avae.Abstractions.Interfaces;
+﻿using Avae.Services;
 using Avalonia.Labs.Notifications;
 using Moq;
 

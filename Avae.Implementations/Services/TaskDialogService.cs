@@ -1,13 +1,8 @@
-﻿using Avae.Abstractions;
-using Avae.Services;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Diagnostics;
+﻿using Avae.Services;
 using Avalonia.Threading;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
-using TaskDialogStandardResult = Avae.Abstractions.TaskDialogStandardResult;
+using TaskDialogStandardResult = Avae.Services.TaskDialogStandardResult;
 
 namespace Avae.Implementations
 {
@@ -38,7 +33,7 @@ namespace Avae.Implementations
                             FooterVisibility = Enum.Parse<FluentAvalonia.UI.Controls.TaskDialogFooterVisibility>(@params.FooterVisibility.ToString()),
                             IsFooterExpanded = @params.IsFooterExpanded,
                             Footer = @params.Footer,
-                            XamlRoot = TopLevelStateManager.GetActive()
+                            XamlRoot = TopLevelStateManager.Default.GetActive(throwOnNull: true)
                         };
 
                         taskDialog.Opening += opening = (sender, args) => @params.Opening?.Invoke();

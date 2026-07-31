@@ -24,20 +24,17 @@ internal abstract class ModalParameters : MessageBoxCustomParams
 internal class ModalParameters<T, TResult> : ModalParameters
     where T : ICloseableViewModel<TResult>
 {
-    public ModalParameters(string icon, string buttons, T viewModel)
+    public ModalParameters(string icon, T viewModel)
     {
         var definitions = new List<ButtonDefinition>();
-        var names = buttons.Split(",").ToList();
-        foreach (var name in names)
+        foreach (var command in viewModel.Commands)
         {
-            var index = names.IndexOf(name);
-
             var bd = new ModalButton
             {
-                Command = viewModel.Commands.FirstOrDefault(c => c.Index == index)?.Command,
-                Name = name,
-                IsDefault = names.IndexOf(name) == 0,
-                IsCancel = names.IndexOf(name) == names.Count - 1,
+                Command = command.Command,
+                Name = command.Name,
+                IsDefault = viewModel.Commands.IndexOf(command) == 0,
+                IsCancel = viewModel.Commands.IndexOf(command) == viewModel.Commands.Count - 1,
             };
             definitions.Add(bd);
         }

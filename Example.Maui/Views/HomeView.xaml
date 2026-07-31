@@ -1,9 +1,19 @@
 <ContentPage x:Class="Example.Maui.Views.HomeView">
-    <!--<VerticalStackLayout>-->
+    <VerticalStackLayout>
         <Button 
             Text="Welcome to .NET MAUI!"
             Command="{Binding ShowModalCommand}"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
-    <!--</VerticalStackLayout>-->
+        <Button 
+            Text="Show Task Dialog"
+            Command="{Binding ShowTaskDialogCommand}"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        <Button
+            Text="Show Content Dialog"
+            Command="{Binding ShowContentDialogCommand}"
+            VerticalOptions="Center"
+            HorizontalOptions="Center" />
+    </VerticalStackLayout>
 </ContentPage>

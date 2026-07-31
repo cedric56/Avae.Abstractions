@@ -1,12 +1,10 @@
 ﻿using Avae.Abstractions;
+using Avae.Services;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
-using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Reactive.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Example.ViewModels
@@ -46,10 +44,10 @@ namespace Example.ViewModels
 
         public ICommand? CloseCommand { get; }
 
-        public CommandIndex[] Commands => 
+        public ObservableCollection<NamedCommand> Commands =>
             [
-                new() { Command = ValidateCommand, Index = 0},
-                new() { Command = CancelCommand, Index = 1}
+                new() { Command = ValidateCommand, Name = "Valider"},
+                new() { Command = CancelCommand, Name="Annuler"}
             ];
 
         public string this[string columnName]
@@ -67,7 +65,7 @@ namespace Example.ViewModels
             if (await CanClose())
                 await Close(Text!);
             else
-                await dialogService.ShowYesNoAbortAsync(Error, "Error");
+                await dialogService.ShowOkAsync(Error, "Error");
         }
 
         [RelayCommand]

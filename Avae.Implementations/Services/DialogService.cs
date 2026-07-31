@@ -31,7 +31,7 @@ namespace Avae.Implementations
             return Dispatcher.UIThread.Invoke(async () =>
             {
                 var box = MessageBoxManager.GetMessageBoxStandard(@params);
-                if (TopLevelStateManager.GetActive() is Window owner)
+                if (TopLevelStateManager.Default.GetActive() is Window owner)
                 {
                     return await box.ShowWindowDialogAsync(owner);
                 }
@@ -47,7 +47,7 @@ namespace Avae.Implementations
         {
             get
             {
-                TopLevel? topLevel = TopLevelStateManager.GetActive();
+                TopLevel? topLevel = TopLevelStateManager.Default.GetActive();
                 var dialogHost = topLevel?.GetVisualDescendants().OfType<DialogHostAvalonia.DialogHost>().LastOrDefault();
                 if (dialogHost != null) return dialogHost;
                 var fluent = topLevel?.GetVisualDescendants().OfType<FluentAvalonia.UI.Controls.DialogHost>().LastOrDefault();

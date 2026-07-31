@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions.Commands;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Avae.Abstractions
@@ -17,7 +18,7 @@ namespace Avae.Abstractions
             }
         }
 
-        public virtual CommandIndex[] Commands { get;  } = [];
+        public virtual ObservableCollection<NamedCommand> Commands { get;  } = [];
 
         public Task Close(TResult? value)
         {

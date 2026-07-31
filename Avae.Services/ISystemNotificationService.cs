@@ -1,4 +1,4 @@
-﻿namespace Avae.Abstractions.Interfaces
+﻿namespace Avae.Services
 {
     public record SystemNotificationAction(string caption, string tag)
     {

@@ -1,11 +1,7 @@
-<current:DialogView x:Class="Example.Maui.Views.ModalView"
+<ContentView x:Class="Example.Maui.Views.ModalView"
              xmlns:current="clr-namespace:Example.Maui.Views"
-            xmlns:sys="clr-namespace:System;assembly=System.Runtime"
-xmlns:vm="clr-namespace:Example.ViewModels;assembly=Example.ViewModels"
-            x:TypeArguments="vm:ModalViewModel, sys:String">
-    <Button
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-        Command="{Binding ValidateCommand}"
-            HorizontalOptions="Center" />
-</current:DialogView>
+>
+    <Entry
+            Text="{Binding Text}"
+            HorizontalOptions="Fill" VerticalOptions="Fill"/>
+</ContentView>

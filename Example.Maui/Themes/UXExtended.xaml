@@ -1,0 +1,74 @@
+﻿<ResourceDictionary x:Class="Example.Maui.Themes.UXExtended"
+                    xmlns:local="clr-namespace:Example.Maui"
+                    xmlns:vm="clr-namespace:Avae.Abstractions;assembly=Avae.Abstractions"
+                    xmlns:uxd="clr-namespace:UXDivers.Popups.Maui;assembly=UXDivers.Popups.Maui"
+                                 xmlns:uxdc="clr-namespace:UXDivers.Popups.Maui.Controls;assembly=UXDivers.Popups.Maui"
+>
+    <ResourceDictionary.MergedDictionaries>
+        <uxdc:DarkTheme />
+        <uxdc:PopupStyles />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!---->
+    <Style x:Key="DefaultMultipleButtonsPopupPopupStyle" TargetType="local:MultipleButtonsPopupBase" BasedOn="{ StaticResource PopupBaseStyle }">
+        <Setter Property="AppearingAnimation" Value="{ uxd:MoveInPopupAnimation MoveDirection=Right, Easing=SpringOut, Duration=400 }" />
+        <Setter Property="DisappearingAnimation" Value="{ uxd:StoryboardAnimation 
+        Strategy=RunAllSequentially,       
+        Animation1={ uxd:ScaleToPopupAnimation Scale=1.2, Easing=Linear, Duration=150  },   
+        Animation2={ uxd:ScaleToPopupAnimation Scale=0.5, Easing=Linear, Duration=150  },              
+        Animation3={ uxd:MoveOutPopupAnimation MoveDirection=Left, Easing=SpringOut, Duration=500   }
+    }" />
+        <Setter Property="PopupBackground" Value="{DynamicResource BackgroundSecondaryColor}" />
+        <Setter Property="PopupCornerRadius" Value="{DynamicResource CornerRadiusXBig}" />
+        <Setter Property="ControlTemplate">
+            <ControlTemplate>
+                <!-- Content -->
+                <Grid
+                x:DataType="local:MultipleButtonsPopupBase"
+                WidthRequest="{OnIdiom Default=-1, Tablet=400 , Desktop=400}"
+                VerticalOptions="Center"
+                Margin="{DynamicResource AirSpacing}"
+                RowDefinitions="*,Auto"
+                RowSpacing="{DynamicResource SpacingSmall}"
+                Padding="{DynamicResource PopupAirSpacing}"
+                >
+                    <!-- Popup Background -->
+                    <Border HorizontalOptions="Fill" VerticalOptions="Fill" 
+                    Background="{Binding PopupBackground, Source={RelativeSource TemplatedParent}}"
+                    Stroke="{Binding PopupBorderBrush, Source={RelativeSource TemplatedParent}}"
+                    StrokeShape="{Binding PopupCornerRadius, Source={RelativeSource TemplatedParent}, Converter={StaticResource PopupCornerRadiusToStrokeShapeConverter}}"
+                    StrokeThickness="{Binding PopupBorderThickness, Source={RelativeSource TemplatedParent}}"
+                    Margin="-24"
+                    Grid.RowSpan="2"
+                    />
+                    <!-- Content -->
+                    <VerticalStackLayout 
+                    Spacing="4"
+                    Margin="{DynamicResource HorizontalAirSpacing}"
+                    >
+                        <!-- Title -->
+                        <Label HorizontalOptions="Start"
+                        Text="{Binding Title, Source={RelativeSource TemplatedParent}}"
+                        Style="{DynamicResource MainTitleStyle}"
+                        HorizontalTextAlignment="Center"
+                        />
+                        <!-- Content -->
+                        <ContentPresenter HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                    </VerticalStackLayout>
+                    <!-- Buttons -->
+                    <HorizontalStackLayout Grid.Row="1" HorizontalOptions="End"
+                     Spacing="{DynamicResource SpacingSmall}"
+                     BindableLayout.ItemsSource="{Binding Buttons, Source={RelativeSource TemplatedParent}}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:NamedCommand">
+                                <Button Text="{Binding Name}"
+                    Command="{Binding Command}"
+                    HorizontalOptions="Fill" />
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</ResourceDictionary>

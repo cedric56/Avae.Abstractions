@@ -4,7 +4,7 @@ using Avalonia.Threading;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
-using ContentDialogResult = Avae.Abstractions.ContentDialogResult;
+using ContentDialogResult = Avae.Services.ContentDialogResult;
 
 namespace Avae.Implementations
 {
@@ -14,7 +14,7 @@ namespace Avae.Implementations
         {   
             return await Dispatcher.UIThread.Invoke(async () =>
             {
-                var topLevel = TopLevelStateManager.GetActive();
+                var topLevel = TopLevelStateManager.Default.GetActive(throwOnNull: true);
                 var dialog = GetContentDialog(@params);
                 var result = await dialog.ShowAsync(topLevel);
                 return Enum.TryParse(result.ToString(), out ContentDialogResult dialogResult)

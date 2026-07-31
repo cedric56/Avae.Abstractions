@@ -1,20 +1,16 @@
 using Avae.Abstractions;
-using Avae.DAL;
-using CommunityToolkit.Maui;
-using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
 using Example.ViewModels;
-using Microsoft.Maui.Controls.Shapes;
 using System.Globalization;
 
 namespace Example.Maui.Views;
 
 public class DialogViewBase<TViewModel, TResult> : Popup<TResult?>
      where TViewModel : class, ICloseableViewModel<TResult>
-{ 
-    public DialogViewBase(DialogView<TViewModel, TResult> view)
+{
+    public DialogViewBase(IDialogView<TViewModel, TResult> view)
     {
-        
+        BindingContext = view.Context;
 
         // Main layout
         var mainLayout = new VerticalStackLayout
@@ -26,7 +22,7 @@ public class DialogViewBase<TViewModel, TResult> : Popup<TResult?>
         var titleBorder = new Border
         {
             StrokeThickness = 0,
-            
+
             //Padding = new Thickness(20, 15, 20, 15),
             HorizontalOptions = LayoutOptions.Fill
         };
@@ -51,7 +47,7 @@ public class DialogViewBase<TViewModel, TResult> : Popup<TResult?>
             //Spacing = 15
         };
 
-        contentLayout.Children.Add(view);
+        contentLayout.Children.Add((ContentView)view);
 
         mainLayout.Children.Add(contentLayout);
 
@@ -65,7 +61,8 @@ public class DialogViewBase<TViewModel, TResult> : Popup<TResult?>
             HorizontalOptions = LayoutOptions.Fill
         };
 
-        var collection = new CollectionView() {
+        var collection = new CollectionView()
+        {
             ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Horizontal)
             {
                 ItemSpacing = 10
@@ -105,60 +102,70 @@ public class DialogViewBase<TViewModel, TResult> : Popup<TResult?>
     }
 }
 
-public abstract class DialogView<TViewModel, TResult>(ICurrentPage provider) : ContentView,
-    IModalFor<TViewModel, TResult>
-    where TViewModel : class, ICloseableViewModel<TResult> 
+//public abstract class DialogView<TViewModel, TResult>(ICurrentPage provider) : ContentView,
+//    IModalFor<TViewModel, TResult>
+//    where TViewModel : class, ICloseableViewModel<TResult> 
+//{
+//    abstract public string Title { get; }
+
+//    abstract public string Buttons { get; }
+
+//    public object? Context { get => BindingContext; set => BindingContext = value; }
+
+//    public async Task<TResult?> ShowModalAsync()
+//    {
+//        var currentTheme = Application.Current?.UserAppTheme ?? AppTheme.Light;
+
+//        // Define theme-aware colors
+//        Color overlayColor = currentTheme == AppTheme.Light
+//            ? Colors.Black.WithAlpha(0.5f)   // Lighter overlay for light mode
+//            : Colors.Black.WithAlpha(0.7f);  // Darker overlay for dark mode
+
+//        Color popupBackgroundColor = currentTheme == AppTheme.Light
+//            ? Colors.White
+//            : Color.FromArgb("#FF1E1E1E");  // Dark background for dark mode
+
+//        var wm = BindingContext as TViewModel ?? throw new InvalidOperationException("BindingContext is not of type TViewModel");        
+//        var pop = new DialogViewBase<TViewModel, TResult>(this) { BindingContext = wm };
+//        pop.BackgroundColor = popupBackgroundColor;
+//        wm.CloseRequested += CloseRequestedHandler;
+//        var result = await provider.Current.ShowPopupAsync<TResult?>(
+//            pop, new PopupOptions()
+//            {                 
+//                CanBeDismissedByTappingOutsideOfPopup = false,
+//                PageOverlayColor = overlayColor,                 
+//                Shape = new RoundRectangle { CornerRadius = new CornerRadius(8) }
+
+//            });
+//        return result.Result;
+
+//        async void CloseRequestedHandler(object? sender, TResult? e)
+//        {
+//            wm.CloseRequested -= CloseRequestedHandler;
+//            await pop.CloseAsync(e);
+//        }
+//    }
+//}
+
+public interface IDialogView<TViewModel, TResult> : IModalFor<TViewModel, TResult>
+    where TViewModel : ICloseableViewModel<TResult>
 {
-    abstract public string Title { get; }
+    string Title { get; }
+    string Buttons { get; }
 
-    abstract public string Buttons { get; }
 
-    public object? Context { get => BindingContext; set => BindingContext = value; }
-    
-    public async Task<TResult?> ShowModalAsync()
-    {
-        var currentTheme = Application.Current?.UserAppTheme ?? AppTheme.Light;
-
-        // Define theme-aware colors
-        Color overlayColor = currentTheme == AppTheme.Light
-            ? Colors.Black.WithAlpha(0.5f)   // Lighter overlay for light mode
-            : Colors.Black.WithAlpha(0.7f);  // Darker overlay for dark mode
-
-        Color popupBackgroundColor = currentTheme == AppTheme.Light
-            ? Colors.White
-            : Color.FromArgb("#FF1E1E1E");  // Dark background for dark mode
-
-        var wm = BindingContext as TViewModel ?? throw new InvalidOperationException("BindingContext is not of type TViewModel");        
-        var pop = new DialogViewBase<TViewModel, TResult>(this) { BindingContext = wm };
-        pop.BackgroundColor = popupBackgroundColor;
-        wm.CloseRequested += CloseRequestedHandler;
-        var result = await provider.Current.ShowPopupAsync<TResult?>(
-            pop, new PopupOptions()
-            {                 
-                CanBeDismissedByTappingOutsideOfPopup = false,
-                PageOverlayColor = overlayColor,                 
-                Shape = new RoundRectangle { CornerRadius = new CornerRadius(8) }
-
-            });
-        return result.Result;
-
-        async void CloseRequestedHandler(object? sender, TResult? e)
-        {
-            wm.CloseRequested -= CloseRequestedHandler;
-            await pop.CloseAsync(e);
-        }
-    }
 }
 
-public partial class ModalView : DialogView<ModalViewModel, string?>
+public partial class ModalView : ContentView, IDialogView<ModalViewModel, string?>
 {
-	public ModalView(ICurrentPage provider)
-        : base(provider)
+    public object? Context { get => BindingContext; set => BindingContext = value; }
+
+    public ModalView()
     {
 		InitializeComponent();
 	}
 
-    public override string Title => "Modal";
+    public string Title => "Modal";
 
-    public override string Buttons => "Ok,Cancel";
+    public string Buttons => "Ok,Cancel";
 }

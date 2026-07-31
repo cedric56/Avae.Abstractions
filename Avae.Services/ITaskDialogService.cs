@@ -1,4 +1,4 @@
-﻿namespace Avae.Abstractions
+﻿namespace Avae.Services
 {
     public interface ITaskDialogService
     {

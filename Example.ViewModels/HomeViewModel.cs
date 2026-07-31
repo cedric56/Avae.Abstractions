@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -18,7 +19,7 @@ namespace Example.ViewModels
             string? result = string.Empty;
             try
             {
-                result = await dialogService.ShowModalAsync<ModalViewModel, string>();
+                result = await dialogService.ShowModalAsync<ModalViewModel, string?>();
             }
             catch(Exception ex)
             {
@@ -26,7 +27,7 @@ namespace Example.ViewModels
             }
             finally
             {
-                await dialogService.ShowYesNoAbortAsync(result ?? string.Empty, "Result");
+                await dialogService.ShowOkAsync(result ?? string.Empty, "Result");
             }
         }
 

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net11.0;net11.0-android</TargetFrameworks>
@@ -64,6 +64,8 @@
 		<PackageReference Include="CommunityToolkit.Maui" Version="15.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0-preview.5.*" />
+		<PackageReference Include="NotifiactinApiMultiPlatform" Version="1.0.0" />
+		<PackageReference Include="UXDivers.Popups.Maui" Version="0.9.4" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -73,6 +75,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Themes\UXExtended.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\FormView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -1,4 +1,6 @@
-﻿namespace Avae.Abstractions;
+﻿using Avae.Abstractions;
+
+namespace Avae.Services;
 
 public interface IDialogService
 {
@@ -15,6 +17,6 @@ public interface IDialogService
 
     Task<int> ShowYesNoAbortAsync(string message, string title = "Title");
 
-    Task<TResult?> ShowModalAsync<TViewModel, TResult>(NavigationContext? context = null) where TViewModel : class, IViewModelBase;
+    Task<TResult?> ShowModalAsync<TViewModel, TResult>(NavigationContext? context = null) where TViewModel : class, ICloseableViewModel<TResult>;
 }
 
