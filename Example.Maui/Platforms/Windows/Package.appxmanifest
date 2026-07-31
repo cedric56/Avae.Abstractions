@@ -39,8 +39,14 @@
     </Application>
   </Applications>
 
-  <Capabilities>
+    <Capabilities>
+      <!-- Existing capabilities -->
     <rescap:Capability Name="runFullTrust" />
-  </Capabilities>
+      <!-- Add this for Snackbar support -->
+      <Capability Name="userNotificationListener" />
+
+      <!-- Or if you need toast notifications -->
+      <!--<uap:Capability Name="userNotificationListener" />-->
+    </Capabilities>
 
 </Package>

@@ -9,7 +9,9 @@ namespace Example.ViewModels
         IDialogService dialogService,
         IContentDialogService contentDialogService,
         ITaskDialogService taskDialogService,
-        IIocConfiguration iocConfiguration) : ObservableObject, IViewModelBase
+        IIocConfiguration iocConfiguration,
+        INotificationManager notificationManager,
+        ISystemNotificationService systemNotificationService) : ObservableObject, IViewModelBase
     {
         public static string Title => "Welcome to home";
 
@@ -59,6 +61,27 @@ namespace Example.ViewModels
                 CloseButtonText = "Close",
                 Content = iocConfiguration.GetView(TaskDialogKey, "Content"),
             });
+        }
+
+        [RelayCommand]
+        public async Task ShowNotification()
+        {
+            notificationManager.Show(
+                "Hello",
+                "World",
+                NotificationType.Success,
+                TimeSpan.FromSeconds(2));
+        }
+
+        [RelayCommand]
+        public async Task ShowSystemNotification()
+        {
+            var notification = systemNotificationService.CreateNotification(
+                "action",
+                "Hello",
+                "World",
+                [new SystemNotificationAction("caption","tag")]);
+            notification.Show();
         }
     }
 }

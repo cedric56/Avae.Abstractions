@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using Avae.Implementations.Services;
 using Avae.Services;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -41,7 +42,7 @@ namespace Avae.Implementations
         }
 
         public virtual void Configure(IServiceCollection services)
-        {
+        {            
             services.AddSingleton<IBrokerService, BrokerService>();
             services.AddSingleton<IIocConfiguration>(this);
             services.AddSingleton<IDialogService>(sp =>
@@ -50,6 +51,7 @@ namespace Avae.Implementations
                              sp.GetRequiredService<IContentDialogService>() as ContentDialogService ??
                              throw new InvalidOperationException("Failed to resolve IContentDialogService.");
             });
+            services.AddTransient<INotificationManager, NotificationService>();
             services.AddSingleton<IContentDialogService>(sp => new ContentDialogService(sp));
             services.AddSingleton<ITaskDialogService, TaskDialogService>();
             services.AddSingleton<ILogger>(LoggerFactory.Create(ConfigureLogging).CreateLogger<AvaeApplication>());

@@ -15,5 +15,11 @@
             Command="{Binding ShowContentDialogCommand}"
             VerticalOptions="Center"
             HorizontalOptions="Center" />
+        <Button Text="Notification" Command="{Binding ShowNotificationCommand}" 
+                VerticalOptions="Center"
+HorizontalOptions="Center" />
+        <Button Text="System" Command="{Binding ShowSystemNotificationCommand}" 
+                VerticalOptions="Center"
+HorizontalOptions="Center" />
     </VerticalStackLayout>
 </ContentPage>

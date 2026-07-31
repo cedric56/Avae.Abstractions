@@ -1,0 +1,71 @@
+<uxd:PopupPage x:Class="Avae.Maui.AvaePopupPage"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Avae.Abstractions;assembly=Avae.Abstractions"
+             xmlns:local="Avae.Maui"
+             xmlns:uxd="clr-namespace:UXDivers.Popups.Maui;assembly=UXDivers.Popups.Maui"
+               xmlns:uxdc="clr-namespace:UXDivers.Popups.Maui.Controls;assembly=UXDivers.Popups.Maui"
+                      AppearingAnimation="{ uxd:MoveInPopupAnimation MoveDirection=Right, Easing=SpringOut, Duration=400 }"
+    DisappearingAnimation="{ uxd:StoryboardAnimation 
+    Strategy=RunAllSequentially,       
+    Animation1={ uxd:ScaleToPopupAnimation Scale=1.2, Easing=Linear, Duration=150  },   
+    Animation2={ uxd:ScaleToPopupAnimation Scale=0.5, Easing=Linear, Duration=150  },              
+    Animation3={ uxd:MoveOutPopupAnimation MoveDirection=Left, Easing=SpringOut, Duration=500   }}"
+    PopupBackground="{DynamicResource BackgroundSecondaryColor}"
+    PopupCornerRadius="{DynamicResource CornerRadiusXBig}">
+    <uxd:PopupPage.ControlTemplate>
+        <ControlTemplate>
+            <!--x:DataType="local:AvaePopupPage"-->
+            <!-- Content -->
+            <Grid
+    
+    WidthRequest="{OnIdiom Default=-1, Tablet=400 , Desktop=400}"
+    VerticalOptions="Center"
+    Margin="{DynamicResource AirSpacing}"
+    RowDefinitions="*,Auto"
+    RowSpacing="{DynamicResource SpacingSmall}"
+    Padding="{DynamicResource PopupAirSpacing}"
+    >
+                <!-- Popup Background -->
+                <Border HorizontalOptions="Fill" VerticalOptions="Fill" 
+        Background="{Binding PopupBackground, Source={RelativeSource TemplatedParent}}"
+        Stroke="{Binding PopupBorderBrush, Source={RelativeSource TemplatedParent}}"
+        StrokeShape="{Binding PopupCornerRadius, Source={RelativeSource TemplatedParent}, Converter={StaticResource PopupCornerRadiusToStrokeShapeConverter}}"
+        StrokeThickness="{Binding PopupBorderThickness, Source={RelativeSource TemplatedParent}}"
+        Margin="-24"
+        Grid.RowSpan="2"
+        />
+                <!-- Content -->
+                <VerticalStackLayout 
+        Spacing="4"
+        Margin="{DynamicResource HorizontalAirSpacing}"
+        >
+                    <!-- Title -->
+                    <Label HorizontalOptions="Start"
+            Text="{Binding Title, Source={RelativeSource TemplatedParent}}"
+            Style="{DynamicResource MainTitleStyle}"
+            HorizontalTextAlignment="Center"
+            />
+                    <!-- Content -->
+                    <ContentPresenter HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                </VerticalStackLayout>
+                <!-- Buttons -->
+                <Grid Grid.Row="1" 
+      ColumnDefinitions="{Binding Definitions, Source={RelativeSource TemplatedParent}}" 
+      Margin="{DynamicResource HorizontalAirSpacing}">
+
+                    <BindableLayout.ItemsSource>
+                        <Binding Path="Commands" Source="{RelativeSource TemplatedParent}" />
+                    </BindableLayout.ItemsSource>
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Button Text="{Binding Name}"
+                    Command="{Binding Command}" Margin="5"
+                    Grid.Column="{Binding Index}"
+                                HorizontalOptions="Fill" />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </Grid>
+            </Grid>
+        </ControlTemplate>
+    </uxd:PopupPage.ControlTemplate>
+</uxd:PopupPage>

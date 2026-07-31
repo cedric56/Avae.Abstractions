@@ -1,6 +1,5 @@
 ﻿using Avae.Abstractions;
 using Avae.Services;
-using Avalonia;
 using Avalonia.Controls;
 using MsBox.Avalonia;
 

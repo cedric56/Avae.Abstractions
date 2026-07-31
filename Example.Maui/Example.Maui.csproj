@@ -61,23 +61,18 @@
 	<ItemGroup>
 		<PackageReference Include="Avalonia.Controls.Maui" Version="11.0.0-preview.6.26198.1455" />
 		<PackageReference Include="Avalonia.Controls.Maui.Desktop" Version="11.0.0-preview.6.26198.1455" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="15.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0-preview.5.*" />
-		<PackageReference Include="NotifiactinApiMultiPlatform" Version="1.0.0" />
-		<PackageReference Include="UXDivers.Popups.Maui" Version="0.9.4" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0-preview.5.*" />		
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
 	  <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />
+	  <ProjectReference Include="..\Avae.Maui\Avae.Maui.csproj" />
 	  <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Themes\UXExtended.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
 	  <MauiXaml Update="Views\FormView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
