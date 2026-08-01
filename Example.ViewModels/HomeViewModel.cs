@@ -11,7 +11,8 @@ namespace Example.ViewModels
         ITaskDialogService taskDialogService,
         IIocConfiguration iocConfiguration,
         INotificationManager notificationManager,
-        ISystemNotificationService systemNotificationService) : ObservableObject, IViewModelBase
+        ISystemNotificationService systemNotificationService,
+        IRequestedTheme requestedTheme) : ObservableObject, IViewModelBase
     {
         public static string Title => "Welcome to home";
 
@@ -82,6 +83,21 @@ namespace Example.ViewModels
                 "World",
                 [new SystemNotificationAction("caption","tag")]);
             notification.Show();
+        }
+
+        RequestedTheme? actual = null;
+
+        [RelayCommand]
+        public async Task ShowRequestedTheme()
+        {
+            var theme = actual switch
+            {
+                RequestedTheme.Light => RequestedTheme.Dark,
+                RequestedTheme.Dark => RequestedTheme.Light,
+                _ => RequestedTheme.Light
+            };
+            actual = theme;
+            requestedTheme.Request(actual.Value);
         }
     }
 }

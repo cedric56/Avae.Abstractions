@@ -5,11 +5,12 @@ using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Reactive.Linq;
 using System.Windows.Input;
 
 namespace Example.ViewModels
 {
-    public partial class ModalViewModel(IDialogService dialogService) : ReactiveObject, 
+    public partial class ModalViewModel : ReactiveObject, 
         ICloseableViewModel<string?>,
         IDataErrorInfo
     {
@@ -18,19 +19,22 @@ namespace Example.ViewModels
             InputValidation<ModalViewModel>.Init();
         }
 
-        //public ModalViewModel()
-        //{
-        //    this.WhenAnyValue(x => x.Text)
-        //        .Skip(1)// ⛔ ignore the initial value
-        //        .Throttle(TimeSpan.FromSeconds(1))
-        //        .Where(string.IsNullOrWhiteSpace)
-        //        .ObserveOn(RxApp.MainThreadScheduler)
-        //        .InvokeCommand(ValidateCommand);
-        //}
+        IDialogService dialogService;
+
+        public ModalViewModel(IDialogService dialogService)
+        {
+            this.dialogService = dialogService;
+            this.WhenAnyValue(x => x.Message)
+                //.Skip(1)
+                //.Throttle(TimeSpan.FromSeconds(1))
+                //.Where(string.IsNullOrWhiteSpace)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(text => this.RaisePropertyChanged("Item"));
+        }
 
         [ReactiveUI.SourceGenerators.Reactive]
         [Required(ErrorMessage = "You have to enter a value.")]
-        private string? _text;
+        private string? _message;        
 
         public event EventHandler<string?>? CloseRequested;
 
@@ -63,7 +67,7 @@ namespace Example.ViewModels
         public async Task Validate()
         {
             if (await CanClose())
-                await Close(Text!);
+                await Close(Message!);
             else
                 await dialogService.ShowOkAsync(Error, "Error");
         }

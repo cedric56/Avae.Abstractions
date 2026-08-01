@@ -6,7 +6,7 @@ namespace Avae.Maui
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            return value is null;
+            return value is null || (value is string s && string.IsNullOrWhiteSpace(s));
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

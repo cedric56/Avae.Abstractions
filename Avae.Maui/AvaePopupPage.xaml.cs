@@ -2,7 +2,6 @@ using Avae.Abstractions;
 using System.Collections.ObjectModel;
 using UXDivers.Popups;
 using UXDivers.Popups.Maui;
-using UXDivers.Popups.Maui.Controls;
 
 namespace Avae.Maui;
 
@@ -13,8 +12,11 @@ public partial class AvaePopupPage : PopupPage
         public required int Index { get; set; }
     }
 
-    public AvaePopupPage(ObservableCollection<NamedCommand> commands)
+    public AvaePopupPage(
+        string title,
+        ObservableCollection<NamedCommand> commands)
     {
+        Title = title;
         Buttons = commands;
 
         InitializeComponent();
@@ -26,31 +28,15 @@ public partial class AvaePopupPage : PopupPage
         }
     }
 
-    public static readonly BindableProperty TitleProperty = BindableProperty.Create(
-       nameof(Title),
-       typeof(string),
-       typeof(AvaePopupPage),
-       null);
-
-    /// <summary>
-    /// Gets or sets the title text displayed in the popup.
-    /// </summary>
     public string Title
     {
-        get { return (string)GetValue(TitleProperty); }
-        set { SetValue(TitleProperty, value); }
+        get;set;
     }
-
-    public static readonly BindableProperty ButtonsProperty = BindableProperty.Create(
-    nameof(Buttons),
-    typeof(ObservableCollection<NamedCommand>),
-    typeof(AvaePopupPage),
-    null);
 
     public ObservableCollection<NamedCommand> Buttons
     {
-        get { return (ObservableCollection<NamedCommand>)GetValue(ButtonsProperty); }
-        set { SetValue(ButtonsProperty, value); }
+        get;
+        set;
     }
 
     public ColumnDefinitionCollection Definitions
@@ -79,7 +65,7 @@ public partial class AvaePopupPage : PopupPage
     }
 }
 
-public partial class AvaePopupPage<TResult>(ObservableCollection<NamedCommand> commands) : AvaePopupPage(commands), IPopupResultPage<TResult?>
+public partial class AvaePopupPage<TResult>(string title, ObservableCollection<NamedCommand> commands) : AvaePopupPage(title, commands), IPopupResultPage<TResult?>
 {
     public TResult? Result { get; set; }
 

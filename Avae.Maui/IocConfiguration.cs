@@ -8,7 +8,9 @@ namespace Avae.Maui
 {
     internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContainer> getContainer, Action<IIocContainer>? configure = null) :
             IIocConfiguration, ITaskDialogService, IContentDialogService, IDialogService,
-            ISystemNotificationService, INotificationManager
+            ISystemNotificationService, 
+            INotificationManager,
+            IRequestedTheme
     {
         IocContainer? _container = null;
         IocContainer Container { get => _container ??= getContainer(); }
@@ -283,9 +285,8 @@ namespace Avae.Maui
             view.Context = viewModel;
             if (view is IDialogView<TViewModel, TResult> dialogView)
             {
-                var modal = new AvaePopupPage<TResult>(viewModel.Commands)
+                var modal = new AvaePopupPage<TResult>(dialogView.Title, viewModel.Commands)
                 {
-                    Title = dialogView.Title,
                     Content = dialogView as View
                 };
                 viewModel.CloseRequested += CloseRequestedHandler;
@@ -498,6 +499,17 @@ namespace Avae.Maui
                 if (!isClosed)
                     await IPopupService.Current.PopAsync(pop);
             }
+        }
+
+        public void Request(RequestedTheme theme)
+        {
+            Application.Current?.UserAppTheme
+                = theme switch
+                {
+                    RequestedTheme.Light => AppTheme.Light,
+                    RequestedTheme.Dark => AppTheme.Dark,
+                    _ => AppTheme.Unspecified,
+                };
         }
 
         class Notification(string action, string title, string message, SystemNotificationAction[] actions) : ISystemNotification
