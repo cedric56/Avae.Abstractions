@@ -1,11 +1,12 @@
-﻿<local:FlyoutEx x:Class="Example.Maui.MainPage"
+﻿<local:FlyoutEx xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Example.Maui.MainPage"
             Title="Home"
             xmlns:local="clr-namespace:Example.Maui"
             CurrentPage="{Binding CurrentPage}">
     <local:FlyoutEx.Flyout>
         <ContentPage Title="Menu">
             <CollectionView Grid.Row="1"
-				x:Name="MenuCollectionView"
 				ItemsSource="{Binding Pages}"
 				SelectionMode="Single"
 				SelectedItem="{Binding SelectedPage}"

@@ -1,0 +1,10 @@
+﻿@using Example.ViewModels
+<input @bind="ViewModel.Message" />
+<button @onclick="ViewModel.Validate()">Validate</button>
+<button @onclick="ViewModel.Cancel()">Cancel</button>
+@code
+{
+    [Parameter]
+    public required ModalViewModel ViewModel { get; set; }
+}
+

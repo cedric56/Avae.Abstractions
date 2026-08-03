@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace Avae.Abstractions
 {
-    public partial class CloseableViewModelBase<TResult> : ICloseableViewModel<TResult>
+    public abstract partial class CloseableViewModelBase<TResult> : ICloseableViewModel<TResult>
     {
         public event EventHandler<TResult?>? CloseRequested;
 
@@ -19,6 +19,8 @@ namespace Avae.Abstractions
         }
 
         public virtual ObservableCollection<NamedCommand> Commands { get;  } = [];
+
+        public abstract string Title { get; }
 
         public Task Close(TResult? value)
         {

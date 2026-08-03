@@ -1,43 +1,9 @@
 <ContentView x:Class="Example.Maui.Views.ModalView"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:avae="clr-namespace:Avae.Maui;assembly=Avae.Maui"
              xmlns:current="clr-namespace:Example.Maui.Views"
 >
-    <ContentView.Resources>
-        <avae:NullConverter x:Key="NullConverter"/>
-    </ContentView.Resources>
-    <!--<Entry 
-            Text="{Binding Text}"
-            HorizontalOptions="Fill" VerticalOptions="Fill">
-        <Entry.Triggers>
-            <DataTrigger
-        TargetType="Entry"
-        Binding="{Binding [Text], Converter={StaticResource NullConverter}}"
-        Value="False">
-                <Setter Property="BackgroundColor" Value="Red" />
-            </DataTrigger>
-        </Entry.Triggers>
-        <Entry.Clip>
-            <RectangleGeometry Rect="4,10,192,24" />
-        </Entry.Clip>
-    </Entry>-->
-
-    <!--<Border StrokeThickness="0" HorizontalOptions="Fill" VerticalOptions="Fill">
-        <Border.Triggers>
-            <DataTrigger
-            Binding="{Binding [Text], Converter={StaticResource NullConverter}}"
-            TargetType="Border"
-            Value="False">
-                <Setter Property="Stroke" Value="Red" />
-                <Setter Property="StrokeThickness" Value="1" />
-            </DataTrigger>
-        </Border.Triggers>
-        <Entry 
-        x:Name="entry"
-        Text="{Binding Text}"
-            HorizontalOptions="Fill" VerticalOptions="Fill"
-            ToolTipProperties.Text="{Binding [Text]}"/>
-    </Border>-->
-    
     <avae:AvaeEntry 
         x:Name="entry"
         ColumnName="Message"

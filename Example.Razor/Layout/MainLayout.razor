@@ -1,0 +1,62 @@
+﻿@using MudBlazor
+@inherits LayoutComponentBase
+
+<div class="page">
+    @* Required *@
+    <MudThemeProvider />
+    <MudPopoverProvider />
+
+    @* Needed for dialogs *@
+    <MudDialogProvider />
+    @* Needed for snackbars *@
+    <MudSnackbarProvider />
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+           
+            @Body
+        </article>
+    </main>
+</div>
+@* <SimpleModal @ref="ModalRef"
+             Id="modal-tester"
+             OpenOnFirstRender="true">
+</SimpleModal>
+
+
+@code {
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+            ModalStore.Modal = ModalRef;
+    }
+
+    private bool isModalOpen = false;
+    private SimpleModal? ModalRef;
+
+    async Task ShowModal()
+    {
+        await ModalRef!.ShowModal();
+    }
+
+    async Task CloseModal()
+    {
+        await ModalRef!.CloseModal();
+    }
+
+    void ModalStateChanged(bool isOpen)
+    {
+        isModalOpen = isOpen;
+        StateHasChanged();
+    }
+}
+ *@

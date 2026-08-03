@@ -1,0 +1,19 @@
+﻿@using MudBlazor
+@inherits PageBase
+@page "/counter"
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Confirm">Click Me</MudButton>
+
+@code {
+    private int currentCount = 0;
+
+    private async Task Confirm()
+    {
+        await IocConfiguration.MudDialogService.ShowMessageBoxAsync("oooo", "Ok");
+
+    }
+}

@@ -2,7 +2,6 @@
 using Avae.Services;
 using Microsoft.Extensions.Logging;
 using UXDivers.Popups.Maui;
-using UXDivers.Popups.Maui.Controls;
 
 namespace Avae.Maui
 {

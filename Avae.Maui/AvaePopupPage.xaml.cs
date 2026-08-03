@@ -43,9 +43,7 @@ public partial class AvaePopupPage : PopupPage
     {
         get
         {
-            return new ColumnDefinitionCollection(
-                Buttons?.Select(b => new ColumnDefinition(GridLength.Star)).ToArray()
-                ?? []);
+            return [.. Buttons?.Select(b => new ColumnDefinition(GridLength.Star)).ToArray() ?? []];
         }
     }
 

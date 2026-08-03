@@ -15,7 +15,6 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
     where TViewModel : class, ICloseableViewModel<TResult>
 {
     public object? Context { get => DataContext; set => DataContext = value; }
-    protected virtual string Title { get; } = string.Empty;
     protected virtual string Icon { get; } = "";
     protected TViewModel? ViewModel { get { return DataContext as TViewModel; } }
     protected virtual TypeDialog TypeDialog { get; } = TypeDialog.Box;
@@ -27,7 +26,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
         @params = new ContentDialogParams
         {
             Content = this,
-            Title = Title,            
+            Title = ViewModel?.Title,
             PrimaryButtonText = parameters.Definitions.ElementAt(0).Name,
             PrimaryButtonCommand = parameters.Definitions.ElementAt(0).Command,
             SecondaryButtonText = parameters.Definitions.ElementAtOrDefault(1)?.Name,
@@ -65,7 +64,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
         var modalParams = new ModalParameters<TViewModel, TResult>(Icon, viewModel)
         {
             Content = this,
-            ContentTitle = Title,
+            ContentTitle = viewModel.Title,
             CloseOnClickAway = true
         };
 

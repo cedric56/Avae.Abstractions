@@ -1,0 +1,11 @@
+﻿@page "/"
+@inherits PageBase
+
+@using Example.ViewModels
+@using Microsoft.AspNetCore.Components.Web
+@inject HomeViewModel homeViewModel
+
+
+<PageTitle>homeViewModel.Title</PageTitle>
+
+<button class="btn btn-primary" @onclick="homeViewModel.ShowModal">Show Modal</button>

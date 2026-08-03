@@ -12,7 +12,7 @@ namespace Example.ViewModels
 {
     public partial class ModalViewModel : ReactiveObject, 
         ICloseableViewModel<string?>,
-        IDataErrorInfo
+        IViewModelErrorInfo
     {
         static ModalViewModel()
         {
@@ -24,12 +24,12 @@ namespace Example.ViewModels
         public ModalViewModel(IDialogService dialogService)
         {
             this.dialogService = dialogService;
-            this.WhenAnyValue(x => x.Message)
-                //.Skip(1)
-                //.Throttle(TimeSpan.FromSeconds(1))
-                //.Where(string.IsNullOrWhiteSpace)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(text => this.RaisePropertyChanged("Item"));
+            //this.WhenAnyValue(x => x.Message)
+            //    //.Skip(1)
+            //    //.Throttle(TimeSpan.FromSeconds(1))
+            //    //.Where(string.IsNullOrWhiteSpace)
+            //    .ObserveOn(RxApp.MainThreadScheduler)
+            //    .Subscribe(text => this.RaisePropertyChanged("Item"));
         }
 
         [ReactiveUI.SourceGenerators.Reactive]
@@ -53,6 +53,8 @@ namespace Example.ViewModels
                 new() { Command = ValidateCommand, Name = "Valider"},
                 new() { Command = CancelCommand, Name="Annuler"}
             ];
+
+        public string? Title => "Modal";
 
         public string this[string columnName]
         {
@@ -87,6 +89,11 @@ namespace Example.ViewModels
         {
             CloseRequested?.Invoke(this, value);
             return Task.CompletedTask;
+        }
+
+        public void RaiseErrorChanged()
+        {
+            this.RaisePropertyChanged("Item");
         }
     }
 }

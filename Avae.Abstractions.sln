@@ -31,6 +31,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Services", "Avae.Servi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Maui", "Avae.Maui\Avae.Maui.csproj", "{6DC57DEA-1EF1-4298-A3AF-6A60CBBDFEE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.BlazorApp", "Example.BlazorApp\Example.BlazorApp.csproj", "{7172266F-592E-4C4F-BA47-7E5A4F5A5477}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.BlazorAssembly", "Example.BlazorAssembly\Example.BlazorAssembly.csproj", "{6F1AC887-3884-4893-9DF0-C92E972F8BE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Razor", "Example.Razor\Example.Razor.csproj", "{9681C149-B655-4647-98F5-E307EB03A4F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Hybrid", "Example.Hybrid\Example.Hybrid.csproj", "{760BECE8-FEA6-4386-A064-54144006844C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +106,23 @@ Global
 		{6DC57DEA-1EF1-4298-A3AF-6A60CBBDFEE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DC57DEA-1EF1-4298-A3AF-6A60CBBDFEE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DC57DEA-1EF1-4298-A3AF-6A60CBBDFEE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7172266F-592E-4C4F-BA47-7E5A4F5A5477}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7172266F-592E-4C4F-BA47-7E5A4F5A5477}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7172266F-592E-4C4F-BA47-7E5A4F5A5477}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7172266F-592E-4C4F-BA47-7E5A4F5A5477}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F1AC887-3884-4893-9DF0-C92E972F8BE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F1AC887-3884-4893-9DF0-C92E972F8BE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F1AC887-3884-4893-9DF0-C92E972F8BE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F1AC887-3884-4893-9DF0-C92E972F8BE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9681C149-B655-4647-98F5-E307EB03A4F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9681C149-B655-4647-98F5-E307EB03A4F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9681C149-B655-4647-98F5-E307EB03A4F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9681C149-B655-4647-98F5-E307EB03A4F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{760BECE8-FEA6-4386-A064-54144006844C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{760BECE8-FEA6-4386-A064-54144006844C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{760BECE8-FEA6-4386-A064-54144006844C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{760BECE8-FEA6-4386-A064-54144006844C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{760BECE8-FEA6-4386-A064-54144006844C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

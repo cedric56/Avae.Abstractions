@@ -15,7 +15,7 @@ namespace Avae.Maui
         IocContainer? _container = null;
         IocContainer Container { get => _container ??= getContainer(); }
 
-        public Page Current => Application.Current?.Windows.FirstOrDefault(w => w.IsActivated)?.Page ?? Shell.Current;
+        public Page Current => Application.Current?.Windows.FirstOrDefault(w => w.IsActivated)?.Page ?? Application.Current?.Windows.FirstOrDefault()?.Page ?? Shell.Current;
 
         public int MaxItems => 5;
 
@@ -300,7 +300,7 @@ namespace Avae.Maui
                 }
             }
 
-            throw new InvalidOperationException("Must implement IDialogView");
+            return await view.ShowModalAsync();
         }
 
         async Task<T?> DisplayThreeButtons<T>(
@@ -312,7 +312,7 @@ namespace Avae.Maui
 
             if (content is Element e)
             {
-                content = e.ToPlatform(Current.Handler.MauiContext);
+                content = e.ToPlatform(Current?.Handler?.MauiContext ?? new MauiContext(serviceProvider));
             }
 #if ANDROID
                 var alertBuilder = new Android.App.AlertDialog.Builder(Platform.CurrentActivity);

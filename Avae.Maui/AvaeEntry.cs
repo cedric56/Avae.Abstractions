@@ -1,6 +1,6 @@
-﻿using Microsoft.Maui.Controls.Shapes;
+﻿using Avae.Abstractions;
+using Microsoft.Maui.Controls.Shapes;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace Avae.Maui
 {
@@ -66,9 +66,21 @@ namespace Avae.Maui
                     Stroke = null,
                     StrokeThickness = 0
                 };
+
                 if (!string.IsNullOrWhiteSpace(ColumnName) &&
                     BindingContext is IDataErrorInfo errorInfo)
                 {
+                    if(BindingContext is IViewModelErrorInfo viewModel)
+                    {
+                        this.PropertyChanged += (s, e) =>
+                        {
+                            if (e.PropertyName == nameof(Text))
+                            {
+                                viewModel.RaiseErrorChanged();
+                            }
+                        };
+                    }
+
                     var binding = new Binding($"[{ColumnName}]", source: errorInfo, converter: new NullConverter());
 
                     border.Triggers.Add(new DataTrigger(typeof(Border))
