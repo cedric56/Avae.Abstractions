@@ -1,4 +1,5 @@
-﻿using Avae.DAL;
+﻿using Avae.Abstractions;
+using Avae.DAL;
 using Avae.Razor;
 using Avae.Services;
 using Example.Models;
@@ -20,19 +21,48 @@ namespace Example.Razor
                 position, maxDispayments, container =>
             {
                 container.Register<ComponentView<ModalView, ModalViewModel>>();
-                container.Register<ComponentView<FormView, FormViewModel>>();
+                container.Register(typeof(FormViewModel).Name, (sp, parameters) =>
+                {
+                    if(parameters.FirstOrDefault() is NavigationContext context)
+                    {
+                        if (context.FactoryParameters.OfType<string>().Any(p => p == FormViewModel.KEY))
+                        {
+                            return new ComponentView<FormPage1, FormViewModel>();
+                        }
+                    }
+
+                    return new ComponentView<FormView, FormViewModel>();
+                });
+
+                container.Register<ComponentView<FormPage2, FormPage2ViewModel>>();
+                container.Register(typeof(FormPage3ViewModel).Name, (sp, parameters) =>
+                {
+                    if (parameters.FirstOrDefault() is NavigationContext context)
+                    {
+                        return new ComponentView<FormPage3, FormPage3ViewModel>(sp, context, new Dictionary<string, object>()
+                        {
+                            { "Person", context.ViewParameters[0] }
+                        });
+                    }
+
+                    throw new InvalidOperationException();
+                });
             });
             services.AddSingleton<HomeViewModel>();
             services.AddSingleton<MenuViewModel>();
             services.AddTransient<ModalViewModel>();
-            services.AddTransient<FormViewModel>();
+            services.AddTransient<FormPage2ViewModel>();
+            services.AddTransient<FormPage3ViewModel>();
 
-            services.UseDbLayer<IDBLayer>(sp => new DBSqlLayer(sp));
+            if (!OperatingSystem.IsBrowser())
+            { 
+                services.UseDbLayer<IDBLayer>(sp => new DBSqlLayer(sp));
 
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var dbPath = Path.Combine(folder, "database.db");
-            var connectionString = $"Data Source={dbPath};Foreign Keys=True";
-            services.AddTransient<IDbConnection>(_ => new SqliteConnection(connectionString));
+                var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                var dbPath = Path.Combine(folder, "database.db");
+                var connectionString = $"Data Source={dbPath};Foreign Keys=True";
+                services.AddTransient<IDbConnection>(_ => new SqliteConnection(connectionString));
+            }
         }
     }
 }

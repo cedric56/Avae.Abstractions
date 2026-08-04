@@ -1,0 +1,12 @@
+﻿@using Example.Models
+@using Example.ViewModels
+<h3>@Person.FirstName</h3>
+
+@code
+{
+    [Parameter]
+    public required FormPage3ViewModel ViewModel { get; set; }
+
+    [Parameter]
+    public required Person Person { get; set; }
+}

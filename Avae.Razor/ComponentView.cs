@@ -25,10 +25,10 @@ namespace Avae.Razor
             
         }
 
-        public ComponentView(IServiceProvider sp, NavigationContext? context = null)
+        public ComponentView(IServiceProvider sp, NavigationContext? context = null, Dictionary<string, object>? parameters = null)
         {
-            var viewModel = sp.GetViewModel<TViewModel>(context);
-            Parameters = new Dictionary<string, object>()
+            var viewModel = sp.GetViewModel<TViewModel>(context);            
+            Parameters = new Dictionary<string, object>(parameters ?? [])
             {
                 { "ViewModel", viewModel }
             };
@@ -38,6 +38,9 @@ namespace Avae.Razor
 
         protected void OnContextChanged(object? context)
         {
+            if (context is null || Parameters is not null)
+                return;
+
             Parameters = new Dictionary<string, object>()
             {
                 { "ViewModel", (TViewModel)context! }

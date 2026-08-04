@@ -16,21 +16,44 @@
 @* Needed for snackbars *@
 <MudSnackbarProvider />
 
-<div class="page">
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        @Title
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen">
+        <DynamicComponent Type="@NavMenu.Type" />
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@* <div class="page">
    
-    <div class="sidebar">
+    <div class="sidebar @(iscollapsed ? "collapsed" : "")">
+        <button @onclick="togglesidebar" class="toggle-button" @(iscollapsed ? "expand" : "collapse")>close</button>
         <DynamicComponent Type="@NavMenu.Type"/>
     </div>
 
     <main>
         <article class="content px-4">           
-            @Body
+        
         </article>
     </main>
-</div>
+</div> *@
 
 @code
 {
+    public string Title { get; set; } = "Application";
+
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
     private IocConfiguration IocConfiguration => ((IocConfiguration)Configuration);
 
     protected override void OnInitialized()

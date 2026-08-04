@@ -1,5 +1,4 @@
 ﻿using Avae.Abstractions;
-using CommunityToolkit.Mvvm.Input;
 
 namespace Example.ViewModels
 {

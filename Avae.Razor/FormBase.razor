@@ -1,0 +1,66 @@
+﻿@using Avae.Abstractions
+@using MudBlazor
+@inherits Avae.Razor.PageBase
+
+<style>
+    /* Split the screen in half */
+    .split {
+        height: 100%;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        overflow-x: hidden;
+        padding-top: 20px;
+    }
+
+    .left {
+        left: 0;
+        width: 30%;
+    }
+
+    /* Right side - 70% */
+    .right {
+        right: 0;
+        width: 70%;
+    }
+
+    /* If you want the content centered horizontally and vertically */
+    .centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+</style>
+
+<MudButton OnClick="@ViewModel.BackCommand.Execute">Back</MudButton>
+<MudButton OnClick="@ViewModel.ForwardCommand.Execute">Forward</MudButton>
+
+<div class="split left">
+    <div class="centered">
+        <MudList T="Avae.Abstractions.PageViewModelBase"
+                 @bind-SelectedValue="@ViewModel.SelectedPage">
+            @foreach (var page in ViewModel.Pages)
+            {
+                var name = page.DisplayName;
+                <MudListItem Text="@name" Value="page" />
+            }
+        </MudList>
+    </div>
+</div>
+<div class="split right">
+    <div class="centered">
+        @if (@CurrentView != null)
+        {
+            <DynamicComponent Type="@CurrentView.Type" Parameters="@CurrentView.Parameters" />
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required PagesViewModelBase ViewModel { get; set; }
+
+    private ComponentView CurrentView => (ComponentView)ViewModel.CurrentPage;
+}

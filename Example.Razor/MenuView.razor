@@ -14,30 +14,40 @@
 else
 {
     <MudButton OnClick="ViewModel.Add">Add</MudButton>
-    <MudButton OnClick="ViewModel.Update" Disabled="ViewModel.CanExecute()">Update</MudButton>
-    <MudButton OnClick="ViewModel.Remove" Disabled="ViewModel.CanExecute()">Remove</MudButton>
+    <MudButton OnClick="ViewModel.Update" Disabled="@IsEnabled">Update</MudButton>
+    <MudButton OnClick="ViewModel.Remove" Disabled="@IsEnabled">Remove</MudButton>
 
-    <MudList T="Person">
+    <MudList T="Person" 
+        @bind-SelectedValue="@ViewModel.SelectedPerson"
+        SelectionMode="SelectionMode.SingleSelection" >
         @foreach (var p in ViewModel.Persons)
         {
-            <MudListItem>@p.FirstName</MudListItem>
+            <MudListItem Text="@p.FirstName" Value="@p"/>
         }
     </MudList>
 }
 
 @code {
 
+    private bool IsEnabled => ViewModel.SelectedPerson == null;
+
     private ComponentView? CurrentView => ViewModel.CurrentPage as ComponentView;
 
     protected override async Task OnInitializedAsync()
     {
         ViewModel.PropertyChanged += PropertyChanged;
-        ViewModel.Persons = new(await DBBase.Instance.GetAllAsync<Person>());
+        try{
+            ViewModel.Persons = new(await DBBase.Instance.GetAllAsync<Person>());
+        }
+        catch
+        {
+            ViewModel.Persons = new System.Collections.ObjectModel.ObservableCollection<Person>();
+        }
         await base.OnInitializedAsync();
     }
 
     async void PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        await InvokeAsync(() => StateHasChanged());
+        await InvokeAsync(StateHasChanged);
     }
 }

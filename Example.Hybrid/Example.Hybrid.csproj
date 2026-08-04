@@ -67,6 +67,16 @@
     </ItemGroup>
 
     <ItemGroup>
+      <AndroidResource Remove="Components\**" />
+      <AvaloniaXaml Remove="Components\**" />
+      <Compile Remove="Components\**" />
+      <Content Remove="Components\**" />
+      <EmbeddedResource Remove="Components\**" />
+      <MauiXaml Remove="Components\**" />
+      <None Remove="Components\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
