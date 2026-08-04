@@ -1,0 +1,43 @@
+﻿@using System.ComponentModel
+@using Avae.Razor
+@using Example.Models
+@using Example.ViewModels
+@using MudBlazor
+@inherits Avae.Razor.PageBase
+@page "/menu"
+@inject MenuViewModel ViewModel
+
+@if (CurrentView != null)
+{
+    <DynamicComponent Type="@CurrentView.Type" Parameters="@CurrentView.Parameters"/>
+}
+else
+{
+    <MudButton OnClick="ViewModel.Add">Add</MudButton>
+    <MudButton OnClick="ViewModel.Update" Disabled="ViewModel.CanExecute()">Update</MudButton>
+    <MudButton OnClick="ViewModel.Remove" Disabled="ViewModel.CanExecute()">Remove</MudButton>
+
+    <MudList T="Person">
+        @foreach (var p in ViewModel.Persons)
+        {
+            <MudListItem>@p.FirstName</MudListItem>
+        }
+    </MudList>
+}
+
+@code {
+
+    private ComponentView? CurrentView => ViewModel.CurrentPage as ComponentView;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel.PropertyChanged += PropertyChanged;
+        ViewModel.Persons = new(await DBBase.Instance.GetAllAsync<Person>());
+        await base.OnInitializedAsync();
+    }
+
+    async void PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        await InvokeAsync(() => StateHasChanged());
+    }
+}

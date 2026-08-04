@@ -5,6 +5,7 @@
 @inherits LayoutComponentBase
 @* @implements IDisposable *@
 @inject IIocConfiguration Configuration
+@inject ComponentView NavMenu
 
 @* Required *@
 <MudThemeProvider IsDarkMode="IocConfiguration.IsDarkMode" />
@@ -18,7 +19,7 @@
 <div class="page">
    
     <div class="sidebar">
-        <NavMenu />
+        <DynamicComponent Type="@NavMenu.Type"/>
     </div>
 
     <main>

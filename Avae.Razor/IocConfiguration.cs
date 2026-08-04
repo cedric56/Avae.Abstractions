@@ -46,17 +46,17 @@ namespace Avae.Razor
 
         public IContextFor? GetContextFor(string key, NavigationContext context)
         {
-            throw new NotImplementedException();
+            return Container.GetView(key, context is null ? [] : [context]) as IContextFor;
         }
 
         public IContextFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase
         {
-            throw new NotImplementedException();
+            return Container.GetView(typeof(TViewModel).Name, context is null ? [] : [context]) as IContextFor<TViewModel>;
         }
 
         public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : ICloseableViewModel<TResult>
         {
-            throw new NotImplementedException();
+            return Container.GetView(typeof(TViewModel).Name, context is null ? [] : [context]) as IModalFor<TViewModel, TResult>;
         }
 
         public object? GetView(string key, params object[] @params)
@@ -194,29 +194,29 @@ namespace Avae.Razor
             };
         }
 
-        private Type GetViewType(string viewModelName, NavigationContext? context = null)
-        {
-            return (Type)GetView(viewModelName, context is null ? [] : [context])!;
-        }
-
         async Task<TResult?> Avae.Services.IDialogService.ShowModalAsync<TViewModel, TResult>(NavigationContext? context)
             where TResult : default
         {
             var tcs = new TaskCompletionSource<TResult?>();
             var viewModel = serviceProvider.GetViewModel<TViewModel>(context);
-            var type = GetViewType(typeof(TViewModel).Name, context);            
-            var dialog = await MudDialogService.ShowAsync(type, viewModel.Title, new MudBlazor.DialogParameters()
+            var contextFor = GetContextFor(typeof(TViewModel).Name, context ?? new NavigationContext());
+            if (contextFor is ComponentView view)
             {
-                { "ViewModel", viewModel }
-            });
-            viewModel.CloseRequested += CloseRequestedHandler;
-            void CloseRequestedHandler(object? sender, TResult? e)
-            {
-                viewModel.CloseRequested -= CloseRequestedHandler;
-                tcs.SetResult(e);
-                MudDialogService.Close(dialog);
+                var dialog = await MudDialogService.ShowAsync(view.Type, viewModel.Title, new MudBlazor.DialogParameters()
+                {
+                    { "ViewModel", viewModel }
+                });
+                viewModel.CloseRequested += CloseRequestedHandler;
+                void CloseRequestedHandler(object? sender, TResult? e)
+                {
+                    viewModel.CloseRequested -= CloseRequestedHandler;
+                    tcs.SetResult(e);
+                    MudDialogService.Close(dialog);
+                }
+                return await tcs.Task;
             }
-            return await tcs.Task;
+
+            throw new InvalidOperationException("View must be ComponentView");
         }
     }
 }

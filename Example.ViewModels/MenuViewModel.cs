@@ -71,7 +71,7 @@ namespace Example.ViewModels
             }
         }
 
-        private bool CanExecute()
+        public bool CanExecute()
         {
             return SelectedPerson != null;
         }

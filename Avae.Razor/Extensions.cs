@@ -12,10 +12,12 @@ namespace Avae.Razor
     public static class Extensions
     {
         public static void ConfigureBase(this IServiceCollection services,
+            ComponentView navMenu,
             NotificationPosition position = NotificationPosition.BottomLeft,
-            int maxDispayments = 5,
+            int maxDispayments = 5,            
             Action<IIocContainer>? configure = null)
         {
+            services.AddSingleton<ComponentView>(navMenu);
             services.AddMudServices(config =>
             {
                 config.SnackbarConfiguration = new SnackbarConfiguration()
