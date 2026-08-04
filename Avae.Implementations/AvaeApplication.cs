@@ -17,7 +17,7 @@ namespace Avae.Implementations
         Box
     }
 
-    public abstract class AvaeApplication : Application, IIocConfiguration, IDisposable
+    public abstract class AvaeApplication : Application, IIocConfiguration, IDisposable, IRequestedTheme
     {
 
         protected virtual string Logs { get; } = "";
@@ -55,6 +55,8 @@ namespace Avae.Implementations
             services.AddSingleton<IContentDialogService>(sp => new ContentDialogService(sp));
             services.AddSingleton<ITaskDialogService, TaskDialogService>();
             services.AddSingleton<ILogger>(LoggerFactory.Create(ConfigureLogging).CreateLogger<AvaeApplication>());
+            services.AddSingleton<ISystemNotificationService, SystemNotificationService>();
+            services.AddSingleton<IRequestedTheme>(this);
         }
 
         public void Configure(IServiceProvider provider)
@@ -153,6 +155,17 @@ namespace Avae.Implementations
                 disposable.Dispose();
 
             GC.SuppressFinalize(this);
+        }
+
+        public void Request(RequestedTheme theme)
+        {
+            //Application.Current?.RequestedThemeVariant
+            //    = theme switch
+            //    {
+            //        RequestedTheme.Light => Theme ,
+            //        RequestedTheme.Dark => AppTheme.Dark,
+            //        _ => AppTheme.Unspecified,
+            //    };
         }
     }
 }

@@ -1,62 +1,51 @@
-﻿@using MudBlazor
+﻿@using Avae.Abstractions
+@using Avae.Services
+@using Avae.Razor
+@using MudBlazor
 @inherits LayoutComponentBase
+@* @implements IDisposable *@
+@inject IIocConfiguration Configuration
+
+@* Required *@
+<MudThemeProvider IsDarkMode="IocConfiguration.IsDarkMode" />
+<MudPopoverProvider />
+
+@* Needed for dialogs *@
+<MudDialogProvider BackdropClick="false" />
+@* Needed for snackbars *@
+<MudSnackbarProvider />
 
 <div class="page">
-    @* Required *@
-    <MudThemeProvider />
-    <MudPopoverProvider />
-
-    @* Needed for dialogs *@
-    <MudDialogProvider />
-    @* Needed for snackbars *@
-    <MudSnackbarProvider />
+   
     <div class="sidebar">
         <NavMenu />
     </div>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-           
+        <article class="content px-4">           
             @Body
         </article>
     </main>
 </div>
-@* <SimpleModal @ref="ModalRef"
-             Id="modal-tester"
-             OpenOnFirstRender="true">
-</SimpleModal>
 
+@code
+{
+    private IocConfiguration IocConfiguration => ((IocConfiguration)Configuration);
 
-@code {
-
-    protected override void OnAfterRender(bool firstRender)
+    protected override void OnInitialized()
     {
-        base.OnAfterRender(firstRender);
-        if (firstRender)
-            ModalStore.Modal = ModalRef;
+        base.OnInitialized();
+
+        IocConfiguration.RequestedThemeChanged += ThemeChanged;
     }
 
-    private bool isModalOpen = false;
-    private SimpleModal? ModalRef;
-
-    async Task ShowModal()
+    void ThemeChanged(object? sender, RequestedTheme theme)
     {
-        await ModalRef!.ShowModal();
+        InvokeAsync(() => StateHasChanged());
     }
 
-    async Task CloseModal()
+    public void Dispose()
     {
-        await ModalRef!.CloseModal();
+        IocConfiguration.RequestedThemeChanged -= ThemeChanged;
     }
-
-    void ModalStateChanged(bool isOpen)
-    {
-        isModalOpen = isOpen;
-        StateHasChanged();
-    }
-}
- *@
+} 

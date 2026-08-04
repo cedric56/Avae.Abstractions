@@ -1,26 +1,28 @@
 ﻿using Avae.Abstractions;
 using Avae.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using MudBlazor;
 using MudBlazor.Services;
 using NavigationContext = Avae.Abstractions.NavigationContext;
 
-namespace Example.Razor
+namespace Avae.Razor
 {
-    internal class IocConfiguration(IServiceProvider serviceProvider, Action<IIocContainer>? configure = null) :
+    public class IocConfiguration(IServiceProvider serviceProvider, Action<IIocContainer>? configure = null) :
             IIocConfiguration, ITaskDialogService, IContentDialogService, 
             Avae.Services.IDialogService,
             ISystemNotificationService,
             INotificationManager,
             IRequestedTheme
     {
+        public EventHandler<RequestedTheme>? RequestedThemeChanged;
+
+        public bool IsDarkMode { get; set; } = true;
+
         public static MudBlazor.IDialogService MudDialogService { get; set; } = default!;
+        public static MudBlazor.ISnackbar SnackbarService { get; set; } = default!;
 
         IocContainer? _container = null;
         IocContainer Container { get => _container ??= (IocContainer)serviceProvider.GetRequiredService<IIocContainer>(); }
-        public int MaxItems => throw new NotImplementedException();
-
-        public NotificationPosition Position => throw new NotImplementedException();
 
         public void Configure(IIocContainer container)
         {
@@ -64,12 +66,34 @@ namespace Example.Razor
 
         public void Request(RequestedTheme theme)
         {
-            throw new NotImplementedException();
+            IsDarkMode = theme == RequestedTheme.Dark;
+            RequestedThemeChanged?.Invoke(this, theme);
         }
 
         public void Show(string title, string message, NotificationType type = NotificationType.Information, TimeSpan? expiration = null, Action? onClick = null, Action? onClose = null)
         {
-            throw new NotImplementedException();
+            var snack = SnackbarService.Add(new MarkupString($"<h5>{title}</h5>{message}"), type switch
+            {
+                NotificationType.Information => MudBlazor.Severity.Info,
+                NotificationType.Success => MudBlazor.Severity.Success,
+                NotificationType.Warning => MudBlazor.Severity.Warning,
+                NotificationType.Error => MudBlazor.Severity.Error,
+                _ => MudBlazor.Severity.Normal
+            }, config =>
+            {
+                config.RequireInteraction = expiration is null;
+                if (expiration.HasValue)
+                    config.VisibleStateDuration = (int)expiration.Value.TotalMilliseconds;
+                config.OnClick = snackbar =>
+                {
+                    onClick?.Invoke();
+                    return Task.CompletedTask;
+                };
+            });
+            snack?.OnClose += (snackbar) =>
+            {
+                onClose?.Invoke();
+            };
         }
 
         public Task<ContentDialogResult> ShowAsync(ContentDialogParams @params)
@@ -82,14 +106,24 @@ namespace Example.Razor
             throw new NotImplementedException();
         }
 
-        public Task ShowErrorAsync(Exception ex, string title = "Error")
+        public async Task ShowErrorAsync(Exception ex, string title = "Error")
         {
-            throw new NotImplementedException();
+            await MudDialogService.ShowMessageBoxAsync(new MudBlazor.MessageBoxOptions()
+            {
+                Title = title,
+                Message = ex.Message
+            });
         }
 
-        public Task<bool> ShowOkAbortAsync(string message, string title = "Title")
+        public async Task<bool> ShowOkAbortAsync(string message, string title = "Title")
         {
-            throw new NotImplementedException();
+            return await MudDialogService.ShowMessageBoxAsync(new MudBlazor.MessageBoxOptions()
+            {
+                Title = title,
+                Message = message,
+                CancelText = "Abort",
+
+            }) ?? false;
         }
 
         public async Task ShowOkAsync(string message, string title = "Title")
@@ -101,24 +135,63 @@ namespace Example.Razor
             });
         }
 
-        public Task<bool> ShowOkCancelAsync(string message, string title = "Title")
+        public async Task<bool> ShowOkCancelAsync(string message, string title = "Title")
         {
-            throw new NotImplementedException();
+            return await MudDialogService.ShowMessageBoxAsync(new MudBlazor.MessageBoxOptions()
+            {
+                Title = title,
+                Message = message,
+                CancelText = "Cancel",
+
+            }) ?? false;
         }
 
-        public Task<int> ShowYesNoAbortAsync(string message, string title = "Title")
+        public async Task<int> ShowYesNoAbortAsync(string message, string title = "Title")
         {
-            throw new NotImplementedException();
+            var result = await MudDialogService.ShowMessageBoxAsync(new MudBlazor.MessageBoxOptions()
+            {
+                Title = title,
+                Message = message,
+                YesText = "Yes",
+                NoText = "No",
+                CancelText = "Abort",
+
+            });
+            return result switch
+            {
+                true => 0,
+                false => 1,
+                _ => 2
+            };
         }
 
-        public Task<bool> ShowYesNoAsync(string message, string title = "Title")
+        public async Task<bool> ShowYesNoAsync(string message, string title = "Title")
         {
-            throw new NotImplementedException();
+            return await MudDialogService.ShowMessageBoxAsync(new MudBlazor.MessageBoxOptions()
+            {
+                Title = title,
+                Message = message,
+                CancelText = "No",
+
+            }) ?? false;
         }
 
-        public Task<int> ShowYesNoCancelAsync(string message, string title = "Title")
+        public async Task<int> ShowYesNoCancelAsync(string message, string title = "Title")
         {
-            throw new NotImplementedException();
+            var result = await MudDialogService.ShowMessageBoxAsync(new MudBlazor.MessageBoxOptions()
+            {
+                Title = title,
+                Message = message,
+                YesText = "Yes",
+                NoText = "No",
+                CancelText = "Cancel",
+            });
+            return result switch
+            {
+                true => 0,
+                false => 1,
+                _ => 2
+            };
         }
 
         private Type GetViewType(string viewModelName, NavigationContext? context = null)

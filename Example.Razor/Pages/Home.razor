@@ -1,11 +1,15 @@
 ﻿@page "/"
-@inherits PageBase
+@inherits Avae.Razor.PageBase
 
 @using Example.ViewModels
 @using Microsoft.AspNetCore.Components.Web
+@using MudBlazor
+
 @inject HomeViewModel homeViewModel
 
 
 <PageTitle>homeViewModel.Title</PageTitle>
 
-<button class="btn btn-primary" @onclick="homeViewModel.ShowModal">Show Modal</button>
+<MudButton OnClick="() => homeViewModel.ShowModal()">Show Modal</MudButton>
+<MudButton OnClick="() => homeViewModel.ShowNotification()">Show Snack</MudButton>
+<MudButton OnClick="() => homeViewModel.ShowRequestedTheme()">Theme</MudButton>

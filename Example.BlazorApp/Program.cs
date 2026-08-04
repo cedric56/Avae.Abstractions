@@ -1,6 +1,6 @@
+using Avae.Abstractions;
 using Example.BlazorApp.Components;
 using Example.Razor;
-using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +11,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Environment.WebRootPath) });
 builder.Services.ConfigureProject();
 var app = builder.Build();
-
+ServiceLocator.SetDefault(app.Services);
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

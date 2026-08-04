@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Razor", "Example.Ra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Hybrid", "Example.Hybrid\Example.Hybrid.csproj", "{760BECE8-FEA6-4386-A064-54144006844C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Razor", "Avae.Razor\Avae.Razor.csproj", "{B93CC2FF-B006-4655-829A-32D5103AD3EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,10 @@ Global
 		{760BECE8-FEA6-4386-A064-54144006844C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{760BECE8-FEA6-4386-A064-54144006844C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{760BECE8-FEA6-4386-A064-54144006844C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B93CC2FF-B006-4655-829A-32D5103AD3EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B93CC2FF-B006-4655-829A-32D5103AD3EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B93CC2FF-B006-4655-829A-32D5103AD3EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B93CC2FF-B006-4655-829A-32D5103AD3EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

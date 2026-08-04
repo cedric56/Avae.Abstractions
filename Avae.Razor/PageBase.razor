@@ -1,0 +1,12 @@
+﻿@using MudBlazor
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        IocConfiguration.MudDialogService = DialogService;
+        IocConfiguration.SnackbarService = Snackbar;
+    }
+}

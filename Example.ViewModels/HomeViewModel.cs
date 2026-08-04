@@ -30,7 +30,7 @@ namespace Example.ViewModels
             }
             finally
             {
-                await dialogService.ShowOkAsync(result ?? string.Empty, "Result");
+                await dialogService.ShowOkCancelAsync(result ?? string.Empty, "Result");
             }
         }
 
