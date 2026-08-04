@@ -10,7 +10,7 @@ namespace Avae.Abstractions
 
         public abstract string Title { get; }
 
-        protected virtual Task<bool> CanClose() => Task.FromResult(true);
+        public virtual Task<bool> CanClose() => Task.FromResult(true);
 
         private ICommand? closeCommand;
 
@@ -30,6 +30,7 @@ namespace Avae.Abstractions
 
         public Task Close(TResult? value)
         {
+
             CloseRequested?.Invoke(this, value);
             return Task.CompletedTask;
         }

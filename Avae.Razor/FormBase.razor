@@ -31,13 +31,39 @@
         left: 50%;
         transform: translate(-50%, -50%);
         text-align: center;
+        width: 100%; 
+        height: 85%
     }
+
+    .centered-grid {
+        display: grid;
+        place-items: center; /* Centre horizontalement ET verticalement */
+        height: 85%;
+        width: 100%;
+        padding: 20px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .dynamic-grid {
+        display: grid;
+        width: 90%;
+        height: 100%;
+        max-height: 100%;
+        overflow: auto;
+    }
+
+        .dynamic-grid > * {
+            min-height: 0;
+            width: 100%;
+            height: 100%;
+        }
 </style>
 
-<MudButton OnClick="@ViewModel.BackCommand.Execute">Back</MudButton>
-<MudButton OnClick="@ViewModel.ForwardCommand.Execute">Forward</MudButton>
 
-<div class="split left">
+<div class="split left" >
     <div class="centered">
         <MudList T="Avae.Abstractions.PageViewModelBase"
                  @bind-SelectedValue="@ViewModel.SelectedPage">
@@ -50,15 +76,33 @@
     </div>
 </div>
 <div class="split right">
-    <div class="centered">
-        @if (@CurrentView != null)
-        {
-            <DynamicComponent Type="@CurrentView.Type" Parameters="@CurrentView.Parameters" />
-        }
+        <MudOverlay Visible="@IsBusy" DarkBackground="true" Absolute="true" ZIndex="9999">
+            <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+        </MudOverlay>
+    <div class="centered">                
+        @ChildContent
+        <div class="dynamic-grid">
+            @if (CurrentView != null)
+            {
+                <DynamicComponent Type="@CurrentView.Type"
+                                  Parameters="@CurrentView.Parameters" />
+            }
+            @Buttons
+        </div>       
     </div>
 </div>
 
 @code {
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? Buttons { get; set; }
+
+    [Parameter]
+    public bool IsBusy { get; set; }
+
     [Parameter]
     public required PagesViewModelBase ViewModel { get; set; }
 

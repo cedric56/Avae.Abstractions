@@ -3,12 +3,54 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace Example.ViewModels;
 
+public abstract partial class ExampleViewModelBase(Router router, bool initialize = true) : PagesViewModelBase(router, initialize)
+{
+    [RelayCommand]
+    public override void GoBack()
+    {
+        base.GoBack();
+    }
+
+    [RelayCommand]
+    public override void GoForward()
+    {
+        base.GoForward();
+    }
+
+    protected override void RaiseCanExecuteChanged()
+    {
+        GoBackCommand.NotifyCanExecuteChanged();
+        GoForwardCommand.NotifyCanExecuteChanged();
+    }
+}
+
+public abstract partial class TestViewModelBase<TResult>(Router router) : FormViewModelBase<TResult>(router)
+{
+    [RelayCommand]
+    public override void GoBack()
+    {
+        base.GoBack();
+    }
+
+    [RelayCommand]
+    public override void GoForward()
+    {
+        base.GoForward();
+    }
+
+    protected override void RaiseCanExecuteChanged()
+    {
+        GoBackCommand.NotifyCanExecuteChanged();
+        GoForwardCommand.NotifyCanExecuteChanged();
+    }
+}
+
+
 [ObservableObject]
-public partial class MainViewModel(Router router) : PagesViewModelBase(router)
+public partial class MainViewModel(Router router) : ExampleViewModelBase(router)
 {
     [ObservableProperty]
     private bool _isMenuPaneOpen;

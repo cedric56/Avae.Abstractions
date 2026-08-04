@@ -1,7 +1,23 @@
-﻿@using Example.ViewModels
-<h3>FormPage1</h3>
-
-@code {
+﻿@using Example.Models
+@using Example.ViewModels
+@using MudBlazor
+<MudTextField label="First name" @bind-Value="@ViewModel.Person.FirstName"/>
+<MudTextField label="Last name" @bind-Value="@ViewModel.Person.LastName" />
+<MudList T="Example.Models.Person"
+    @bind-SelectedValues="SelectedPersons"
+    SelectionMode="SelectionMode.MultiSelection">
+    @foreach(var c in ViewModel.Persons)
+    {
+        <MudListItem Value="c" Text="@c.FirstName" />
+    }
+</MudList>
+    @code {
     [Parameter]
     public required FormViewModel ViewModel { get; set; }
+
+    public IReadOnlyCollection<Person> SelectedPersons
+    {
+        get => ViewModel.SelectedItems;
+        set => ViewModel.SelectedItems = new(value);
+    }
 }

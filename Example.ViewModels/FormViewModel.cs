@@ -10,9 +10,11 @@ using System.Reactive.Linq;
 namespace Example.ViewModels
 {
     [ObservableObject]
-    public partial class FormViewModel(IDialogService dialogService, Router router, Person person) : FormViewModelBase<Person>(router),         
+    public partial class FormViewModel(IDialogService dialogService, Router router, Person person) : TestViewModelBase<Person>(router),         
         IDataErrorInfo
     {
+        
+
         public const string KEY = "Page";
 
         [ObservableProperty]
@@ -108,9 +110,10 @@ namespace Example.ViewModels
         public string Error => Person.Error;
 
         
+
         public string this[string columnName] => Person[columnName];
 
-        protected override Task<bool> CanClose()
+        public override Task<bool> CanClose()
         {
             return dialogService.ShowYesNoAsync("Are you sure you want to close ?", "Question"); 
         }
@@ -119,5 +122,7 @@ namespace Example.ViewModels
         {
             OnPropertyChanged(propertyName);
         }
+
+        
     }
 }

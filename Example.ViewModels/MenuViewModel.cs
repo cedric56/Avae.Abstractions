@@ -4,14 +4,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace Example.ViewModels
 {
     [ObservableObject]
-    public partial class MenuViewModel(IServiceProvider provider, Router router) : PagesViewModelBase(router, false)
+    public partial class MenuViewModel(IServiceProvider provider, Router router) : ExampleViewModelBase(router, false)
     {
         public string Title { get; set; } = "Persons";
 

@@ -171,6 +171,7 @@ namespace Avae.Razor
             {
                 Title = title,
                 Message = message,
+                YesText = "Yes",
                 CancelText = "No",
 
             }) ?? false;

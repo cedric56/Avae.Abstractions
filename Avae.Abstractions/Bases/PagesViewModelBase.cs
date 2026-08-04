@@ -1,5 +1,4 @@
-﻿using Avae.Abstractions.Commands;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace Avae.Abstractions
 {
@@ -8,7 +7,7 @@ namespace Avae.Abstractions
     /// </summary>
     public abstract partial class PagesViewModelBase : IViewModelBase 
     {
-        private void OnViewModelChanged(IViewModelBase viewModel)
+        protected virtual void OnViewModelChanged(IViewModelBase viewModel)
         {
             var type = viewModel.GetType();
             _selectedPage = Pages.First(p => p.ViewModelType == type);
@@ -18,43 +17,39 @@ namespace Avae.Abstractions
             }
             NotifyPropertyChanged(nameof(SelectedPage));
             NotifyPropertyChanged(nameof(CurrentPage));
-            BackCommand.RaiseCanExecuteChanged();
-            ForwardCommand.RaiseCanExecuteChanged();
+            RaiseCanExecuteChanged();
         }
+
+        protected abstract void RaiseCanExecuteChanged();
+
         protected abstract void NotifyPropertyChanged(string propertyName);
 
-        private AsyncRelayCommand? _backCommand;
-
-
-        public AsyncRelayCommand BackCommand
+        public virtual void GoBack()
         {
-            get
+            if (CanGoBack())
             {
-                return _backCommand ??= new AsyncRelayCommand(() =>
-                {
-                    var viewModel = _router.Back()!;
-                    OnViewModelChanged(viewModel);
-                    return Task.CompletedTask;
+                var viewModel = _router.Back()!;
+                OnViewModelChanged(viewModel);
+            }
+        }
 
-                }, () => _router.CanGoBack);
+        public bool CanGoBack()
+        {
+            return _router.CanGoBack;
+        }
+
+        public virtual void GoForward()
+        {
+            if (CanGoForward())
+            {
+                var viewModel = _router.Forward()!;
+                OnViewModelChanged(viewModel);
             }            
         }
 
-        private AsyncRelayCommand? _forwardCommand;
-
-
-        public AsyncRelayCommand ForwardCommand
+        public bool CanGoForward()
         {
-            get
-            {
-                return _forwardCommand ??= new AsyncRelayCommand(() =>
-                {
-                    var viewModel = _router.Forward()!;
-                    OnViewModelChanged(viewModel);
-                    return Task.CompletedTask;
-
-                }, () => _router.CanGoForward);
-            }
+            return _router.CanGoForward;
         }
 
 
@@ -135,8 +130,7 @@ namespace Avae.Abstractions
                 await value.OnLaunched(viewModel);
             }
 
-            BackCommand.RaiseCanExecuteChanged();
-            ForwardCommand.RaiseCanExecuteChanged();
+            RaiseCanExecuteChanged();
         }
 
         protected virtual IContextFor GoTo(PageViewModelBase value, out IViewModelBase viewModel)
