@@ -14,6 +14,8 @@ namespace Avae.DAL
             if (OperatingSystem.IsBrowser())
             {
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
+                if (!request.IsConnected)
+                    return [];
                 var result = request.Send(nameof(FindByAnyAsync), $"type={typeof(T).Name}&filters={JsonSerializer.Serialize(filters)}");
                 if (!result.Successful) throw new Exception(result.Exception);
                 return MemoryPackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
@@ -24,6 +26,8 @@ namespace Avae.DAL
         public async Task<IEnumerable<T>> FindByAnyAsync<T>(Dictionary<string, object> filters) where T : class, new()
         {
             var service = provider.GetRequiredService<IOnionService>();
+            if (!service.IsConnected)
+                return [];
             var result = await service.FindByAnyAsync(typeof(T).Name, filters);
             if (!result.Successful)
                 throw new Exception(result.Exception);
@@ -35,6 +39,8 @@ namespace Avae.DAL
             if (OperatingSystem.IsBrowser())
             {
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
+                if(!request.IsConnected)
+                    return null;
                 var result = request.Send(nameof(GetAsync), $"type={typeof(T).Name}&id={id}");
                 if (!result.Successful) throw new Exception(result.Exception);
                 return MemoryPackSerializer.Deserialize<T>(result.Data);
@@ -47,6 +53,8 @@ namespace Avae.DAL
             if (OperatingSystem.IsBrowser())
             {
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
+                if (!request.IsConnected)
+                    return [];
                 var result = request.Send(nameof(GetAllAsync), $"type={typeof(T).Name}");
                 if (!result.Successful) throw new Exception(result.Exception);
                 return MemoryPackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
@@ -57,6 +65,8 @@ namespace Avae.DAL
         public async Task<IEnumerable<T>> GetAllAsync<T>(IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
             var service = provider.GetRequiredService<IOnionService>();
+            if (!service.IsConnected)
+                return [];
             var result = await service.GetAllAsync(typeof(T).Name);
             if (!result.Successful) throw new Exception(result.Exception);
             return MemoryPackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
@@ -65,6 +75,8 @@ namespace Avae.DAL
         public async Task<T?> GetAsync<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
             var service = provider.GetRequiredService<IOnionService>();
+            if (!service.IsConnected)
+                return null;
             var result = await service.GetAsync(typeof(T).Name, id);
             if (!result.Successful) throw new Exception(result.Exception);
             return MemoryPackSerializer.Deserialize<T>(result.Data);
@@ -75,6 +87,8 @@ namespace Avae.DAL
             if (OperatingSystem.IsBrowser())
             {
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
+                if (!request.IsConnected)
+                    return [];
                 var result = request.Send(nameof(WhereAsync), $"type={typeof(T).Name}&filters={JsonSerializer.Serialize(filters)}");
                 if (!result.Successful) throw new Exception(result.Exception);
                 return MemoryPackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
@@ -85,6 +99,8 @@ namespace Avae.DAL
         public async Task<IEnumerable<T>> WhereAsync<T>(Dictionary<string, object> filters) where T : class, new()
         {
             var service = provider.GetRequiredService<IOnionService>();
+            if (!service.IsConnected)
+                return [];
             var result = await service.WhereAsync(typeof(T).Name, filters);
             if (!result.Successful) throw new Exception(result.Exception);
             return MemoryPackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];

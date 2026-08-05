@@ -27,6 +27,6 @@ app.UseAntiforgery();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddAdditionalAssemblies(typeof(Avae.Razor.MainLayout).Assembly, typeof(Example.Razor.Home).Assembly);
+    .AddAdditionalAssemblies(typeof(Avae.Razor.Layout.MainLayout).Assembly, typeof(Example.Razor.Components.Home).Assembly);
 
 app.Run();

@@ -231,5 +231,12 @@ namespace Example.Models
                 return InputValidation<Person>.Validate(this, columnName);
             }
         }
+
+        [Dapper.Contrib.Extensions.Computed]
+        [MessagePack.IgnoreMember]
+        public string? FullName
+        {
+            get { return FirstName + " " + LastName; }
+        }
     }
 }

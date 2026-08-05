@@ -22,7 +22,7 @@ else
         SelectionMode="SelectionMode.SingleSelection" >
         @foreach (var p in ViewModel.Persons)
         {
-            <MudListItem Text="@p.FirstName" Value="@p"/>
+            <MudListItem Text="@p.FullName" Value="@p" />
         }
     </MudList>
 }
@@ -35,14 +35,9 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        ViewModel.PropertyChanged -= PropertyChanged;
         ViewModel.PropertyChanged += PropertyChanged;
-        try{
-            ViewModel.Persons = new(await DBBase.Instance.GetAllAsync<Person>());
-        }
-        catch
-        {
-            ViewModel.Persons = new System.Collections.ObjectModel.ObservableCollection<Person>();
-        }
+        ViewModel.Persons = new(await DBBase.Instance.GetAllAsync<Person>());
         await base.OnInitializedAsync();
     }
 

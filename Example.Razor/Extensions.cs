@@ -1,4 +1,5 @@
 ﻿using Avae.DAL;
+using Avae.DAL.Interfaces;
 using Avae.Razor;
 using Avae.Razor.Components;
 using Avae.Services;
@@ -77,6 +78,24 @@ namespace Example.Razor
                 var dbPath = Path.Combine(folder, "database.db");
                 var connectionString = $"Data Source={dbPath};Foreign Keys=True";
                 services.AddTransient<IDbConnection>(_ => new SqliteConnection(connectionString));
+            }
+            else
+            {
+                services.AddScoped<IDBOnionService>(sp =>
+                {
+                    try
+                    {
+                        return sp.GetMagicOnion<IDBOnionService>("http://localhost:5001");
+                    }
+                    catch
+                    {
+                        return new DBOnionNotConnected();
+                    }
+                });
+                services.AddScoped<IOnionService>(provider => provider.GetRequiredService<IDBOnionService>());
+                services.AddTransient<IXmlHttpRequest, XmlHttpRequest>();
+                services.AddScoped<IDBLayer>(provider => new DBOnionLayer(provider));
+                services.AddScoped<IDataAccessLayer>(provider => provider.GetRequiredService<IDBLayer>());
             }
         }
     }

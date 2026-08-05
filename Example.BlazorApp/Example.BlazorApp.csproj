@@ -6,12 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="Components\Routes.razor" />
-    <Content Remove="Components\_Imports.razor" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />
   </ItemGroup>

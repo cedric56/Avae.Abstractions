@@ -11,6 +11,8 @@ namespace Example.Razor
     {
         const string URL = "http://localhost:5001/routes/IDBOnionService/";
 
+        public bool IsConnected { get; set; }
+
         [JSImport("globalThis.eval")]
         public static partial string Invoke(string @params);
 

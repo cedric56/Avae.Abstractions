@@ -13,8 +13,6 @@ namespace Example.ViewModels
     public partial class FormViewModel(IDialogService dialogService, Router router, Person person) : TestViewModelBase<Person>(router),         
         IDataErrorInfo
     {
-        
-
         public const string KEY = "Page";
 
         [ObservableProperty]
@@ -50,6 +48,7 @@ namespace Example.ViewModels
                 await dialogService.ShowOkAsync(Error, "Error");
             else
             {
+                IsBusy = true;
                 Person.Contacts.Update(
                 SelectedItems,
                 (person, contact) => person.Id == contact.IdPerson,
@@ -59,9 +58,6 @@ namespace Example.ViewModels
                     Person = person,
                     PersonContact = Person
                 });
-
-                IsBusy = true;
-                await Task.Delay(2000);
                 var result = await DBBase.Instance.DbTransSave(Person);
                 IsBusy = false;
                 if (!string.IsNullOrWhiteSpace(result.Exception))

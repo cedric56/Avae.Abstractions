@@ -42,6 +42,8 @@ namespace Avae.DAL.Interfaces
 
     public interface IOnionService
     {
+        bool IsConnected { get; set; }
+
         async UnaryResult<Result> FindByAnyAsync(string type, Dictionary<string, object> filters)
         {
             if (string.IsNullOrWhiteSpace(type))
@@ -106,6 +108,7 @@ namespace Avae.DAL.Interfaces
 
     public interface IXmlHttpRequest
     {
+        bool IsConnected { get; set; }
         Result Send(string url, string data);
     }
 }
