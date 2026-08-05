@@ -8,7 +8,7 @@ namespace Avae.Razor.Components
 
         public abstract Type Type { get; }
 
-        public IDictionary<string, object>? Parameters { get; protected set; }
+        public IDictionary<string, object>? Parameters { get; set; }
     }
 
     public class ComponentView<TView> : ComponentView

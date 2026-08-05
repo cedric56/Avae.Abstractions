@@ -1,14 +1,16 @@
-﻿using Avae.Abstractions;
-using Avae.DAL;
+﻿using Avae.DAL;
 using Avae.Razor;
 using Avae.Razor.Components;
 using Avae.Services;
 using Example.Models;
 using Example.Razor.Components;
 using Example.ViewModels;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
+using MudBlazor;
 using System.Data;
+using NavigationContext = Avae.Abstractions.NavigationContext;
 
 namespace Example.Razor
 {
@@ -22,6 +24,17 @@ namespace Example.Razor
                 new ComponentView<NavMenu>(),
                 position, maxDispayments, container =>
             {
+                container.Register(HomeViewModel.TaskDialogKey, (sp, parameters) =>
+                {
+                    return parameters[0] switch
+                    {
+                        "Footer" => new ComponentView<MudText>() { Parameters = new Dictionary<string, object>() { { "ChildContent", "Footer" } } },
+                        "IconSource" => new ComponentView<MudImage>() { Parameters = new Dictionary<string, object>() },
+                        "Content" => new ComponentView<MudText>() { Parameters = new Dictionary<string, object> { { "ChildContent", new RenderFragment(tree => tree.AddContent(0, "Here is content")) } } },
+                        _ => throw new NotImplementedException()
+                    };
+                });
+
                 container.Register<CenteredComponentView<ModalView, ModalViewModel>>();
                 container.Register(typeof(FormViewModel).Name, (sp, parameters) =>
                 {

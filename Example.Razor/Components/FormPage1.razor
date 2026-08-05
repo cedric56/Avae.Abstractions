@@ -1,8 +1,19 @@
 ﻿@using Example.Models
 @using Example.ViewModels
 @using MudBlazor
-<MudTextField label="First name" @bind-Value="@ViewModel.Person.FirstName"/>
-<MudTextField label="Last name" @bind-Value="@ViewModel.Person.LastName" />
+
+<EditForm Model="@ViewModel.Person">
+    <DataAnnotationsValidator />
+    <MudTextField label="First name" 
+                  aria-required="true"
+                  @bind-Value="@ViewModel.Person.FirstName"
+                  For="@(() => @ViewModel.Person.FirstName)" />
+    <MudTextField label="Last name" 
+                  aria-required="true"
+                  For="@(() => @ViewModel.Person.LastName)"
+                  @bind-Value="@ViewModel.Person.LastName" />
+</EditForm>
+
 <MudList T="Example.Models.Person"
     @bind-SelectedValues="SelectedPersons"
     SelectionMode="SelectionMode.MultiSelection">
@@ -11,9 +22,10 @@
         <MudListItem Value="c" Text="@c.FirstName" />
     }
 </MudList>
-    @code {
+
+@code {
     [Parameter]
-    public required FormViewModel ViewModel { get; set; }
+    public required FormViewModel ViewModel { get; set; }    
 
     public IReadOnlyCollection<Person> SelectedPersons
     {

@@ -1,0 +1,93 @@
+﻿@using System.Windows.Input
+@using Avae.Services
+@using MudBlazor
+<style>
+    .columns
+    {
+        display:grid;
+        grid-template-columns:auto auto auto
+    }
+</style>
+
+<DynamicComponent Type="@ComponentView.Type" Parameters="@ComponentView.Parameters"/>
+<div class="columns">
+<MudButton Disabled="@Parameters.IsPrimaryButtonEnabled" style="@Style(@Parameters.PrimaryButtonText)" OnClick="Primary">@Parameters.PrimaryButtonText</MudButton>
+<MudButton Disabled="@Parameters.IsSecondaryButtonEnabled" style="@Style(@Parameters.SecondaryButtonText)" OnClick="Secondary">@Parameters.SecondaryButtonText</MudButton>
+<MudButton style="@Style(@Parameters.CloseButtonText)" OnClick="Close">@Parameters.CloseButtonText</MudButton>
+</div>
+@code {
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender)
+            Parameters.Opening?.Invoke();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Parameters.Opened?.Invoke();
+    }
+
+    [CascadingParameter]
+    public required IMudDialogInstance Instance{ get; set; }
+
+    [Parameter]
+    public required ContentDialogParams Parameters{ get; set; }
+
+    private ComponentView ComponentView => (ComponentView)Parameters.Content;
+
+    private string Style(string? text)
+    {
+        var style = string.IsNullOrWhiteSpace(text) ? "none" : "block";
+        return $@"display:{style}";
+    }
+
+    private void Close()
+    {        
+        SetResult(ContentDialogResult.None,
+            Parameters.CloseButtonCommand,
+            Parameters.CloseButtonCommandParameter,
+            Parameters.CloseButtonClick);
+    }
+
+    private void Primary()
+    {
+        SetResult(ContentDialogResult.Primary,
+            Parameters.PrimaryButtonCommand,
+            Parameters.PrimaryButtonCommandParameter,
+            Parameters.PrimaryButtonClick);
+    }
+
+    private void Secondary()
+    {
+        SetResult(ContentDialogResult.Secondary,
+            Parameters.SecondaryButtonCommand,
+            Parameters.SecondaryButtonCommandParameter,
+            Parameters.SecondaryButtonClick);
+    }
+
+    private void SetResult(ContentDialogResult result, ICommand? command = null, object? parameter = null, Action? click = null)
+    {
+        if (true == Parameters.Closing?.Invoke(result.ToString()))
+            return;
+
+        if (command != null)
+        {
+            if (true == command.CanExecute(parameter))
+                command.Execute(parameter);
+        }
+        else if (click != null)
+        {
+            click?.Invoke();
+        }
+        else
+        {
+            Instance.Close(result);
+        }
+
+        Parameters.Closed?.Invoke();
+    }
+}

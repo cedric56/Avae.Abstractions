@@ -97,67 +97,70 @@ namespace Avae.Razor
             };
         }
 
-        public Task<ContentDialogResult> ShowAsync(ContentDialogParams @params)
+        public async Task<ContentDialogResult> ShowAsync(ContentDialogParams @params)
         {
-            throw new NotImplementedException();
+            var dialog = await MudDialogService.ShowAsync<ContentDialog>(@params.Title, 
+            new MudBlazor.DialogParameters()
+            {
+                { "Parameters", @params }
+
+            }, new MudBlazor.DialogOptions()
+            {
+                BackdropClick = true
+            });
+            var result = await dialog.Result;
+            return result?.Data is ContentDialogResult cdr ? cdr : ContentDialogResult.None;
         }
 
-        public Task<TaskDialogStandardResult> ShowAsync(TaskDialogParams @params, params TaskDialogStandardResult[] results)
+        public async Task<TaskDialogStandardResult> ShowAsync(TaskDialogParams @params, params TaskDialogStandardResult[] results)
         {
-            throw new NotImplementedException();
+            var dialog = await MudDialogService.ShowAsync<TaskDialog>(@params.Title,
+            new MudBlazor.DialogOptions()
+            {
+                BackdropClick = true
+            });
+            var result = await dialog.Result;
+            return result?.Data is TaskDialogStandardResult cdr ? cdr : TaskDialogStandardResult.None;
         }
 
         public async Task ShowErrorAsync(Exception ex, string title = "Error")
         {
-            await MudDialogService.ShowMessageBoxAsync(new MudBlazor.MessageBoxOptions()
-            {
-                Title = title,
-                Message = ex.Message
-            });
+            await MudDialogService.ShowMessageBoxAsync(
+                title,
+                new MarkupString(ex.Message.Replace(Environment.NewLine, "<br/>")));
         }
 
         public async Task<bool> ShowOkAbortAsync(string message, string title = "Title")
         {
-            return await MudDialogService.ShowMessageBoxAsync(new MudBlazor.MessageBoxOptions()
-            {
-                Title = title,
-                Message = message,
-                CancelText = "Abort",
-
-            }) ?? false;
+            return await MudDialogService.ShowMessageBoxAsync(
+                title,
+                new MarkupString(message.Replace(Environment.NewLine, "<br/>")),
+                cancelText: "Abort") ?? false;
         }
 
         public async Task ShowOkAsync(string message, string title = "Title")
         {
-            await MudDialogService.ShowMessageBoxAsync(new MudBlazor.MessageBoxOptions()
-            {
-                 Title = title,
-                 Message = message
-            });
+            await MudDialogService.ShowMessageBoxAsync(
+                title,
+                new MarkupString(message.Replace(Environment.NewLine, "<br/>")));
         }
 
         public async Task<bool> ShowOkCancelAsync(string message, string title = "Title")
         {
-            return await MudDialogService.ShowMessageBoxAsync(new MudBlazor.MessageBoxOptions()
-            {
-                Title = title,
-                Message = message,
-                CancelText = "Cancel",
-
-            }) ?? false;
+            return await MudDialogService.ShowMessageBoxAsync(
+                title,
+                new MarkupString(message.Replace(Environment.NewLine, "<br/>")),
+                cancelText: "Cancel") ?? false;
         }
 
         public async Task<int> ShowYesNoAbortAsync(string message, string title = "Title")
         {
-            var result = await MudDialogService.ShowMessageBoxAsync(new MudBlazor.MessageBoxOptions()
-            {
-                Title = title,
-                Message = message,
-                YesText = "Yes",
-                NoText = "No",
-                CancelText = "Abort",
-
-            });
+            var result = await MudDialogService.ShowMessageBoxAsync(
+                title,
+                new MarkupString(message.Replace(Environment.NewLine, "<br/>")),
+                yesText: "Yes",
+                noText: "No",
+                cancelText: "Abort");
             return result switch
             {
                 true => 0,
@@ -168,26 +171,21 @@ namespace Avae.Razor
 
         public async Task<bool> ShowYesNoAsync(string message, string title = "Title")
         {
-            return await MudDialogService.ShowMessageBoxAsync(new MudBlazor.MessageBoxOptions()
-            {
-                Title = title,
-                Message = message,
-                YesText = "Yes",
-                CancelText = "No",
-
-            }) ?? false;
+            return await MudDialogService.ShowMessageBoxAsync(
+                title,
+                new MarkupString(message.Replace(Environment.NewLine, "<br/>")),
+                yesText: "Yes",
+                cancelText: "No") ?? false;
         }
 
         public async Task<int> ShowYesNoCancelAsync(string message, string title = "Title")
         {
-            var result = await MudDialogService.ShowMessageBoxAsync(new MudBlazor.MessageBoxOptions()
-            {
-                Title = title,
-                Message = message,
-                YesText = "Yes",
-                NoText = "No",
-                CancelText = "Cancel",
-            });
+            var result = await MudDialogService.ShowMessageBoxAsync(
+                title,
+                new MarkupString(message.Replace(Environment.NewLine, "<br/>")),
+                yesText: "Yes",
+                noText: "No",
+                cancelText: "Cancel");
             return result switch
             {
                 true => 0,

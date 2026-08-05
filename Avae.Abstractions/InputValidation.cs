@@ -74,7 +74,7 @@ namespace Avae.Abstractions
         }
 
         public static string Error(T source) =>
-            string.Join("\n", Validate(source));
+            string.Join(Environment.NewLine, Validate(source));
 
         private class ValidatorEntry
         {
