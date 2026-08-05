@@ -3,9 +3,7 @@ using Avae.Services;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Reactive.Linq;
 using System.Windows.Input;
 
 namespace Example.ViewModels

@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using Microsoft.AspNetCore.Components;
 
 namespace Avae.Razor.Components
 {
@@ -13,6 +14,17 @@ namespace Avae.Razor.Components
 
     public class ComponentView<TView> : ComponentView
     {
+        public ComponentView()
+        {
+
+        }
+
+        public ComponentView(object content)
+        {
+            var fragment = new RenderFragment(tree => tree.AddContent(0, content));
+            Parameters = new Dictionary<string, object>() { { "ChildContent", fragment } };
+        }
+
         public override Type Type => typeof(TView);
     }
 

@@ -1,15 +1,17 @@
-﻿using Avae.DAL;
-using Avae.DAL.Interfaces;
+﻿using Avae.DAL.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Examples.Browser
+namespace Avae.DAL
 {
-    public partial class XmlHttpRequest : IXmlHttpRequest
+    public partial class XmlHttpRequest(string url) : IXmlHttpRequest
     {
-        const string URL = "http://localhost:5001/routes/IDBOnionService/";
+        public bool IsConnected { get; set; }
 
         [JSImport("globalThis.eval")]
         public static partial string Invoke(string @params);
@@ -22,7 +24,7 @@ namespace Examples.Browser
             Debug.WriteLine(urlString);
 
             string escapedData = data.Replace("\\", "\\\\").Replace("'", "\\'");
-            string escapedUrl = string.Concat(URL, urlString).Replace("\\", "\\\\").Replace("'", "\\'");
+            string escapedUrl = string.Concat(url, urlString).Replace("\\", "\\\\").Replace("'", "\\'");
 
             var js = @$"const request = function (url, data) {{
         var xhr = new XMLHttpRequest();

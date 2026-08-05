@@ -8,12 +8,11 @@
         grid-template-columns:auto auto auto
     }
 </style>
-
 <DynamicComponent Type="@ComponentView.Type" Parameters="@ComponentView.Parameters"/>
 <div class="columns">
-<MudButton Disabled="@Parameters.IsPrimaryButtonEnabled" style="@Style(@Parameters.PrimaryButtonText)" OnClick="Primary">@Parameters.PrimaryButtonText</MudButton>
-<MudButton Disabled="@Parameters.IsSecondaryButtonEnabled" style="@Style(@Parameters.SecondaryButtonText)" OnClick="Secondary">@Parameters.SecondaryButtonText</MudButton>
-<MudButton style="@Style(@Parameters.CloseButtonText)" OnClick="Close">@Parameters.CloseButtonText</MudButton>
+    <MudButton Disabled="@Parameters.IsPrimaryButtonEnabled" style="@Style(@Parameters.PrimaryButtonText)" OnClick="Primary">@Parameters.PrimaryButtonText</MudButton>
+    <MudButton Disabled="@Parameters.IsSecondaryButtonEnabled" style="@Style(@Parameters.SecondaryButtonText)" OnClick="Secondary">@Parameters.SecondaryButtonText</MudButton>
+    <MudButton style="@Style(@Parameters.CloseButtonText)" OnClick="Close">@Parameters.CloseButtonText</MudButton>
 </div>
 @code {
 

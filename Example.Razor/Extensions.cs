@@ -5,8 +5,8 @@ using Avae.Razor.Components;
 using Avae.Services;
 using Example.Models;
 using Example.Razor.Components;
+using Example.Razor.Layout;
 using Example.ViewModels;
-using Microsoft.AspNetCore.Components;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
@@ -29,9 +29,9 @@ namespace Example.Razor
                 {
                     return parameters[0] switch
                     {
-                        "Footer" => new ComponentView<MudText>() { Parameters = new Dictionary<string, object>() { { "ChildContent", "Footer" } } },
-                        "IconSource" => new ComponentView<MudImage>() { Parameters = new Dictionary<string, object>() },
-                        "Content" => new ComponentView<MudText>() { Parameters = new Dictionary<string, object> { { "ChildContent", new RenderFragment(tree => tree.AddContent(0, "Here is content")) } } },
+                        "Footer" => new ComponentView<MudText>("Footer"),
+                        "IconSource" => new ComponentView<MudImage>() { Parameters = new Dictionary<string, object>() { { nameof(MudImage.Src), "avalonia-logo.ico" } } },
+                        "Content" => new ComponentView<MudText>("Here is my content"),
                         _ => throw new NotImplementedException()
                     };
                 });
@@ -93,7 +93,7 @@ namespace Example.Razor
                     }
                 });
                 services.AddScoped<IOnionService>(provider => provider.GetRequiredService<IDBOnionService>());
-                services.AddTransient<IXmlHttpRequest, XmlHttpRequest>();
+                services.AddTransient<IXmlHttpRequest>(sp => new XmlHttpRequest("http://localhost:5001/routes/IDBOnionService/"));
                 services.AddScoped<IDBLayer>(provider => new DBOnionLayer(provider));
                 services.AddScoped<IDataAccessLayer>(provider => provider.GetRequiredService<IDBLayer>());
             }
