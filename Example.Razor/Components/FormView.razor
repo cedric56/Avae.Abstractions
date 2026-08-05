@@ -1,0 +1,40 @@
+﻿@using Example.ViewModels
+@using MudBlazor
+@using Avae.Razor.Components
+<style>
+    .columns
+    {
+        display: grid;
+        grid-template-columns: 1fr auto auto auto;
+    }
+</style>
+<ComponentForm ViewModel="@ViewModel" IsBusy="@ViewModel.IsBusy" >
+    <ChildContent>
+        <div class="columns">
+            <div class="center">
+                <MudText>@ViewModel.Title</MudText>                
+            </div>            
+            <MudButton OnClick="@ViewModel.GoBack">Back</MudButton>
+            <MudButton OnClick="@ViewModel.GoForward">Forward</MudButton>
+            <MudButton OnClick="Close">X</MudButton>
+        </div>
+    </ChildContent>
+    <Buttons>
+        <div class="columns">
+            <div/>
+            <MudButton OnClick="@ViewModel.Validate">Validate</MudButton>
+            <MudButton OnClick="Close">Cancel</MudButton>
+        </div>
+    </Buttons>
+</ComponentForm>
+@code
+{
+    [Parameter]
+    public required FormViewModel ViewModel { get; set; }
+
+    private async Task Close()
+    {
+        if (await ViewModel.CanClose())
+            await ViewModel.Close(null);
+    }
+}

@@ -1,10 +1,31 @@
 ﻿@using Avae.Abstractions
+@using Avae.Razor.Components
 @using Avae.Services
 @using MudBlazor
 @inherits LayoutComponentBase
 @* @implements IDisposable *@
 @inject IIocConfiguration Configuration
 @inject ComponentView NavMenu
+
+<style>
+    .form {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        padding: 2px
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        height: 93vh;
+    }
+
+    .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
 
 @* Required *@
 <MudThemeProvider IsDarkMode="IocConfiguration.IsDarkMode" />
@@ -30,18 +51,17 @@
 
 @* <div class="page">
    
-    <div class="sidebar @(iscollapsed ? "collapsed" : "")">
-        <button @onclick="togglesidebar" class="toggle-button" @(iscollapsed ? "expand" : "collapse")>close</button>
+    <div class="sidebar">
         <DynamicComponent Type="@NavMenu.Type"/>
     </div>
 
     <main>
-        <article class="content px-4">           
-        
+        <article class="content px-4">             
+            @Body
         </article>
     </main>
-</div> *@
-
+</div>
+ *@
 @code
 {
     public string Title { get; set; } = "Application";

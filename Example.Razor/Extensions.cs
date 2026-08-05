@@ -1,8 +1,10 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
 using Avae.Razor;
+using Avae.Razor.Components;
 using Avae.Services;
 using Example.Models;
+using Example.Razor.Components;
 using Example.ViewModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +22,7 @@ namespace Example.Razor
                 new ComponentView<NavMenu>(),
                 position, maxDispayments, container =>
             {
-                container.Register<ComponentView<ModalView, ModalViewModel>>();
+                container.Register<CenteredComponentView<ModalView, ModalViewModel>>();
                 container.Register(typeof(FormViewModel).Name, (sp, parameters) =>
                 {
                     if(parameters.FirstOrDefault() is NavigationContext context)
@@ -34,12 +36,12 @@ namespace Example.Razor
                     return new ComponentView<FormView, FormViewModel>();
                 });
 
-                container.Register<ComponentView<FormPage2, FormPage2ViewModel>>();
+                container.Register<CenteredComponentView<FormPage2, FormPage2ViewModel>>();
                 container.Register(typeof(FormPage3ViewModel).Name, (sp, parameters) =>
                 {
                     if (parameters.FirstOrDefault() is NavigationContext context)
                     {
-                        return new ComponentView<FormPage3, FormPage3ViewModel>(sp, context, new Dictionary<string, object>()
+                        return new CenteredComponentView<FormPage3, FormPage3ViewModel>(sp, context, new Dictionary<string, object>()
                         {
                             { "Person", context.ViewParameters[0] }
                         });

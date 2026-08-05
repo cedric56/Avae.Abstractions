@@ -1,0 +1,56 @@
+﻿@using Avae.Abstractions
+@using MudBlazor
+@inherits Avae.Razor.Components.ComponentPage
+
+<div class="grid">
+    <MudOverlay Visible="@IsBusy" DarkBackground="true" Absolute="true" ZIndex="9999">
+        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+    </MudOverlay>
+    <div>
+        <MudList T="Avae.Abstractions.PageViewModelBase"
+                 @bind-SelectedValue="@ViewModel.SelectedPage">
+            @foreach (var page in ViewModel.Pages)
+            {
+                var name = page.DisplayName;
+                <MudListItem Text="@name" Value="page" />
+            }
+        </MudList>
+    </div>
+        
+    <div class="form">
+        <div>
+            @ChildContent
+        </div>
+        <div class="@Class">
+            <DynamicComponent Type="@CurrentView.Type"
+                            Parameters="@CurrentView.Parameters" />
+        </div>
+        <div>
+            @Buttons
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? Buttons { get; set; }
+
+    [Parameter]
+    public bool IsBusy { get; set; }
+
+    private string? Class
+    {
+        get
+        {
+            return CurrentView.IsCenter ? "center" : null;
+        }
+    }
+
+    [Parameter]
+    public required PagesViewModelBase ViewModel { get; set; }
+
+    private ComponentView CurrentView => (ComponentView)ViewModel.CurrentPage;
+}
