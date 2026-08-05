@@ -2,8 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:model="using:Example.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Example.FormPage1View">
+             x:Class="Example.FormPage1View"
+             xmlns:vm="using:Example.ViewModels"
+             x:DataType="{x:Type vm:FormViewModel}">
     <Grid RowDefinitions="Auto, Auto, Auto, *">
 		<Grid ColumnDefinitions="Auto,*" Grid.Row="0">
 			<TextBlock VerticalAlignment="Center" Text="First name" />
@@ -17,7 +20,7 @@
         <ListBox Grid.Row="3" ItemsSource="{Binding Persons}" Margin="5"
              SelectionMode="Multiple" SelectedItems="{Binding SelectedItems}">
       <ListBox.ItemTemplate>
-        <DataTemplate>
+        <DataTemplate x:DataType="{x:Type model:Person}">
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="100"/>

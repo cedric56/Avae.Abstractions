@@ -5,9 +5,10 @@
              xmlns:vm="using:Example.ViewModels"
 			 xmlns:behavior="using:Example"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 xmlns:i="https://github.com/projektanker/icons.avalonia"
+			 
              x:Class="Example.Views.MainView"
              x:DataType="vm:MainViewModel">
+	<!--xmlns:i="https://github.com/projektanker/icons.avalonia"-->
   <Design.DataContext>
     <!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
@@ -38,7 +39,7 @@
 									<StackPanel
 										Spacing="10"
 										Orientation="Horizontal">
-										<i:Icon Value="{Binding Icon}"/>
+										<!--<i:Icon Value="{Binding Icon}"/>-->
 										<TextBlock Text="{Binding DisplayName}" />
 									</StackPanel>
 								</DataTemplate>

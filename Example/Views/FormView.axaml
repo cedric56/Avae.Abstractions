@@ -3,10 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:behavior="using:Example"
-			 xmlns:i="https://github.com/projektanker/icons.avalonia"
+			 xmlns:abstractions="using:Avae.Abstractions"
+			 
 			 xmlns:c="using:LoadingIndicators.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Example.FormView">		
+             x:Class="Example.FormView"
+			 xmlns:vm="using:Example.ViewModels"
+             x:DataType="{x:Type vm:FormViewModel}">		
+			 <!--xmlns:i="https://github.com/projektanker/icons.avalonia"-->
 			 <Grid>
 			<SplitView DisplayMode="Inline" 
 			  OpenPaneLength="150"
@@ -27,11 +31,11 @@
 								</Style>
 							</ListBox.Styles>
 							<ListBox.ItemTemplate>
-								<DataTemplate>
+								<DataTemplate x:DataType="{x:Type abstractions:PageViewModelBase}">
 									<StackPanel
 										Spacing="10"
 										Orientation="Horizontal">
-										<i:Icon Value="{Binding Icon}"/>
+										<!--<i:Icon Value="{Binding Icon}"/>-->
 										<TextBlock Text="{Binding DisplayName}" />
 									</StackPanel>
 								</DataTemplate>
@@ -43,8 +47,8 @@
 					<Grid RowDefinitions="Auto, *, Auto">
 						<TextBlock Grid.Row="0" Text="{Binding Title}" HorizontalAlignment="Center" Grid.Column="1"/>					
 						<StackPanel Orientation="Horizontal" Grid.Row="0"  Grid.Column="1" HorizontalAlignment="Right" >
-							<Button Content="Back" Command="{Binding BackCommand}" />
-							<Button Content="Forward" Command="{Binding ForwardCommand}" />
+							<Button Content="Back" Command="{Binding GoBackCommand}" />
+							<Button Content="Forward" Command="{Binding GoForwardCommand}" />
 							<Button Content="X" Command="{Binding CloseCommand}" />
 						</StackPanel>
 						

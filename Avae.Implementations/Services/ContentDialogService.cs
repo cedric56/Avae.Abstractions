@@ -23,18 +23,18 @@ namespace Avae.Implementations
             });
         }
 
-        private static ContentDialog GetContentDialog(ContentDialogParams @params)
+        private static FAContentDialog GetContentDialog(ContentDialogParams @params)
         {
-            var dialog = new ContentDialog();
+            var dialog = new FAContentDialog();
             if (@params != null)
             {
-                TypedEventHandler<ContentDialog, ContentDialogClosingEventArgs>? closing = null;
-                TypedEventHandler<ContentDialog, EventArgs>? opening = null;
-                TypedEventHandler<ContentDialog, EventArgs>? opened = null;
-                TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs>? closed = null;
-                TypedEventHandler<ContentDialog, ContentDialogButtonClickEventArgs>? primaryButtonClick = null;
-                TypedEventHandler<ContentDialog, ContentDialogButtonClickEventArgs>? secondaryButtonClick = null;
-                TypedEventHandler<ContentDialog, ContentDialogButtonClickEventArgs>? closeButtonClick = null;
+                TypedEventHandler<FAContentDialog, FAContentDialogClosingEventArgs>? closing = null;
+                TypedEventHandler<FAContentDialog, EventArgs>? opening = null;
+                TypedEventHandler<FAContentDialog, EventArgs>? opened = null;
+                TypedEventHandler<FAContentDialog, FAContentDialogClosedEventArgs>? closed = null;
+                TypedEventHandler<FAContentDialog, FAContentDialogButtonClickEventArgs>? primaryButtonClick = null;
+                TypedEventHandler<FAContentDialog, FAContentDialogButtonClickEventArgs>? secondaryButtonClick = null;
+                TypedEventHandler<FAContentDialog, FAContentDialogButtonClickEventArgs>? closeButtonClick = null;
 
                 dialog.Content = @params.Content;
                 //IsPrimaryButtonEnabled = @params.IsPrimaryButtonEnabled,

@@ -2,8 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:Example.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Example.ModalWindow"
-        Width="200" Height="80">
-    <TextBox Text="{Binding Text}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>      
+        Width="200" Height="80"
+        x:DataType="{x:Type vm:ModalViewModel}">
+    <TextBox Text="{Binding Message}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>      
 </UserControl>

@@ -1,5 +1,4 @@
 ﻿using Avae.Abstractions;
-using Avae.Services;
 using Avae.DAL;
 using Avae.DAL.Interfaces;
 using Avae.Implementations;
@@ -12,12 +11,11 @@ using Example.Views;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
-using Projektanker.Icons.Avalonia;
-using Projektanker.Icons.Avalonia.FontAwesome;
 using System;
 using System.IO;
 using System.Linq;
 using Ursa.Themes.Semi;
+using Ursa.Themes.Semi.Legacy;
 
 namespace Example;
 
@@ -26,7 +24,7 @@ public partial class App : AvaeApplication, IIocConfiguration
     public App()
         : base()
     {        
-        IconProvider.Current.Register<FontAwesomeIconProvider>();
+        //IconProvider.Current.Register<FontAwesomeIconProvider>();
     }
 
     public override string IconUrl => "avares://Example/Assets/avalonia-logo.ico";
@@ -43,7 +41,7 @@ public partial class App : AvaeApplication, IIocConfiguration
             return parameters[0] switch
             {
                 "Footer" => new TextBlock() { Text = "This is a footer" },
-                "IconSource" => new BitmapIconSource() { UriSource = new Uri(IconUrl) },
+                "IconSource" => new FABitmapIconSource() { UriSource = new Uri(IconUrl) },
                 "Content" => new TextBlock() { Text = "Here is content", FontSize = 27 },
                 _ => throw new NotImplementedException()
             };
@@ -103,7 +101,7 @@ public partial class App : AvaeApplication, IIocConfiguration
     {
         base.OnFrameworkInitializationCompleted();
 
-        Styles.Add(new SemiTheme());
+        Styles.Add(new UrsaSemiTheme());
 
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT

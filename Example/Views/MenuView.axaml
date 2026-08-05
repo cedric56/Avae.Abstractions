@@ -4,8 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:BindingConverters="using:Example"
              xmlns:behavior="using:Avae.Implementations"
+             xmlns:model="using:Example.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Example.MenuView">
+             x:Class="Example.MenuView"
+             xmlns:vm="using:Example.ViewModels"
+             x:DataType="{x:Type vm:MenuViewModel}">
     <UserControl.Resources>
 		<BindingConverters:NullConverter x:Key="NullConverter" />
     </UserControl.Resources>
@@ -24,7 +27,7 @@
                    behavior:DoubleClickBehavior.Command="{Binding UpdateCommand}"
                    ItemsSource="{Binding Persons}" SelectedItem="{Binding SelectedPerson}">
 			  <ListBox.ItemTemplate>
-				  <DataTemplate>
+				  <DataTemplate x:DataType="{x:Type model:Person}">
                       <StackPanel Orientation="Horizontal">
 					    <TextBlock Text="{Binding FirstName}" />
                           <TextBlock Text="{Binding LastName}" Margin="10,0,0,0"/>

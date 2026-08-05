@@ -2,7 +2,6 @@
 using Avalonia.Threading;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
-using TaskDialogStandardResult = Avae.Services.TaskDialogStandardResult;
 
 namespace Avae.Implementations
 {
@@ -16,21 +15,21 @@ namespace Avae.Implementations
                 {
                     try
                     {
-                        TypedEventHandler<TaskDialog, EventArgs>? opening = null;
-                        TypedEventHandler<TaskDialog, EventArgs>? opened = null;
-                        TypedEventHandler<TaskDialog, TaskDialogClosingEventArgs>? closing = null;
-                        TypedEventHandler<TaskDialog, EventArgs>? closed = null;
+                        TypedEventHandler<FATaskDialog, EventArgs>? opening = null;
+                        TypedEventHandler<FATaskDialog, EventArgs>? opened = null;
+                        TypedEventHandler<FATaskDialog, FATaskDialogClosingEventArgs>? closing = null;
+                        TypedEventHandler<FATaskDialog, EventArgs>? closed = null;
 
-                        var taskDialog = new TaskDialog()
+                        var taskDialog = new FATaskDialog()
                         {
                             Buttons = CreateDialogButtons(results),
                             Content = @params.Content,
                             Title = @params.Title,
                             Header = @params.Header,
                             SubHeader = @params.SubHeader,
-                            IconSource = @params.IconSource as IconSource,
+                            IconSource = @params.IconSource as FAIconSource,
                             ShowProgressBar = @params.ShowProgressBar,
-                            FooterVisibility = Enum.Parse<FluentAvalonia.UI.Controls.TaskDialogFooterVisibility>(@params.FooterVisibility.ToString()),
+                            FooterVisibility = Enum.Parse<FATaskDialogFooterVisibility>(@params.FooterVisibility.ToString()),
                             IsFooterExpanded = @params.IsFooterExpanded,
                             Footer = @params.Footer,
                             XamlRoot = TopLevelStateManager.Default.GetActive(throwOnNull: true)
@@ -61,19 +60,19 @@ namespace Avae.Implementations
             return TaskDialogStandardResult.None;
         }
 
-        private static List<TaskDialogButton> CreateDialogButtons(TaskDialogStandardResult[] results)
+        private static List<FATaskDialogButton> CreateDialogButtons(TaskDialogStandardResult[] results)
         {
-            var buttons = new List<TaskDialogButton>();
+            var buttons = new List<FATaskDialogButton>();
             foreach (var result in results)
             {
-                TaskDialogButton? button = result switch
+                FATaskDialogButton? button = result switch
                 {
-                    TaskDialogStandardResult.OK => TaskDialogButton.OKButton,
-                    TaskDialogStandardResult.Retry => TaskDialogButton.RetryButton,
-                    TaskDialogStandardResult.Yes => TaskDialogButton.YesButton,
-                    TaskDialogStandardResult.No => TaskDialogButton.NoButton,
-                    TaskDialogStandardResult.Cancel => TaskDialogButton.CancelButton,
-                    TaskDialogStandardResult.Close => TaskDialogButton.CloseButton,
+                    TaskDialogStandardResult.OK => FATaskDialogButton.OKButton,
+                    TaskDialogStandardResult.Retry => FATaskDialogButton.RetryButton,
+                    TaskDialogStandardResult.Yes => FATaskDialogButton.YesButton,
+                    TaskDialogStandardResult.No => FATaskDialogButton.NoButton,
+                    TaskDialogStandardResult.Cancel => FATaskDialogButton.CancelButton,
+                    TaskDialogStandardResult.Close => FATaskDialogButton.CloseButton,
                     _ => null
                 };
                 if (button != null)

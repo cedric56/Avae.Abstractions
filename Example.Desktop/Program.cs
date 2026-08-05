@@ -24,7 +24,7 @@ class Program
                 AppName = "AvaloniaSample",
             })
             .UsePlatformDetect()
-            .UseReactiveUI()
+            //.UseReactiveUI()
             .WithInterFont()
             .LogToTrace();
 

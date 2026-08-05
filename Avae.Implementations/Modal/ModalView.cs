@@ -42,8 +42,8 @@ namespace Avae.Implementations
 
         public Task Copy()
         {
-            var text = (DataContext as AbstractMsBoxViewModel)?.ContentMessage;
-            TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(text);
+            //var text = (DataContext as AbstractMsBoxViewModel)?.ContentMessage;
+            //TopLevel.GetTopLevel(this)?.Clipboard..SetTextAsync(text);
             return Task.CompletedTask;
         }
 

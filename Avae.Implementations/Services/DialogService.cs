@@ -50,7 +50,7 @@ namespace Avae.Implementations
                 TopLevel? topLevel = TopLevelStateManager.Default.GetActive();
                 var dialogHost = topLevel?.GetVisualDescendants().OfType<DialogHostAvalonia.DialogHost>().LastOrDefault();
                 if (dialogHost != null) return dialogHost;
-                var fluent = topLevel?.GetVisualDescendants().OfType<FluentAvalonia.UI.Controls.DialogHost>().LastOrDefault();
+                var fluent = topLevel?.GetVisualDescendants().OfType<FluentAvalonia.UI.Controls.FADialogHost>().LastOrDefault();
                 if (fluent != null) return fluent;
                 return null;
             }

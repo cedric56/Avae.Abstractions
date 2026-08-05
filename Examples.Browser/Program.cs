@@ -5,16 +5,16 @@ using Avalonia.Browser;
 using Example;
 using Example.Models;
 using Microsoft.Extensions.DependencyInjection;
-using ReactiveUI.Avalonia;
 using System.Threading.Tasks;
 
 internal sealed partial class Program
 {
     private static Task Main(string[] args)=>
         BuildAvaloniaApp().WithInterFont().StartBrowserAppAsync("out");
-    
+
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<BrowserApp>().UseReactiveUI();
+        => AppBuilder.Configure<BrowserApp>();
+        //.UseReactiveUI(() => { });
 
 
     public class BrowserApp : App
