@@ -76,42 +76,46 @@ namespace Example.Razor
             services.AddTransient<FormPage3ViewModel>();
 
             if (!OperatingSystem.IsBrowser())
-            { 
-                services.UseDbLayer<IDBLayer>(sp => new DBSqlLayer(sp));
+            {
+                services.UseDBSqlLayer(out _, out _);
 
-                var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                var dbPath = Path.Combine(folder, "database.db");
-                var connectionString = $"Data Source={dbPath};Foreign Keys=True";
-                services.AddTransient<IDbConnection>(_ => new SqliteConnection(connectionString));
+                //services.UseDbLayer<IDBLayer>(sp => new DBSqlLayer(sp));
+
+                //var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                //var dbPath = Path.Combine(folder, "database.db");
+                //var connectionString = $"Data Source={dbPath};Foreign Keys=True";
+                //services.AddTransient<IDbConnection>(_ => new SqliteConnection(connectionString));
             }
             else
             {
-                services.AddScoped<IDBOnionService>(sp =>
-                {
-                    try
-                    {
-                        var client = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()))
-                        {
-                            DefaultRequestVersion = HttpVersion.Version11, // Use HTTP/1.1 for gRPC-Web
-                            DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower
-                        };
-                        return sp.GetMagicOnion<IDBOnionService>("http://localhost:5001");//, client);
-                    }
-                    catch
-                    {
-                        return new DBOnionNotConnected();
-                    }
-                });
-                services.AddScoped<IOnionService>(provider => provider.GetRequiredService<IDBOnionService>());
-                services.AddTransient<IXmlHttpRequest>(sp => new XmlHttpRequest("http://localhost:5001/routes/IDBOnionService/"));
-                services.AddScoped<IDBLayer>(provider => new DBOnionLayer(provider));
-                services.AddScoped<IDataAccessLayer>(provider => provider.GetRequiredService<IDBLayer>());
-                services.AddSingleton<ISqlMonitor<Person>>(provider =>
-                {
-                    var monitor = new SqlMonitor<Person>();
-                    //monitor.AddSignalR("http://localhost:5001/PersonHub");
-                    return monitor;
-                });
+               services.UseDBOnionLayer(out _, out _);
+
+                //services.AddScoped<IDBOnionService>(sp =>
+                //{
+                //    try
+                //    {
+                //        var client = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()))
+                //        {
+                //            DefaultRequestVersion = HttpVersion.Version11, // Use HTTP/1.1 for gRPC-Web
+                //            DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower
+                //        };
+                //        return sp.GetMagicOnion<IDBOnionService>("http://localhost:5001");//, client);
+                //    }
+                //    catch
+                //    {
+                //        return new DBOnionNotConnected();
+                //    }
+                //});
+                //services.AddScoped<IOnionService>(provider => provider.GetRequiredService<IDBOnionService>());
+                //services.AddTransient<IXmlHttpRequest>(sp => new XmlHttpRequest("http://localhost:5001/routes/IDBOnionService/"));
+                //services.AddScoped<IDBLayer>(provider => new DBOnionLayer(provider));
+                //services.AddScoped<IDataAccessLayer>(provider => provider.GetRequiredService<IDBLayer>());
+                //services.AddSingleton<ISqlMonitor<Person>>(provider =>
+                //{
+                //    var monitor = new SqlMonitor<Person>();
+                //    //monitor.AddSignalR("http://localhost:5001/PersonHub");
+                //    return monitor;
+                //});
             }
         }
     }
@@ -125,6 +129,26 @@ public class DBOnionNotConnected : IService<IDBOnionService>, IDBOnionService, I
     }
 
     public UnaryResult<Result> DbTransSave(DBModelBase modelBase)
+    {
+        throw new NotImplementedException();
+    }
+
+    public UnaryResult<Result> FindByAnyAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public UnaryResult<Result> GetAllAsync(string type, int? commandTimeout = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public UnaryResult<Result> GetAsync(string type, long id, int? commandTimeout = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public UnaryResult<Result> WhereAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null)
     {
         throw new NotImplementedException();
     }

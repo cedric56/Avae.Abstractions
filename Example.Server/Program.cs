@@ -29,7 +29,7 @@ builder.Services.AddGrpc(opt =>
 });
 
 builder.Services.AddSingleton<SqlHub<Person>>();
-builder.Services.UseDbLayer<IDBLayer>(sp => new DBSqlLayer(sp));
+builder.Services.UseSqlLayer<IDBLayer>(sp => new DBSqlLayer(sp));
 
 var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 var dbPath = Path.Combine(folder, "database2.db");
@@ -68,12 +68,12 @@ ServiceLocator.SetDefault(app.Services);
 app.UseCors("AllowAll");
 app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
 app.MapMagicOnionService().EnableGrpcWeb();
-var methods = app.Services.GetService<MagicOnionServiceDefinition>()?.MethodHandlers ?? [];
-app.MapMagicOnionSwagger("routes", methods, string.Empty);
-app.MapMagicOnionHttpGateway("routes", methods, GrpcChannel.ForAddress("http://localhost:5000", new GrpcChannelOptions()
-{
-    Credentials = ChannelCredentials.Insecure
-}));
+//var methods = app.Services.GetService<MagicOnionServiceDefinition>()?.MethodHandlers ?? [];
+//app.MapMagicOnionSwagger("routes", methods, string.Empty);
+//app.MapMagicOnionHttpGateway("routes", methods, GrpcChannel.ForAddress("http://localhost:5000", new GrpcChannelOptions()
+//{
+//    Credentials = ChannelCredentials.Insecure
+//}));
 app.MapHub<SqlHub<Person>>("/PersonHub");
 
 //Trigger is needed

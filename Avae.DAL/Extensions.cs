@@ -24,7 +24,7 @@ namespace Avae.DAL
             services.AddTransient<IDbConnection>(_ => factory.CreateConnection()!);
         }
 
-        public static void UseDbLayer<IDbLayer>(this IServiceCollection services, Func<IServiceProvider, IDbLayer> getLayer)
+        public static void UseSqlLayer<IDbLayer>(this IServiceCollection services, Func<IServiceProvider, IDbLayer> getLayer)
             where IDbLayer : class, IDataAccessLayer
         {
             services.AddSingleton<IDbLayer>(sp => getLayer(sp));

@@ -23,8 +23,7 @@ namespace Avae.DAL
         {
             if (table == typeof(TObject).Name)
             {
-                var record = new Record<TObject>(rowid, type);
-                OnChanged?.Invoke(this, record);                
+                Changed(new Record<TObject>(rowid, type));
             }
         }
     }
@@ -43,8 +42,9 @@ namespace Avae.DAL
         }
 
         public long RowId { get; set; }
+
         public ChangeType ChangeType { get; set; }
 
-        public List<string> ConnectionId { get; set; } = new List<string>();
+        public List<string> ConnectionId { get; set; } = [];
     }
 }

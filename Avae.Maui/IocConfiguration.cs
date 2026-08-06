@@ -283,24 +283,19 @@ namespace Avae.Maui
             var viewModel = serviceProvider.GetViewModel<TViewModel>(context);
             var view = GetModalFor<TViewModel, TResult>(context ?? new NavigationContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
             view.Context = viewModel;
-            if (view is IDialogView<TViewModel, TResult> dialogView)
+            var modal = new AvaePopupPage<TResult>(viewModel.Title, viewModel.Commands)
             {
-                var modal = new AvaePopupPage<TResult>(dialogView.Title, viewModel.Commands)
-                {
-                    Content = dialogView as View
-                };
-                viewModel.CloseRequested += CloseRequestedHandler;
-                return await IPopupService.Current.PushAsync(modal);
+                Content = view as View
+            };
+            viewModel.CloseRequested += CloseRequestedHandler;
+            return await IPopupService.Current.PushAsync(modal);
 
-                async void CloseRequestedHandler(object? sender, TResult? e)
-                {
-                    viewModel.CloseRequested -= CloseRequestedHandler;
-                    modal.SetResult(e);
-                    await IPopupService.Current.PopAsync(modal);
-                }
+            async void CloseRequestedHandler(object? sender, TResult? e)
+            {
+                viewModel.CloseRequested -= CloseRequestedHandler;
+                modal.SetResult(e);
+                await IPopupService.Current.PopAsync(modal);
             }
-
-            return await view.ShowModalAsync();
         }
 
         async Task<T?> DisplayThreeButtons<T>(

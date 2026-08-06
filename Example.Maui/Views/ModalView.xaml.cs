@@ -1,9 +1,9 @@
-using Avae.Maui;
+using Avae.Abstractions;
 using Example.ViewModels;
 
 namespace Example.Maui.Views;
 
-public partial class ModalView : ContentView, IDialogView<ModalViewModel, string?>
+public partial class ModalView : ContentView, IModalFor<ModalViewModel, string?>
 {
     public object? Context { get => BindingContext; set => BindingContext = value; }
 
@@ -11,6 +11,4 @@ public partial class ModalView : ContentView, IDialogView<ModalViewModel, string
     {
 		InitializeComponent();
 	}
-
-    public string Title => "Modal";
 }

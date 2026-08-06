@@ -1,7 +1,4 @@
-﻿using Avae.DAL;
-using Avae.DAL.Interfaces;
-using Avae.SignalR;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Browser;
 using Example;
 using Example.Models;
@@ -26,19 +23,7 @@ internal sealed partial class Program
         {
             base.Configure(services);
 
-            services.AddTransient<IXmlHttpRequest>(sp => new Avae.DAL.XmlHttpRequest("http://localhost:5001/routes/IDBOnionService/"));            
-            services.UseDbLayer<IDBLayer>(sp => new DBOnionLayer(sp));
-            services.AddScoped<IDBOnionService>(sp =>
-            {
-                return sp.GetMagicOnion<IDBOnionService>("http://localhost:5000");
-            });
-            services.AddScoped<IOnionService>(provider => provider.GetRequiredService<IDBOnionService>());
-            services.AddSingleton<ISqlMonitor<Person>>(provider =>
-            {
-                var monitor = new SqlMonitor<Person>();
-                var e = monitor.AddSignalR("http://localhost:5001/PersonHub", out _);
-                return monitor;
-            });
+            services.UseDBOnionLayer(out _, out _);
         }
     }
 }

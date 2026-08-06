@@ -80,10 +80,10 @@ namespace Example.ViewModels
                              FactoryParameters = [KEY]
                          },
                          Launched = async (viewModel) =>
-                            {
-                                await Person.LoadContactsAsync();
-                                SelectedItems = [.. Person.Contacts.Select(c => c.Person)];
-                            }
+                         {
+                            await Person.LoadContactsAsync();
+                            SelectedItems = [.. Person.Contacts.Select(c => c.Person)];
+                         }
                     },
                     new PageViewModelBase<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),
                     new PageViewModelBase<FormPage3ViewModel>("Page Three", "fa-solid fa-gear")

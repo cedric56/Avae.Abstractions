@@ -1,8 +1,6 @@
 ﻿using Avae.DAL;
 using Avae.DAL.Interfaces;
-using Grpc.Core;
 using MagicOnion;
-using MagicOnion.Client;
 
 namespace Example.Models
 {

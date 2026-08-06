@@ -43,7 +43,8 @@ namespace Avae.SignalR
                 if (e is Record<TObject> record && signalRService.Hub.ConnectionId != null)
                     record.ConnectionId.Add(signalRService.Hub.ConnectionId);
 
-                await signalRService.InvokeAsync(nameof(SqlHub<TObject>.SendMessage), e);
+                if (signalRService.Connected)
+                    await signalRService.InvokeAsync(nameof(SqlHub<TObject>.SendMessage), e);
 
                 //Inside server, we notify clients
                 var hub = ServiceLocator.GetService<SqlHub<TObject>>();

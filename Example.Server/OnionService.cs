@@ -3,6 +3,7 @@ using Avae.DAL;
 using Example.Models;
 using MagicOnion;
 using MagicOnion.Server;
+using MemoryPack;
 
 namespace Example.Server
 {
@@ -18,7 +19,69 @@ namespace Example.Server
                 { nameof(Contact), new EntityHandler<Contact>(Layer) }
             };
         }
-        
+
+        public async UnaryResult<Result> FindByAnyAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null)
+        {
+            if (string.IsNullOrWhiteSpace(type))
+                return new Result() { Successful = false, Exception = "Type parameter is required" };
+
+            if (!EntityHandler.Handlers.TryGetValue(type, out var handler))
+                return new Result() { Successful = false, Exception = "Unable to find entity handler" };
+
+            return new Result()
+            {
+                Successful = true,
+                Data = MemoryPackSerializer.Serialize(handler.Enumerable, await handler.FindByAnyAsync(filters, commandTimeout))
+            };
+        }
+
+        public async UnaryResult<Result> GetAllAsync(string type, int? commandTimeout = null)
+        {
+            if (string.IsNullOrWhiteSpace(type))
+                return new Result() { Successful = false, Exception = "Type parameter is required" };
+
+            if (!EntityHandler.Handlers.TryGetValue(type, out var handler))
+                return new Result() { Successful = false, Exception = "Unable to find entity handler" };
+
+
+            return new Result()
+            {
+                Successful = true,
+                Data = MemoryPackSerializer.Serialize(handler.Enumerable, await handler.GetAllAsync(commandTimeout))
+            };
+        }
+
+        public async UnaryResult<Result> GetAsync(string type, long id, int? commandTimeout = null)
+        {
+            if (string.IsNullOrWhiteSpace(type))
+                return new Result() { Successful = false, Exception = "Type parameter is required" };
+
+            if (!EntityHandler.Handlers.TryGetValue(type, out var handler))
+                return new Result() { Successful = false, Exception = "Unable to find entity handler" };
+
+            return new Result()
+            {
+                Successful = true,
+                Data = MemoryPackSerializer.Serialize(handler.Type, await handler.GetAsync(id, commandTimeout))
+            };
+        }
+
+        public async UnaryResult<Result> WhereAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null)
+        {
+            if (string.IsNullOrWhiteSpace(type))
+                return new Result() { Successful = false, Exception = "Type parameter is required" };
+
+            if (!EntityHandler.Handlers.TryGetValue(type, out var handler))
+                return new Result() { Successful = false, Exception = "Unable to find entity handler" };
+
+            return new Result()
+            {
+                Successful = true,
+                Data = MemoryPackSerializer.Serialize(handler.Enumerable, await handler.WhereAsync(filters, commandTimeout))
+            };
+        }
+
+
         public async UnaryResult<Result> DbTransRemove(DBModelBase modelBase)
         {
             return await modelBase.DbTransRemove(Layer);

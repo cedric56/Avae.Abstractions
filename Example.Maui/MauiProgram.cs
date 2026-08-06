@@ -61,7 +61,7 @@ namespace Example.Maui
             var dbPath = Path.Combine(folder, "database.db");
             var connectionString = $"Data Source={dbPath};Foreign Keys=True";
 
-            builder.Services.UseDbLayer<IDBLayer>(sp => new DBSqlLayer(sp));
+            builder.Services.UseSqlLayer<IDBLayer>(sp => new DBSqlLayer(sp));
             builder.Services.UseSqlMonitors<SqliteConnection>(connectionString, (factory) =>
             {
                 var monitor = factory.AddDbMonitor<Person>();

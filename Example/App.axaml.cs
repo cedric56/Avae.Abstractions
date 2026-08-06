@@ -79,18 +79,9 @@ public partial class App : AvaeApplication, IIocConfiguration
 
         if (!OperatingSystem.IsBrowser())
         {
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var dbPath = Path.Combine(folder, "database.db");
-            var connectionString = $"Data Source={dbPath};Foreign Keys=True";
-            
-            services.UseDbLayer<IDBLayer>(sp => new DBSqlLayer(sp));
-            services.UseSqlMonitors<SqliteConnection>(connectionString, (factory) =>
-            {
-                var monitor = factory.AddDbMonitor<Person>();
-                signalRService = monitor.AddSignalR("http://localhost:5001/PersonHub", out unsuscribe);
-                services.AddSingleton<ISqlMonitor<Person>>(monitor);
+            services.UseDBOnionLayer(out signalRService, out unsuscribe);
 
-            }, true);
+            //services.UseDBSqlLayer(out signalRService, out unsuscribe);
         }   
     }
 
