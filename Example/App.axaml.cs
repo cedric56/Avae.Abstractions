@@ -1,6 +1,4 @@
 ﻿using Avae.Abstractions;
-using Avae.DAL;
-using Avae.DAL.Interfaces;
 using Avae.Implementations;
 using Avae.SignalR;
 using Avalonia.Controls;
@@ -10,7 +8,6 @@ using Example.Models;
 using Example.ViewModels;
 using Example.Views;
 using FluentAvalonia.UI.Controls;
-using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;

@@ -9,12 +9,18 @@ namespace Avae.SqlTableDependency
     public static class Extensions
     {
         public static SqlTableDependencyCore<TObject> AddTableDependency<TObject>(
-            this SqlMonitor<TObject> monitor, string connectionString)
+            this SqlMonitor<TObject> monitor, string connectionString, out Action dispose)
             where TObject : class, new()
         {
             var sqlDependency = new SqlTableDependencyCore<TObject>(connectionString);
             sqlDependency.OnChanged += OnChanged;
             sqlDependency.Start();
+
+            dispose = () =>
+            {
+                sqlDependency.OnChanged -= OnChanged;
+                sqlDependency.Stop();
+            };
 
             return sqlDependency;
 
@@ -26,19 +32,6 @@ namespace Avae.SqlTableDependency
                     monitor.Changed(record);
                 }
             }
-
-            //TODO Cleanup
-            //public void Dispose()
-            //{
-            //    if (sqlDependency is not null)
-            //    {
-            //        sqlDependency.OnChanged -= SqlDependencyExService_OnChanged;
-            //        sqlDependency.Stop();
-            //        sqlDependency.Dispose();
-            //    }
-
-            //    GC.SuppressFinalize(this);
-            //}
         }
     }
 }

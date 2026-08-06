@@ -1,11 +1,6 @@
 ﻿using Avae.Abstractions;
-using Avae.DAL;
-using Avae.DAL.Interfaces;
 using Avae.SignalR;
 using Example.Models;
-using Grpc.Core;
-using Grpc.Net.Client;
-using MagicOnion.Server;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
 
@@ -29,37 +24,14 @@ builder.Services.AddGrpc(opt =>
 });
 
 builder.Services.AddSingleton<SqlHub<Person>>();
-builder.Services.UseSqlLayer<IDBLayer>(sp => new DBSqlLayer(sp));
-
-var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-var dbPath = Path.Combine(folder, "database2.db");
-var connectionString = $"Data Source={dbPath};Foreign Keys=True";
-
-builder.Services.UseSqlMonitors<SqliteConnection>(connectionString, (factory) =>
-{
-    var monitor = factory.AddDbMonitor<Person>();
-    //if(SqlConnection)
-    //{
-    //    monitor.AddTableDependency(connectionString);
-    //}
-    builder.Services.AddSingleton<ISqlMonitor<Person>>(provider => monitor);
-
-}, true);
+builder.Services.UseDBSqlLayer<SqliteConnection>();
 builder.Services.AddMagicOnion();
 builder.WebHost.ConfigureKestrel(options =>
 {
     //GRPC port
-    options.ListenAnyIP(5000, o =>
-    {
-        o.Protocols = HttpProtocols.Http2;
-        //for non-container based development
-        //o.UseHttps("../dev/certs/backend.pfx", "complexpassword1");
-    });
+    options.ListenAnyIP(5000, o => o.Protocols = HttpProtocols.Http2);
     //REST port
     options.ListenAnyIP(5001, o => o.Protocols = HttpProtocols.Http1AndHttp2);
-
-    //options.ConfigureEndpointDefaults(lo => lo.Protocols = HttpProtocols.Http2);
-
 });
 
 var app = builder.Build();
