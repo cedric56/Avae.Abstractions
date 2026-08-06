@@ -149,7 +149,7 @@ namespace Avae.Implementations
             Dispose();
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (Container.Provider is IDisposable disposable)
                 disposable.Dispose();

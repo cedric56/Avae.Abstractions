@@ -148,7 +148,7 @@ namespace Example.Models
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    message = ex.Message;
+                    message = ex.ToFullBlownString();// string.Join("\n", ex.Message, ex.InnerException?.Message);
                 }
             }
 

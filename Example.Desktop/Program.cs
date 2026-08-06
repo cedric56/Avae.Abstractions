@@ -1,7 +1,5 @@
-﻿using Avae.Services;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Labs.Notifications;
-using ReactiveUI.Avalonia;
 using System;
 
 namespace Example.Desktop;

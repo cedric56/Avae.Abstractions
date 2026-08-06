@@ -29,16 +29,31 @@ else
 
 @code {
 
+    static bool isDone { get; set; } = false;
+
     private bool IsEnabled => ViewModel.SelectedPerson == null;
 
     private ComponentView? CurrentView => ViewModel.CurrentPage as ComponentView;
 
-    protected override async Task OnInitializedAsync()
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        ViewModel.PropertyChanged -= PropertyChanged;
-        ViewModel.PropertyChanged += PropertyChanged;
-        ViewModel.Persons = new(await DBBase.Instance.GetAllAsync<Person>());
-        await base.OnInitializedAsync();
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (!isDone)
+        {
+            isDone = true;
+            ViewModel.PropertyChanged -= PropertyChanged;
+            ViewModel.PropertyChanged += PropertyChanged;
+            try
+            {
+                ViewModel.Persons = new(await DBBase.Instance.GetAllAsync<Person>());
+            }
+            catch(Exception ex)
+            {
+                ViewModel.Persons = new();
+            }
+        }
     }
 
     async void PropertyChanged(object? sender, PropertyChangedEventArgs e)

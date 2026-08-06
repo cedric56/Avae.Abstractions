@@ -35,49 +35,7 @@ namespace Avae.Abstractions
             throw new InvalidOperationException($"Unable to create {viewModelType.Name}.  Ensure that it is registered with the service provider and it derives from {typeof(IViewModelBase).FullName}.");
         }
 
-        public static string ReplaceWholeWord(this string s, string word, string bywhat)
-        {
-            char firstLetter = word[0];
-            var sb = new StringBuilder();
-            bool previousWasLetterOrDigit = false;
-            int i = 0;
-            while (i < s.Length - word.Length + 1)
-            {
-                bool wordFound = false;
-                char c = s[i];
-                if (c == firstLetter)
-                    if (!previousWasLetterOrDigit)
-                        if (s.Substring(i, word.Length).Equals(word))
-                        {
-                            wordFound = true;
-                            bool wholeWordFound = true;
-                            if (s.Length > i + word.Length)
-                            {
-                                if (char.IsLetterOrDigit(s[i + word.Length]))
-                                    wholeWordFound = false;
-                            }
-
-                            if (wholeWordFound)
-                                sb.Append(bywhat);
-                            else
-                                sb.Append(word);
-
-                            i += word.Length;
-                        }
-
-                if (!wordFound)
-                {
-                    previousWasLetterOrDigit = char.IsLetterOrDigit(c);
-                    sb.Append(c);
-                    i++;
-                }
-            }
-
-            if (s.Length - i > 0)
-                sb.Append(s.AsSpan(i));
-
-            return sb.ToString();
-        }
+        
 
         public static void Update<X, Y>(this IList<Y> items, IList<X> selectedItems, Func<X, Y, bool> predicate, Func<X, Y> add)
         {
@@ -92,6 +50,33 @@ namespace Avae.Abstractions
 
             foreach (var item in deleted)
                 items.Remove(item);
+        }
+
+        public static string ToFullBlownString(this Exception e, int level = int.MaxValue)
+        {
+            var sb = new StringBuilder();
+            var exception = e;
+            var counter = 1;
+            while (exception != null && counter <= level)
+            {
+                //var stackFrame = (new StackTrace(exception, true)).GetFrame(0);
+                //var message = string.Format("At line {0} column {1} in {2}: {3} {4}{3}{5}  ",
+                //   stackFrame.GetFileLineNumber(), stackFrame.GetFileColumnNumber(),
+                //   stackFrame.GetMethod(), Environment.NewLine, stackFrame.GetFileName(),
+                //   exception.Message);
+
+                sb.AppendLine($"{counter}-> Level: {counter}");
+                sb.AppendLine($"{counter}-> Message: {exception.Message}");
+                sb.AppendLine($"{counter}-> Source: {exception.Source}");
+                sb.AppendLine($"{counter}-> Target Site: {exception.TargetSite}");
+                sb.AppendLine($"{counter}-> Stack Trace: {exception.StackTrace}");
+                //sb.AppendLine($"{counter}-> Formatted: {message}");
+
+                exception = exception.InnerException;
+                counter++;
+            }
+
+            return sb.ToString();
         }
     }
 }

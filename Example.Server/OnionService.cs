@@ -1,6 +1,5 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
-using Avae.DAL.Interfaces;
 using Example.Models;
 using MagicOnion;
 using MagicOnion.Server;
@@ -9,14 +8,14 @@ namespace Example.Server
 {
     public class OnionService : ServiceBase<IDBOnionService>, IDBOnionService
     {
-        private static readonly IDBLayer Layer = ServiceLocator.GetService<IDBLayer>();
+        private static readonly IDBLayer Layer = ServiceLocator.GetRequiredService<IDBLayer>();
 
         static OnionService()
         {
             EntityHandler.Handlers = new Dictionary<string, EntityHandler>()
             {
-                 { "Person", new EntityHandler<Person>(Layer) },
-                { "Contact", new EntityHandler<Contact>(Layer) }
+                 { nameof(Person), new EntityHandler<Person>(Layer) },
+                { nameof(Contact), new EntityHandler<Contact>(Layer) }
             };
         }
         

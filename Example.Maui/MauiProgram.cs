@@ -61,15 +61,15 @@ namespace Example.Maui
             var connectionString = $"Data Source={dbPath};Foreign Keys=True";
 
             builder.Services.UseDbLayer<IDBLayer>(sp => new DBSqlLayer(sp));
-            //builder.Services.UseSqlMonitors<SqliteConnection>(connectionString, (factory) =>
-            //{
-            //    //var monitor = factory.AddDbMonitor<Person>();
-            //    //monitor.AddSignalR("http://localhost:5001/PersonHub");
-            //    //builder.Services.AddSingleton<ISqlMonitor<Person>>(sp =>
-            //    //{
-            //    //    return monitor;
-            //    //});
-            //});
+            builder.Services.UseSqlMonitors<SqliteConnection>(connectionString, (factory) =>
+            {
+                var monitor = factory.AddDbMonitor<Person>();
+                builder.Services.AddSingleton<ISqlMonitor<Person>>(sp =>
+                {
+                    return monitor;
+                });
+
+            }, true);
             builder.Services.AddTransient<IDbConnection>(sp =>
             {
                 return new SqliteConnection(connectionString);

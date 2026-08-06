@@ -20,7 +20,7 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.1" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageReference Include="LoadingIndicators.Avalonia" Version="11.0.11.1" />    
+    <!--<PackageReference Include="LoadingIndicators.Avalonia" Version="11.0.11.1" />-->    
     <!--<PackageReference Include="Projektanker.Icons.Avalonia" Version="9.6.2" />
     <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="9.6.2" />-->    
     <PackageReference Include="Irihi.Ursa" Version="2.2.0" />
@@ -39,6 +39,8 @@
     <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />
     <!--OutputItemType="Analyzer" ReferenceOutputAssembly="false"-->
     <ProjectReference Include="..\Avae.Implementations\Avae.Implementations.csproj" />
+    <ProjectReference Include="..\Avae.SignalR\Avae.SignalR.csproj" />
+    <ProjectReference Include="..\Avae.SqlTableDependency\Avae.SqlTableDependency.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
     <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
   </ItemGroup>

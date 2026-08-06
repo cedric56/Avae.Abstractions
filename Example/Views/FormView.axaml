@@ -5,11 +5,12 @@
 			 xmlns:behavior="using:Example"
 			 xmlns:abstractions="using:Avae.Abstractions"
 			 
-			 xmlns:c="using:LoadingIndicators.Avalonia"
+			 
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Example.FormView"
 			 xmlns:vm="using:Example.ViewModels"
              x:DataType="{x:Type vm:FormViewModel}">		
+			 <!--xmlns:c="using:LoadingIndicators.Avalonia"-->
 			 <!--xmlns:i="https://github.com/projektanker/icons.avalonia"-->
 			 <Grid>
 			<SplitView DisplayMode="Inline" 
@@ -60,6 +61,6 @@
 					</Grid>
 				</SplitView.Content>
 			</SplitView>
-			<c:LoadingIndicator Mode="Arcs" IsVisible="{Binding IsBusy}" Height="100" Width="100" />
+			<!--<c:LoadingIndicator Mode="Arcs" IsVisible="{Binding IsBusy}" Height="100" Width="100" />-->
 		</Grid>
 </UserControl>

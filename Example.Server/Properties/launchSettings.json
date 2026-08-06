@@ -8,5 +8,10 @@
       },
       "applicationUrl": "https://localhost:62082;http://localhost:62083"
     }
-  }
+  }//,
+  //"Kestrel": {
+  //  "EndpointDefaults": {
+  //    "Protocols": "Http2"
+  //  }
+  //}
 }

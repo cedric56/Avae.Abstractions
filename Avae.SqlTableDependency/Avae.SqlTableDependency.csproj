@@ -7,9 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <!--<DotNetToolReference Include="MagicOnion.Generator" Version="5.1.8" />-->
-    <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
+    <PackageReference Include="SqlTableDependencyCore" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />
   </ItemGroup>
 

@@ -41,6 +41,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Hybrid", "Example.H
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Razor", "Avae.Razor\Avae.Razor.csproj", "{B93CC2FF-B006-4655-829A-32D5103AD3EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.SignalR", "Avae.SignalR\Avae.SignalR.csproj", "{728E0D80-576E-4DBD-B30D-23377F3B5F1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.SqlTableDependency", "Avae.SqlTableDependency\Avae.SqlTableDependency.csproj", "{DD247354-4B8E-4132-8836-DF926B4F169E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +133,14 @@ Global
 		{B93CC2FF-B006-4655-829A-32D5103AD3EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B93CC2FF-B006-4655-829A-32D5103AD3EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B93CC2FF-B006-4655-829A-32D5103AD3EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{728E0D80-576E-4DBD-B30D-23377F3B5F1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{728E0D80-576E-4DBD-B30D-23377F3B5F1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{728E0D80-576E-4DBD-B30D-23377F3B5F1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{728E0D80-576E-4DBD-B30D-23377F3B5F1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD247354-4B8E-4132-8836-DF926B4F169E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD247354-4B8E-4132-8836-DF926B4F169E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD247354-4B8E-4132-8836-DF926B4F169E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD247354-4B8E-4132-8836-DF926B4F169E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

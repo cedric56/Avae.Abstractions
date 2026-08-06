@@ -1,5 +1,6 @@
 using Avae.Abstractions;
 using Example.Razor;
+using Example.Razor.Layout;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

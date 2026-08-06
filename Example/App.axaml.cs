@@ -2,6 +2,7 @@
 using Avae.DAL;
 using Avae.DAL.Interfaces;
 using Avae.Implementations;
+using Avae.SignalR;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -14,8 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Ursa.Themes.Semi;
-using Ursa.Themes.Semi.Legacy;
 
 namespace Example;
 
@@ -61,6 +62,8 @@ public partial class App : AvaeApplication, IIocConfiguration
         container.Register<ModalWindow>();
     }
 
+    SignalRService? signal;
+
     public override void Configure(IServiceCollection services)
     {
         base.Configure(services);
@@ -75,20 +78,18 @@ public partial class App : AvaeApplication, IIocConfiguration
 
         if (!OperatingSystem.IsBrowser())
         {
-            services.UseDbLayer<IDBLayer>(sp => new DBSqlLayer(sp));
-
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             var dbPath = Path.Combine(folder, "database.db");
             var connectionString = $"Data Source={dbPath};Foreign Keys=True";
+            
+            services.UseDbLayer<IDBLayer>(sp => new DBSqlLayer(sp));
             services.UseSqlMonitors<SqliteConnection>(connectionString, (factory) =>
             {
                 var monitor = factory.AddDbMonitor<Person>();
                 monitor.AddSignalR("http://localhost:5001/PersonHub");
-                services.AddSingleton<ISqlMonitor<Person>>(provider =>
-                {
-                    return monitor;
-                });
-            });
+                services.AddSingleton<ISqlMonitor<Person>>(monitor);
+
+            }, true);
         }   
     }
 
@@ -121,5 +122,19 @@ public partial class App : AvaeApplication, IIocConfiguration
                 DataContext = new MainViewModel(new Router(Container.Provider))
             };
         }
+    }
+
+    public override void Dispose()
+    {
+        if (signal is not null)
+        {
+            _ = Task.Run(async () =>
+            {
+                await signal.StopAsync();
+                await signal.DisposeAsync();
+            });
+        }
+
+        base.Dispose();
     }
 }

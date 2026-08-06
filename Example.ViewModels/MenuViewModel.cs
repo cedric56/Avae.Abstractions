@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using Avae.DAL.Interfaces;
 using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -9,8 +10,27 @@ using System.Collections.ObjectModel;
 namespace Example.ViewModels
 {
     [ObservableObject]
-    public partial class MenuViewModel(IServiceProvider provider, Router router) : ExampleViewModelBase(router, false)
+    public partial class MenuViewModel : ExampleViewModelBase, IDisposable
     {
+        IServiceProvider provider;
+        ISqlMonitor<Person> monitor;
+
+        IDialogService dialogService;
+        public MenuViewModel(IServiceProvider provider, ISqlMonitor<Person> monitor, IDialogService dialogService, Router router)
+            :base(router,false)
+        {
+            this.provider = provider;
+            this.monitor = monitor;
+            this.dialogService = dialogService;
+
+            this.monitor.OnChanged += Monitor_OnChanged;
+        }
+
+        private void Monitor_OnChanged(object? sender, IRecord<Person> e)
+        {
+            Persons = new(DBBase.Instance.GetAll<Person>());
+        }
+
         public string Title { get; set; } = "Persons";
 
         [ObservableProperty]
@@ -60,7 +80,6 @@ namespace Example.ViewModels
             var result = await DBBase.Instance.DbTransRemove(SelectedPerson);
             if (!result.Successful)
             {
-                var dialogService = provider.GetRequiredService<IDialogService>();
                 await dialogService.ShowOkAsync(result.Exception!, "Error");
             }
             else
@@ -76,7 +95,7 @@ namespace Example.ViewModels
 
         public void OpenForm(Person person, Action<Person> action)
         {
-            var viewModel = new FormViewModel(provider.GetRequiredService<IDialogService>(), provider.GetRequiredService<Router>(), person);
+            var viewModel = new FormViewModel(dialogService, provider.GetRequiredService<Router>(), person);
 
             EventHandler<Person>? closeRequested = null!;
             viewModel.CloseRequested += closeRequested = (sender, e) =>
@@ -96,6 +115,11 @@ namespace Example.ViewModels
         protected override void NotifyPropertyChanged(string propertyName)
         {
             OnPropertyChanged(propertyName);
+        }
+
+        public void Dispose()
+        {
+            this.monitor.OnChanged -= Monitor_OnChanged;
         }
     }
 }

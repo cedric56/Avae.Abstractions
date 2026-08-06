@@ -1,7 +1,6 @@
-﻿using Avae.DAL.Interfaces;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 
-namespace Avae.DAL
+namespace Avae.SignalR
 {
     public class FiveSecondsReconnectPolicy : IRetryPolicy
     {
@@ -12,7 +11,7 @@ namespace Avae.DAL
     }
     public class SignalRService : ISignalRService, IDisposable
     {
-        private HubConnection Hub { get; }
+        public HubConnection Hub { get; }
 
         public SignalRService(string url, IRetryPolicy? retryPolicy = null)
         {

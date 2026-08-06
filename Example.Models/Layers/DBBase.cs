@@ -2,7 +2,6 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using System.Data;
-using System.Data.Common;
 
 namespace Example.Models
 {
@@ -75,7 +74,7 @@ namespace Example.Models
                                 }
                             }
 
-                            _instance = ServiceLocator.GetService<IDBLayer>();                            
+                            _instance = ServiceLocator.GetRequiredService<IDBLayer>();                            
                         }
                     }
                 }

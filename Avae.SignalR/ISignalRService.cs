@@ -1,4 +1,4 @@
-﻿namespace Avae.DAL.Interfaces
+﻿namespace Avae.SignalR
 {
     public interface ISignalRService
     {

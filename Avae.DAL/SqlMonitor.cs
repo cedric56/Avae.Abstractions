@@ -1,9 +1,4 @@
-﻿using Avae.Abstractions;
-using Avae.DAL.Interfaces;
-using Microsoft.Data.SqlClient;
-using System.Diagnostics;
-using TableDependencyCore.SqlClient;
-using TableDependencyCore.SqlClient.Base.EventArgs;
+﻿using Avae.DAL.Interfaces;
 
 namespace Avae.DAL
 {
@@ -14,104 +9,23 @@ namespace Avae.DAL
 
     public class SqlMonitor<TObject> :
         SqlMonitor,
-        ISqlMonitor<TObject>,
-        IDisposable
+        ISqlMonitor<TObject>
         where TObject : class, new()
     {
-        private SignalRService? signalRService;
-        private readonly SqlTableDependencyCore<TObject>? sqlDependency;
-
-        public void AddSignalR(string url)
-        {
-            signalRService = new SignalRService(url);
-            signalRService.On<Record<TObject>>(Messages.DBMessage, record =>
-            {
-                OnChanged?.Invoke(this, record);
-            });
-            Task.Run(async () =>
-            {
-                try
-                {
-                    await signalRService.StartAsync();
-                }
-                catch (Exception ex) {
-                    Debug.WriteLine(ex);
-                }
-            });
-        }
-
-        public SqlMonitor()
-        {
-            
-        }
-
-        internal SqlMonitor(string connectionString, Type connectionType)
-        {
-            if (connectionType == typeof(SqlConnection))
-            {
-                sqlDependency = new SqlTableDependencyCore<TObject>(connectionString);
-                sqlDependency.OnChanged += SqlDependencyExService_OnChanged;
-                sqlDependency.Start();
-            }
-        }
-
-        private void SqlDependencyExService_OnChanged(object? sender, RecordChangedEventArgs<TObject> e)
-        {
-            if (e.Entity is IModelBase model)
-            {
-                var record = new Record<TObject>(model.Id, Enum.Parse<ChangeType>(e.ChangeType.ToString()));
-                OnChanged?.Invoke(this, record);
-                //Inside client, we notify multiprocess
-                signalRService?.SendAsync(Messages.DBMessage, record);
-                //Inside server, we notify clients
-                RaiseHub(record);
-            }
-        }
-
         public event EventHandler<IRecord<TObject>>? OnChanged;
+
+        public void Changed(IRecord<TObject> record)
+        {
+            OnChanged?.Invoke(this, record);
+        }
 
         public override void OnSqliteChanged(ChangeType type, string database, string table, long rowid)
         {
             if (table == typeof(TObject).Name)
             {
                 var record = new Record<TObject>(rowid, type);
-                OnChanged?.Invoke(this, record);
-                //Inside client, we notify multiprocess
-                signalRService?.SendAsync(Messages.DBMessage, record);
-                //Inside server, we notify clients
-                RaiseHub(record);
+                OnChanged?.Invoke(this, record);                
             }
-        }
-
-        private void RaiseHub(Record<TObject> record)
-        {
-            Task.Run(async () =>
-            {
-                Console.WriteLine(record);
-                var hub = ServiceLocator.GetService<SqlHub<TObject>>();
-                if (hub is not null)
-                    await hub.SendMessage(record);
-            });
-        }
-
-        public void Dispose()
-        {
-            if (signalRService is not null)
-            {
-                Task.Run(async () =>
-                {
-                    await signalRService.StopAsync();
-                    await signalRService.DisposeAsync();
-                });
-            }
-            if (sqlDependency is not null)
-            {
-                sqlDependency.OnChanged -= SqlDependencyExService_OnChanged;
-                sqlDependency.Stop();
-                sqlDependency.Dispose();
-            }
-
-            GC.SuppressFinalize(this);
         }
     }
 
@@ -130,5 +44,7 @@ namespace Avae.DAL
 
         public long RowId { get; set; }
         public ChangeType ChangeType { get; set; }
+
+        public List<string> ConnectionId { get; set; } = new List<string>();
     }
 }
