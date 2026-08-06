@@ -7,7 +7,7 @@ namespace Avae.SignalR
 {
     public static class Extensions
     {
-        public static SignalRService AddSignalR<TObject>(this SqlMonitor<TObject> monitor, string url)
+        public static SignalRService AddSignalR<TObject>(this SqlMonitor<TObject> monitor, string url, out Action unsuscribe)
             where TObject : class, new()
         {
             var signalRService = new SignalRService(url);
@@ -30,6 +30,12 @@ namespace Avae.SignalR
                     Debug.WriteLine(ex);
                 }
             });
+
+            unsuscribe = () =>
+            {
+                monitor.OnChanged -= Monitor_OnChanged;
+            };
+
             return signalRService;
 
             async void Monitor_OnChanged(object? sender, IRecord<TObject> e)

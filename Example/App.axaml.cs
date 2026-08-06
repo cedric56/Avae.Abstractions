@@ -22,6 +22,9 @@ namespace Example;
 
 public partial class App : AvaeApplication, IIocConfiguration
 {
+    ISignalRService? signalRService = null;
+    Action? unsuscribe = null;
+
     public App()
         : base()
     {        
@@ -62,8 +65,6 @@ public partial class App : AvaeApplication, IIocConfiguration
         container.Register<ModalWindow>();
     }
 
-    SignalRService? signal;
-
     public override void Configure(IServiceCollection services)
     {
         base.Configure(services);
@@ -86,7 +87,7 @@ public partial class App : AvaeApplication, IIocConfiguration
             services.UseSqlMonitors<SqliteConnection>(connectionString, (factory) =>
             {
                 var monitor = factory.AddDbMonitor<Person>();
-                monitor.AddSignalR("http://localhost:5001/PersonHub");
+                signalRService = monitor.AddSignalR("http://localhost:5001/PersonHub", out unsuscribe);
                 services.AddSingleton<ISqlMonitor<Person>>(monitor);
 
             }, true);
@@ -126,14 +127,16 @@ public partial class App : AvaeApplication, IIocConfiguration
 
     public override void Dispose()
     {
-        if (signal is not null)
+        if (signalRService is not null)
         {
             _ = Task.Run(async () =>
             {
-                await signal.StopAsync();
-                await signal.DisposeAsync();
+                await signalRService.StopAsync();
+                await signalRService.DisposeAsync();
             });
         }
+
+        unsuscribe?.Invoke();
 
         base.Dispose();
     }

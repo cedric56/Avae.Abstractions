@@ -2,6 +2,7 @@
 using Avae.DAL;
 using Avae.DAL.Interfaces;
 using Avae.Maui;
+using Avae.SignalR;
 using Example.Maui.Views;
 using Example.Models;
 using Example.ViewModels;
@@ -64,16 +65,14 @@ namespace Example.Maui
             builder.Services.UseSqlMonitors<SqliteConnection>(connectionString, (factory) =>
             {
                 var monitor = factory.AddDbMonitor<Person>();
-                builder.Services.AddSingleton<ISqlMonitor<Person>>(sp =>
-                {
-                    return monitor;
-                });
+                var e= monitor.AddSignalR("http://localhost:5001/PersonHub", out _);
+                builder.Services.AddSingleton<ISqlMonitor<Person>>(monitor);
 
             }, true);
-            builder.Services.AddTransient<IDbConnection>(sp =>
-            {
-                return new SqliteConnection(connectionString);
-            });
+            //builder.Services.AddTransient<IDbConnection>(sp =>
+            //{
+            //    return new SqliteConnection(connectionString);
+            //});
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
