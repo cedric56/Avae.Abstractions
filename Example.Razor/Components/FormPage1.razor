@@ -2,17 +2,14 @@
 @using Example.ViewModels
 @using MudBlazor
 
-<EditForm Model="@ViewModel.Person">
-    <DataAnnotationsValidator />
-    <MudTextField label="First name" 
-                  aria-required="true"
-                  @bind-Value="@ViewModel.Person.FirstName"
-                  For="@(() => @ViewModel.Person.FirstName)" />
-    <MudTextField label="Last name" 
-                  aria-required="true"
-                  For="@(() => @ViewModel.Person.LastName)"
-                  @bind-Value="@ViewModel.Person.LastName" />
-</EditForm>
+<MudTextField label="First name" 
+                aria-required="true"
+                @bind-Value="@ViewModel.Person.FirstName"
+                For="@(() => @ViewModel.Person.FirstName)" />
+<MudTextField label="Last name" 
+                aria-required="true"
+                For="@(() => @ViewModel.Person.LastName)"
+                @bind-Value="@ViewModel.Person.LastName" />
 
 <MudList T="Example.Models.Person"
     @bind-SelectedValues="SelectedPersons"
@@ -23,7 +20,7 @@
     }
 </MudList>
 
-@code {
+    @code {
     [Parameter]
     public required FormViewModel ViewModel { get; set; }    
 

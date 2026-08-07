@@ -1,7 +1,6 @@
 ﻿using Avae.DAL;
 using Avae.DAL.Interfaces;
 using Avae.SignalR;
-using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data.Common;
 
@@ -30,17 +29,17 @@ public static class Extensions
         {
             signal = monitor.AddSignalR(HubUrl, out unsuscribe);
         }
-
-        services.AddTransient<IXmlHttpRequest>(sp => new XmlHttpRequest("http://localhost:5001/routes/IDBOnionService/"));
+        
+        services.AddSingleton<IXmlHttpRequest>(sp => new XmlHttpRequest("http://localhost:5001/IDBOnionService/"));
         services.UseSqlLayer<IDBLayer>(sp => new DBOnionLayer(sp));
-        services.AddScoped(sp =>
+        services.AddSingleton(sp =>
         {
             return sp.GetMagicOnion<IDBOnionService>(
                 OperatingSystem.IsBrowser() ?
                 "http://localhost:5001" :
                 "http://localhost:5000");
         });
-        services.AddScoped<IOnionService>(provider => provider.GetRequiredService<IDBOnionService>());
+        services.AddSingleton<IOnionService>(provider => provider.GetRequiredService<IDBOnionService>());
         services.AddSingleton<ISqlMonitor<Person>>(monitor);
     }
 

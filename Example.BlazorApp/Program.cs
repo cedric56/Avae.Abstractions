@@ -9,7 +9,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Environment.WebRootPath) });
-builder.Services.ConfigureProject();
+builder.Services.UseSharedLibrary();
 var app = builder.Build();
 ServiceLocator.SetDefault(app.Services);
 // Configure the HTTP request pipeline.

@@ -37,7 +37,7 @@ namespace Avae.Abstractions
 
         
 
-        public static void Update<X, Y>(this IList<Y> items, IList<X> selectedItems, Func<X, Y, bool> predicate, Func<X, Y> add)
+        public static void Update<X, Y>(this IList<Y> items, IEnumerable<X> selectedItems, Func<X, Y, bool> predicate, Func<X, Y> add)
         {
             foreach (var x in selectedItems)
                 if (!items.Any(y => predicate(x, y)))

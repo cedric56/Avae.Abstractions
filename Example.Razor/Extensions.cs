@@ -57,7 +57,7 @@ namespace Example.Razor
             });
         }
 
-        public static void ConfigureProject(this IServiceCollection services,
+        public static void UseSharedLibrary(this IServiceCollection services,
             NotificationPosition position = NotificationPosition.BottomLeft,
             int maxDispayments = 5)
         {

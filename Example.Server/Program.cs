@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSignalR();
+
 builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
 {
     builder.AllowAnyOrigin()
@@ -15,7 +15,8 @@ builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
             .SetIsOriginAllowed(origin => true);
 }));
 
-//// Add services to the container.
+builder.Services.AddSignalR();
+builder.Services.AddMagicOnion();
 builder.Services.AddGrpc(opt =>
 {
     opt.EnableDetailedErrors = true;
@@ -25,7 +26,7 @@ builder.Services.AddGrpc(opt =>
 
 builder.Services.AddSingleton<SqlHub<Person>>();
 builder.Services.UseDBSqlLayer<SqliteConnection>();
-builder.Services.AddMagicOnion();
+
 builder.WebHost.ConfigureKestrel(options =>
 {
     //GRPC port
@@ -40,12 +41,6 @@ ServiceLocator.SetDefault(app.Services);
 app.UseCors("AllowAll");
 app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
 app.MapMagicOnionService().EnableGrpcWeb();
-//var methods = app.Services.GetService<MagicOnionServiceDefinition>()?.MethodHandlers ?? [];
-//app.MapMagicOnionSwagger("routes", methods, string.Empty);
-//app.MapMagicOnionHttpGateway("routes", methods, GrpcChannel.ForAddress("http://localhost:5000", new GrpcChannelOptions()
-//{
-//    Credentials = ChannelCredentials.Insecure
-//}));
 app.MapHub<SqlHub<Person>>("/PersonHub");
 
 //Trigger is needed

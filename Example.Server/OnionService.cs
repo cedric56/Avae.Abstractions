@@ -3,7 +3,8 @@ using Avae.DAL;
 using Example.Models;
 using MagicOnion;
 using MagicOnion.Server;
-using MemoryPack;
+using MessagePack;
+//using MemoryPack;
 
 namespace Example.Server
 {
@@ -31,7 +32,7 @@ namespace Example.Server
             return new Result()
             {
                 Successful = true,
-                Data = MemoryPackSerializer.Serialize(handler.Enumerable, await handler.FindByAnyAsync(filters, commandTimeout))
+                Data = MessagePackSerializer.Serialize(handler.Enumerable, await handler.FindByAnyAsync(filters, commandTimeout))
             };
         }
 
@@ -47,7 +48,7 @@ namespace Example.Server
             return new Result()
             {
                 Successful = true,
-                Data = MemoryPackSerializer.Serialize(handler.Enumerable, await handler.GetAllAsync(commandTimeout))
+                Data = MessagePackSerializer.Serialize(handler.Enumerable, await handler.GetAllAsync(commandTimeout))
             };
         }
 
@@ -62,7 +63,7 @@ namespace Example.Server
             return new Result()
             {
                 Successful = true,
-                Data = MemoryPackSerializer.Serialize(handler.Type, await handler.GetAsync(id, commandTimeout))
+                Data = MessagePackSerializer.Serialize(handler.Type, await handler.GetAsync(id, commandTimeout))
             };
         }
 
@@ -77,7 +78,7 @@ namespace Example.Server
             return new Result()
             {
                 Successful = true,
-                Data = MemoryPackSerializer.Serialize(handler.Enumerable, await handler.WhereAsync(filters, commandTimeout))
+                Data = MessagePackSerializer.Serialize(handler.Enumerable, await handler.WhereAsync(filters, commandTimeout))
             };
         }
 

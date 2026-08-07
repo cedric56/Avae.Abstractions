@@ -10,8 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore.Web" Version="2.71.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
     <PackageReference Include="MagicOnion.Server" Version="7.10.2" />
-    <!--<PackageReference Include="MagicOnion.Server.HttpGateway" Version="6.1.7" />-->
   </ItemGroup>
 
   <ItemGroup>

@@ -126,8 +126,9 @@ namespace Avae.Abstractions
             }
             else
             {
-                dico.Add(value, new KeyValuePair<IContextFor, IViewModelBase>(CurrentPage = GoTo(value, out var viewModel), viewModel));
+                var page = GoTo(value, out var viewModel);
                 await value.OnLaunched(viewModel);
+                dico.Add(value, new KeyValuePair<IContextFor, IViewModelBase>(CurrentPage = page, viewModel));                
             }
 
             RaiseCanExecuteChanged();

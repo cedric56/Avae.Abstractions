@@ -1,10 +1,8 @@
-﻿using MemoryPack;
-using MessagePack;
+﻿using MessagePack;
 
 namespace Avae.DAL
 {
     [MessagePackObject]
-    [MemoryPackable]
     public partial class Result
     {
         [Key(0)]

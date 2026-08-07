@@ -1,14 +1,12 @@
 ﻿using Avae.Abstractions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Dapper.Contrib.Extensions;
-using MemoryPack;
 using MessagePack;
 
 namespace Example.Models
 {
     [Table(nameof(Contact))]
     [MessagePackObject]
-    [MemoryPackable]
     public partial class Contact : ObservableObject, IModelBase
     {
         private Person? person;
@@ -20,7 +18,6 @@ namespace Example.Models
 
         [Computed]
         [IgnoreMember]
-        [MemoryPackIgnore]
         public Person Person
         {
             get { return person ??= DBBase.Instance.Get<Person>(IdPerson)!; }
@@ -35,7 +32,6 @@ namespace Example.Models
 
         [Computed]
         [IgnoreMember]
-        [MemoryPackIgnore]
         public Person PersonContact
         {
             get { return contact ??= DBBase.Instance.Get<Person>(IdContact)!; }
@@ -49,7 +45,7 @@ namespace Example.Models
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Id.GetHashCode();
         }
     }
 }

@@ -3,7 +3,6 @@ using Avae.DAL;
 using Avae.DAL.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Dapper.Contrib.Extensions;
-using MemoryPack;
 using MessagePack;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +11,6 @@ using System.Text.Json.Serialization;
 namespace Example.Models
 {
     [Dapper.Contrib.Extensions.Table(nameof(Person))]
-    [MemoryPackable]
     [MessagePackObject]
     [ObservableObject]
     public partial class Person : DBModelBase, IModelBase, IDataErrorInfo
@@ -49,7 +47,6 @@ namespace Example.Models
 
         [Dapper.Contrib.Extensions.Computed]
         [MessagePack.Key(3)]
-        [MemoryPackIgnore]
         [JsonIgnore]
         public IList<Contact> Contacts
         {
@@ -209,7 +206,7 @@ namespace Example.Models
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Id.GetHashCode();
         }
 
         [Dapper.Contrib.Extensions.Computed]

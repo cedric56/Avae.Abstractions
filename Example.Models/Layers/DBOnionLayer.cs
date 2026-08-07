@@ -1,6 +1,4 @@
-﻿using Avae.Abstractions;
-using Avae.DAL;
-using Avae.DAL.Interfaces;
+﻿using Avae.DAL;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Example.Models
@@ -22,26 +20,36 @@ namespace Example.Models
 
         public async Task<Result> DbTransRemove(DBModelBase modelBase)
         {
-            var service = provider.GetRequiredService<IDBOnionService>();
-            if (service is IOnionNotConnected)
+            try
+            {
+                var service = provider.GetRequiredService<IDBOnionService>();
+                return await service.DbTransRemove(modelBase);
+            }
+            catch (Exception ex)
+            {
                 return new Result()
                 {
                     Successful = false,
-                    Exception = "Service not connected"
+                    Exception = ex.Message
                 };
-            return await service.DbTransRemove(modelBase);
+            }
         }
 
         public async Task<Result> DbTransSave(DBModelBase modelBase)
-        {            
-            var service = provider.GetRequiredService<IDBOnionService>();
-            if (service is IOnionNotConnected)
+        {
+            try
+            {
+                var service = provider.GetRequiredService<IDBOnionService>();
+                return await service.DbTransSave(modelBase);
+            }
+            catch (Exception ex)
+            {
                 return new Result()
                 {
                     Successful = false,
-                    Exception = "Service not connected"
+                    Exception = ex.Message
                 };
-            return await service.DbTransSave(modelBase);
+            }
         }
     }
 }

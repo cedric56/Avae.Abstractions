@@ -15,7 +15,6 @@ namespace Avae.DAL.Interfaces
 
     public interface IXmlHttpRequest
     {
-        bool IsConnected { get; set; }
-        Result Send(string url, string data);
+        byte[] Send(string urlString, byte[] data);
     }
 }
