@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 
 namespace Example.Models
 {
-    [Dapper.Contrib.Extensions.Table(nameof(Person))]
+    [Table(nameof(Person))]
     [MessagePackObject]
     [ObservableObject]
     public partial class Person : DBModelBase, IModelBase, IDataErrorInfo
@@ -45,7 +45,7 @@ namespace Example.Models
             }
         }
 
-        [Dapper.Contrib.Extensions.Computed]
+        [Computed]
         [MessagePack.Key(3)]
         [JsonIgnore]
         public IList<Contact> Contacts
@@ -209,8 +209,8 @@ namespace Example.Models
             return Id.GetHashCode();
         }
 
-        [Dapper.Contrib.Extensions.Computed]
-        [MessagePack.IgnoreMember]
+        [Computed]
+        [IgnoreMember]
         public string Error
         {
             get
@@ -219,8 +219,8 @@ namespace Example.Models
             }
         }
 
-        [Dapper.Contrib.Extensions.Computed]
-        [MessagePack.IgnoreMember]
+        [Computed]
+        [IgnoreMember]
         public string this[string columnName]
         {
             get
@@ -229,8 +229,8 @@ namespace Example.Models
             }
         }
 
-        [Dapper.Contrib.Extensions.Computed]
-        [MessagePack.IgnoreMember]
+        [Computed]
+        [IgnoreMember]
         public string? FullName
         {
             get { return FirstName + " " + LastName; }

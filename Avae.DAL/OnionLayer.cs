@@ -17,7 +17,6 @@ namespace Avae.DAL
                 if (OperatingSystem.IsBrowser())
                 {
                     var request = provider.GetRequiredService<IXmlHttpRequest>();
-                    //var parameters = JsonSerializer.Serialize(filters, SourceGenerationContext.Default.DictionaryStringInt64);
                     var result = request.Send(nameof(FindByAnyAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters }));
                     return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
                 }
