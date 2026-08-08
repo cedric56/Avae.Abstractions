@@ -4,8 +4,8 @@
     <TargetFramework>net11.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <MagicOnionClientGenerate>true</MagicOnionClientGenerate>
-    <MagicOnionGenerateMessagePackFormatterAndResolver>true</MagicOnionGenerateMessagePackFormatterAndResolver>
+    <!--<MagicOnionClientGenerate>true</MagicOnionClientGenerate>
+    <MagicOnionGenerateMessagePackFormatterAndResolver>true</MagicOnionGenerateMessagePackFormatterAndResolver>-->
   </PropertyGroup>
 
   <ItemGroup>

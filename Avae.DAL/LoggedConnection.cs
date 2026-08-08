@@ -1,6 +1,4 @@
-﻿using Avae.Abstractions;
-using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Data.Common;
@@ -12,7 +10,7 @@ namespace Avae.DAL
         public readonly DbConnection Inner = (DbConnection)provider.GetRequiredService<IDbConnection>();
         
         protected override DbCommand CreateDbCommand()
-            => new LoggedDbCommand(provider.GetService<ILogger>(), Inner.CreateCommand());
+            => new LoggedDbCommand(provider.GetService<ILogger>(), Inner.CreateCommand(), provider.GetService<SqlOptions>()?.ConnectionType ?? SqlConnectionType.Unspecified);
 
         // Everything else MUST pass-through 1:1
         public override string ConnectionString { get => Inner.ConnectionString; set => Inner.ConnectionString = value; }
@@ -40,7 +38,7 @@ namespace Avae.DAL
         }
     }
 
-    public class LoggedDbCommand(ILogger? logger, DbCommand command) : DbCommand
+    public class LoggedDbCommand(ILogger? logger, DbCommand command, SqlConnectionType connectionType) : DbCommand
     {
         private bool _disposed;
 
@@ -49,7 +47,7 @@ namespace Avae.DAL
             get => command.CommandText;
             set
             {
-                if (command.Connection is SqliteConnection)
+                if (connectionType == SqlConnectionType.Sqlite)
                     value = value.Replace("SCOPE_IDENTITY", "last_insert_rowid");
 
                 command.CommandText = value;

@@ -8,6 +8,7 @@ using Example.Models;
 using Example.ViewModels;
 using Example.Views;
 using FluentAvalonia.UI.Controls;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
@@ -76,10 +77,9 @@ public partial class App : AvaeApplication, IIocConfiguration
 
         if (!OperatingSystem.IsBrowser())
         {
-            services.UseDBOnionLayer(out signalRService, out unsuscribe);
-
-            //services.UseDBSqlLayer(out signalRService, out unsuscribe);
-        }   
+            services.UseDBSqlLayer<SqliteConnection>(out signalRService, out unsuscribe);
+            //services.UseDBOnionLayer(out signalRService, out unsuscribe);
+        }
     }
 
     public override void Initialize()

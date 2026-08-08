@@ -10,6 +10,40 @@ namespace Avae.DAL
     //TODO CommandTimeout on WHERE AND FINDBYANY
     public partial class OnionLayer(IServiceProvider provider) : IDataAccessLayer
     {
+        public async Task<Result> DbTransRemove(DBModelBase modelBase)
+        {
+            try
+            {
+                var service = provider.GetRequiredService<IOnionService>();
+                return await service.DbTransRemove(modelBase);
+            }
+            catch (Exception ex)
+            {
+                return new Result()
+                {
+                    Successful = false,
+                    Exception = ex.Message
+                };
+            }
+        }
+
+        public async Task<Result> DbTransSave(DBModelBase modelBase)
+        {
+            try
+            {
+                var service = provider.GetRequiredService<IOnionService>();
+                return await service.DbTransSave(modelBase);
+            }
+            catch (Exception ex)
+            {
+                return new Result()
+                {
+                    Successful = false,
+                    Exception = ex.Message
+                };
+            }
+        }
+
         public IEnumerable<T> FindByAny<T>(Dictionary<string, object> filters) where T : class, new()
         {
             try

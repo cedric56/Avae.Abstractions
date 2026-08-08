@@ -11,7 +11,7 @@ using System.Text.Json.Serialization;
 namespace Example.Models
 {
     [Table(nameof(Person))]
-    [MessagePackObject]
+    //[MessagePackObject]    
     [ObservableObject]
     public partial class Person : DBModelBase, IModelBase, IDataErrorInfo
     {
@@ -47,7 +47,6 @@ namespace Example.Models
 
         [Computed]
         [MessagePack.Key(3)]
-        [JsonIgnore]
         public IList<Contact> Contacts
         {
             get
@@ -65,7 +64,8 @@ namespace Example.Models
                 }
                 return _contacts;
             }
-            private set
+            //private 
+            set
             {
                 _contacts = value;
             }

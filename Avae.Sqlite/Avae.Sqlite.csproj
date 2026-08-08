@@ -5,13 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.10" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />
-    <ProjectReference Include="..\Avae.SignalR\Avae.SignalR.csproj" />
-    <ProjectReference Include="..\Avae.Sqlite\Avae.Sqlite.csproj" />
   </ItemGroup>
 
 </Project>

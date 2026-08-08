@@ -13,22 +13,21 @@ namespace Avae.DAL
 {
     public static class Extensions
     {
-        public static void  UseSqlMonitors<TDBConnection>(this IServiceCollection services,
-            string connectionString, Action<SqlFactory<TDBConnection>>? action = null, bool isTransaction = false)
+        public static void  UseSqlFactory<TDBConnection>(this IServiceCollection services,
+            string connectionString, Action<SqlFactory<TDBConnection>>? action = null)
             where TDBConnection : DbConnection, new()
         {
-            var factory = new SqlFactory<TDBConnection>(connectionString, isTransaction);
+            var factory = new SqlFactory<TDBConnection>(connectionString);
 
             action?.Invoke(factory);
             services.AddSingleton<IDbFactory>(sp => factory);
             services.AddTransient<IDbConnection>(_ => factory.CreateConnection()!);
         }
 
-        public static void UseSqlLayer<IDbLayer>(this IServiceCollection services, Func<IServiceProvider, IDbLayer> getLayer)
-            where IDbLayer : class, IDataAccessLayer
+        public static void UseSqlLayer(this IServiceCollection services, Func<IServiceProvider, IDataAccessLayer> getLayer, SqlConnectionType connectionType = SqlConnectionType.Unspecified)
         {
-            services.AddSingleton<IDbLayer>(sp => getLayer(sp));
-            services.AddSingleton<IDataAccessLayer>(sp => sp.GetRequiredService<IDbLayer>());
+            services.AddSingleton<SqlOptions>(new SqlOptions() { ConnectionType = connectionType });
+            services.AddSingleton<IDataAccessLayer>(sp => getLayer(sp));
         }
 
         public static IGrpc GetMagicOnion<IGrpc>(this IServiceProvider provider, string url,

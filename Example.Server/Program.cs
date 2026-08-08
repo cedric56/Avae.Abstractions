@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using Avae.DAL;
 using Avae.SignalR;
 using Example.Models;
 using Microsoft.AspNetCore.Server.Kestrel.Core;

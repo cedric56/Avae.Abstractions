@@ -9,7 +9,7 @@ namespace Avae.DAL
     public partial class XmlHttpRequest(string url) : IXmlHttpRequest
     {
         [JSImport("globalThis.eval")]
-        public static partial string Invoke(string @params);
+        public static partial string Fetch(string request);
 
         public byte[] Send(string urlString, byte[] data)
         {
@@ -17,18 +17,10 @@ namespace Avae.DAL
                 .Replace("\\", "\\\\")
                 .Replace("'", "\\'");
 
-            // Convert payload to base64
-            string payloadB64 = Convert.ToBase64String(data);
-
-            var js = $@"
-
-function fixBase64Padding(str) {{
-    return str.substring(0, str.length - 1);
-}}
-
+            var rawResponse = Fetch($@"
 (function() {{
     var url = '{fullUrl}';
-    var payloadB64 = '{payloadB64}';
+    var payloadB64 = '{Convert.ToBase64String(data)}';
 
     // Decode base64 → Uint8Array
     var binaryString = atob(payloadB64);
@@ -68,13 +60,10 @@ function fixBase64Padding(str) {{
     return xhr.responseText || '';
 
 }})();
-";
-
-            var rawResponse = Invoke(js);
+");
             if (string.IsNullOrEmpty(rawResponse))
                 return Array.Empty<byte>();
             
-            // Try to parse as different formats
             var response = ParseGrpcResponse(rawResponse);
             var result = MessagePackSerializer.Deserialize<Result>(response);
             if (true == result?.Successful)

@@ -9,14 +9,14 @@ namespace Avae.SqlTableDependency
     public static class Extensions
     {
         public static SqlTableDependencyCore<TObject> AddTableDependency<TObject>(
-            this SqlMonitor<TObject> monitor, string connectionString, out Action dispose)
+            this SqlMonitor<TObject> monitor, string connectionString, out Action unsuscribe)
             where TObject : class, new()
         {
             var sqlDependency = new SqlTableDependencyCore<TObject>(connectionString);
             sqlDependency.OnChanged += OnChanged;
             sqlDependency.Start();
 
-            dispose = () =>
+            unsuscribe = () =>
             {
                 sqlDependency.OnChanged -= OnChanged;
                 sqlDependency.Stop();

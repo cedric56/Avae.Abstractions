@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using Avae.DAL;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Dapper.Contrib.Extensions;
 using MessagePack;

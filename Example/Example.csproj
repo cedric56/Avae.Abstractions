@@ -3,8 +3,8 @@
     <TargetFramework>net11.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <MagicOnionClientGenerate>true</MagicOnionClientGenerate>
-    <MagicOnionGenerateMessagePackFormatterAndResolver>true</MagicOnionGenerateMessagePackFormatterAndResolver>
+    <!--<MagicOnionClientGenerate>true</MagicOnionClientGenerate>-->
+    <!--<MagicOnionGenerateMessagePackFormatterAndResolver>true</MagicOnionGenerateMessagePackFormatterAndResolver>-->
   </PropertyGroup>
 
   <ItemGroup>

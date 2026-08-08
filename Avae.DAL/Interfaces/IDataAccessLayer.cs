@@ -39,5 +39,8 @@ namespace Avae.DAL.Interfaces
         {
             return Where<T>(filters.ToDictionary(x => x.key, y => y.value));
         }
+
+        Task<Result> DbTransSave(DBModelBase modelBase);
+        Task<Result> DbTransRemove(DBModelBase modelBase);
     }
 }

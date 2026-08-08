@@ -13,6 +13,7 @@ namespace Avae.SignalR
             var signalRService = new SignalRService(url);
             signalRService.On<Record<TObject>>(Messages.DBMessage, record=>
             {
+                //we stop propagating to avoid stackoverflow
                 if (signalRService.Hub.ConnectionId != null && record.ConnectionId.Contains(signalRService.Hub.ConnectionId))
                     return;
 

@@ -5,8 +5,30 @@ using System.Data;
 
 namespace Avae.DAL
 {
+    public enum SqlConnectionType
+    {
+        Unspecified,
+        Microsoft,
+        Sqlite
+    }
+
+    public class SqlOptions
+    {
+        public SqlConnectionType ConnectionType { get; set; } = SqlConnectionType.Unspecified;
+    }
+
     public class SqlLayer(IServiceProvider provider) : IDataAccessLayer
     {
+        public Task<Result> DbTransRemove(DBModelBase modelBase)
+        {
+            return modelBase.DbTransRemove(this);
+        }
+
+        public Task<Result> DbTransSave(DBModelBase modelBase)
+        {
+            return modelBase.DbTransSave(this);
+        }
+
         public T? Get<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
         {
             using var db = new LoggedConnection(provider);
