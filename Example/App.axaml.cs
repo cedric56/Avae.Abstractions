@@ -77,8 +77,8 @@ public partial class App : AvaeApplication, IIocConfiguration
 
         if (!OperatingSystem.IsBrowser())
         {
-            //services.UseDBSqlLayer<SqliteConnection>(out signalRService, out unsuscribe);
-            services.UseDBOnionLayer(out signalRService, out unsuscribe);
+            services.UseDBSqlLayer<SqliteConnection>(out signalRService, out unsuscribe);
+            //services.UseDBOnionLayer(out signalRService, out unsuscribe);
         }
     }
 
