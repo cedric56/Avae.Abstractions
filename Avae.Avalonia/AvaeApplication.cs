@@ -130,7 +130,7 @@ namespace Avae.Implementations
 
             Styles.Add(new StyleInclude(Container.Provider)
             {
-                Source = new Uri("avares://Avae.Implementations/Modal/ModalStyle.axaml")
+                Source = new Uri("avares://Avae.Avalonia/Modal/ModalStyle.axaml")
             });
             Styles.Add(new FluentTheme());
             Styles.Add(new FluentAvaloniaTheme());

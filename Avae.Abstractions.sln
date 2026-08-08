@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Desktop", "Example.Desktop\Example.Desktop.csproj", "{96EFDB0E-DD15-9326-EC86-F8695A3F9295}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Avalonia", "Avae.Implementations\Avae.Avalonia.csproj", "{CDAF206C-449B-48EC-9CC3-88537C929E36}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Avalonia", "Avae.Avalonia\Avae.Avalonia.csproj", "{CDAF206C-449B-48EC-9CC3-88537C929E36}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL", "Avae.DAL\Avae.DAL.csproj", "{145330B2-570C-42F3-8B5C-F0F33A49F445}"
 EndProject
