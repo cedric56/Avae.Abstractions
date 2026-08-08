@@ -17,7 +17,7 @@ namespace Avae.DAL
         public SqlConnectionType ConnectionType { get; set; } = SqlConnectionType.Unspecified;
     }
 
-    public class SqlLayer(IServiceProvider provider) : IDataAccessLayer
+    public class SqlLayer(IServiceProvider provider) : IDBLayer
     {
         public Task<Result> DbTransRemove(DBModelBase modelBase)
         {

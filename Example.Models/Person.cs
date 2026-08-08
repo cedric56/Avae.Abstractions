@@ -98,7 +98,7 @@ namespace Example.Models
             Contacts = [.. contacts];
         }
 
-        public override async Task<Result> DbTransSave(IDataAccessLayer instance)
+        public override async Task<Result> DbTransSave(IDBLayer instance)
         {
             bool isSuccessful = false;
             string message = string.Empty;
@@ -156,7 +156,7 @@ namespace Example.Models
             };
         }
 
-        public override async Task<Result> DbTransRemove(IDataAccessLayer instance)
+        public override async Task<Result> DbTransRemove(IDBLayer instance)
         {
             string message = string.Empty;
 

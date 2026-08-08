@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 
-namespace Avae.DAL
+namespace Avae.DAL.Grpc
 {
     public partial class XmlHttpRequest(string url) : IXmlHttpRequest
     {

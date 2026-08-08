@@ -1,6 +1,6 @@
 ﻿using Avae.DAL.Interfaces;
 
-namespace Avae.DAL
+namespace Avae.DAL.Grpc
 {
     public abstract class EntityHandler
     {
@@ -15,7 +15,7 @@ namespace Avae.DAL
         public abstract Task<object> WhereAsync(Dictionary<string, object> filters, int? commandTimeout = null);
     }
 
-    public class EntityHandler<T>(IDataAccessLayer layer) : EntityHandler where T : class, new()
+    public class EntityHandler<T>(IDBLayer layer) : EntityHandler where T : class, new()
     {
         public override Type Type => typeof(T);
 

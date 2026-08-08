@@ -82,7 +82,7 @@ namespace Avae.Sqlite
             var factory = new SqliteFactory(connectionString, isTransaction);
 
             action?.Invoke(factory);
-            services.AddSingleton<IDbFactory>(sp => factory);
+            services.AddSingleton<IDBFactory>(sp => factory);
             services.AddTransient<IDbConnection>(_ => factory.CreateConnection()!);
         }
     }

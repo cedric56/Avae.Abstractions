@@ -6,8 +6,8 @@ namespace Avae.DAL
     public class DBBase
     {
         private static readonly object _lock = new();
-        private static IDataAccessLayer? _instance;
-        public static IDataAccessLayer Instance
+        private static IDBLayer? _instance;
+        public static IDBLayer Instance
         {
             get
             {
@@ -17,7 +17,7 @@ namespace Avae.DAL
                     {
                         if (_instance == null)
                         {
-                            _instance = ServiceLocator.GetRequiredService<IDataAccessLayer>();
+                            _instance = ServiceLocator.GetRequiredService<IDBLayer>();
                         }
                     }
                 }

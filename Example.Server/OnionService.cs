@@ -1,5 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
+using Avae.DAL.Grpc;
 using Avae.DAL.Interfaces;
 using Example.Models;
 using MagicOnion;
@@ -10,7 +11,7 @@ namespace Example.Server
 {
     public class OnionService : ServiceBase<IOnionService>, IOnionService
     {
-        private static readonly IDataAccessLayer Layer = ServiceLocator.GetRequiredService<IDataAccessLayer>();
+        private static readonly IDBLayer Layer = ServiceLocator.GetRequiredService<IDBLayer>();
 
         static OnionService()
         {

@@ -20,14 +20,14 @@ namespace Avae.DAL
             var factory = new SqlFactory<TDBConnection>(connectionString);
 
             action?.Invoke(factory);
-            services.AddSingleton<IDbFactory>(sp => factory);
+            services.AddSingleton<IDBFactory>(sp => factory);
             services.AddTransient<IDbConnection>(_ => factory.CreateConnection()!);
         }
 
-        public static void UseSqlLayer(this IServiceCollection services, Func<IServiceProvider, IDataAccessLayer> getLayer, SqlConnectionType connectionType = SqlConnectionType.Unspecified)
+        public static void UseSqlLayer(this IServiceCollection services, Func<IServiceProvider, IDBLayer> getLayer, SqlConnectionType connectionType = SqlConnectionType.Unspecified)
         {
             services.AddSingleton<SqlOptions>(new SqlOptions() { ConnectionType = connectionType });
-            services.AddSingleton<IDataAccessLayer>(sp => getLayer(sp));
+            services.AddSingleton<IDBLayer>(sp => getLayer(sp));
         }
 
         public static IGrpc GetMagicOnion<IGrpc>(this IServiceProvider provider, string url,

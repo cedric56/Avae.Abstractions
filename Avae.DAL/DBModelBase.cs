@@ -8,7 +8,7 @@ namespace Avae.DAL
     //[Union(0, typeof(Person))]
     public abstract partial class DBModelBase
     {
-        public abstract Task<Result> DbTransSave(IDataAccessLayer layer);
-        public abstract Task<Result> DbTransRemove(IDataAccessLayer layer);
+        public abstract Task<Result> DbTransSave(IDBLayer layer);
+        public abstract Task<Result> DbTransRemove(IDBLayer layer);
     }
 }

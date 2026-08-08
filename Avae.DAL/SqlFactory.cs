@@ -4,7 +4,7 @@ using System.Data.Common;
 namespace Avae.DAL
 {
     public class SqlFactory<TDbConnection>(string connectionString) : DbProviderFactory,
-        IDbFactory
+        IDBFactory
         where TDbConnection : DbConnection, new()
     {
         public List<ISqlMonitor> Monitors { get; } = [];

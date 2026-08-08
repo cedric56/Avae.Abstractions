@@ -5,10 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Diagnostics;
 
-namespace Avae.DAL
+namespace Avae.DAL.Grpc
 {
     //TODO CommandTimeout on WHERE AND FINDBYANY
-    public partial class OnionLayer(IServiceProvider provider) : IDataAccessLayer
+    public partial class OnionLayer(IServiceProvider provider) : IDBLayer
     {
         public async Task<Result> DbTransRemove(DBModelBase modelBase)
         {

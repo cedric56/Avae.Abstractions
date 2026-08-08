@@ -2,7 +2,7 @@
 
 namespace Avae.DAL.Interfaces
 {
-    public interface IDataAccessLayer
+    public interface IDBLayer
     {
         T? Get<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new();
 

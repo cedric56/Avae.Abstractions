@@ -1,4 +1,5 @@
 ﻿using Avae.DAL;
+using Avae.DAL.Grpc;
 using Avae.DAL.Interfaces;
 using Avae.SignalR;
 using Avae.Sqlite;
