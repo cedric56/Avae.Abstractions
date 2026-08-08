@@ -1,4 +1,4 @@
-﻿using Avae.DAL.Interfaces;
+﻿using Avae.DAL;
 
 namespace Avae.Sqlite
 {

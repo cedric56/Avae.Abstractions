@@ -1,4 +1,5 @@
-﻿using Avae.DAL.Interfaces;
+﻿using Avae.DAL;
+using Avae.DAL.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Avae.SignalR
@@ -13,15 +14,10 @@ namespace Avae.SignalR
             this.monitor.OnRecordChanged += OnRecordChanged;
         }
 
-        private void OnRecordChanged(object? sender, IRecord<TObject> e)
-        {
-            SendMessage(e);
-        }
-
-        public void SendMessage(object record)
+        public void OnRecordChanged(object? sender, Record<TObject> e)
         {
             if (Clients != null && Clients.All != null)
-                _ = Task.Run(async () => await Clients.All.SendAsync(Extensions.DBMessage, record));
+                _ = Task.Run(async () => await Clients.All.SendAsync(Extensions.DBMessage, e));
         }
 
         protected override void Dispose(bool disposing)

@@ -16,8 +16,8 @@ using System.Net;
 namespace Example.Models;
 public static class Extensions
 {
-    const string HubUrl = "http://localhost:5001/PersonHub";
-    const string OnionUrl = "http://localhost:5001/IDBOnionService/";
+    static string HubUrl = "http://localhost:5001/PersonHub";
+    static string OnionUrl = $"http://localhost:5001/{typeof(IGrpcLayer).Name}/";
 
     private static string GetCommandText(IDbConnection connection)
     {
@@ -86,10 +86,7 @@ public static class Extensions
         unsuscribe = null;
 
         var monitor = new DBMonitor<Person>();
-        //if (!OperatingSystem.IsBrowser())
-        //{
-            signal = monitor.AddSignalR(HubUrl, out unsuscribe);
-        //}
+        signal = monitor.AddSignalR(HubUrl, out unsuscribe);
         
         services.AddSingleton<IXmlHttpRequest>(sp => new XmlHttpRequest(OnionUrl));
         services.AddSingleton(sp =>

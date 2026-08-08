@@ -22,8 +22,11 @@
             @ChildContent
         </div>
         <div class="@Class">
-            <DynamicComponent Type="@CurrentView.Type"
-                            Parameters="@CurrentView.Parameters" />
+            @if(CurrentView != null)
+            {
+                <DynamicComponent Type="@CurrentView.Type"
+                                Parameters="@CurrentView.Parameters" />
+            }
         </div>
         <div>
             @Buttons
@@ -45,12 +48,30 @@
     {
         get
         {
-            return CurrentView.IsCenter ? "center" : null;
+            return true == CurrentView?.IsCenter ? "center" : null;
         }
     }
 
     [Parameter]
     public required PagesViewModelBase ViewModel { get; set; }
 
-    private ComponentView CurrentView => (ComponentView)ViewModel.CurrentPage;
+    private ComponentView? CurrentView => ViewModel.CurrentPage as ComponentView;
+
+    private bool isDone = false;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if(!isDone)
+        {
+            isDone = true;
+            ViewModel.CurrentPageChanged += OnCurrentPageChanged;
+        }
+    }
+
+    private async void OnCurrentPageChanged(object? sender, IContextFor page)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
 }

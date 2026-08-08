@@ -12,9 +12,9 @@ namespace Avae.DAL
         ISqlMonitor<TObject>
         where TObject : class, new()
     {
-        public event EventHandler<IRecord<TObject>>? OnRecordChanged;
+        public event EventHandler<Record<TObject>>? OnRecordChanged;
 
-        public void OnChanged(IRecord<TObject> record)
+        public void OnChanged(Record<TObject> record)
         {
             OnRecordChanged?.Invoke(this, record);
         }
@@ -23,7 +23,9 @@ namespace Avae.DAL
         {
             if (table == typeof(TObject).Name)
             {
-                OnChanged(new Record<TObject>(rowid, type));
+                var record = new Record<TObject>(rowid, type, []);
+                Console.WriteLine(record);
+                OnChanged(record);
             }
         }
     }

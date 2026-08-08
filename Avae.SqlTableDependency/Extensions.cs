@@ -28,7 +28,7 @@ namespace Avae.SqlTableDependency
             {
                 if (e.Entity is IModelBase model)
                 {
-                    var record = new Record<TObject>(model.Id, Enum.Parse<ChangeType>(e.ChangeType.ToString()));
+                    var record = new Record<TObject>(model.Id, Enum.Parse<ChangeType>(e.ChangeType.ToString()), []);
                     monitor.OnChanged(record);
                 }
             }

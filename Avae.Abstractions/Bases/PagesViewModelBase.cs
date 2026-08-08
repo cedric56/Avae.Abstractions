@@ -7,6 +7,8 @@ namespace Avae.Abstractions
     /// </summary>
     public abstract partial class PagesViewModelBase : IViewModelBase 
     {
+        public EventHandler<IContextFor>? CurrentPageChanged;
+
         protected virtual void OnViewModelChanged(IViewModelBase viewModel)
         {
             var type = viewModel.GetType();
@@ -17,6 +19,7 @@ namespace Avae.Abstractions
             }
             NotifyPropertyChanged(nameof(SelectedPage));
             NotifyPropertyChanged(nameof(CurrentPage));
+            CurrentPageChanged?.Invoke(this, _currentPage);
             RaiseCanExecuteChanged();
         }
 
@@ -68,7 +71,8 @@ namespace Avae.Abstractions
             set 
             { 
                 _currentPage = value;
-                NotifyPropertyChanged(nameof(CurrentPage)); 
+                NotifyPropertyChanged(nameof(CurrentPage));
+                CurrentPageChanged?.Invoke(this, _currentPage);
             } 
         }
 
@@ -127,7 +131,7 @@ namespace Avae.Abstractions
             else
             {
                 var page = GoTo(value, out var viewModel);  
-                await value.OnLaunched(viewModel);
+                await value.OnLaunched(viewModel);                
                 dico.Add(value, new KeyValuePair<IContextFor, IViewModelBase>(page, viewModel));
 
                 CurrentPage = page;

@@ -1,6 +1,5 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
-using Avae.DAL.Interfaces;
 using System.Diagnostics;
 
 namespace Avae.SignalR
@@ -16,7 +15,8 @@ namespace Avae.SignalR
             signalRService.On<Record<TObject>>(DBMessage, record=>
             {
                 //we stop propagating to avoid stackoverflow
-                if (signalRService.Hub.ConnectionId != null && record.ConnectionId.Contains(signalRService.Hub.ConnectionId))
+                if (signalRService.Hub.ConnectionId != null && 
+                    record.Connections.Contains(signalRService.Hub.ConnectionId))
                     return;
 
                 monitor.OnChanged(record);
@@ -41,18 +41,18 @@ namespace Avae.SignalR
 
             return signalRService;
 
-            async void OnRecordChanged(object? sender, IRecord<TObject> e)
+            async void OnRecordChanged(object? sender, Record<TObject> e)
             {
-                if (e is Record<TObject> record && signalRService.Hub.ConnectionId != null)
-                    record.ConnectionId.Add(signalRService.Hub.ConnectionId);
+                if (signalRService.Hub.ConnectionId != null)
+                    e.Connections.Add(signalRService.Hub.ConnectionId);
 
                 if (signalRService.Connected)
-                    await signalRService.InvokeAsync(nameof(SqlHub<TObject>.SendMessage), e);
+                    await signalRService.InvokeAsync(nameof(SqlHub<TObject>.OnRecordChanged), signalRService, e);
 
                 //If an embedded server, we notify clients
                 var hub = ServiceLocator.GetService<SqlHub<TObject>>();
                 if (hub is not null)
-                    hub.SendMessage(e);
+                    hub.OnRecordChanged(signalRService, e);
             }
         }
     }

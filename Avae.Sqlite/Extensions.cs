@@ -58,9 +58,12 @@ namespace Avae.Sqlite
 
                 void RaiseMonitors()
                 {
+                    if (isTransaction) Console.WriteLine("Transaction");
                     foreach (var monitor in Monitors.OfType<DBMonitor>())
-                        foreach (var record in records)
+                        foreach (var record in records.DistinctBy(r => r.rowid))
+                        {                            
                             monitor.OnChanged(record.type, record.database, record.table, record.rowid);
+                        }
                 }
 
                 return connection;
@@ -68,7 +71,7 @@ namespace Avae.Sqlite
         }
 
         public static void UseSqliteFactory(this IServiceCollection services,
-           string connectionString, Action<SqliteFactory>? action = null, bool isTransaction = false)
+           string connectionString, Action<SqliteFactory>? action = null, bool isTransaction = true)
         {
             var factory = new SqliteFactory(connectionString, isTransaction);
             action?.Invoke(factory);

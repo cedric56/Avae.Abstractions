@@ -33,7 +33,7 @@ namespace Example.Models
             personMonitor?.OnRecordChanged += Monitor_OnChanged;
         }
 
-        private async void Monitor_OnChanged(object? sender, IRecord<Person> e)
+        private async void Monitor_OnChanged(object? sender, Record<Person> e)
         {
             await ClearPersons();
         }

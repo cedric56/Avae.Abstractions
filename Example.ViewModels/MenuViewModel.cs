@@ -27,7 +27,7 @@ namespace Example.ViewModels
             this.monitor.OnRecordChanged += Monitor_OnChanged;
         }
 
-        private void Monitor_OnChanged(object? sender, IRecord<Person> e)
+        private void Monitor_OnChanged(object? sender, Record<Person> e)
         {
             Persons = new(DBBase.Instance.GetAll<Person>());
         }
