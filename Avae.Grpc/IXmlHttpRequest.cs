@@ -1,4 +1,4 @@
-﻿namespace Avae.DAL.Interfaces;
+﻿namespace Avae.Grpc;
 
 public interface IXmlHttpRequest
 {

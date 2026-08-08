@@ -60,7 +60,7 @@ namespace Avae.Sqlite
                 {
                     foreach (var monitor in Monitors.OfType<DBMonitor>())
                         foreach (var record in records)
-                            monitor.Changed(record.type, record.database, record.table, record.rowid);
+                            monitor.OnChanged(record.type, record.database, record.table, record.rowid);
                 }
 
                 return connection;

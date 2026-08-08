@@ -19,9 +19,9 @@ namespace Avae.SignalR
                 if (signalRService.Hub.ConnectionId != null && record.ConnectionId.Contains(signalRService.Hub.ConnectionId))
                     return;
 
-                monitor.Changed(record);
+                monitor.OnChanged(record);
             });
-            monitor.OnChanged += Monitor_OnChanged;
+            monitor.OnRecordChanged += OnRecordChanged;
             Task.Run(async () =>
             {
                 try
@@ -36,12 +36,12 @@ namespace Avae.SignalR
 
             unsuscribe = () =>
             {
-                monitor.OnChanged -= Monitor_OnChanged;
+                monitor.OnRecordChanged -= OnRecordChanged;
             };
 
             return signalRService;
 
-            async void Monitor_OnChanged(object? sender, IRecord<TObject> e)
+            async void OnRecordChanged(object? sender, IRecord<TObject> e)
             {
                 if (e is Record<TObject> record && signalRService.Hub.ConnectionId != null)
                     record.ConnectionId.Add(signalRService.Hub.ConnectionId);

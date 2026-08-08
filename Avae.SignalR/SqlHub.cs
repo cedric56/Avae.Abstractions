@@ -10,10 +10,10 @@ namespace Avae.SignalR
         public SqlHub(ISqlMonitor<TObject> monitor)
         {
             this.monitor = monitor;
-            this.monitor.OnChanged += Monitor_OnChanged;
+            this.monitor.OnRecordChanged += OnRecordChanged;
         }
 
-        private void Monitor_OnChanged(object? sender, IRecord<TObject> e)
+        private void OnRecordChanged(object? sender, IRecord<TObject> e)
         {
             SendMessage(e);
         }
@@ -28,7 +28,7 @@ namespace Avae.SignalR
         {
             base.Dispose(disposing);
 
-            monitor.OnChanged -= Monitor_OnChanged;
+            monitor.OnRecordChanged -= OnRecordChanged;
         }
     }
 }

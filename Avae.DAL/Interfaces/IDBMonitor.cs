@@ -7,7 +7,7 @@
 
     public interface ISqlMonitor<T> : IDBMonitor where T : class, new()
     {
-        event EventHandler<IRecord<T>> OnChanged;
+        event EventHandler<IRecord<T>> OnRecordChanged;
     }
 
     public interface IRecord<T> where T : class, new()

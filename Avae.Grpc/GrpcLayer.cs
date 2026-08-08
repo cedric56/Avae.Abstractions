@@ -1,20 +1,21 @@
 ﻿using Avae.Abstractions;
+using Avae.DAL;
 using Avae.DAL.Interfaces;
 using MessagePack;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Diagnostics;
 
-namespace Avae.DAL.Grpc
+namespace Avae.Grpc
 {
     //TODO CommandTimeout on WHERE AND FINDBYANY
-    public partial class OnionLayer(IServiceProvider provider) : IDBLayer
+    public partial class GrpcLayer(IServiceProvider provider) : IDBLayer
     {
         public async Task<DBResult> Remove(DBTransactional transactional)
         {
             try
             {
-                var service = provider.GetRequiredService<IOnionService>();
+                var service = provider.GetRequiredService<IGrpcLayer>();
                 return await service.Remove(transactional);
             }
             catch (Exception ex)
@@ -31,7 +32,7 @@ namespace Avae.DAL.Grpc
         {
             try
             {
-                var service = provider.GetRequiredService<IOnionService>();
+                var service = provider.GetRequiredService<IGrpcLayer>();
                 return await service.Save(transactional);
             }
             catch (Exception ex)
@@ -67,7 +68,7 @@ namespace Avae.DAL.Grpc
         {
             try
             {
-                var service = provider.GetRequiredService<IOnionService>();
+                var service = provider.GetRequiredService<IGrpcLayer>();
                 var result = await service.FindByAnyAsync(typeof(T).Name, filters);
                 if (!result.Successful)
                     throw new Exception(result.Exception);
@@ -122,7 +123,7 @@ namespace Avae.DAL.Grpc
         {
             try
             {
-                var service = provider.GetRequiredService<IOnionService>();
+                var service = provider.GetRequiredService<IGrpcLayer>();
                 var result = await service.GetAllAsync(typeof(T).Name);
                 if (!result.Successful) throw new Exception(result.Exception);
                 return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
@@ -138,7 +139,7 @@ namespace Avae.DAL.Grpc
         {
             try
             {
-                var service = provider.GetRequiredService<IOnionService>();
+                var service = provider.GetRequiredService<IGrpcLayer>();
                 var result = await service.GetAsync(typeof(T).Name, id);
                 if (!result.Successful) throw new Exception(result.Exception);
                 return MessagePackSerializer.Deserialize<T>(result.Data);
@@ -173,7 +174,7 @@ namespace Avae.DAL.Grpc
         {
             try
             {
-                var service = provider.GetRequiredService<IOnionService>();
+                var service = provider.GetRequiredService<IGrpcLayer>();
                 var result = await service.WhereAsync(typeof(T).Name, filters);
                 if (!result.Successful) throw new Exception(result.Exception);
                 return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];

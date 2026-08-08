@@ -1,10 +1,10 @@
-﻿using Avae.DAL.Interfaces;
+﻿using Avae.DAL;
 using MessagePack;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 
-namespace Avae.DAL.Grpc
+namespace Avae.Grpc
 {
     public partial class XmlHttpRequest(string url) : IXmlHttpRequest
     {

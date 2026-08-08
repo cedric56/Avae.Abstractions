@@ -1,13 +1,17 @@
 ﻿using Avae.DAL;
-using Avae.DAL.Grpc;
 using Avae.DAL.Interfaces;
+using Avae.Grpc;
 using Avae.SignalR;
 using Avae.Sqlite;
+using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
+using MagicOnion.Client;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Data.Common;
+using System.Net;
 
 namespace Example.Models;
 public static class Extensions
@@ -88,14 +92,12 @@ public static class Extensions
         //}
         
         services.AddSingleton<IXmlHttpRequest>(sp => new XmlHttpRequest(OnionUrl));
-        services.UseLayer(sp => new OnionLayer(sp));
         services.AddSingleton(sp =>
         {
-            return sp.GetMagicOnion<IOnionService>(
-                OperatingSystem.IsBrowser() ?
-                "http://localhost:5001" :
-                "http://localhost:5000");
+            var channel = sp.GetGrpcChannel(OperatingSystem.IsBrowser() ? "http://localhost:5001" : "http://localhost:5000");
+            return MagicOnionClient.Create<IGrpcLayer>(channel);
         });
+        services.UseLayer(sp => new GrpcLayer(sp));        
         services.AddSingleton<ISqlMonitor<Person>>(monitor);
     }
 
@@ -161,5 +163,19 @@ public static class Extensions
                 cmd.ExecuteNonQuery();
             }
         }
+    }
+
+    private static GrpcChannel GetGrpcChannel(this IServiceProvider provider, string url)
+    {
+        var client = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()))
+        {
+            DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact,
+            DefaultRequestVersion = HttpVersion.Version20,
+            Timeout = TimeSpan.FromSeconds(5)
+        };
+        return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
+        {
+            HttpClient = client,
+        });
     }
 }

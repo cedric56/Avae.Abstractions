@@ -27,21 +27,15 @@ namespace Example.Models
         public string? FirstName
         {
             get => _firstName;
-            set
-            {
-                SetProperty(ref _firstName, value);
-
-            }
+            set => SetProperty(ref _firstName, value);
         }
 
         [Required(ErrorMessage = "LastName must be set")]
         //[MessagePack.Key(2)]
         public string? LastName
         {
-            get => _lastName; set
-            {
-                SetProperty(ref _lastName, value);
-            }
+            get => _lastName; 
+            set => SetProperty(ref _lastName, value);
         }
 
         [Computed]

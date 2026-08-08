@@ -61,7 +61,9 @@ namespace Example.Razor
             NotificationPosition position = NotificationPosition.BottomLeft,
             int maxDispayments = 5)
         {
-            services.ConfigureBase(new ComponentView<NavMenu>(), position, maxDispayments, RegisterViews);
+            var navMenu = new ComponentView<NavMenu>();
+
+            services.ConfigureBase(navMenu, position, maxDispayments, RegisterViews);
             services.AddSingleton<HomeViewModel>();
             services.AddSingleton<MenuViewModel>();
             services.AddTransient<ModalViewModel>();

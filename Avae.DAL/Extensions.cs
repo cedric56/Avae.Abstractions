@@ -1,12 +1,7 @@
 ﻿using Avae.DAL.Interfaces;
-using Grpc.Net.Client;
-using Grpc.Net.Client.Web;
-using MagicOnion;
-using MagicOnion.Client;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Data.Common;
-using System.Net;
 using System.Text;
 
 namespace Avae.DAL
@@ -30,23 +25,7 @@ namespace Avae.DAL
             services.AddSingleton<IDBLayer>(sp => getLayer(sp));
         }
 
-        public static IGrpc GetMagicOnion<IGrpc>(this IServiceProvider provider, string url,
-            HttpClient? httpClient = null) where IGrpc : IService<IGrpc>
-        {
-            var client = httpClient ?? new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()))
-            {
-                DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact,
-                DefaultRequestVersion = HttpVersion.Version20,
-                Timeout = TimeSpan.FromSeconds(5)
-            };
-            var channel = GrpcChannel.ForAddress(
-                url
-                , new GrpcChannelOptions()
-                {
-                    HttpClient = client,
-                });
-            return MagicOnionClient.Create<IGrpc>(channel);
-        }
+        
 
         internal static string ReplaceWholeWord(this string s, string word, string bywhat)
         {

@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.SqlTableDependency", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Sqlite", "Avae.Sqlite\Avae.Sqlite.csproj", "{DC68B81A-30FA-4D77-9323-72AFBC1EF9C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Grpc", "Avae.Grpc\Avae.Grpc.csproj", "{866018E5-CFCF-4218-976F-2CB72298D9AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -147,6 +149,10 @@ Global
 		{DC68B81A-30FA-4D77-9323-72AFBC1EF9C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC68B81A-30FA-4D77-9323-72AFBC1EF9C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC68B81A-30FA-4D77-9323-72AFBC1EF9C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{866018E5-CFCF-4218-976F-2CB72298D9AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{866018E5-CFCF-4218-976F-2CB72298D9AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{866018E5-CFCF-4218-976F-2CB72298D9AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{866018E5-CFCF-4218-976F-2CB72298D9AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

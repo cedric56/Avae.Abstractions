@@ -30,7 +30,7 @@ namespace Example.Models
         private Repository(IServiceProvider provider)
         {
             personMonitor = provider.GetService<ISqlMonitor<Person>>();
-            personMonitor?.OnChanged += Monitor_OnChanged;
+            personMonitor?.OnRecordChanged += Monitor_OnChanged;
         }
 
         private async void Monitor_OnChanged(object? sender, IRecord<Person> e)
@@ -57,7 +57,7 @@ namespace Example.Models
 
         public void Dispose()
         {
-            personMonitor?.OnChanged -= Monitor_OnChanged;
+            personMonitor?.OnRecordChanged -= Monitor_OnChanged;
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Example.ViewModels
             this.monitor = monitor;
             this.dialogService = dialogService;
 
-            this.monitor.OnChanged += Monitor_OnChanged;
+            this.monitor.OnRecordChanged += Monitor_OnChanged;
         }
 
         private void Monitor_OnChanged(object? sender, IRecord<Person> e)
@@ -120,7 +120,7 @@ namespace Example.ViewModels
 
         public void Dispose()
         {
-            this.monitor.OnChanged -= Monitor_OnChanged;
+            this.monitor.OnRecordChanged -= Monitor_OnChanged;
         }
     }
 }

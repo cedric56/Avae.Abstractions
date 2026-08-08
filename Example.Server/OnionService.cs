@@ -1,7 +1,7 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
-using Avae.DAL.Grpc;
 using Avae.DAL.Interfaces;
+using Avae.Grpc;
 using Example.Models;
 using Example.Models.MessagePackFormatters;
 using MagicOnion;
@@ -10,7 +10,7 @@ using MessagePack;
 
 namespace Example.Server
 {
-    public class OnionService : ServiceBase<IOnionService>, IOnionService
+    public class OnionService : ServiceBase<IGrpcLayer>, IGrpcLayer
     {
         private static readonly IDBLayer Layer = ServiceLocator.GetRequiredService<IDBLayer>();
 
