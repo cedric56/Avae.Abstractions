@@ -1,7 +1,6 @@
-﻿namespace Avae.DAL.Interfaces
+﻿namespace Avae.DAL.Interfaces;
+
+public interface IXmlHttpRequest
 {
-    public interface IXmlHttpRequest
-    {
-        byte[] Send(string urlString, byte[] data);
-    }
+    byte[] Send(string urlString, byte[] data);
 }

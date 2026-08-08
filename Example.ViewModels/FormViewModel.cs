@@ -59,7 +59,7 @@ namespace Example.ViewModels
                     Person = person,
                     PersonContact = Person
                 });
-                var result = await DBBase.Instance.DbTransSave(Person);
+                var result = await DBBase.Instance.Save(Person);
                 IsBusy = false;
                 if (!string.IsNullOrWhiteSpace(result.Exception))
                     await dialogService.ShowOkAsync(result.Exception, "Error");

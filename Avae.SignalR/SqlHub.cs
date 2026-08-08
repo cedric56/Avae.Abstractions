@@ -1,5 +1,4 @@
-﻿using Avae.DAL;
-using Avae.DAL.Interfaces;
+﻿using Avae.DAL.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Avae.SignalR
@@ -22,7 +21,7 @@ namespace Avae.SignalR
         public void SendMessage(object record)
         {
             if (Clients != null && Clients.All != null)
-                _ = Task.Run(async () => await Clients.All.SendAsync(Messages.DBMessage, record));
+                _ = Task.Run(async () => await Clients.All.SendAsync(Extensions.DBMessage, record));
         }
 
         protected override void Dispose(bool disposing)

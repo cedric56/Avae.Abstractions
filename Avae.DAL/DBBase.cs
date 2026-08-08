@@ -1,28 +1,24 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL.Interfaces;
 
-namespace Avae.DAL
+namespace Avae.DAL;
+
+public class DBBase
 {
-    public class DBBase
+    private static readonly object _lock = new();
+    private static IDBLayer? _instance;
+    public static IDBLayer Instance
     {
-        private static readonly object _lock = new();
-        private static IDBLayer? _instance;
-        public static IDBLayer Instance
+        get
         {
-            get
+            if (_instance == null)
             {
-                if (_instance == null)
+                lock (_lock)
                 {
-                    lock (_lock)
-                    {
-                        if (_instance == null)
-                        {
-                            _instance = ServiceLocator.GetRequiredService<IDBLayer>();
-                        }
-                    }
+                    _instance ??= ServiceLocator.GetRequiredService<IDBLayer>();
                 }
-                return _instance;
             }
+            return _instance;
         }
     }
 }

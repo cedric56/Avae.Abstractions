@@ -3,6 +3,7 @@ using Avae.DAL;
 using Avae.DAL.Grpc;
 using Avae.DAL.Interfaces;
 using Example.Models;
+using Example.Models.MessagePackFormatters;
 using MagicOnion;
 using MagicOnion.Server;
 using MessagePack;
@@ -22,11 +23,11 @@ namespace Example.Server
             };
         }
 
-        public async UnaryResult<Result> FindByAnyAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null)
+        public async UnaryResult<DBResult> FindByAnyAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null)
         {
             if (RequestEntityHandler(type, out var result, out var handler, out var options))
             {
-                return new Result()
+                return new DBResult()
                 {
                     Successful = true,
                     Data = MessagePackSerializer.Serialize(handler!.Enumerable, await handler.FindByAnyAsync(filters, commandTimeout), options)
@@ -35,11 +36,11 @@ namespace Example.Server
             return result!;
         }
 
-        public async UnaryResult<Result> GetAllAsync(string type, int? commandTimeout = null)
+        public async UnaryResult<DBResult> GetAllAsync(string type, int? commandTimeout = null)
         {
             if (RequestEntityHandler(type, out var result, out var handler, out var options))
             {
-                return new Result()
+                return new DBResult()
                 {
                     Successful = true,
                     Data = MessagePackSerializer.Serialize(handler!.Enumerable, await handler.GetAllAsync(commandTimeout), options)
@@ -48,11 +49,11 @@ namespace Example.Server
             return result!;
         }
 
-        public async UnaryResult<Result> GetAsync(string type, long id, int? commandTimeout = null)
+        public async UnaryResult<DBResult> GetAsync(string type, long id, int? commandTimeout = null)
         {
             if (RequestEntityHandler(type, out var result, out var handler, out var options))
             {
-                return new Result()
+                return new DBResult()
                 {
                     Successful = true,
                     Data = MessagePackSerializer.Serialize(handler!.Type, await handler.GetAsync(id, commandTimeout), options)
@@ -61,11 +62,11 @@ namespace Example.Server
             return result!;
         }
 
-        public async UnaryResult<Result> WhereAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null)
+        public async UnaryResult<DBResult> WhereAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null)
         {
             if(RequestEntityHandler(type, out var result, out var handler, out var options))
             {
-                return new Result()
+                return new DBResult()
                 {
                     Successful = true,
                     Data = MessagePackSerializer.Serialize(handler!.Enumerable, await handler.WhereAsync(filters, commandTimeout), options)
@@ -75,34 +76,34 @@ namespace Example.Server
             return result!;
         }
 
-        private bool RequestEntityHandler(string type, out Result? result, out EntityHandler? handler, out MessagePackSerializerOptions? options)       
+        private bool RequestEntityHandler(string type, out DBResult? result, out EntityHandler? handler, out MessagePackSerializerOptions? options)       
         {
             result = null;
             handler = null;
             options = null;
 
             if (string.IsNullOrWhiteSpace(type))
-                result = new Result() { Successful = false, Exception = "Type parameter is required" };
+                result = new DBResult() { Successful = false, Exception = "Type parameter is required" };
             else if (!EntityHandler.Handlers.TryGetValue(type, out handler))
-                result = new Result() { Successful = false, Exception = "Unable to find entity handler" };
+                result = new DBResult() { Successful = false, Exception = "Unable to find entity handler" };
 
             if (type == typeof(Person).Name)
             {
-                options = new PersonOptions(new MessagePackSerializerOptions(CustomResolver.Instance));
+                options = new MessagePackSerializerModels(new MessagePackSerializerOptions(ModelsResolver.Instance));
             }
 
             return result is null;
         }
 
 
-        public async UnaryResult<Result> DbTransRemove(DBModelBase modelBase)
+        public async UnaryResult<DBResult> Remove(DBTransactional transactional)
         {
-            return await modelBase.DbTransRemove(Layer);
+            return await transactional.Remove(Layer);
         }
 
-        public async UnaryResult<Result> DbTransSave(DBModelBase modelBase)
+        public async UnaryResult<DBResult> Save(DBTransactional transactional)
         {
-            return await modelBase.DbTransSave(Layer);
+            return await transactional.Save(Layer);
         }
     }
 }

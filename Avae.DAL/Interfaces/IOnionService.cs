@@ -4,16 +4,16 @@ namespace Avae.DAL.Interfaces
 {
     public interface IOnionService : IService<IOnionService>
     {
-        UnaryResult<Result> DbTransRemove(DBModelBase modelBase);
+        UnaryResult<DBResult> Remove(DBTransactional transactional);
 
-        UnaryResult<Result> DbTransSave(DBModelBase modelBase);
+        UnaryResult<DBResult> Save(DBTransactional transactional);
 
-        UnaryResult<Result> FindByAnyAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null);
+        UnaryResult<DBResult> FindByAnyAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null);
         
-        UnaryResult<Result> GetAllAsync(string type, int? commandTimeout = null);
+        UnaryResult<DBResult> GetAllAsync(string type, int? commandTimeout = null);
         
-        UnaryResult<Result> GetAsync(string type, long id, int? commandTimeout = null);
+        UnaryResult<DBResult> GetAsync(string type, long id, int? commandTimeout = null);
         
-        UnaryResult<Result> WhereAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null);        
+        UnaryResult<DBResult> WhereAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null);        
     }
 }

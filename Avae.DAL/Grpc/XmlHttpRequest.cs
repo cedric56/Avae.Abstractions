@@ -65,7 +65,7 @@ namespace Avae.DAL.Grpc
                 return Array.Empty<byte>();
             
             var response = ParseGrpcResponse(rawResponse);
-            var result = MessagePackSerializer.Deserialize<Result>(response);
+            var result = MessagePackSerializer.Deserialize<DBResult>(response);
             if (true == result?.Successful)
                 return result.Data ?? Array.Empty<byte>();
 

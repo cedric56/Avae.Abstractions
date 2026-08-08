@@ -10,16 +10,16 @@ namespace Avae.DAL.Grpc
     //TODO CommandTimeout on WHERE AND FINDBYANY
     public partial class OnionLayer(IServiceProvider provider) : IDBLayer
     {
-        public async Task<Result> DbTransRemove(DBModelBase modelBase)
+        public async Task<DBResult> Remove(DBTransactional transactional)
         {
             try
             {
                 var service = provider.GetRequiredService<IOnionService>();
-                return await service.DbTransRemove(modelBase);
+                return await service.Remove(transactional);
             }
             catch (Exception ex)
             {
-                return new Result()
+                return new DBResult()
                 {
                     Successful = false,
                     Exception = ex.Message
@@ -27,16 +27,16 @@ namespace Avae.DAL.Grpc
             }
         }
 
-        public async Task<Result> DbTransSave(DBModelBase modelBase)
+        public async Task<DBResult> Save(DBTransactional transactional)
         {
             try
             {
                 var service = provider.GetRequiredService<IOnionService>();
-                return await service.DbTransSave(modelBase);
+                return await service.Save(transactional);
             }
             catch (Exception ex)
             {
-                return new Result()
+                return new DBResult()
                 {
                     Successful = false,
                     Exception = ex.Message

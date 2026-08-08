@@ -78,7 +78,7 @@ namespace Example.ViewModels
         public async Task Remove()
         {
             await SelectedPerson!.LoadContactsAsync();
-            var result = await DBBase.Instance.DbTransRemove(SelectedPerson);
+            var result = await DBBase.Instance.Remove(SelectedPerson);
             if (!result.Successful)
             {
                 await dialogService.ShowOkAsync(result.Exception!, "Error");

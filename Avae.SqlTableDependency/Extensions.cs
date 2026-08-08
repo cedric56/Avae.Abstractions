@@ -9,7 +9,7 @@ namespace Avae.SqlTableDependency
     public static class Extensions
     {
         public static SqlTableDependencyCore<TObject> AddTableDependency<TObject>(
-            this SqlMonitor<TObject> monitor, string connectionString, out Action unsuscribe)
+            this DBMonitor<TObject> monitor, string connectionString, out Action unsuscribe)
             where TObject : class, new()
         {
             var sqlDependency = new SqlTableDependencyCore<TObject>(connectionString);

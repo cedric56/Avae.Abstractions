@@ -6,25 +6,24 @@ using Dapper.Contrib.Extensions;
 using MessagePack;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace Example.Models
 {
     [Table(nameof(Person))]
     //[MessagePackObject]    
     [ObservableObject]
-    public partial class Person : DBModelBase, IModelBase, IDataErrorInfo
+    public partial class Person : DBTransactional, IModelBase, IDataErrorInfo
     {
         private IList<Contact>? _contacts;
         private string? _firstName;
         private string? _lastName;
 
         [Dapper.Contrib.Extensions.Key]
-        [MessagePack.Key(0)]
+        //[MessagePack.Key(0)]
         public long Id { get; set; }
 
         [Required(ErrorMessage = "FirstName must be set")]
-        [MessagePack.Key(1)]
+        //[MessagePack.Key(1)]
         public string? FirstName
         {
             get => _firstName;
@@ -36,7 +35,7 @@ namespace Example.Models
         }
 
         [Required(ErrorMessage = "LastName must be set")]
-        [MessagePack.Key(2)]
+        //[MessagePack.Key(2)]
         public string? LastName
         {
             get => _lastName; set
@@ -46,7 +45,7 @@ namespace Example.Models
         }
 
         [Computed]
-        [MessagePack.Key(3)]
+        //[MessagePack.Key(3)]
         public IList<Contact> Contacts
         {
             get
@@ -64,7 +63,7 @@ namespace Example.Models
                 }
                 return _contacts;
             }
-            //private 
+            //private this must be avoid but necessary now
             set
             {
                 _contacts = value;
@@ -98,11 +97,11 @@ namespace Example.Models
             Contacts = [.. contacts];
         }
 
-        public override async Task<Result> DbTransSave(IDBLayer instance)
+        public override async Task<DBResult> Save(IDBLayer instance)
         {
             bool isSuccessful = false;
             string message = string.Empty;
-            using var connection = new LoggedConnection(ServiceLocator.Default);
+            using var connection = new DBLogConnection(ServiceLocator.Default);
             await connection.OpenAsync();
 
             using (var transaction = connection.BeginTransaction())
@@ -149,20 +148,20 @@ namespace Example.Models
                 }
             }
 
-            return new Result()
+            return new DBResult()
             {
                 Exception = message,
                 Successful = isSuccessful
             };
         }
 
-        public override async Task<Result> DbTransRemove(IDBLayer instance)
+        public override async Task<DBResult> Remove(IDBLayer instance)
         {
             string message = string.Empty;
 
             bool isSuccessful = false;
 
-            using var connection = new LoggedConnection(ServiceLocator.Default);
+            using var connection = new DBLogConnection(ServiceLocator.Default);
             await connection.OpenAsync();
 
             using (var transaction = connection.BeginTransaction())
@@ -192,7 +191,7 @@ namespace Example.Models
                 }
             }
 
-            return new Result()
+            return new DBResult()
             {
                 Exception = message,
                 Successful = isSuccessful

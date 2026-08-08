@@ -3,7 +3,7 @@
 namespace Avae.DAL
 {
     [MessagePackObject]
-    public partial class Result
+    public partial class DBResult
     {
         [Key(0)]
         public string? Exception { get; set; }

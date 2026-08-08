@@ -66,14 +66,14 @@ public static class Extensions
         }
     }
 
-    private static SqlConnectionType GetConnectionType<TDBConnection>()
+    private static DBConnectionType GetConnectionType<TDBConnection>()
     {
         var type = typeof(TDBConnection);
         if (type == typeof(SqlConnection))
-            return SqlConnectionType.Microsoft;
+            return DBConnectionType.Microsoft;
         else if (type == typeof(SqliteConnection))
-            return SqlConnectionType.Sqlite;
-        return SqlConnectionType.Unspecified;
+            return DBConnectionType.Sqlite;
+        return DBConnectionType.Unspecified;
     }
 
     public static void UseDBOnionLayer(this IServiceCollection services, out ISignalRService? signal, out Action? unsuscribe)
@@ -81,14 +81,14 @@ public static class Extensions
         signal = null;
         unsuscribe = null;
 
-        var monitor = new SqlMonitor<Person>();
+        var monitor = new DBMonitor<Person>();
         //if (!OperatingSystem.IsBrowser())
         //{
             signal = monitor.AddSignalR(HubUrl, out unsuscribe);
         //}
         
         services.AddSingleton<IXmlHttpRequest>(sp => new XmlHttpRequest(OnionUrl));
-        services.UseSqlLayer(sp => new OnionLayer(sp));
+        services.UseLayer(sp => new OnionLayer(sp));
         services.AddSingleton(sp =>
         {
             return sp.GetMagicOnion<IOnionService>(
@@ -96,7 +96,6 @@ public static class Extensions
                 "http://localhost:5001" :
                 "http://localhost:5000");
         });
-        //services.AddSingleton<IOnionService>(provider => provider.GetRequiredService<IOnionService>());
         services.AddSingleton<ISqlMonitor<Person>>(monitor);
     }
 
@@ -120,27 +119,18 @@ public static class Extensions
     }
 
     public static void UseDBSqlLayer<TDBConnection>(this IServiceCollection services,
-        Action<SqlMonitor<Person>>? action = null)
+        Action<DBMonitor<Person>>? action = null)
         where TDBConnection : DbConnection, new()
     {
         var type = GetConnectionType<TDBConnection>();
-        services.UseSqlLayer(sp =>
+        services.UseLayer(sp =>
         {
-            //Create db
-            using var connection = sp.GetService<IDbConnection>();
-            if (connection is not null)
-            {
-                connection.Open();
-
-                using var cmd = connection.CreateCommand();
-                cmd.CommandText = GetCommandText(connection);
-                cmd.ExecuteNonQuery();
-            }
-
-            return new SqlLayer(sp);
+            CreateDB(sp);
+            return new DBLayer(sp);
 
         }, type);
-        if (type == SqlConnectionType.Sqlite)
+
+        if (type == DBConnectionType.Sqlite)
         {
             services.UseSqliteFactory(ConnectionString, (factory) =>
             {
@@ -151,12 +141,25 @@ public static class Extensions
         }
         else
         {
-            services.UseSqlFactory<TDBConnection>(ConnectionString, (factory) =>
+            services.UseFactory<TDBConnection>(ConnectionString, (factory) =>
             {
                 var monitor = factory.AddDbMonitor<Person>();
                 action?.Invoke(monitor);
                 services.AddSingleton<ISqlMonitor<Person>>(monitor);
             });
+        }
+
+        void CreateDB(IServiceProvider provider)
+        {
+            using var connection = provider.GetService<IDbConnection>();
+            if (connection is not null)
+            {
+                connection.Open();
+
+                using var cmd = connection.CreateCommand();
+                cmd.CommandText = GetCommandText(connection);
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }

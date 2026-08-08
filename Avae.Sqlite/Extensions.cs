@@ -10,15 +10,7 @@ namespace Avae.Sqlite
 {
     public static class Extensions
     {
-        private class Update
-        {
-            public required int type { get; set; }
-            public required string database { get; set; }
-            public required string table { get; set; }
-            public required long rowid { get; set; }
-        }
-
-        public class SqliteFactory(string connectionString, bool isTransaction = true) : SqlFactory<SqliteConnection>(connectionString)
+        public class SqliteFactory(string connectionString, bool isTransaction = true) : DBFactory<SqliteConnection>(connectionString)
         {
             public override DbConnection? CreateConnection()
             {
@@ -28,7 +20,7 @@ namespace Avae.Sqlite
                 };
                 connection.Open();
 
-                var currents = new List<Update>();
+                var records = new List<Record>();
 
                 //Sqlite only raise database changes on current connection
                 raw.sqlite3_commit_hook(connection.Handle, (user_data) =>
@@ -43,10 +35,16 @@ namespace Avae.Sqlite
 
                 raw.sqlite3_update_hook(connection.Handle, (user_data, type, database, table, rowid) =>
                 {
-                    currents.Add(new Update()
+                    records.Add(new Record()
                     {
                         database = database,
-                        type = type,
+                        type = type switch
+                        {
+                            9 => ChangeType.Delete,
+                            18 => ChangeType.Insert,
+                            23 => ChangeType.Update,
+                            _ => ChangeType.None
+                        },
                         rowid = rowid,
                         table = table
                     });
@@ -60,16 +58,9 @@ namespace Avae.Sqlite
 
                 void RaiseMonitors()
                 {
-                    foreach (var monitor in Monitors.OfType<SqlMonitor>())
-                        foreach (var update in currents)
-                            monitor.OnSqliteChanged(update.type switch
-                            {
-                                9 => ChangeType.Delete,
-                                18 => ChangeType.Insert,
-                                23 => ChangeType.Update,
-                                _ => ChangeType.None
-
-                            }, update.database, update.table, update.rowid);
+                    foreach (var monitor in Monitors.OfType<DBMonitor>())
+                        foreach (var record in records)
+                            monitor.Changed(record.type, record.database, record.table, record.rowid);
                 }
 
                 return connection;
@@ -80,7 +71,6 @@ namespace Avae.Sqlite
            string connectionString, Action<SqliteFactory>? action = null, bool isTransaction = false)
         {
             var factory = new SqliteFactory(connectionString, isTransaction);
-
             action?.Invoke(factory);
             services.AddSingleton<IDBFactory>(sp => factory);
             services.AddTransient<IDbConnection>(_ => factory.CreateConnection()!);

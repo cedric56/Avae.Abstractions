@@ -1,11 +1,11 @@
 ﻿namespace Avae.DAL.Interfaces
 {
-    public interface ISqlMonitor
+    public interface IDBMonitor
     {
 
     }
 
-    public interface ISqlMonitor<T> : ISqlMonitor where T : class, new()
+    public interface ISqlMonitor<T> : IDBMonitor where T : class, new()
     {
         event EventHandler<IRecord<T>> OnChanged;
     }

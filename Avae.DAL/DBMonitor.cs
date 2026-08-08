@@ -2,13 +2,13 @@
 
 namespace Avae.DAL
 {
-    public abstract class SqlMonitor : ISqlMonitor
+    public abstract class DBMonitor : IDBMonitor
     {
-        public abstract void OnSqliteChanged(ChangeType type, string database, string table, long rowid);
+        public abstract void Changed(ChangeType type, string database, string table, long rowid);
     }
 
-    public class SqlMonitor<TObject> :
-        SqlMonitor,
+    public class DBMonitor<TObject> :
+        DBMonitor,
         ISqlMonitor<TObject>
         where TObject : class, new()
     {
@@ -19,7 +19,7 @@ namespace Avae.DAL
             OnChanged?.Invoke(this, record);
         }
 
-        public override void OnSqliteChanged(ChangeType type, string database, string table, long rowid)
+        public override void Changed(ChangeType type, string database, string table, long rowid)
         {
             if (table == typeof(TObject).Name)
             {

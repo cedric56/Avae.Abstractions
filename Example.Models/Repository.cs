@@ -7,25 +7,8 @@ namespace Example.Models
 {
     public class Repository : IDisposable
     {
-        private readonly ISqlMonitor<Person>? personMonitor;
-
-        private Repository(IServiceProvider provider)
-        {
-            personMonitor = provider.GetService<ISqlMonitor<Person>>();
-            if (personMonitor != null)
-            {
-                personMonitor.OnChanged += Monitor_OnChanged;
-            }
-        }
-
-        private async void Monitor_OnChanged(object? sender, IRecord<Person> e)
-        {
-            await ClearPersons();
-        }
-
-        private List<Person>? _persons;
         private static readonly object _lock = new();
-        
+
         private static Repository? _instance = null;
         public static Repository Instance
         {
@@ -35,15 +18,27 @@ namespace Example.Models
                 {
                     lock (_lock)
                     {
-                        if (_instance is null)
-                        {
-                            _instance = new Repository(ServiceLocator.Default);
-                        }
+                        _instance ??= new Repository(ServiceLocator.Default);
                     }
                 }
                 return _instance;
             }
         }
+
+        private readonly ISqlMonitor<Person>? personMonitor;
+
+        private Repository(IServiceProvider provider)
+        {
+            personMonitor = provider.GetService<ISqlMonitor<Person>>();
+            personMonitor?.OnChanged += Monitor_OnChanged;
+        }
+
+        private async void Monitor_OnChanged(object? sender, IRecord<Person> e)
+        {
+            await ClearPersons();
+        }
+
+        private List<Person>? _persons;        
 
         public List<Person> Persons
         {
@@ -62,8 +57,7 @@ namespace Example.Models
 
         public void Dispose()
         {
-            if (personMonitor != null)
-                personMonitor.OnChanged -= Monitor_OnChanged;
+            personMonitor?.OnChanged -= Monitor_OnChanged;
         }
     }
 }

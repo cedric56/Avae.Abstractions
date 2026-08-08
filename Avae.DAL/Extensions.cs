@@ -13,20 +13,20 @@ namespace Avae.DAL
 {
     public static class Extensions
     {
-        public static void  UseSqlFactory<TDBConnection>(this IServiceCollection services,
-            string connectionString, Action<SqlFactory<TDBConnection>>? action = null)
+        public static void  UseFactory<TDBConnection>(this IServiceCollection services,
+            string connectionString, Action<DBFactory<TDBConnection>>? action = null)
             where TDBConnection : DbConnection, new()
         {
-            var factory = new SqlFactory<TDBConnection>(connectionString);
+            var factory = new DBFactory<TDBConnection>(connectionString);
 
             action?.Invoke(factory);
             services.AddSingleton<IDBFactory>(sp => factory);
             services.AddTransient<IDbConnection>(_ => factory.CreateConnection()!);
         }
 
-        public static void UseSqlLayer(this IServiceCollection services, Func<IServiceProvider, IDBLayer> getLayer, SqlConnectionType connectionType = SqlConnectionType.Unspecified)
+        public static void UseLayer(this IServiceCollection services, Func<IServiceProvider, IDBLayer> getLayer, DBConnectionType connectionType = DBConnectionType.Unspecified)
         {
-            services.AddSingleton<SqlOptions>(new SqlOptions() { ConnectionType = connectionType });
+            services.AddSingleton<DBOptions>(new DBOptions() { ConnectionType = connectionType });
             services.AddSingleton<IDBLayer>(sp => getLayer(sp));
         }
 

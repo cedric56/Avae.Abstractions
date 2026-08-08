@@ -7,11 +7,13 @@ namespace Avae.SignalR
 {
     public static class Extensions
     {
-        public static SignalRService AddSignalR<TObject>(this SqlMonitor<TObject> monitor, string url, out Action unsuscribe)
+        public const string DBMessage = "DBChanged";
+
+        public static SignalRService AddSignalR<TObject>(this DBMonitor<TObject> monitor, string url, out Action unsuscribe)
             where TObject : class, new()
         {
             var signalRService = new SignalRService(url);
-            signalRService.On<Record<TObject>>(Messages.DBMessage, record=>
+            signalRService.On<Record<TObject>>(DBMessage, record=>
             {
                 //we stop propagating to avoid stackoverflow
                 if (signalRService.Hub.ConnectionId != null && record.ConnectionId.Contains(signalRService.Hub.ConnectionId))
@@ -47,7 +49,7 @@ namespace Avae.SignalR
                 if (signalRService.Connected)
                     await signalRService.InvokeAsync(nameof(SqlHub<TObject>.SendMessage), e);
 
-                //Inside server, we notify clients
+                //If an embedded server, we notify clients
                 var hub = ServiceLocator.GetService<SqlHub<TObject>>();
                 if (hub is not null)
                     hub.SendMessage(e);
