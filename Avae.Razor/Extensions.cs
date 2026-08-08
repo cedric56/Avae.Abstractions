@@ -49,7 +49,7 @@ namespace Avae.Razor
             services.AddSingleton<ITaskDialogService>(GetConfiguration);
             services.AddSingleton<ISystemNotificationService>(GetConfiguration);
             services.AddSingleton<INotificationManager>(GetConfiguration);
-            services.AddSingleton<IRequestedTheme>(GetConfiguration);
+            services.AddSingleton<IRequestedThemeService>(GetConfiguration);
             //services.AddSingleton<ILogger>(LoggerFactory.Create(builder =>
             //{
             //    build?.Invoke(builder);

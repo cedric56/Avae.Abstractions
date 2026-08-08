@@ -8,7 +8,10 @@
         grid-template-columns:auto auto auto
     }
 </style>
-<DynamicComponent Type="@ComponentView.Type" Parameters="@ComponentView.Parameters"/>
+@if (ComponentView != null)
+{
+    <DynamicComponent Type="@ComponentView.Type" Parameters="@ComponentView.Parameters"/>
+}
 <div class="columns">
     <MudButton Disabled="@Parameters.IsPrimaryButtonEnabled" style="@Style(@Parameters.PrimaryButtonText)" OnClick="Primary">@Parameters.PrimaryButtonText</MudButton>
     <MudButton Disabled="@Parameters.IsSecondaryButtonEnabled" style="@Style(@Parameters.SecondaryButtonText)" OnClick="Secondary">@Parameters.SecondaryButtonText</MudButton>
@@ -36,7 +39,7 @@
     [Parameter]
     public required ContentDialogParams Parameters{ get; set; }
 
-    private ComponentView ComponentView => (ComponentView)Parameters.Content;
+    private ComponentView? ComponentView => Parameters.Content as ComponentView;
 
     private string Style(string? text)
     {

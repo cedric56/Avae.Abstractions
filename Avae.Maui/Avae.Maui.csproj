@@ -9,6 +9,7 @@
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
     <RootNamespace>Avae.Maui</RootNamespace>
+    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
   </PropertyGroup>
 
   <ItemGroup>

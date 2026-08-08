@@ -10,7 +10,7 @@ namespace Avae.Maui
             IIocConfiguration, ITaskDialogService, IContentDialogService, IDialogService,
             ISystemNotificationService, 
             INotificationManager,
-            IRequestedTheme
+            IRequestedThemeService
     {
         IocContainer? _container = null;
         IocContainer Container { get => _container ??= getContainer(); }
@@ -513,7 +513,7 @@ namespace Avae.Maui
 
             public void Close()
             {
-
+                NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs());
             }
 
             public void Show()

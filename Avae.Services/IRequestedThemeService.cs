@@ -16,7 +16,7 @@
         Dark
     }
 
-    public interface IRequestedTheme
+    public interface IRequestedThemeService
     {
         void Request(RequestedTheme theme);
     }

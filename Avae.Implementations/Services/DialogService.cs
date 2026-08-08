@@ -122,7 +122,7 @@ namespace Avae.Implementations
             return ShowMessage(message, title, "YesNoAbort");
         }
 
-        Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigationContext? context = null) where TResult : default
+        Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigationContext? context) where TResult : default
         {
             var viewModel = serviceProvider.GetViewModel<TViewModel>(context);
             var container = serviceProvider.GetRequiredService<IIocConfiguration>();

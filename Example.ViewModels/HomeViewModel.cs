@@ -12,7 +12,7 @@ namespace Example.ViewModels
         IIocConfiguration iocConfiguration,
         INotificationManager notificationManager,
         ISystemNotificationService systemNotificationService,
-        IRequestedTheme requestedTheme) : ObservableObject, IViewModelBase
+        IRequestedThemeService requestedTheme) : ObservableObject, IViewModelBase
     {
         public static string Title => "Welcome to home";
 

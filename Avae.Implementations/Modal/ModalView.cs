@@ -1,15 +1,13 @@
 ﻿using Avae.Abstractions;
-using Avae.Services;
 using Avalonia.Controls;
 using MsBox.Avalonia.Base;
-using MsBox.Avalonia.ViewModels;
 
 namespace Avae.Implementations
 {
-    internal partial class ModalView<T, TResult> : UserControl, IFullApi<TResult>, ISetCloseAction
-        where T : ICloseableViewModel<TResult>
+    internal partial class ModalView<T, TResult> : UserControl, IFullApi<TResult?>, ISetCloseAction
+        where T : ICloseableViewModel<TResult?>
     {
-        public ModalView(ModalViewModel<T, TResult> viewModel)
+        public ModalView(ModalViewModel<T, TResult?> viewModel)
         {
             DataContext = viewModel;
             EventHandler<TResult>? closeRequested = null!;
@@ -27,15 +25,15 @@ namespace Avae.Implementations
 
         protected override Type StyleKeyOverride => typeof(DialogViewBase);
 
-        private TResult _buttonResult =  default;
+        private TResult? _buttonResult =  default;
         private Action _closeAction= () => { };
 
-        public void SetButtonResult(TResult bdName)
+        public void SetButtonResult(TResult? bdName)
         {
             _buttonResult = bdName;
         }
 
-        public TResult GetButtonResult()
+        public TResult? GetButtonResult()
         {
             return _buttonResult;
         }

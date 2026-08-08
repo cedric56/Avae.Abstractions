@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Avae.DAL
 {
@@ -12,7 +13,7 @@ namespace Avae.DAL
         protected override DbCommand CreateDbCommand()
             => new DBLogCommand(provider.GetService<ILogger>(), Inner.CreateCommand(), provider.GetService<DBOptions>()?.ConnectionType ?? DBConnectionType.Unspecified);
 
-        // Everything else MUST pass-through 1:1
+        [AllowNull]
         public override string ConnectionString { get => Inner.ConnectionString; set => Inner.ConnectionString = value; }
         public override string Database => Inner.Database;
         public override string DataSource => Inner.DataSource;

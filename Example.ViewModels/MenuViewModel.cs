@@ -107,10 +107,10 @@ namespace Example.ViewModels
                     action(e);                    
                 }
 
-                CurrentPage = null!;
+                ContextFor = null!;
             };
 
-            CurrentPage = _router.GoTo(viewModel);            
+            ContextFor = _router.GoTo(viewModel);            
         }
 
         protected override void NotifyPropertyChanged(string propertyName)

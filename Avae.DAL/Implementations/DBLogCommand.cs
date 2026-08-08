@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Avae.DAL
 {
@@ -8,12 +9,13 @@ namespace Avae.DAL
     {
         private bool _disposed;
 
+        [AllowNull]
         public override string CommandText
         {
-            get => command.CommandText;
+            get => command.CommandText;            
             set
             {
-                if (connectionType == DBConnectionType.Sqlite)
+                if (value != null && connectionType == DBConnectionType.Sqlite)
                     value = value.Replace("SCOPE_IDENTITY", "last_insert_rowid");
 
                 command.CommandText = value;

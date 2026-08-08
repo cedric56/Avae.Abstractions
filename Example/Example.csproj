@@ -1,10 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net11.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <LangVersion>latest</LangVersion>
-    <!--<MagicOnionClientGenerate>true</MagicOnionClientGenerate>-->
-    <!--<MagicOnionGenerateMessagePackFormatterAndResolver>true</MagicOnionGenerateMessagePackFormatterAndResolver>-->
+    <Nullable>enable</Nullable>    
   </PropertyGroup>
 
   <ItemGroup>

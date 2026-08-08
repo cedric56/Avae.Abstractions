@@ -70,9 +70,9 @@ namespace Avae.Grpc
             {
                 var service = provider.GetRequiredService<IGrpcLayer>();
                 var result = await service.FindByAnyAsync(typeof(T).Name, filters);
-                if (!result.Successful)
-                    throw new Exception(result.Exception);
-                return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
+                if (!result.Successful) throw new Exception(result.Exception);
+                if (result.Data == Array.Empty<byte>()) return [];
+                return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data);
             }
             catch (Exception ex)
             {
@@ -88,7 +88,8 @@ namespace Avae.Grpc
                 if (OperatingSystem.IsBrowser())
                 {
                     var request = provider.GetRequiredService<IXmlHttpRequest>();
-                    var result = request.Send(nameof(GetAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, id, commandTimeout }));
+                    var result = request.Send(nameof(GetAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, id, commandTimeout ?? int.MaxValue }));
+                    if (result == Array.Empty<byte>()) return null;
                     return MessagePackSerializer.Deserialize<T>(result);
                 }
                 return AsyncHelper.RunSync(() => GetAsync<T>(id, transaction, commandTimeout));
@@ -107,7 +108,7 @@ namespace Avae.Grpc
                 if (OperatingSystem.IsBrowser())
                 {
                     var request = provider.GetRequiredService<IXmlHttpRequest>();
-                    var data = request.Send(nameof(GetAllAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, commandTimeout }));
+                    var data = request.Send(nameof(GetAllAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, commandTimeout ?? int.MaxValue }));
                     return MessagePackSerializer.Deserialize<IEnumerable<T>>(data) ?? [];
                 }
                 return AsyncHelper.RunSync(() => GetAllAsync<T>(transaction, commandTimeout));

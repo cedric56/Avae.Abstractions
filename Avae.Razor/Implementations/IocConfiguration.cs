@@ -10,10 +10,10 @@ namespace Avae.Razor
 {
     public class IocConfiguration(IServiceProvider serviceProvider, Action<IIocContainer>? configure = null) :
             IIocConfiguration, ITaskDialogService, IContentDialogService, 
-            Avae.Services.IDialogService,
+            IDialogService,
             ISystemNotificationService,
             INotificationManager,
-            IRequestedTheme
+            IRequestedThemeService
     {
         public EventHandler<RequestedTheme>? RequestedThemeChanged;
 

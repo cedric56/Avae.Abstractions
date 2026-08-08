@@ -10,8 +10,17 @@ namespace Avae.Sqlite
 {
     public static class Extensions
     {
-        public class SqliteFactory(string connectionString, bool isTransaction = true) : DBFactory<SqliteConnection>(connectionString)
+        public class SqliteFactory : DBFactory<SqliteConnection>
         {
+            private readonly string connectionString;
+            private readonly bool isTransaction;
+            public SqliteFactory(string connectionString, bool isTransaction = true)
+                : base(connectionString)
+            {
+                this.connectionString = connectionString;
+                this.isTransaction = isTransaction;
+            }
+
             public override DbConnection? CreateConnection()
             {
                 var connection = new SqliteConnection()

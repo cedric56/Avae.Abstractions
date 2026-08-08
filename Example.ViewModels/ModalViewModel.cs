@@ -52,7 +52,7 @@ namespace Example.ViewModels
                 new() { Command = CancelCommand, Name="Annuler"}
             ];
 
-        public string? Title => "Modal";
+        public string Title => "Modal";
 
         public string this[string columnName]
         {

@@ -34,7 +34,7 @@ else
 
     private bool IsEnabled => ViewModel.SelectedPerson == null;
 
-    private ComponentView? CurrentView => ViewModel.CurrentPage as ComponentView;
+    private ComponentView? CurrentView => ViewModel.ContextFor as ComponentView;
 
 
     protected async override Task OnAfterRenderAsync(bool firstRender)

@@ -57,7 +57,7 @@
 					<Rectangle Height="2" Width="20" Fill="White"/>
 				</StackPanel>
 			</Button>
-					<TransitioningContentControl Content="{Binding CurrentPage}"/>
+					<TransitioningContentControl Content="{Binding ContextFor}"/>
 						</Grid>
 				</SplitView.Content>
 			</SplitView>

@@ -23,7 +23,7 @@ namespace Avae.Maui
             builder.Services.AddSingleton<ITaskDialogService>(GetConfiguration);
             builder.Services.AddSingleton<ISystemNotificationService>(GetConfiguration);
             builder.Services.AddSingleton<INotificationManager>(GetConfiguration);
-            builder.Services.AddSingleton<IRequestedTheme>(GetConfiguration);
+            builder.Services.AddSingleton<IRequestedThemeService>(GetConfiguration);
             builder.Services.AddSingleton<ILogger>(LoggerFactory.Create(builder =>
             {
                 build?.Invoke(builder);

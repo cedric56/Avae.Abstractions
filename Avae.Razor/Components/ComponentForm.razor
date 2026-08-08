@@ -55,7 +55,7 @@
     [Parameter]
     public required PagesViewModelBase ViewModel { get; set; }
 
-    private ComponentView? CurrentView => ViewModel.CurrentPage as ComponentView;
+    private ComponentView? CurrentView => ViewModel.ContextFor as ComponentView;
 
     private bool isDone = false;
 
@@ -66,11 +66,11 @@
         if(!isDone)
         {
             isDone = true;
-            ViewModel.CurrentPageChanged += OnCurrentPageChanged;
+            ViewModel.ContextForChanged += OnContextForChanged;
         }
     }
 
-    private async void OnCurrentPageChanged(object? sender, IContextFor page)
+    private async void OnContextForChanged(object? sender, IContextFor page)
     {
         await InvokeAsync(StateHasChanged);
     }

@@ -21,7 +21,7 @@ namespace Example.Maui
                     ContentTemplate = new DataTemplate(() =>
                     {
                         vm.SelectedPage = page;
-                        return vm.CurrentPage;
+                        return vm.ContextFor;
                     })
                 });
             }

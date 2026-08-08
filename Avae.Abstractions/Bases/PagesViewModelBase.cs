@@ -7,7 +7,7 @@ namespace Avae.Abstractions
     /// </summary>
     public abstract partial class PagesViewModelBase : IViewModelBase 
     {
-        public EventHandler<IContextFor>? CurrentPageChanged;
+        public EventHandler<IContextFor>? ContextForChanged;
 
         protected virtual void OnViewModelChanged(IViewModelBase viewModel)
         {
@@ -15,11 +15,11 @@ namespace Avae.Abstractions
             _selectedPage = Pages.First(p => p.ViewModelType == type);
             if (dico.TryGetValue(_selectedPage, out var context))
             {
-                _currentPage = context.Key;
+                _contextFor = context.Key;
             }
             NotifyPropertyChanged(nameof(SelectedPage));
-            NotifyPropertyChanged(nameof(CurrentPage));
-            CurrentPageChanged?.Invoke(this, _currentPage);
+            NotifyPropertyChanged(nameof(ContextFor));
+            ContextForChanged?.Invoke(this, _contextFor);
             RaiseCanExecuteChanged();
         }
 
@@ -64,15 +64,15 @@ namespace Avae.Abstractions
         /// <summary>
         /// The currently selected page in the menu.
         /// </summary>
-        private IContextFor _currentPage = null!;
-        public IContextFor CurrentPage 
+        private IContextFor _contextFor = null!;
+        public IContextFor ContextFor 
         { 
-            get { return _currentPage; } 
+            get { return _contextFor; } 
             set 
             { 
-                _currentPage = value;
-                NotifyPropertyChanged(nameof(CurrentPage));
-                CurrentPageChanged?.Invoke(this, _currentPage);
+                _contextFor = value;
+                NotifyPropertyChanged(nameof(ContextFor));
+                ContextForChanged?.Invoke(this, _contextFor);
             } 
         }
 
@@ -125,16 +125,16 @@ namespace Avae.Abstractions
 
             if (dico.TryGetValue(value, out var context))
             {
-                CurrentPage = context.Key;
+                ContextFor = context.Key;
                 _router.AddHistory(context.Value);
             }
             else
             {
-                var page = GoTo(value, out var viewModel);  
+                var contextFor = GoTo(value, out var viewModel);  
                 await value.OnLaunched(viewModel);                
-                dico.Add(value, new KeyValuePair<IContextFor, IViewModelBase>(page, viewModel));
+                dico.Add(value, new KeyValuePair<IContextFor, IViewModelBase>(contextFor, viewModel));
 
-                CurrentPage = page;
+                ContextFor = contextFor;
             }
 
             RaiseCanExecuteChanged();

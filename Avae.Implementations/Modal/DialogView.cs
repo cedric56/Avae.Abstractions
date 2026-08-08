@@ -11,15 +11,15 @@ public abstract class DialogViewBase : UserControl
 }
 
 public class DialogView<TViewModel, TResult> : DialogViewBase,
-    IModalFor<TViewModel, TResult>
-    where TViewModel : class, ICloseableViewModel<TResult>
+    IModalFor<TViewModel, TResult?>
+    where TViewModel : class, ICloseableViewModel<TResult?>
 {
     public object? Context { get => DataContext; set => DataContext = value; }
     protected virtual string Icon { get; } = "";
     protected TViewModel? ViewModel { get { return DataContext as TViewModel; } }
     protected virtual TypeDialog TypeDialog { get; } = TypeDialog.Box;
 
-    private ContentDialogParams CreateContentDialogParams(ModalParameters<TViewModel, TResult> parameters)
+    private ContentDialogParams CreateContentDialogParams(ModalParameters<TViewModel, TResult?> parameters)
     {
         ContentDialogParams? @params = null;
 
@@ -61,7 +61,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
         if(viewModel is null)
             throw new ArgumentNullException(nameof(viewModel));
 
-        var modalParams = new ModalParameters<TViewModel, TResult>(Icon, viewModel)
+        var modalParams = new ModalParameters<TViewModel, TResult?>(Icon, viewModel)
         {
             Content = this,
             ContentTitle = viewModel.Title,
@@ -83,9 +83,9 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
         }
         else
         {
-            var modalViewModel = new ModalViewModel<TViewModel, TResult>(modalParams, viewModel);
-            var modalView = new ModalView<TViewModel, TResult>(modalViewModel);
-            var box = new MsBox<ModalView<TViewModel, TResult>, ModalViewModel<TViewModel, TResult>, TResult>(modalView, modalViewModel);
+            var modalViewModel = new ModalViewModel<TViewModel, TResult?>(modalParams, viewModel);
+            var modalView = new ModalView<TViewModel, TResult?>(modalViewModel);
+            var box = new MsBox<ModalView<TViewModel, TResult?>, ModalViewModel<TViewModel, TResult?>, TResult?>(modalView, modalViewModel);
             if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
                 result = await box.ShowWindowDialogAsync((Window)TopLevelStateManager.Default.GetActive()!);
             else
