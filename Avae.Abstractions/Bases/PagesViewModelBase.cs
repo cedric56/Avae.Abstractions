@@ -1,15 +1,16 @@
-﻿using System.Collections.ObjectModel;
+﻿using Avae.Abstractions.Bases;
+using System.Collections.ObjectModel;
 
 namespace Avae.Abstractions
 {
     /// <summary>
     /// This class is used to manage the pages in the application.
     /// </summary>
-    public abstract partial class PagesViewModelBase : IViewModelBase 
+    public abstract partial class PagesViewModelBase : RouterViewModelBase, IViewModelBase 
     {
         public EventHandler<IContextFor>? ContextForChanged;
 
-        protected virtual void OnViewModelChanged(IViewModelBase viewModel)
+        protected override void OnViewModelChanged(IViewModelBase viewModel)
         {
             var type = viewModel.GetType();
             _selectedPage = Pages.First(p => p.ViewModelType == type);
@@ -20,40 +21,10 @@ namespace Avae.Abstractions
             NotifyPropertyChanged(nameof(SelectedPage));
             NotifyPropertyChanged(nameof(ContextFor));
             ContextForChanged?.Invoke(this, _contextFor);
-            RaiseCanExecuteChanged();
+            base.OnViewModelChanged(viewModel);
         }
-
-        protected abstract void RaiseCanExecuteChanged();
 
         protected abstract void NotifyPropertyChanged(string propertyName);
-
-        public virtual void GoBack()
-        {
-            if (CanGoBack())
-            {
-                var viewModel = _router.Back()!;
-                OnViewModelChanged(viewModel);
-            }
-        }
-
-        public bool CanGoBack()
-        {
-            return _router.CanGoBack;
-        }
-
-        public virtual void GoForward()
-        {
-            if (CanGoForward())
-            {
-                var viewModel = _router.Forward()!;
-                OnViewModelChanged(viewModel);
-            }            
-        }
-
-        public bool CanGoForward()
-        {
-            return _router.CanGoForward;
-        }
 
 
         /// <summary>
@@ -91,15 +62,9 @@ namespace Avae.Abstractions
             }
         }
 
-        /// <summary>
-        /// The router used to navigate between pages.
-        /// </summary>
-        protected Router _router;
-
         public PagesViewModelBase(Router router, bool initialize = true)
+            : base(router)
         {
-            _router = router;
-
             if (initialize)
             {
                 SelectedPage = Pages.FirstOrDefault();
@@ -130,10 +95,9 @@ namespace Avae.Abstractions
             }
             else
             {
-                var contextFor = GoTo(value, out var viewModel);  
-                await value.OnLaunched(viewModel);                
+                var contextFor = GoTo(value, out var viewModel);                  
                 dico.Add(value, new KeyValuePair<IContextFor, IViewModelBase>(contextFor, viewModel));
-
+                await value.OnLaunched(viewModel);
                 ContextFor = contextFor;
             }
 

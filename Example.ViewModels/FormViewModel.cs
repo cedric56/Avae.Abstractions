@@ -4,6 +4,7 @@ using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
+using Example.ViewModels.Defaults;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reactive.Linq;
@@ -11,15 +12,14 @@ using System.Reactive.Linq;
 namespace Example.ViewModels
 {
     [ObservableObject]
-    public partial class FormViewModel(IDialogService dialogService, Router router, Person person) : TestViewModelBase<Person>(router),         
-        IDataErrorInfo
+    public partial class FormViewModel(IDialogService dialogService, Router router, Person person) : ExampleFormViewModelBase<Person>(router), IDataErrorInfo
     {
         public const string KEY = "Page";
 
         [ObservableProperty]
         private bool _isBusy = false;
 
-        public Person Person { get; } = person;
+        public Person Person { get; private set; } = person;
 
         public List<Person> Persons
         {
@@ -82,8 +82,8 @@ namespace Example.ViewModels
                          },
                          Launched = async (viewModel) =>
                          {
-                            await person.LoadContactsAsync();
-                            SelectedItems = [.. person.Contacts.Select(c => c.Person)];
+                            await Person.LoadContactsAsync();
+                            SelectedItems = [.. Person.Contacts.Select(c => c.Person)];
                          }
                     },
                     new PageViewModelBase<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),

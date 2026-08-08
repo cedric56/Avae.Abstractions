@@ -12,7 +12,8 @@
 		    <Button Content="Modal" Command="{Binding ShowModal}" />		
             <Button Content="TaskDialog" Command="{Binding ShowTaskDialog}" />		
             <Button Content="ContentDialog" Command="{Binding ShowContentDialog}" />		
-        <Button Content="Notification" Command="{Binding ShowNotification}" />		
+            <Button Content="Notification" Command="{Binding ShowNotification}" />		
+            <Button Content="System" Command="{Binding ShowSystemNotification}" />		
         </StackPanel>
         
     </Grid>

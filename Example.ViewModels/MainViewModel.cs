@@ -2,52 +2,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
+using Example.ViewModels.Defaults;
 using System.Collections.ObjectModel;
 
 namespace Example.ViewModels;
-
-public abstract partial class ExampleViewModelBase(Router router, bool initialize = true) : PagesViewModelBase(router, initialize)
-{
-    [RelayCommand]
-    public override void GoBack()
-    {
-        base.GoBack();
-    }
-
-    [RelayCommand]
-    public override void GoForward()
-    {
-        base.GoForward();
-    }
-
-    protected override void RaiseCanExecuteChanged()
-    {
-        GoBackCommand.NotifyCanExecuteChanged();
-        GoForwardCommand.NotifyCanExecuteChanged();
-    }
-}
-
-public abstract partial class TestViewModelBase<TResult>(Router router) : FormViewModelBase<TResult>(router)
-{
-    [RelayCommand]
-    public override void GoBack()
-    {
-        base.GoBack();
-    }
-
-    [RelayCommand]
-    public override void GoForward()
-    {
-        base.GoForward();
-    }
-
-    protected override void RaiseCanExecuteChanged()
-    {
-        GoBackCommand.NotifyCanExecuteChanged();
-        GoForwardCommand.NotifyCanExecuteChanged();
-    }
-}
-
 
 [ObservableObject]
 public partial class MainViewModel(Router router) : ExampleViewModelBase(router)

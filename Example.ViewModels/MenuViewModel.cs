@@ -5,6 +5,7 @@ using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
+using Example.ViewModels.Defaults;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 
@@ -110,7 +111,7 @@ namespace Example.ViewModels
                 ContextFor = null!;
             };
 
-            ContextFor = _router.GoTo(viewModel);            
+            ContextFor = _router.GoTo(viewModel);
         }
 
         protected override void NotifyPropertyChanged(string propertyName)

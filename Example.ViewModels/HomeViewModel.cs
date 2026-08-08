@@ -82,7 +82,13 @@ namespace Example.ViewModels
                 "Hello",
                 "World",
                 [new SystemNotificationAction("caption","tag")]);
+            notification.NotificationCompleted += OnNotificationCompleted;
             notification.Show();
+
+            void OnNotificationCompleted(object? sender , SystemNotificationEventArgs e)
+            {
+                notification.NotificationCompleted -= OnNotificationCompleted;
+            }
         }
 
         RequestedTheme? actual = null;

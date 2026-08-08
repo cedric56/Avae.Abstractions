@@ -18,7 +18,7 @@
 
     public interface ISystemNotification
     {
-        event EventHandler<SystemNotificationEventArgs> NotificationCompleted;
+        event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
         void Close();
         void Show();
     }
