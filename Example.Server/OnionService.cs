@@ -1,4 +1,6 @@
-﻿using Avae.DAL;
+﻿using Avae.Abstractions;
+using Avae.DAL;
+using Avae.DAL.Interfaces;
 using Avae.Grpc;
 using Avae.Server;
 using Example.Models;
@@ -11,12 +13,14 @@ namespace Example.Server
 
         static OnionService()
         {
+            var layer = ServiceLocator.GetRequiredService<IDBLayer>();
+
             options = new UnionMessagePackSerializerOptions(UnionResolver.Instance);
 
             EntityHandler.Handlers = new Dictionary<string, EntityHandler>()
             {
-                 { nameof(Person), new EntityHandler<Person>(Layer) },
-                { nameof(Contact), new EntityHandler<Contact>(Layer) }
+                 { nameof(Person), new EntityHandler<Person>(layer) },
+                 { nameof(Contact), new EntityHandler<Contact>(layer) }
             };
         }
 

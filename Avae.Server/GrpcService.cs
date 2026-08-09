@@ -10,73 +10,63 @@ namespace Avae.Server
 {    
     public abstract class GrpcService : ServiceBase<IGrpcLayer>, IGrpcLayer
     {
-        protected static readonly IDBLayer Layer = ServiceLocator.GetRequiredService<IDBLayer>();
-
-        public async UnaryResult<DBResult> FindByAnyAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null)
-        {
-            if (RequestEntityHandler(type, out var result, out var handler, out var options))
-            {
-                return new DBResult()
-                {
-                    Successful = true,
-                    Data = MessagePackSerializer.Serialize(handler!.Enumerable, await handler.FindByAnyAsync(filters, commandTimeout), options)
-                };
-            }
-            return result!;
-        }
-
-        public async UnaryResult<DBResult> GetAllAsync(string type, int? commandTimeout = null)
-        {
-            if (RequestEntityHandler(type, out var result, out var handler, out var options))
-            {
-                return new DBResult()
-                {
-                    Successful = true,
-                    Data = MessagePackSerializer.Serialize(handler!.Enumerable, await handler.GetAllAsync(commandTimeout), options)
-                };
-            }
-            return result!;
-        }
-
-        public async UnaryResult<DBResult> GetAsync(string type, long id, int? commandTimeout = null)
-        {
-            if (RequestEntityHandler(type, out var result, out var handler, out var options))
-            {
-                return new DBResult()
-                {
-                    Successful = true,
-                    Data = MessagePackSerializer.Serialize(handler!.Type, await handler.GetAsync(id, commandTimeout), options)
-                };
-            }
-            return result!;
-        }
-
-        public async UnaryResult<DBResult> WhereAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null)
-        {
-            if (RequestEntityHandler(type, out var result, out var handler, out var options))
-            {
-                return new DBResult()
-                {
-                    Successful = true,
-                    Data = MessagePackSerializer.Serialize(handler!.Enumerable, await handler.WhereAsync(filters, commandTimeout), options)
-                };
-            }
-
-            return result!;
-        }
-
-        private bool RequestEntityHandler(string type, out DBResult? result, out EntityHandler? handler, out UnionMessagePackSerializerOptions? options)
-        {
-            result = null;
-            handler = null;
-            options = GetOptions(type);
-
+        private async UnaryResult<DBResult> Request(string type, Func<EntityHandler, UnionMessagePackSerializerOptions?, Task<byte[]>> serialize)
+        {            
             if (string.IsNullOrWhiteSpace(type))
-                result = new DBResult() { Successful = false, Exception = "Type parameter is required" };
-            else if (!EntityHandler.Handlers.TryGetValue(type, out handler))
-                result = new DBResult() { Successful = false, Exception = "Unable to find entity handler" };
-            
-            return result is null;
+            {
+                return new DBResult() 
+                { 
+                    Successful = false, 
+                    Exception = "Type parameter is required" 
+                };
+            }
+            else if (!EntityHandler.Handlers.TryGetValue(type, out var handler))
+            {
+                return new DBResult() 
+                { 
+                    Successful = false, 
+                    Exception = "Unable to find entity handler" 
+                };
+            }
+            else
+            {
+                try
+                {
+                    return new DBResult()
+                    {
+                        Successful = true,
+                        Data = await serialize(handler, GetOptions(type))
+                    };
+                }
+                catch (Exception ex)
+                {
+                    return new DBResult()
+                    {
+                        Successful = false,
+                        Exception = ex.Message
+                    };
+                }
+            }
+        }
+
+        public UnaryResult<DBResult> FindByAnyAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null)
+        {
+            return Request(type, async (entity, options) => MessagePackSerializer.Serialize(entity.Enumerable, await entity.FindByAnyAsync(filters, commandTimeout), options));
+        }
+
+        public UnaryResult<DBResult> GetAllAsync(string type, int? commandTimeout = null)
+        {
+            return Request(type, async (entity, options) => MessagePackSerializer.Serialize(entity.Enumerable, await entity.GetAllAsync(commandTimeout), options));
+        }
+
+        public UnaryResult<DBResult> GetAsync(string type, long id, int? commandTimeout = null)
+        {
+            return Request(type, async (entity, options) => MessagePackSerializer.Serialize(entity.Type, await entity.GetAsync(id, commandTimeout), options));
+        }
+
+        public UnaryResult<DBResult> WhereAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null)
+        {
+            return Request(type, async (entity, options) => MessagePackSerializer.Serialize(entity.Enumerable, await entity.WhereAsync(filters, commandTimeout), options));
         }
 
         protected virtual UnionMessagePackSerializerOptions? GetOptions(string type)
@@ -86,12 +76,14 @@ namespace Avae.Server
 
         public async UnaryResult<DBResult> Remove(DBTransactional transactional)
         {
-            return await transactional.Remove(Layer);
+            var layer = ServiceLocator.GetRequiredService<IDBLayer>();
+            return await transactional.Remove(layer);
         }
 
         public async UnaryResult<DBResult> Save(DBTransactional transactional)
         {
-            return await transactional.Save(Layer);
+            var layer = ServiceLocator.GetRequiredService<IDBLayer>();
+            return await transactional.Save(layer);
         }
     }
 }
