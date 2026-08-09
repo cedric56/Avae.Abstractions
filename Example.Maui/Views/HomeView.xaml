@@ -27,5 +27,8 @@ HorizontalOptions="Center" />
         <Button Text="Theme" Command="{Binding ShowRequestedThemeCommand}" 
                 VerticalOptions="Center"
 HorizontalOptions="Center" />
+        <Button Text="Speak" Command="{Binding SpeakCommand}" 
+                VerticalOptions="Center"
+HorizontalOptions="Center" />
     </VerticalStackLayout>
 </ContentPage>

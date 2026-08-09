@@ -1,27 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net10.0;net10.0-windows</TargetFrameworks>
+    <TargetFrameworks>net10.0;net10.0-windows;net10.0-android</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
-    <!-- OS Detection -->
     <IsWindowsOS>$([MSBuild]::IsOSPlatform('Windows'))</IsWindowsOS>
     <IsWindowsTarget>$(TargetFramework.Contains('-windows'))</IsWindowsTarget>
     <IsWebAssembly>$(TargetFramework.Contains('WebAssembly'))</IsWebAssembly>
-
-    <!-- FIX: Evaluate the condition properly -->
     <IsWindowsWithoutTfm Condition="'$(IsWindowsOS)' == 'true' AND '$(IsWindowsTarget)' == 'false'">true</IsWindowsWithoutTfm>
-
     <PackageId>Avae.Essentials</PackageId>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <AssemblyVersion>10.0.0.0</AssemblyVersion>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <!--<PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <AssemblyVersion>10.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <AssemblyVersion>11.0.0.0</AssemblyVersion>
+  </PropertyGroup>-->
 
   <PropertyGroup Condition="'$(IsWindowsWithoutTfm)' == 'true' OR '$(IsWebAssembly)' == 'true'">
     <AssemblyName>Microsoft.Maui.Essentials</AssemblyName>
     <RootNamespace>Microsoft.Maui.Essentials</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

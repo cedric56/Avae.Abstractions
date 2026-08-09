@@ -92,25 +92,19 @@ public partial class App : AvaeApplication, IIocConfiguration
         base.OnFrameworkInitializationCompleted();
 
         Styles.Add(new UrsaSemiTheme());
+    }
 
-        // Line below is needed to remove Avalonia data validation.
-        // Without this line you will get duplicate validations from both Avalonia and CT
-        //BindingPlugins.DataValidators.RemoveAt(0);
+    protected override Window GetMainWindow()
+    {
+        return new MainWindow();
+    }
 
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+    protected override Control GetMainView()
+    {
+        return new MainView()
         {
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainViewModel(new Router(Container.Provider))
-            };
-        }
-        else if(ApplicationLifetime is ISingleViewApplicationLifetime singleView)
-        {
-            singleView.MainView = new MainView()
-            {
-                DataContext = new MainViewModel(new Router(Container.Provider))
-            };
-        }
+            DataContext = new MainViewModel(new Router(Container.Provider))
+        };
     }
 
     public override void Dispose()

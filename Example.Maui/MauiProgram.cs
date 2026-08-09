@@ -43,6 +43,7 @@ namespace Example.Maui
             builder
                 .ConfigureIocContainer<App>(RegisterViews)
                 .UseMauiApp<App>()
+                //.UseMauiEssentials()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

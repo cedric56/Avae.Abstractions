@@ -2,6 +2,7 @@
 using Avae.Implementations.Services;
 using Avae.Services;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Themes.Fluent;
@@ -134,8 +135,22 @@ namespace Avae.Implementations
 
             TopLevelStateManager.Initialize();
 
-            var desktop = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-            desktop?.Exit += OnDesktopExit;
+            var mainView = GetMainView();
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                var window = GetMainWindow();
+                window.DataContext = mainView;
+                desktop.MainWindow = window;
+                desktop.Exit += OnDesktopExit;
+            }
+            else if (ApplicationLifetime is IActivityApplicationLifetime activityLifetime)
+            {
+                activityLifetime.MainViewFactory = () => mainView;
+            }
+            else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
+            {
+                singleView.MainView = mainView;
+            }
 
             void OnDesktopExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
             {
@@ -143,6 +158,10 @@ namespace Avae.Implementations
                 Dispose();
             }
         }
+
+        protected abstract Window GetMainWindow();
+
+        protected abstract Control GetMainView();
 
         public virtual void Dispose()
         {

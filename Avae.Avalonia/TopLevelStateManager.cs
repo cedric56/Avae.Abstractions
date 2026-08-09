@@ -45,6 +45,7 @@ namespace Avae.Implementations
 
         internal static void Initialize()
         {
+            SetDefault(new TopLevelStateManagerImplementation());
             TopLevel.GotFocusEvent.AddClassHandler(typeof(TopLevel), (sender, args) =>
             {
                 Default.OnActivated((TopLevel)sender!);
@@ -65,7 +66,7 @@ namespace Avae.Implementations
         {
             var topLevel = manager.GetActive();
             if (throwOnNull && topLevel == null)
-                throw new NullReferenceException("The active Window cannot be detected. Ensure that you have called Init in your Application class.");
+                throw new NullReferenceException("The active TopLevel cannot be detected. Ensure that you have called Init in your Application class.");
 
             return topLevel;
         }
@@ -103,12 +104,14 @@ namespace Avae.Implementations
         {
             var lifetime = Application.Current?.ApplicationLifetime;
 
-            return lifetime switch
+            var active = lifetime switch
             {
                 IClassicDesktopStyleApplicationLifetime desktop => _active ?? TopLevel.GetTopLevel(desktop.MainWindow),
-                ISingleViewApplicationLifetime singleView => TopLevel.GetTopLevel(singleView.MainView),
-                _ => null
+                ISingleViewApplicationLifetime singleView => _active ?? TopLevel.GetTopLevel(singleView.MainView),
+                _ => _active ?? TopLevel.GetTopLevel(null)
             };
+            
+            return active ?? TopLevel.GetTopLevel(null);
         }
     }
 }
