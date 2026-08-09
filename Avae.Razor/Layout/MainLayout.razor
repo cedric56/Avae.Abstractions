@@ -7,26 +7,6 @@
 @inject IIocConfiguration Configuration
 @inject ComponentView NavMenu
 
-<style>
-    .form {
-        display: grid;
-        grid-template-rows: auto 1fr auto;
-        padding: 2px
-    }
-
-    .grid {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        height: 93vh;
-    }
-
-    .center {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-</style>
-
 @* Required *@
 <MudThemeProvider IsDarkMode="IocConfiguration.IsDarkMode" />
 <MudPopoverProvider />
@@ -49,19 +29,6 @@
     </MudMainContent>
 </MudLayout>
 
-@* <div class="page">
-   
-    <div class="sidebar">
-        <DynamicComponent Type="@NavMenu.Type"/>
-    </div>
-
-    <main>
-        <article class="content px-4">             
-            @Body
-        </article>
-    </main>
-</div>
- *@
 @code
 {
     public string Title { get; set; } = "Application";
@@ -82,9 +49,9 @@
         IocConfiguration.RequestedThemeChanged += ThemeChanged;
     }
 
-    void ThemeChanged(object? sender, RequestedTheme theme)
+    async void ThemeChanged(object? sender, RequestedTheme theme)
     {
-        InvokeAsync(() => StateHasChanged());
+        await InvokeAsync(() => StateHasChanged());
     }
 
     public void Dispose()

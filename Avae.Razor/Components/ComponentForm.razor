@@ -2,12 +2,12 @@
 @using MudBlazor
 @inherits Avae.Razor.Components.ComponentPage
 
-<div class="grid">
+<div class="split">
     <MudOverlay Visible="@IsBusy" DarkBackground="true" Absolute="true" ZIndex="9999">
         <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
     </MudOverlay>
     <div>
-        <MudList T="Avae.Abstractions.PageViewModelBase"
+        <MudList T="PageViewModelBase"
                  @bind-SelectedValue="@ViewModel.SelectedPage">
             @foreach (var page in ViewModel.Pages)
             {
@@ -21,12 +21,13 @@
         <div>
             @ChildContent
         </div>
-        <div class="@Class">
-            @if(CurrentView != null)
+        
+        <div class="@CurrentView?.Class">
+            @if (CurrentView != null)
             {
                 <DynamicComponent Type="@CurrentView.Type"
                                 Parameters="@CurrentView.Parameters" />
-            }
+            }   
         </div>
         <div>
             @Buttons
@@ -43,14 +44,6 @@
 
     [Parameter]
     public bool IsBusy { get; set; }
-
-    private string? Class
-    {
-        get
-        {
-            return true == CurrentView?.IsCenter ? "center" : null;
-        }
-    }
 
     [Parameter]
     public required PagesViewModelBase ViewModel { get; set; }

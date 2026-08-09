@@ -23,7 +23,7 @@ namespace Example.Razor
                 {
                     "Footer" => new ComponentView<MudText>("Footer"),
                     "IconSource" => new ComponentView<MudImage>() { Parameters = new Dictionary<string, object>() { { nameof(MudImage.Src), "avalonia-logo.ico" } } },
-                    "Content" => new ComponentView<MudText>("Here is my content"),
+                    "Content" => new CenteredComponentView<MudText>("Here is my content"),
                     _ => throw new NotImplementedException()
                 };
             });
@@ -49,7 +49,7 @@ namespace Example.Razor
                 {
                     return new CenteredComponentView<FormPage3, FormPage3ViewModel>(sp, context, new Dictionary<string, object>()
                         {
-                            { "Person", context.ViewParameters[0] }
+                            { nameof(Person), context.ViewParameters[0] }
                         });
                 }
 

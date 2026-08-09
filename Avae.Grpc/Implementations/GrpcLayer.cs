@@ -10,7 +10,7 @@ namespace Avae.Grpc
 {
     //TODO CommandTimeout on WHERE AND FINDBYANY
     public partial class GrpcLayer(IServiceProvider provider) : IDBLayer
-    {
+    {        
         public async Task<DBResult> Remove(DBTransactional transactional)
         {
             try
@@ -53,6 +53,7 @@ namespace Avae.Grpc
                 {
                     var request = provider.GetRequiredService<IXmlHttpRequest>();
                     var result = request.Send(nameof(FindByAnyAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters }));
+                    if (result == Array.Empty<byte>()) return [];
                     return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
                 }
                 return AsyncHelper.RunSync(() => FindByAnyAsync<T>(filters));
@@ -108,8 +109,9 @@ namespace Avae.Grpc
                 if (OperatingSystem.IsBrowser())
                 {
                     var request = provider.GetRequiredService<IXmlHttpRequest>();
-                    var data = request.Send(nameof(GetAllAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, commandTimeout ?? int.MaxValue }));
-                    return MessagePackSerializer.Deserialize<IEnumerable<T>>(data) ?? [];
+                    var result = request.Send(nameof(GetAllAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, commandTimeout ?? int.MaxValue }));
+                    if (result == Array.Empty<byte>()) return [];
+                    return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
                 }
                 return AsyncHelper.RunSync(() => GetAllAsync<T>(transaction, commandTimeout));
             }
@@ -127,6 +129,7 @@ namespace Avae.Grpc
                 var service = provider.GetRequiredService<IGrpcLayer>();
                 var result = await service.GetAllAsync(typeof(T).Name);
                 if (!result.Successful) throw new Exception(result.Exception);
+                if (result.Data == Array.Empty<byte>()) return [];
                 return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
             }
             catch (Exception ex)
@@ -143,6 +146,7 @@ namespace Avae.Grpc
                 var service = provider.GetRequiredService<IGrpcLayer>();
                 var result = await service.GetAsync(typeof(T).Name, id);
                 if (!result.Successful) throw new Exception(result.Exception);
+                if (result.Data == Array.Empty<byte>()) return null;
                 return MessagePackSerializer.Deserialize<T>(result.Data);
             }
             catch (Exception ex)
@@ -160,6 +164,7 @@ namespace Avae.Grpc
                 {
                     var request = provider.GetRequiredService<IXmlHttpRequest>();
                     var result = request.Send(nameof(WhereAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters }));
+                    if (result == Array.Empty<byte>()) return [];
                     return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
                 }
                 return AsyncHelper.RunSync(() => WhereAsync<T>(filters));
@@ -178,6 +183,7 @@ namespace Avae.Grpc
                 var service = provider.GetRequiredService<IGrpcLayer>();
                 var result = await service.WhereAsync(typeof(T).Name, filters);
                 if (!result.Successful) throw new Exception(result.Exception);
+                if (result.Data == Array.Empty<byte>()) return [];
                 return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
             }
             catch(Exception ex)

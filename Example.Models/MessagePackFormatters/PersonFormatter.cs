@@ -5,7 +5,24 @@ using System.Text;
 
 namespace Example.Models.MessagePackFormatters
 {
-    public class PersonFormatter : IMessagePackFormatter<Person?>, IMessagePackFormatter<DBTransactional?>
+    //public abstract class DBT<T> : IMessagePackFormatter<T?>, IDBTransactionalFormatter
+    //{
+    //    //public object? Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    //    //{
+    //    //    throw new NotImplementedException();
+    //    //}
+
+    //    public void Serialize(ref MessagePackWriter writer, object? value, MessagePackSerializerOptions options)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    public abstract void Serialize(ref MessagePackWriter writer, T? value, MessagePackSerializerOptions options);
+
+    //    public abstract T? Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options);
+    //}
+
+    public class PersonFormatter : IMessagePackFormatter<Person?>, IDBTransactionalFormatter//, IMessagePackFormatter<DBTransactional?>
     {
         public void Serialize(ref MessagePackWriter writer, Person? value, MessagePackSerializerOptions options)
         {
@@ -15,12 +32,14 @@ namespace Example.Models.MessagePackFormatters
                 return;
             }
 
-            if (options is MessagePackSerializerModels)
+            if (options is UnionMessagePackSerializerOptions)
             {
+                //Client input => When we call server it sends only without contacts
                 SetPersonFields(ref writer, 3);
             }
             else
             {
+                //Server output => When we send to server we send contacts
                 SetPersonFields(ref writer, 4);
 
                 var contacts = value.Contacts;
@@ -59,6 +78,7 @@ namespace Example.Models.MessagePackFormatters
             var count = reader.ReadArrayHeader();
             if (count == 3)
             {
+                //Client input => When we call we only read without contacts
                 return new Person
                 {
                     Id = reader.ReadInt64(),
@@ -68,6 +88,7 @@ namespace Example.Models.MessagePackFormatters
             }
             else if (count == 4)
             {
+                //Server input => When client call IDBLayer.Save contacts are sent also
                 var person = new Person
                 {
                     Id = reader.ReadInt64(),
@@ -89,20 +110,15 @@ namespace Example.Models.MessagePackFormatters
                 return person;
             }
 
-
-
             throw new MessagePackSerializationException($"Invalid Person format: expected count = 3, got {count}");
         }
 
-        public void Serialize(ref MessagePackWriter writer, DBTransactional? value, MessagePackSerializerOptions options)
+        public void Serialize(ref MessagePackWriter writer, object? value, MessagePackSerializerOptions options)
         {
-            if (value is Person person)
-                Serialize(ref writer, person, options);
-            else
-                writer.WriteNil();
+            Serialize(ref writer, value as Person, options);
         }
 
-        DBTransactional? IMessagePackFormatter<DBTransactional?>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+        object? IDBTransactionalFormatter.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
         {
             return Deserialize(ref reader, options);
         }

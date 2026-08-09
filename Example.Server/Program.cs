@@ -6,16 +6,8 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
-{
-    builder.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .WithExposedHeaders("grpc-status", "grpc-message", "grpc-encoding")
-            .SetIsOriginAllowed(origin => true);
-}));
-
+builder.Services.AddSingleton<SqlHub<Person>>();
+builder.Services.UseDBSqlLayer<SqliteConnection>();
 builder.Services.AddSignalR();
 builder.Services.AddMagicOnion();
 builder.Services.AddGrpc(opt =>
@@ -24,10 +16,14 @@ builder.Services.AddGrpc(opt =>
     opt.MaxReceiveMessageSize = int.MaxValue;
     opt.MaxSendMessageSize = int.MaxValue;
 });
-
-builder.Services.AddSingleton<SqlHub<Person>>();
-builder.Services.UseDBSqlLayer<SqliteConnection>();
-
+builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
+{
+    builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithExposedHeaders("grpc-status", "grpc-message", "grpc-encoding")
+            .SetIsOriginAllowed(origin => true);
+}));
 builder.WebHost.ConfigureKestrel(options =>
 {
     //GRPC port
@@ -37,15 +33,16 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 var app = builder.Build();
-ServiceLocator.SetDefault(app.Services);
-
 app.UseCors("AllowAll");
 app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
 app.MapMagicOnionService().EnableGrpcWeb();
 app.MapHub<SqlHub<Person>>("/PersonHub");
 
 //Trigger is needed
+ServiceLocator.SetDefault(app.Services);
+//Launch DBMonitor
 _ = ServiceLocator.GetRequiredService<SqlHub<Person>>();
+//Create DB
 _ = DBBase.Instance;
 
 app.Run();

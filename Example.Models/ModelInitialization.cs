@@ -1,7 +1,6 @@
 ﻿using Avae.Abstractions;
+using Avae.DAL;
 using Example.Models.MessagePackFormatters;
-using MessagePack;
-using MessagePack.Resolvers;
 using System.Runtime.CompilerServices;
 
 namespace Example.Models
@@ -14,9 +13,7 @@ namespace Example.Models
         public static void Init()
         {
             InputValidation<Person>.Init();
-
-            var resolver = CompositeResolver.Create(ModelsResolver.Instance);
-            MessagePackSerializer.DefaultOptions = MessagePackSerializer.DefaultOptions.WithResolver(resolver);
+            UnionResolver.Instance.Register<Person?>(new PersonFormatter());                       
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Avae.Razor.Components
 {
     public abstract class ComponentView
     {
-        public virtual bool IsCenter => false;
+        public virtual string Class => string.Empty;
 
         public abstract Type Type { get; }
 
@@ -28,11 +28,15 @@ namespace Avae.Razor.Components
         public override Type Type => typeof(TView);
     }
 
-    public class CenteredComponentView<TView> : ComponentView
+    public class CenteredComponentView<TView> : ComponentView<TView>
     {
-        public override Type Type => typeof(TView);
+        public CenteredComponentView(object content)
+            : base(content)
+        {
 
-        public override bool IsCenter => true;
+        }
+
+        public override string Class => "center";
     }
 
     public class ComponentView<TView, TViewModel> : ComponentView, IContextFor<TViewModel> where TViewModel : class, IViewModelBase
@@ -83,6 +87,6 @@ namespace Avae.Razor.Components
         {
         }
 
-        public override bool IsCenter => true;
+        public override string Class => "center";
     }
 }

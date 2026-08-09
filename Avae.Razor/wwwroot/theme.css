@@ -1,0 +1,40 @@
+﻿.form {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 2px
+}
+
+.split {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    /*height: 93vh;*/
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.columns {
+    display: grid;
+    grid-template-columns: auto auto auto
+}
+
+.dialog-container {
+    /* Dynamic sizing using clamp() */
+    min-width: clamp(300px, 50vw, 800px);
+    min-height: clamp(200px, 40vw, 600px);
+    /* Or for more responsive */
+    width: clamp(300px, 70vw, 800px);
+    height: clamp(200px, 50vw, 600px);
+}
+
+@media (max-width: 600px) {
+    .dialog-container {
+        min-width: 70vw;
+        min-height: 50vw;
+        width: 70vw;
+        height: 50vw;
+    }
+}

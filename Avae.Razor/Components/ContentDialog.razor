@@ -1,21 +1,19 @@
 ﻿@using System.Windows.Input
 @using Avae.Services
 @using MudBlazor
-<style>
-    .columns
-    {
-        display:grid;
-        grid-template-columns:auto auto auto
-    }
-</style>
-@if (ComponentView != null)
-{
-    <DynamicComponent Type="@ComponentView.Type" Parameters="@ComponentView.Parameters"/>
-}
-<div class="columns">
-    <MudButton Disabled="@Parameters.IsPrimaryButtonEnabled" style="@Style(@Parameters.PrimaryButtonText)" OnClick="Primary">@Parameters.PrimaryButtonText</MudButton>
-    <MudButton Disabled="@Parameters.IsSecondaryButtonEnabled" style="@Style(@Parameters.SecondaryButtonText)" OnClick="Secondary">@Parameters.SecondaryButtonText</MudButton>
-    <MudButton style="@Style(@Parameters.CloseButtonText)" OnClick="Close">@Parameters.CloseButtonText</MudButton>
+<div class="dialog-container form">
+    <div></div>
+    <div class="@ComponentView?.Class">
+        @if (ComponentView != null)
+        {
+            <DynamicComponent  Type="@ComponentView.Type" Parameters="@ComponentView.Parameters"/>
+        }
+    </div>
+    <div class="columns center">
+        <MudButton Disabled="@Parameters.IsPrimaryButtonEnabled" style="@Style(@Parameters.PrimaryButtonText)" OnClick="Primary">@Parameters.PrimaryButtonText</MudButton>
+        <MudButton Disabled="@Parameters.IsSecondaryButtonEnabled" style="@Style(@Parameters.SecondaryButtonText)" OnClick="Secondary">@Parameters.SecondaryButtonText</MudButton>
+        <MudButton style="@Style(@Parameters.CloseButtonText)" OnClick="Close">@Parameters.CloseButtonText</MudButton>
+    </div>
 </div>
 @code {
 
