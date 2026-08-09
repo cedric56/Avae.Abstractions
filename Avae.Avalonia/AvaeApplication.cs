@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Styling;
 using Avalonia.Themes.Fluent;
 using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,7 +53,7 @@ namespace Avae.Implementations
                              sp.GetRequiredService<IContentDialogService>() as ContentDialogService ??
                              throw new InvalidOperationException("Failed to resolve IContentDialogService.");
             });
-            services.AddTransient<INotificationManager, NotificationService>();
+            services.AddTransient<INotificationManager,NotificationService>();
             services.AddSingleton<IContentDialogService>(sp => new ContentDialogService(sp));
             services.AddSingleton<ITaskDialogService, TaskDialogService>();
             services.AddSingleton<ILogger>(LoggerFactory.Create(ConfigureLogging).CreateLogger<AvaeApplication>());
@@ -124,8 +125,6 @@ namespace Avae.Implementations
 
         public override void OnFrameworkInitializationCompleted()
         {
-            base.OnFrameworkInitializationCompleted();
-
             Styles.Add(new StyleInclude(Container.Provider)
             {
                 Source = new Uri("avares://Avae.Avalonia/Modal/ModalStyle.axaml")
@@ -139,7 +138,7 @@ namespace Avae.Implementations
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var window = GetMainWindow();
-                window.DataContext = mainView;
+                window.Content = mainView;
                 desktop.MainWindow = window;
                 desktop.Exit += OnDesktopExit;
             }
@@ -151,6 +150,8 @@ namespace Avae.Implementations
             {
                 singleView.MainView = mainView;
             }
+
+            base.OnFrameworkInitializationCompleted();
 
             void OnDesktopExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
             {
@@ -173,13 +174,12 @@ namespace Avae.Implementations
 
         public void Request(RequestedTheme theme)
         {
-            //Application.Current?.RequestedThemeVariant
-            //    = theme switch
-            //    {
-            //        RequestedTheme.Light => Theme ,
-            //        RequestedTheme.Dark => AppTheme.Dark,
-            //        _ => AppTheme.Unspecified,
-            //    };
+            Application.Current?.RequestedThemeVariant = theme switch
+            {
+                RequestedTheme.Light => ThemeVariant.Light,
+                RequestedTheme.Dark => ThemeVariant.Dark,
+                _ => ThemeVariant.Default,
+            };
         }
     }
 }

@@ -15,6 +15,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <!--<PackageReference Include="Microsoft.Maui.Essentials" Version="10.0.20"/>-->
   </ItemGroup>
   
   <ItemGroup>    

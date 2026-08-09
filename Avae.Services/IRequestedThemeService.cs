@@ -5,7 +5,7 @@
         //
         // Summary:
         //     Default, unknown or unspecified theme.
-        Unspecified,
+        Default,
         //
         // Summary:
         //     Light theme.
