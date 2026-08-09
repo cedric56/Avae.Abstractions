@@ -22,7 +22,6 @@ namespace Avae.DAL
             }
         }
 
-
         public override int CommandTimeout
         {
             get => command.CommandTimeout;

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net11.0</TargetFramework>
-    <Nullable>enable</Nullable>    
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,17 +24,23 @@
     <PackageReference Include="Irihi.Ursa.Themes.Semi" Version="2.2.0" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.18" />
+    <!--<PackageReference Include="Microsoft.Maui.Essentials" Version="10.0.20">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>-->
     <PackageReference Include="ReactiveUI.Avalonia" Version="12.1.1" />
     <PackageReference Include="ReactiveUI.SourceGenerators" Version="3.2.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <!--<PackageReference Include="Microsoft.Maui.Essentials" Version="10.0.20"> 
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>-->
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
     <ProjectReference Include="..\Avae.Avalonia\Avae.Avalonia.csproj" />
-    <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />
+    <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />    
     <ProjectReference Include="..\Avae.SignalR\Avae.SignalR.csproj" />
     <ProjectReference Include="..\Avae.SqlTableDependency\Avae.SqlTableDependency.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />

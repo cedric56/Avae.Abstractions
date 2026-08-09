@@ -94,7 +94,7 @@ namespace Avae.Implementations
         public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : ICloseableViewModel<TResult>
         {
             var view = Container.GetView(typeof(TViewModel).Name, [context]);
-            
+
             // Now verify the TResult type matches
             Type viewType = view.GetType();
             Type[] interfaces = viewType.GetInterfaces();
@@ -118,10 +118,7 @@ namespace Avae.Implementations
                 }
             }
 
-            if (view is not IModalFor<TViewModel, TResult> modal)
-                throw new InvalidOperationException($"The view associated with the view model {typeof(TViewModel).Name} is not a modal view.");
-
-            return view as IModalFor<TViewModel, TResult>;
+            return view as IModalFor<TViewModel, TResult> ?? throw new InvalidOperationException($"The view associated with the view model {typeof(TViewModel).Name} is not a modal view.");
         }
 
         public override void OnFrameworkInitializationCompleted()
@@ -137,16 +134,14 @@ namespace Avae.Implementations
 
             TopLevelStateManager.Initialize();
 
-            if(this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime classic)
-                classic.Exit += Classic_Exit;
-        }
+            var desktop = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            desktop?.Exit += OnDesktopExit;
 
-        private void Classic_Exit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
-        {
-            if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime classic)
-                classic.Exit -= Classic_Exit;
-
-            Dispose();
+            void OnDesktopExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+            {
+                desktop?.Exit -= OnDesktopExit;
+                Dispose();
+            }
         }
 
         public virtual void Dispose()

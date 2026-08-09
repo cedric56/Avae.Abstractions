@@ -16,10 +16,35 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.10" />    
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Avae.Razor\Avae.Razor.csproj" />
+  <ItemGroup>    
+    <ProjectReference Include="..\Avae.Razor\Avae.Razor.csproj" />    
     <ProjectReference Include="..\Avae.SignalR\Avae.SignalR.csproj" />
     <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <!-- Copy essentials.js from Avae.Essentials --><!--
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)..\Avae.Essentials\wwwroot\essentials.js">
+      <Link>wwwroot\essentials.js</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  --><!-- Alternatively, copy during build --><!--
+  <Target Name="CopyEssentialsJs" BeforeTargets="BeforeBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\Avae.Essentials\wwwroot\essentials.js"
+          DestinationFolder="$(MSBuildThisFileDirectory)wwwroot\"
+          Condition="Exists('$(MSBuildThisFileDirectory)..\Avae.Essentials\wwwroot\essentials.js') AND
+                    !Exists('$(MSBuildThisFileDirectory)..\Example.Razor\wwwroot\essentials.js')" />
+    <Message Importance="High" Text="✅ Copied essentials.js from Avae.Essentials"
+             Condition="Exists('$(MSBuildThisFileDirectory)..\Avae.Essentials\wwwroot\essentials.js')" />
+    <Message Importance="High" Text="⚠️ essentials.js not found in Avae.Essentials"
+             Condition="!Exists('$(MSBuildThisFileDirectory)..\Avae.Essentials\wwwroot\essentials.js')" />
+  </Target>-->
 
 </Project>

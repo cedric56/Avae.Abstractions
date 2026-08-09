@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net10.0-windows</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- OS Detection -->
+    <IsWindowsOS>$([MSBuild]::IsOSPlatform('Windows'))</IsWindowsOS>
+    <IsWindowsTarget>$(TargetFramework.Contains('-windows'))</IsWindowsTarget>
+    <IsWebAssembly>$(TargetFramework.Contains('WebAssembly'))</IsWebAssembly>
+
+    <!-- FIX: Evaluate the condition properly -->
+    <IsWindowsWithoutTfm Condition="'$(IsWindowsOS)' == 'true' AND '$(IsWindowsTarget)' == 'false'">true</IsWindowsWithoutTfm>
+
+    <PackageId>Avae.Essentials</PackageId>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AssemblyVersion>10.0.0.0</AssemblyVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsWindowsWithoutTfm)' == 'true' OR '$(IsWebAssembly)' == 'true'">
+    <AssemblyName>Microsoft.Maui.Essentials</AssemblyName>
+    <RootNamespace>Microsoft.Maui.Essentials</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Condition="'$(IsWindowsWithoutTfm)' == 'true'" Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" />
+    <PackageReference Condition="'$(IsWindowsTarget)' == 'true'" Include="Microsoft.Maui.Essentials" Version="10.0.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Platform\Platform.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="**\*.shared.cs" />
+    <Compile Remove="**\*.browser.cs" />
+    <Compile Remove="**\*.windowsnotfm.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsWindowsWithoutTfm)' == 'true' AND '$(IsWebAssembly)' == 'false'">
+    <Compile Include="**\*.shared.cs" />
+    <Compile Include="**\*.windowsnotfm.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsWebAssembly)' == 'true'">
+    <Compile Include="**\*.shared.cs" />
+    <Compile Include="**\*.browser.cs" />
+  </ItemGroup>
+
+</Project>

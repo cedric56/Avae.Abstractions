@@ -2,6 +2,7 @@
 using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Media;
 
 namespace Example.ViewModels
 {
@@ -104,6 +105,12 @@ namespace Example.ViewModels
             };
             actual = theme;
             requestedTheme.Request(actual.Value);
+        }
+
+        [RelayCommand]
+        public Task Speak()
+        {
+            return TextToSpeech.SpeakAsync("Maui essentials everywhere");
         }
     }
 }
