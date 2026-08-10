@@ -7,7 +7,7 @@ namespace Avae.Essentials
 	/// <summary>
 	/// Manager object that manages window states on Windows.
 	/// </summary>
-	public interface IWindowStateManager
+	public interface IAvaeWindowStateManager
 	{
 		/// <summary>
 		/// Occurs when the application's active window changed.
@@ -37,21 +37,21 @@ namespace Avae.Essentials
 	/// <summary>
 	/// Manager object that manages window states on Windows.
 	/// </summary>
-	public static class WindowStateManager
+	public static class AvaeWindowStateManager
 	{
-		static IWindowStateManager? defaultImplementation;
+		static IAvaeWindowStateManager? defaultImplementation;
 
 		/// <summary>
 		/// Provides the default implementation for static usage of this API.
 		/// </summary>
-		public static IWindowStateManager Default =>
-			defaultImplementation ??= new WindowStateManagerImplementation();
+		public static IAvaeWindowStateManager Default =>
+			defaultImplementation ??= new AvaeWindowStateManagerImplementation();
 
-		internal static void SetDefault(IWindowStateManager? implementation) =>
+		internal static void SetDefault(IAvaeWindowStateManager? implementation) =>
 			defaultImplementation = implementation;
 	}
 
-	static class WindowStateManagerExtensions
+	static class AvaeWindowStateManagerExtensions
 	{
 		/// <summary>
 		/// Gets the application's currently active window.
@@ -60,7 +60,7 @@ namespace Avae.Essentials
 		/// <param name="throwOnNull">Throws an exception if no current <see cref="Window"/> can be found and this value is set to <see langword="true"/>, otherwise this method returns <see langword="null"/>.</param>
 		/// <returns>The application's currently active <see cref="Window"/> object.</returns>
 		/// <exception cref="NullReferenceException">Thrown if no current <see cref="Window"/> can be found and <paramref name="throwOnNull"/> is set to <see langword="true"/>.</exception>
-		public static Window? GetActiveWindow(this IWindowStateManager manager, bool throwOnNull)
+		public static Window? GetActiveWindow(this IAvaeWindowStateManager manager, bool throwOnNull)
 		{
 			var window = manager.GetActiveWindow();
 			if (throwOnNull && window == null)
@@ -76,7 +76,7 @@ namespace Avae.Essentials
 		/// <param name="throwOnNull">Throws an exception if no current <see cref="Window"/> can be found and this value is set to <see langword="true"/>, otherwise this method returns <see cref="IntPtr.Zero"/>.</param>
 		/// <returns>The application's currently active window's <see cref="IntPtr"/>.</returns>
 		/// <exception cref="NullReferenceException">Thrown if no current <see cref="Window"/> can be found and <paramref name="throwOnNull"/> is set to <see langword="true"/>.</exception>
-		public static IntPtr GetActiveWindowHandle(this IWindowStateManager manager, bool throwOnNull)
+		public static IntPtr GetActiveWindowHandle(this IAvaeWindowStateManager manager, bool throwOnNull)
 		{
 			var window = manager.GetActiveWindow();
 			if (throwOnNull && window == null)
@@ -91,7 +91,7 @@ namespace Avae.Essentials
 		}
 	}
 
-	class WindowStateManagerImplementation : IWindowStateManager
+	class AvaeWindowStateManagerImplementation : IAvaeWindowStateManager
     {
 		Window? _activeWindow;
 

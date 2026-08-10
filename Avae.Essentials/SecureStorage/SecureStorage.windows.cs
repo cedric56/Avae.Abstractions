@@ -1,13 +1,10 @@
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Storage;
-using System;
-using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Windows.Security.Cryptography.DataProtection;
 using Windows.Storage;
 using SecureStorageDictionary = System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>;
@@ -28,58 +25,42 @@ namespace Avae.Essentials
 				: new UnpackagedSecureStorageImplementation();
 		}
 
-		async Task<string> PlatformGetAsync(string key)
-		{
-			var encBytes = await _secureStorage.GetAsync(key);
-
-			if (encBytes == null)
-				return null;
-
-			var provider = new DataProtectionProvider();
-
-			var buffer = await provider.UnprotectAsync(encBytes.AsBuffer());
-
-			return Encoding.UTF8.GetString(buffer.ToArray());
-		}
-
-		async Task PlatformSetAsync(string key, string data)
-		{
-			var bytes = Encoding.UTF8.GetBytes(data);
-
-			// LOCAL=user and LOCAL=machine do not require enterprise auth capability
-			var provider = new DataProtectionProvider("LOCAL=user");
-
-			var buffer = await provider.ProtectAsync(bytes.AsBuffer());
-
-			var encBytes = buffer.ToArray();
-
-			await _secureStorage.SetAsync(key, encBytes);
-		}
-
-		bool PlatformRemove(string key) =>
-			_secureStorage.Remove(key);
-
-		void PlatformRemoveAll() =>
-			_secureStorage.RemoveAll();
-
-        public Task<string?> GetAsync(string key)
+        public async Task<string?> GetAsync(string key)
         {
-            throw new NotImplementedException();
+            var encBytes = await _secureStorage.GetAsync(key);
+
+            if (encBytes == null)
+                return null;
+
+            var provider = new DataProtectionProvider();
+
+            var buffer = await provider.UnprotectAsync(encBytes.AsBuffer());
+
+            return Encoding.UTF8.GetString(buffer.ToArray());
         }
 
-        public Task SetAsync(string key, string value)
+        public async Task SetAsync(string key, string value)
         {
-            throw new NotImplementedException();
+            var bytes = Encoding.UTF8.GetBytes(value);
+
+            // LOCAL=user and LOCAL=machine do not require enterprise auth capability
+            var provider = new DataProtectionProvider("LOCAL=user");
+
+            var buffer = await provider.ProtectAsync(bytes.AsBuffer());
+
+            var encBytes = buffer.ToArray();
+
+            await _secureStorage.SetAsync(key, encBytes);
         }
 
         public bool Remove(string key)
         {
-            throw new NotImplementedException();
+            return _secureStorage.Remove(key);
         }
 
         public void RemoveAll()
         {
-            throw new NotImplementedException();
+            _secureStorage.RemoveAll();
         }
     }
 
@@ -151,7 +132,7 @@ namespace Avae.Essentials
 			{
 				using var stream = File.OpenRead(AppSecureStoragePath);
 
-				SecureStorageDictionary readPreferences = JsonSerializer.Deserialize(stream, SecureStorageJsonSerializerContext.Default.SecureStorageDictionary);
+				var readPreferences = JsonSerializer.Deserialize(stream, SecureStorageJsonSerializerContext.Default.SecureStorageDictionary);
 
 				if (readPreferences != null)
 				{

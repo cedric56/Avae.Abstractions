@@ -13,7 +13,7 @@ namespace Avae.Essentials
 	{
         public Task RequestAsync(ShareTextRequest request)
         {
-            var hwnd = WindowStateManager.Default.GetActiveWindowHandle(false);
+            var hwnd = AvaeWindowStateManager.Default.GetActiveWindowHandle(false);
             var dataTransferManager = DataTransferManagerHelper.GetDataTransferManager(hwnd);
 
             dataTransferManager.DataRequested += ShareTextHandler;
@@ -51,10 +51,10 @@ namespace Avae.Essentials
         public async Task RequestAsync(ShareMultipleFilesRequest request)
         {
             var storageFiles = new List<IStorageFile>();
-            foreach (var file in request.Files)
+            foreach (var file in request.Files ?? [])
                 storageFiles.Add(await StorageFile.GetFileFromPathAsync(file.FullPath));
 
-            var hwnd = WindowStateManager.Default.GetActiveWindowHandle(false);
+            var hwnd = AvaeWindowStateManager.Default.GetActiveWindowHandle(false);
             var dataTransferManager = DataTransferManagerHelper.GetDataTransferManager(hwnd);
 
             dataTransferManager.DataRequested += ShareTextHandler;

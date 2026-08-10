@@ -1,6 +1,4 @@
-using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Devices;
-using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;

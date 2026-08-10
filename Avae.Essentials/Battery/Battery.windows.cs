@@ -91,7 +91,7 @@ namespace Avae.Essentials
 		void StopEnergySaverListeners() =>
 			PowerManager.EnergySaverStatusChanged -= ReportEnergySaverUpdated;
 
-		void ReportEnergySaverUpdated(object sender, object e)
+		void ReportEnergySaverUpdated(object? sender, object e)
 			=> Dispatcher.UIThread.Invoke(OnEnergySaverChanged);
 
 		public void StartBatteryListeners() =>

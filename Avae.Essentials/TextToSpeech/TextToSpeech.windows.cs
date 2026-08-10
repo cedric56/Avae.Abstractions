@@ -66,9 +66,9 @@ namespace Avae.Essentials
         extern static object CreateClass(string language, string country, string name, string id);
 
         Task<IEnumerable<Locale>> PlatformGetLocalesAsync() =>
-            Task.FromResult(SpeechSynthesizer.AllVoices.Select(v => (Locale)CreateClass(v.Language, null, v.DisplayName, v.Id)));
+            Task.FromResult(SpeechSynthesizer.AllVoices.Select(v => (Locale)CreateClass(v.Language, string.Empty, v.DisplayName, v.Id)));
 
-        async Task PlatformSpeakAsync(string text, SpeechOptions options, CancellationToken cancelToken = default)
+        async Task PlatformSpeakAsync(string text, SpeechOptions? options, CancellationToken cancelToken = default)
         {
             var tcsUtterance = new TaskCompletionSource<bool>();
 
@@ -94,7 +94,8 @@ namespace Avae.Essentials
 
                 void OnCancel()
                 {
-                    player.PlaybackSession.PlaybackRate = 0;
+                    if (player != null)
+                        player.PlaybackSession.PlaybackRate = 0;
                     tcsUtterance.TrySetResult(true);
                 }
 
@@ -118,7 +119,7 @@ namespace Avae.Essentials
             }
         }
 
-        static string GetSpeakParametersSSMLProsody(string text, SpeechOptions options)
+        static string GetSpeakParametersSSMLProsody(string text, SpeechOptions? options)
         {
             var volume = "default";
             var pitch = "default";

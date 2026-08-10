@@ -1,11 +1,10 @@
 ﻿using Microsoft.Maui.Accessibility;
-using Microsoft.Maui.ApplicationModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Avae.Essentials
 {
-    partial class SemanticScreenReaderImplementation : ISemanticScreenReader
+    partial class AvaeSemanticScreenReader : ISemanticScreenReader
     {
         [Flags]
         public enum ProviderOptions
@@ -101,7 +100,7 @@ namespace Avae.Essentials
         public void Announce(string text)
         {
             // Get HWND for your active window
-            IntPtr windowHwnd = WindowStateManager.Default.GetActiveWindowHandle(false);
+            IntPtr windowHwnd = AvaeWindowStateManager.Default.GetActiveWindowHandle(false);
             if (windowHwnd == IntPtr.Zero)
                 return;
 

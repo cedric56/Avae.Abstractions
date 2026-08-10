@@ -1,17 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net11.0;net11.0-windows;net11.0-android;net11.0-macos</TargetFrameworks>
+    <TargetFrameworks>net11.0;net11.0-ios;net11.0-windows;net11.0-android;net11.0-macos</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
-    <!-- Target-based detection (preferred) -->
-    <!--<IsWindowsTarget>$(TargetFramework.Contains('-windows'))</IsWindowsTarget>-->
-
     <IsWindowsTarget>$([MSBuild]::IsOSPlatform('Windows'))</IsWindowsTarget>
-    <IsWindowsTarget Condition="'$(IsWindowsTarget)' == 'false'">$(TargetFramework.Contains('-windows'))'</IsWindowsTarget>
-
     <IsAndroidTarget>$(TargetFramework.Contains('-android'))</IsAndroidTarget>
+    <IsIosTarget>$(TargetFramework.Contains('-ios'))</IsIosTarget>
     <IsMacTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-macos'))</IsMacTarget>
     <!--<IsWebProject Condition="'$(IsWebProject)' == ''">false</IsWebProject>-->
     <!-- Accept the value passed from the consumer -->
@@ -36,8 +31,6 @@
     <DefineConstants>$(DefineConstants)</DefineConstants>
     <DefineConstants Condition="'$(IsWindowsTarget)' == 'true'">$(DefineConstants);IsWindowsOS</DefineConstants>
     <DefineConstants Condition="'$(IsWebProject)' == 'true'">$(DefineConstants);IsWebProject</DefineConstants>
-    <!--<DefineConstants Condition="'$(IsAndroidTarget)' == 'true'">$(DefineConstants);ANDROID</DefineConstants>
-    <DefineConstants Condition="'$(IsMacTarget)' == 'true'">$(DefineConstants);MACOS</DefineConstants>-->
   </PropertyGroup>
 
   
@@ -54,7 +47,7 @@
   </ItemGroup>
 
   <!-- Windows desktop (Avalonia etc.) -->
-  <ItemGroup Condition="'$(IsWindowsTarget)' == 'true' AND '$(IsWebProject)' != 'true' AND '$(IsMacTarget)' != 'true'">
+  <ItemGroup Condition="'$(IsWindowsTarget)' == 'true' AND '$(IsWebProject)' != 'true' AND '$(IsMacTarget)' != 'true' AND '$(IsIosTarget)' != 'true'">
     <PackageReference Include="Avalonia" Version="12.1.1" />
     <PackageReference Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" />
     <Compile Include="**\*.windows.cs" />

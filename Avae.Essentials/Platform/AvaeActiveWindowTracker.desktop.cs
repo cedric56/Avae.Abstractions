@@ -2,13 +2,13 @@
 
 namespace Avae.Essentials
 {
-	class ActiveWindowTracker
+	class AvaeActiveWindowTracker
 	{
-		readonly IWindowStateManager _windowStateManager;
+		readonly IAvaeWindowStateManager _windowStateManager;
 
 		WindowMessageManager? _currentWindowManager;
 
-		public ActiveWindowTracker(IWindowStateManager windowStateManager)
+		public AvaeActiveWindowTracker(IAvaeWindowStateManager windowStateManager)
 		{
 			_windowStateManager = windowStateManager;
 		}

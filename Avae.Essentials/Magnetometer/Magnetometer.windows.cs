@@ -1,7 +1,6 @@
 using Avalonia.Threading;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Devices.Sensors;
-using System;
 using System.Runtime.Versioning;
 using Windows.Devices.Sensors;
 using WindowsMagnetometer = Windows.Devices.Sensors.Magnetometer;
@@ -77,7 +76,7 @@ namespace Avae.Essentials
     partial class MagnetometerImplementation : IMagnetometer
 	{
 		// keep around a reference so we can stop this same instance
-		WindowsMagnetometer sensor;
+		WindowsMagnetometer? sensor;
 
 		static WindowsMagnetometer DefaultSensor =>
 			WindowsMagnetometer.GetDefault();
@@ -104,9 +103,12 @@ namespace Avae.Essentials
 
 		void PlatformStop()
 		{
-			sensor.ReadingChanged -= DataUpdated;
-			sensor.ReportInterval = 0;
-			sensor = null;
+            if (sensor != null)
+            {
+                sensor.ReadingChanged -= DataUpdated;
+                sensor.ReportInterval = 0;
+                sensor = null;
+            }
 		}
 	}
 }

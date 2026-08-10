@@ -7,24 +7,24 @@
 
 //namespace Avae.Essentials
 //{
-//    partial class GeolocationImplementation
-//    {
-//        public event EventHandler<GeolocationLocationChangedEventArgs>? LocationChanged;
+//	partial class GeolocationImplementation
+//	{
+//		public event EventHandler<GeolocationLocationChangedEventArgs>? LocationChanged;
 
-//        public event EventHandler<GeolocationListeningFailedEventArgs>? ListeningFailed;
+//		public event EventHandler<GeolocationListeningFailedEventArgs>? ListeningFailed;
 
-//        internal void OnLocationChanged(Location location) =>
-//            OnLocationChanged(new GeolocationLocationChangedEventArgs(location));
+//		internal void OnLocationChanged(Location location) =>
+//			OnLocationChanged(new GeolocationLocationChangedEventArgs(location));
 
-//        internal void OnLocationChanged(GeolocationLocationChangedEventArgs e) =>
-//            LocationChanged?.Invoke(null, e);
+//		internal void OnLocationChanged(GeolocationLocationChangedEventArgs e) =>
+//			LocationChanged?.Invoke(null, e);
 
-//        internal void OnLocationError(GeolocationError geolocationError) =>
-//            ListeningFailed?.Invoke(null, new GeolocationListeningFailedEventArgs(geolocationError));
-//    }
+//		internal void OnLocationError(GeolocationError geolocationError) =>
+//			ListeningFailed?.Invoke(null, new GeolocationListeningFailedEventArgs(geolocationError));
+//	}
 
-//    [SupportedOSPlatform("windows10.0.10240")]
-//    partial class GeolocationImplementation : IGeolocation
+//	[SupportedOSPlatform("windows10.0.10240")]
+//	partial class GeolocationImplementation : IGeolocation
 //	{
 //		Geolocator? listeningGeolocator;
 
@@ -33,9 +33,9 @@
 //		/// </summary>
 //		public bool IsListeningForeground { get => listeningGeolocator != null; }
 
-//        public bool IsEnabled => throw new NotImplementedException();
+//		public bool IsEnabled => throw new NotImplementedException();
 
-//        public async Task<Location?> GetLastKnownLocationAsync()
+//		public async Task<Location?> GetLastKnownLocationAsync()
 //		{
 //			// no need for permissions as AllowFallbackToConsentlessPositions
 //			// will allow the device to return a location regardless
@@ -163,14 +163,14 @@
 //			OnLocationError(error);
 //		}
 
-//        public Task<Location?> GetLocationAsync(Microsoft.Maui.Devices.Sensors.GeolocationRequest request, CancellationToken cancelToken)
-//        {
-//            throw new NotImplementedException();
-//        }
+//		public Task<Location?> GetLocationAsync(Microsoft.Maui.Devices.Sensors.GeolocationRequest request, CancellationToken cancelToken)
+//		{
+//			throw new NotImplementedException();
+//		}
 
-//        public Task<bool> StartListeningForegroundAsync(Microsoft.Maui.Devices.Sensors.GeolocationListeningRequest request)
-//        {
-//            throw new NotImplementedException();
-//        }
-//    }
+//		public Task<bool> StartListeningForegroundAsync(Microsoft.Maui.Devices.Sensors.GeolocationListeningRequest request)
+//		{
+//			throw new NotImplementedException();
+//		}
+//	}
 //}

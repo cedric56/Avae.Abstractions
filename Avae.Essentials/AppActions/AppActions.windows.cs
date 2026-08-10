@@ -1,15 +1,7 @@
-using Avalonia.Controls;
-using Avalonia.Platform;
 using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Storage;
-using System.Diagnostics;
-using System.IO;
 using System.Runtime.Versioning;
 using System.Text;
-using Windows.Management.Core;
-using Windows.Storage;
 using Windows.UI.StartScreen;
-using app = Windows.ApplicationModel.AppInfo;
 
 namespace Avae.Essentials
 {
@@ -49,7 +41,7 @@ namespace Avae.Essentials
 			await jumpList.SaveAsync();
 		}
 
-		public event EventHandler<AppActionEventArgs> AppActionActivated;
+		public event EventHandler<AppActionEventArgs>? AppActionActivated;
 
 		public Task OnLaunched(AppAction a)
 		{
@@ -70,7 +62,7 @@ namespace Avae.Essentials
 			if (arguments?.StartsWith(AppActionPrefix) ?? false)
 				return Encoding.Default.GetString(Convert.FromBase64String(arguments.Substring(AppActionPrefix.Length)));
 
-			return default;
+			return string.Empty;
 		}
 
 		internal static AppAction ToAction(this JumpListItem item)

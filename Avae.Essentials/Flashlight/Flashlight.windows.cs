@@ -1,10 +1,6 @@
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Devices;
-using System;
-using System.Linq;
 using System.Runtime.Versioning;
-using System.Threading;
-using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Lights;
 
@@ -15,7 +11,7 @@ namespace Avae.Essentials
 	{
 		static readonly object locker = new object();
 		bool hasLoadedLamp;
-		Lamp lamp;
+		Lamp? lamp;
 
 		async Task FindLampAsync()
 		{

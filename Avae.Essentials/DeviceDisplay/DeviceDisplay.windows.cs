@@ -85,7 +85,7 @@ namespace Avae.Essentials
     partial class DeviceDisplayImplementation
 	{
 		readonly object locker = new object();
-		readonly ActiveWindowTracker _activeWindowTracker;
+		readonly AvaeActiveWindowTracker _activeWindowTracker;
 
 		DisplayRequest? displayRequest;
 
@@ -94,7 +94,7 @@ namespace Avae.Essentials
 		/// </summary>
 		public DeviceDisplayImplementation()
 		{
-			_activeWindowTracker = new(WindowStateManager.Default);
+			_activeWindowTracker = new(AvaeWindowStateManager.Default);
 			_activeWindowTracker.WindowMessage += OnWindowMessage;
 		}
 
@@ -131,7 +131,7 @@ namespace Avae.Essentials
 
 		protected override DisplayInfo GetMainDisplayInfo()
 		{			
-			var windowHandle = WindowStateManager.Default.GetActiveWindowHandle(false);
+			var windowHandle = AvaeWindowStateManager.Default.GetActiveWindowHandle(false);
 			var mi = GetDisplay(windowHandle);
 
 			if (mi == null)

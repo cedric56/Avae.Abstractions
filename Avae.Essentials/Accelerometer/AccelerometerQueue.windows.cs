@@ -12,8 +12,8 @@ namespace Avae.Essentials
 
 		readonly int minQueueSize = 4;
 
-		AccelerometerSample oldest;
-		AccelerometerSample newest;
+		AccelerometerSample? oldest;
+		AccelerometerSample? newest;
 		int sampleCount;
 		int acceleratingCount;
 
@@ -84,12 +84,12 @@ namespace Avae.Essentials
 
 			public bool IsAccelerating { get; set; }
 
-			public AccelerometerSample Next { get; set; }
+			public AccelerometerSample? Next { get; set; }
 		}
 
 		internal class AccelerometerDataPool
 		{
-			AccelerometerSample head;
+			AccelerometerSample? head;
 
 			internal AccelerometerSample Acquire()
 			{

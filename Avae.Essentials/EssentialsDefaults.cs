@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Accessibility;
+﻿using Avalonia.Controls.Maui.Essentials;
+using Microsoft.Maui.Accessibility;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
@@ -93,7 +94,11 @@ namespace Avae.Essentials
         internal static extern void SetGeocoding(
             [UnsafeAccessorType("Microsoft.Maui.Devices.Sensors.Geocoding, Microsoft.Maui.Essentials")] object? facade,
             IGeocoding? implementation);
-        //null,
+
+        [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SetDefault")]
+        internal static extern void SetGeocolation(
+            [UnsafeAccessorType("Microsoft.Maui.Devices.Sensors.Geolocation, Microsoft.Maui.Essentials")] object? facade,
+            IGeolocation? implementation);
 
         [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SetDefault")]
         internal static extern void SetGyroscope(
@@ -206,7 +211,17 @@ namespace Avae.Essentials
 
 
 
+        [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
+        [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaFilePicker, Avalonia.Controls.Maui.Essentials")]
+        internal extern static object CreateAvaloniaFilePicker(IAvaloniaEssentialsPlatformProvider provider);
 
+        [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
+        [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaMediaPicker, Avalonia.Controls.Maui.Essentials")]
+        internal extern static object CreateAvaloniaMediaPicker(IAvaloniaEssentialsPlatformProvider provider);
+
+        [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
+        [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaWebAuthenticator, Avalonia.Controls.Maui.Essentials")]
+        internal extern static object CreateAvaloniaWebAuthenticator(IAvaloniaEssentialsPlatformProvider provider);
 
 
     }

@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Media;
+using Microsoft.Maui.Storage;
+using Avae.Essentials;
 
 namespace Example.ViewModels
 {
@@ -115,14 +117,17 @@ namespace Example.ViewModels
         }
 
         [RelayCommand]
-        public Task ShowShare()
+        public async Task ShowShare()
         {
-            return Share.RequestAsync(new ShareTextRequest()
+            try
             {
-                Title = "hello",
-                Subject = "hello",
-                Text = "world"
-            });
+                var files = await FilePicker.PickMultipleAsync();
+                await Share.Default.RequestAsync("hello", files ?? []);
+            }
+            catch
+            {
+
+            }
         }
     }
 }

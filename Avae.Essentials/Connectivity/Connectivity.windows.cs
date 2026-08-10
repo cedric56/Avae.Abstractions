@@ -1,8 +1,5 @@
 using Avalonia.Threading;
-using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Networking;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Runtime.Versioning;

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <!--<UseMauiEssentials>true</UseMauiEssentials>-->
@@ -15,13 +15,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Maui.Essentials" Version="10.0.90" />
-    <!--<PackageReference Include="Microsoft.Maui.Essentials" Version="10.0.20"/>-->
   </ItemGroup>
   
   <ItemGroup>    
     <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
     <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />
+    <ProjectReference Include="..\Avae.Essentials\Avae.Essentials.csproj" />
     <ProjectReference Include="..\Avae.Services\Avae.Services.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
   </ItemGroup>

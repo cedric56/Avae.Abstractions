@@ -81,7 +81,7 @@ namespace Avae.Essentials
     [SupportedOSPlatform("windows10.0.10240")]
     partial class BarometerImplementation : IBarometer
 	{
-		WinBarometer sensor;
+		WinBarometer? sensor;
 
 		WinBarometer DefaultBarometer => WinBarometer.GetDefault();
 

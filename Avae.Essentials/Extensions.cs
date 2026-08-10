@@ -1,10 +1,7 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Maui.Essentials;
-using Avalonia.Input.Platform;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Maui.Accessibility;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.Communication;
@@ -15,10 +12,7 @@ using Microsoft.Maui.Devices.Sensors;
 using Microsoft.Maui.Media;
 using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
-using System.Runtime.Versioning;
 #if MACOS
 //using Microsoft.Maui.Platforms.MacOS.Essentials;
 #endif
@@ -26,11 +20,17 @@ namespace Avae.Essentials
 {
     public static class Extensions
     {
-        class TopLevelStateManagerImplementation : IAvaloniaEssentialsPlatformProvider
+        class AvaeTopLevelStateManager : IAvaloniaEssentialsPlatformProvider
         {
-            TopLevel? _active;
+            public AvaeTopLevelStateManager()
+            {
+                TopLevel.GotFocusEvent.AddClassHandler(typeof(TopLevel), (sender, args) =>
+                {
+                    OnActivated((TopLevel)sender!);
+                });
+            }
 
-            public event EventHandler? ActiveChanged;
+            TopLevel? _active;
 
             public void OnActivated(TopLevel topLevel)
             {
@@ -38,11 +38,9 @@ namespace Avae.Essentials
                     return;
 
                 _active = topLevel;
-
-                ActiveChanged?.Invoke(topLevel, EventArgs.Empty);
             }
 
-            public TopLevel? GetActive()
+            public TopLevel? GetTopLevel()
             {
                 var lifetime = Avalonia.Application.Current?.ApplicationLifetime;
 
@@ -54,11 +52,6 @@ namespace Avae.Essentials
                 };
 
                 return active ?? TopLevel.GetTopLevel(null);
-            }
-
-            public TopLevel? GetTopLevel()
-            {
-                return GetActive();
             }
         }
         private static void UseAvaloniaEssentials(this IServiceCollection services,
@@ -83,7 +76,6 @@ namespace Avae.Essentials
             IMagnetometer magnetometer,
             IMap map,
             IOrientationSensor orientationSensor,
-            IPermissions permissions,
             IPhoneDialer phoneDialer,
             Func<ISecureStorage> secureStorage,
             ISemanticScreenReader semanticScreenReader,
@@ -92,14 +84,14 @@ namespace Avae.Essentials
             ITextToSpeech textToSpeech,
             IVibration vibration)
         {
-            var platformProvider = new TopLevelStateManagerImplementation();
+            var platformProvider = new AvaeTopLevelStateManager();
             EssentialsDefaults.SetScreenshot(null, new Avalonia.Controls.Maui.Essentials.AvaloniaScreenshot(platformProvider));
-            //EssentialsDefaults.SetFilePicker(null, new Avalonia.Controls.Maui.Essentials.AvaloniaFilePicker(platformProvider));
-            //EssentialsDefaults.SetMediaPicker(null, new Avalonia.Controls.Maui.Essentials.AvaloniaMediaPicker(platformProvider));
+            EssentialsDefaults.SetFilePicker(null, (IFilePicker)EssentialsDefaults.CreateAvaloniaFilePicker(platformProvider));
+            EssentialsDefaults.SetMediaPicker(null, (IMediaPicker)EssentialsDefaults.CreateAvaloniaMediaPicker(platformProvider));
             EssentialsDefaults.SetHapticFeedback(null, new Avalonia.Controls.Maui.Essentials.AvaloniaHapticFeedback());
             EssentialsDefaults.SetPreferences(null, new Avalonia.Controls.Maui.Essentials.AvaloniaPreferences());
             EssentialsDefaults.SetFileSystem(null, new Avalonia.Controls.Maui.Essentials.AvaloniaFileSystem());
-            //EssentialsDefaults.SetWebAuthenticator(null, new Avalonia.Controls.Maui.Essentials.AvaloniaWebAuthenticator(platformProvider));
+            EssentialsDefaults.SetWebAuthenticator(null, (IWebAuthenticator)EssentialsDefaults.CreateAvaloniaWebAuthenticator(platformProvider));
 
 
 
@@ -118,6 +110,7 @@ namespace Avae.Essentials
             EssentialsDefaults.SetEmail(null, email);
             EssentialsDefaults.SetFlashlight(null, flashlight);
             EssentialsDefaults.SetGeocoding(null, geocoding);
+            EssentialsDefaults.SetGeocolation(null, geolocation);
             EssentialsDefaults.SetGyroscope(null, gyroscope);
             EssentialsDefaults.SetLauncher(null, launcher);
             EssentialsDefaults.SetMagnetometer(null, magnetometer);
@@ -138,7 +131,38 @@ namespace Avae.Essentials
             if (OperatingSystem.IsBrowser())
                 Task.Run(async () => await JSHost.ImportAsync("essentials", $"/_content/{projectName}/essentials.js"));
 #if MACOS
+            throw new NotImplementedException("TODO");
 
+#elif ANDROID || IOS
+            services.UseAvaloniaEssentials(
+                Microsoft.Maui.Devices.Sensors.Accelerometer.Default,
+                AppActions.Current,
+                AppInfo.Current,
+                Microsoft.Maui.Devices.Sensors.Barometer.Default,
+                Battery.Default,
+                Browser.Default,
+                Clipboard.Default,
+                Microsoft.Maui.Devices.Sensors.Compass.Default,
+                Connectivity.Current,
+                Microsoft.Maui.ApplicationModel.Communication.Contacts.Default,
+                DeviceDisplay.Current,
+                DeviceInfo.Current,
+                Email.Default,
+                Flashlight.Default,
+                Geocoding.Default,
+                Geolocation.Default,
+                Gyroscope.Default,
+                Launcher.Default,
+                Microsoft.Maui.Devices.Sensors.Magnetometer.Default,
+                Map.Default,
+                Microsoft.Maui.Devices.Sensors.OrientationSensor.Default,
+                PhoneDialer.Default,
+                () => SecureStorage.Default,
+                SemanticScreenReader.Default,
+                Share.Default,
+                Sms.Default,
+                TextToSpeech.Default,
+                Vibration.Default);
 #elif IsWindowsOS || IsWebProject
             services.UseAvaloniaEssentials(
                 new AccelerometerImplementation(),
@@ -162,10 +186,9 @@ namespace Avae.Essentials
                 new MagnetometerImplementation(),
                 new MapImplementation(),
                 new OrientationSensorImplementation(),
-                null,
                 new PhoneDialerImplementation(),
                 () => new SecureStorageImplementation(),
-                new SemanticScreenReaderImplementation(),
+                new AvaeSemanticScreenReader(),
                 new ShareImplementation(),
                 new SmsImplementation(),
                 new TextToSpeechImplementation(),

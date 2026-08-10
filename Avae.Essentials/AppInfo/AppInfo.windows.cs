@@ -20,14 +20,14 @@ namespace Avae.Essentials
 
 		ThemeVariant? _applicationTheme;
 
-		readonly ActiveWindowTracker _activeWindowTracker;
+		readonly AvaeActiveWindowTracker _activeWindowTracker;
 
 		/// <summary>
 		/// Initializes a new <see cref="AppInfoImplementation"/> object with default values.
 		/// </summary>
 		public AppInfoImplementation()
 		{
-			_activeWindowTracker = new(WindowStateManager.Default);
+			_activeWindowTracker = new(AvaeWindowStateManager.Default);
 			_activeWindowTracker.Start();
 			_activeWindowTracker.WindowMessage += OnWindowMessage;
 
