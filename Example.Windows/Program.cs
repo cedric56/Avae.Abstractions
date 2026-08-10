@@ -14,7 +14,8 @@ class Program
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+    {
+        return AppBuilder.Configure<App>()
             .WithAppNotifications(new AppNotificationOptions()
             {
                 AppIcon = "C:\\Users\\cedri\\source\\repos\\AvaloniaSample\\AvaloniaSample\\Assets\\avalonia-logo.ico",
@@ -24,5 +25,5 @@ class Program
             //.UseReactiveUI()
             .WithInterFont()
             .LogToTrace();
-
+    }
 }

@@ -38,6 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Avae.Essentials\Avae.Essentials.csproj" />
     <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
     <ProjectReference Include="..\Avae.Avalonia\Avae.Avalonia.csproj" />
     <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />    

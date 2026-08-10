@@ -1,4 +1,5 @@
 using Avae.Abstractions;
+using Avae.Essentials;
 using Example.BlazorApp.Components;
 using Example.Razor;
 
@@ -10,6 +11,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Environment.WebRootPath) });
 builder.Services.UseSharedLibrary();
+builder.Services.UseAvaeEssentials("Example.Razor");
 var app = builder.Build();
 ServiceLocator.SetDefault(app.Services);
 // Configure the HTTP request pipeline.
@@ -28,5 +30,4 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddAdditionalAssemblies(typeof(Avae.Razor.Layout.MainLayout).Assembly, typeof(Example.Razor.Components.Home).Assembly);
-
 app.Run();

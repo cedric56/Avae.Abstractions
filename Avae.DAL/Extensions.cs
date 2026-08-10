@@ -25,8 +25,6 @@ namespace Avae.DAL
             services.AddSingleton<IDBLayer>(sp => getLayer(sp));
         }
 
-        
-
         internal static string ReplaceWholeWord(this string s, string word, string bywhat)
         {
             char firstLetter = word[0];

@@ -2,6 +2,7 @@
 using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Media;
 
 namespace Example.ViewModels
@@ -111,6 +112,17 @@ namespace Example.ViewModels
         public Task Speak()
         {
             return TextToSpeech.SpeakAsync("Maui essentials everywhere");
+        }
+
+        [RelayCommand]
+        public Task ShowShare()
+        {
+            return Share.RequestAsync(new ShareTextRequest()
+            {
+                Title = "hello",
+                Subject = "hello",
+                Text = "world"
+            });
         }
     }
 }

@@ -4,7 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <UseMauiEssentials>true</UseMauiEssentials>
+    <!--<UseMauiEssentials>true</UseMauiEssentials>-->
     <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
   </PropertyGroup>
 
@@ -15,6 +15,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Maui.Essentials" Version="10.0.90" />
     <!--<PackageReference Include="Microsoft.Maui.Essentials" Version="10.0.20"/>-->
   </ItemGroup>
   

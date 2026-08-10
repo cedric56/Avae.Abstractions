@@ -11,6 +11,7 @@ using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+
 namespace Avae.Implementations
 {
     public enum TypeDialog
@@ -59,6 +60,7 @@ namespace Avae.Implementations
             services.AddSingleton<ILogger>(LoggerFactory.Create(ConfigureLogging).CreateLogger<AvaeApplication>());
             services.AddSingleton<ISystemNotificationService, SystemNotificationService>();
             services.AddSingleton<IRequestedThemeService>(this);
+            
         }
 
         public void Configure(IServiceProvider provider)

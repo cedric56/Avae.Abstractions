@@ -1,16 +1,72 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Maui.Media;
+using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 using System.Text;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Media.SpeechSynthesis;
 
-namespace Microsoft.Maui.Media
+namespace Avae.Essentials
 {
     partial class TextToSpeechImplementation : ITextToSpeech
     {
+        internal const float PitchMax = 2.0f;
+        internal const float PitchDefault = 1.0f;
+        internal const float PitchMin = 0.0f;
+
+        internal const float VolumeMax = 1.0f;
+        internal const float VolumeDefault = 0.5f;
+        internal const float VolumeMin = 0.0f;
+
+        SemaphoreSlim? semaphore;
+
+        public Task<IEnumerable<Locale>> GetLocalesAsync() =>
+            PlatformGetLocalesAsync();
+
+        public async Task SpeakAsync(string text, SpeechOptions? options = default, CancellationToken cancelToken = default)
+        {
+            if (string.IsNullOrEmpty(text))
+                throw new ArgumentNullException(nameof(text), "Text cannot be null or empty string");
+
+            if (options?.Volume.HasValue ?? false)
+            {
+                if (options.Volume.Value < VolumeMin || options.Volume.Value > VolumeMax)
+                    throw new ArgumentOutOfRangeException($"Volume must be >= {VolumeMin} and <= {VolumeMax}");
+            }
+
+            if (options?.Pitch.HasValue ?? false)
+            {
+                if (options.Pitch.Value < PitchMin || options.Pitch.Value > PitchMax)
+                    throw new ArgumentOutOfRangeException($"Pitch must be >= {PitchMin} and <= {PitchMin}");
+            }
+
+            if (semaphore == null)
+                semaphore = new SemaphoreSlim(1, 1);
+
+            try
+            {
+                await semaphore.WaitAsync(cancelToken);
+                await PlatformSpeakAsync(text, options, cancelToken);
+            }
+            finally
+            {
+                if (semaphore.CurrentCount == 0)
+                    semaphore.Release();
+            }
+        }
+    }
+
+    [SupportedOSPlatform("windows10.0.10240")]
+    partial class TextToSpeechImplementation : ITextToSpeech
+    {
+        [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
+        [return: UnsafeAccessorType("Microsoft.Maui.Media.Locale, Microsoft.Maui.Essentials")]
+        extern static object CreateClass(string language, string country, string name, string id);
+
         Task<IEnumerable<Locale>> PlatformGetLocalesAsync() =>
-            Task.FromResult(SpeechSynthesizer.AllVoices.Select(v => new Locale(v.Language, null, v.DisplayName, v.Id)));
+            Task.FromResult(SpeechSynthesizer.AllVoices.Select(v => (Locale)CreateClass(v.Language, null, v.DisplayName, v.Id)));
 
         async Task PlatformSpeakAsync(string text, SpeechOptions options, CancellationToken cancelToken = default)
         {

@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Ursa.Themes.Semi;
+using Avae.Essentials;
 
 namespace Example;
 
@@ -74,7 +75,7 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<FormPage2ViewModel>();
         services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
         services.AddTransient<ModalViewModel>();
-
+        services.UseAvaeEssentials();
         if (!OperatingSystem.IsBrowser())
         {
             services.UseDBSqlLayer<SqliteConnection>(out signalRService, out unsuscribe);

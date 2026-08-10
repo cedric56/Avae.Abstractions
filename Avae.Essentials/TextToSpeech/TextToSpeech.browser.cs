@@ -1,8 +1,10 @@
-﻿using System.Runtime.InteropServices.JavaScript;
+﻿using Microsoft.Maui.Media;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Maui.Media
+namespace Avae.Essentials
 {
     partial class TextToSpeechImplementation : ITextToSpeech
     {
@@ -173,7 +175,7 @@ namespace Microsoft.Maui.Media
         [JSImport("textToSpeechInterop.getVoices", "essentials")]
         internal static partial Task<string> GetVoices();
 
-        async Task<IEnumerable<Locale>> PlatformGetLocalesAsync()
+        public async Task<IEnumerable<Locale>> GetLocalesAsync()
         {
             var json = await GetVoices();
             var voices = JsonSerializer.Deserialize(json, AvaeJsonSerializerContext.Default.IEnumerableTextToSpeechResponseInterop);
@@ -182,15 +184,20 @@ namespace Microsoft.Maui.Media
             return [.. voices.Select(ToLocale)];
         }
 
+        [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
+        [return: UnsafeAccessorType("Microsoft.Maui.Media.Locale, Microsoft.Maui.Essentials")]
+        extern static object CreateClass(string language, string country, string name, string id);
+
+
         private Locale ToLocale(TextToSpeechResponseInterop r)
         {
             localeToCountry.TryGetValue(r.Lang ?? "en", out string? country);
 
-            var locale = new Locale(r.Lang ?? "en", country ?? string.Empty, r.Name ?? string.Empty, r.VoiceURI ?? string.Empty);
+            var locale = (Locale)CreateClass(r.Lang ?? "en", country ?? string.Empty, r.Name ?? string.Empty, r.VoiceURI ?? string.Empty);
             return locale;
         }
 
-        Task PlatformSpeakAsync(string text, SpeechOptions? options = null, CancellationToken cancelToken = default)
+        public Task SpeakAsync(string text, SpeechOptions? options = null, CancellationToken cancelToken = default)
         {
             if (options == null)
             {
