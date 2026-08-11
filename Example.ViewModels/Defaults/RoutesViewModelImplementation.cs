@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Example.ViewModels.Defaults
 {
-    public abstract partial class ExampleViewModelBase(Router router, bool initialize = true) : 
+    public abstract partial class RoutesViewModelImplementation(Router router, bool initialize = true) : 
         RoutesViewModelBase(router, initialize)
     {
         [RelayCommand]

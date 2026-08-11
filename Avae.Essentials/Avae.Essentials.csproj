@@ -2,24 +2,25 @@
   
   <PropertyGroup>
     <TargetFrameworks>net11.0;net11.0-browser;net11.0-ios;net11.0-android;net11.0-macos</TargetFrameworks>
-    <TargetFrameworks>$(TargetFrameworks);net11.0-windows</TargetFrameworks>
+    <TargetFrameworks>$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <IsLinuxTarget>$([MSBuild]::IsOSPlatform('linux'))"</IsLinuxTarget>
-    <IsWindowsTarget>$([MSBuild]::IsOSPlatform('Windows'))</IsWindowsTarget>    
-    <IsAndroidTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-android'))</IsAndroidTarget>
-    <IsIosTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-ios'))</IsIosTarget>
-    <IsMacTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-macos'))</IsMacTarget>
-    <IsBrowserTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-browser'))</IsBrowserTarget>        
+    <IsLinuxOS>$([MSBuild]::IsOSPlatform('linux'))"</IsLinuxOS>
+    <IsWindowsOS>$([MSBuild]::IsOSPlatform('Windows'))</IsWindowsOS>    
+    <IsAndroidTFM>$([System.String]::Copy('$(TargetFramework)').Contains('-android'))</IsAndroidTFM>
+    <IsIosTFM>$([System.String]::Copy('$(TargetFramework)').Contains('-ios'))</IsIosTFM>
+    <IsMacTFM>$([System.String]::Copy('$(TargetFramework)').Contains('-macos'))</IsMacTFM>
+    <IsBrowserTFM>$([System.String]::Copy('$(TargetFramework)').Contains('-browser'))</IsBrowserTFM>
+    <IsWindowsTFM>$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))</IsWindowsTFM>
   </PropertyGroup>
   <PropertyGroup>
-    <SupportedOSPlatformVersion Condition="'$(IsAndroidTarget)' == 'true'">24</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="'$(IsAndroidTFM)' == 'true'">24</SupportedOSPlatformVersion>
   </PropertyGroup>  
 
   <!-- Conditionally define the symbols -->
   <PropertyGroup>
-    <DefineConstants Condition="'$(IsWindowsTarget)' == 'true'">$(DefineConstants);WINDOWS_OS</DefineConstants>
-    <DefineConstants Condition="'$(IsLinuxTarget)' == 'true'">$(DefineConstants);LINUX_OS</DefineConstants>
+    <DefineConstants Condition="'$(IsWindowsOS)' == 'true'">$(DefineConstants);WINDOWS_OS</DefineConstants>
+    <DefineConstants Condition="'$(IsLinuxOS)' == 'true'">$(DefineConstants);LINUX_OS</DefineConstants>
   </PropertyGroup>
 
   <!-- Start clean -->
@@ -30,23 +31,29 @@
   </ItemGroup>
 
   <!-- Windows -->
-  <ItemGroup Condition="'$(IsWindowsTarget)' == 'true' AND '$(IsBrowserTarget)' != 'true' AND '$(IsMacTarget)' != 'true' AND '$(IsIosTarget)' != 'true' AND '$(IsLinuxTarget)' != 'true'">
+  <ItemGroup Condition="'$(IsWindowsOS)' == 'true' AND '$(IsBrowserTFM)' != 'true' AND '$(IsMacTFM)' != 'true' AND '$(IsIosTFM)' != 'true' AND '$(IsLinuxOS)' != 'true' AND '$(IsWindowsTFM)' != 'true'">
     <PackageReference Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" />
     <Compile Include="**\*.windows.cs" />
     <Compile Include="**\*.desktop.cs" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(IsWindowsOS)' == 'true' AND '$(IsBrowserTFM)' != 'true' AND '$(IsMacTFM)' != 'true' AND '$(IsIosTFM)' != 'true' AND '$(IsLinuxOS)' != 'true' AND '$(IsWindowsTFM)' == 'true'">
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.3.1" />
+    <Compile Include="**\*.windows.cs" />
+    <Compile Include="**\*.desktop.cs" />
+  </ItemGroup>
+
   <!-- Browser -->
-  <PropertyGroup Condition="'$(IsBrowserTarget)' == 'true'">
+  <PropertyGroup Condition="'$(IsBrowserTFM)' == 'true'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <ItemGroup Condition="'$(IsBrowserTarget)' == 'true'">
+  <ItemGroup Condition="'$(IsBrowserTFM)' == 'true'">
     <Compile Include="**\*.browser.cs" />
     <PackageReference Include="Avalonia.Browser" Version="12.1.1" />
   </ItemGroup>
 
   <!-- macOS -->
-  <ItemGroup Condition="'$(IsMacTarget)' == 'true'">    
+  <ItemGroup Condition="'$(IsMacTFM)' == 'true'">    
     <PackageReference Include="Microsoft.Maui.Platforms.MacOS.Essentials" Version="0.1.0-preview.12.26368.2" />
   </ItemGroup>
 
@@ -54,7 +61,7 @@
     <PackageReference Include="Avalonia" Version="12.1.1" />    
     <PackageReference Include="Avalonia.Controls.Maui.Essentials" Version="11.0.0-preview.6.26198.1455" />
     <PackageReference Include="Microsoft.Maui.Essentials" Version="11.0.0-preview.6.26360.8" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-preview.6.26359.118" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-preview.6.26359.118" />    
   </ItemGroup>
 
   <ItemGroup>

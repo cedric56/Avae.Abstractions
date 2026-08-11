@@ -11,7 +11,7 @@ using System.ComponentModel;
 namespace Example.ViewModels
 {
     [ObservableObject]
-    public partial class FormViewModel(IDialogService dialogService, Router router, Person person) : ExampleFormViewModelBase<Person>(router), IDataErrorInfo
+    public partial class FormViewModel(IDialogService dialogService, Router router, Person person) : FormViewModelImplementation<Person>(router), IDataErrorInfo
     {
         public const string KEY = "Page";
 

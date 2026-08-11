@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 namespace Example.ViewModels;
 
 [ObservableObject]
-public partial class MainViewModel(Router router) : ExampleViewModelBase(router)
+public partial class MainViewModel(Router router) : RoutesViewModelImplementation(router)
 {
     [ObservableProperty]
     private bool _isMenuPaneOpen;

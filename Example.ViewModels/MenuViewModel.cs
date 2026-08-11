@@ -12,7 +12,7 @@ using System.Collections.ObjectModel;
 namespace Example.ViewModels
 {
     [ObservableObject]
-    public partial class MenuViewModel : ExampleViewModelBase, IDisposable
+    public partial class MenuViewModel : RoutesViewModelImplementation, IDisposable
     {
         IServiceProvider provider;
         ISqlMonitor<Person> monitor;
