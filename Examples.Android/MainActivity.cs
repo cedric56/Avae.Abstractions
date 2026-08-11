@@ -72,12 +72,11 @@ public class MainApplication : AvaloniaAndroidApplication<AndroidApp>
         Microsoft.Maui.ApplicationModel.Platform.Init(this);
         return base.CustomizeAppBuilder(builder)
            .UseAndroid()
-           .WithInterFont()
-           .UseReactiveUI(b => { });
+           .WithInterFont();
     }
 }
 
 public class AndroidApp : App
 {
-    protected override string Logs => string.Empty;
+
 }

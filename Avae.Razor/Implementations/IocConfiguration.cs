@@ -12,7 +12,7 @@ namespace Avae.Razor
             IIocConfiguration, ITaskDialogService, IContentDialogService, 
             IDialogService,
             ISystemNotificationService,
-            INotificationManager,
+            INotificationService,
             IRequestedThemeService
     {
         public EventHandler<RequestedTheme>? RequestedThemeChanged;

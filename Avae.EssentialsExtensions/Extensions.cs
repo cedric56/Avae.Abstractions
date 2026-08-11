@@ -4,16 +4,6 @@ using Microsoft.Maui.Storage;
 
 namespace Avae.Shared;
 
-public interface IAvaeEmail : IEmail
-{
-    Task ComposeAsync(IEnumerable<FileBase> files, EmailMessage message);
-}
-
-public interface IAvaeShare : IShare
-{
-    Task RequestAsync(string title, IEnumerable<FileBase> files);
-}
-
 public static class Extensions
 {
     public static Task ComposeAsync(this IEmail email, IEnumerable<FileBase> files, EmailMessage message)

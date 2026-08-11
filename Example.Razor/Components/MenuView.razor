@@ -46,14 +46,7 @@ else
             isDone = true;
             ViewModel.PropertyChanged -= PropertyChanged;
             ViewModel.PropertyChanged += PropertyChanged;
-            try
-            {
-                ViewModel.Persons = new(await DBBase.Instance.GetAllAsync<Person>());
-            }
-            catch(Exception ex)
-            {
-                ViewModel.Persons = new();
-            }
+            ViewModel.Persons = new(await DBBase.Instance.GetAllAsync<Person>());
         }
     }
 

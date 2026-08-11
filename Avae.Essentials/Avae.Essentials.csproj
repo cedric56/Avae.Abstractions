@@ -5,12 +5,12 @@
     <TargetFrameworks>$(TargetFrameworks);net11.0-windows</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <IsLinuxTarget>$([MSBuild]::IsOSPlatform('linux'))"</IsLinuxTarget>
     <IsWindowsTarget>$([MSBuild]::IsOSPlatform('Windows'))</IsWindowsTarget>    
     <IsAndroidTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-android'))</IsAndroidTarget>
     <IsIosTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-ios'))</IsIosTarget>
     <IsMacTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-macos'))</IsMacTarget>
-    <IsBrowserTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-browser'))</IsBrowserTarget>    
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsBrowserTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-browser'))</IsBrowserTarget>        
   </PropertyGroup>
   <PropertyGroup>
     <SupportedOSPlatformVersion Condition="'$(IsAndroidTarget)' == 'true'">24</SupportedOSPlatformVersion>
@@ -19,6 +19,7 @@
   <!-- Conditionally define the symbols -->
   <PropertyGroup>
     <DefineConstants Condition="'$(IsWindowsTarget)' == 'true'">$(DefineConstants);WINDOWS_OS</DefineConstants>
+    <DefineConstants Condition="'$(IsLinuxTarget)' == 'true'">$(DefineConstants);LINUX_OS</DefineConstants>
   </PropertyGroup>
 
   <!-- Start clean -->
@@ -29,13 +30,16 @@
   </ItemGroup>
 
   <!-- Windows -->
-  <ItemGroup Condition="'$(IsWindowsTarget)' == 'true' AND '$(IsBrowserTarget)' != 'true' AND '$(IsMacTarget)' != 'true' AND '$(IsIosTarget)' != 'true'">
+  <ItemGroup Condition="'$(IsWindowsTarget)' == 'true' AND '$(IsBrowserTarget)' != 'true' AND '$(IsMacTarget)' != 'true' AND '$(IsIosTarget)' != 'true' AND '$(IsLinuxTarget)' != 'true'">
     <PackageReference Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" />
     <Compile Include="**\*.windows.cs" />
     <Compile Include="**\*.desktop.cs" />
   </ItemGroup>
 
   <!-- Browser -->
+  <PropertyGroup Condition="'$(IsBrowserTarget)' == 'true'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
   <ItemGroup Condition="'$(IsBrowserTarget)' == 'true'">
     <Compile Include="**\*.browser.cs" />
     <PackageReference Include="Avalonia.Browser" Version="12.1.1" />
@@ -54,7 +58,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Avae.Shared\Avae.Shared.csproj" />
+    <ProjectReference Include="..\Avae.Shared\Avae.EssentialsExtensions.csproj" />
   </ItemGroup>
   
 </Project>

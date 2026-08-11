@@ -10,7 +10,7 @@ namespace Example.Models
 {
     [Table(nameof(Person))]
     //[MessagePackObject]    
-    public partial class Person : DBTransactional, INotifyPropertyChanged, IModelBase, IDataErrorInfo
+    public partial class Person : DBTransactional, INotifyPropertyChanged, IDataErrorInfo
     {
         private IList<Contact>? _contacts;
         private string? _firstName;

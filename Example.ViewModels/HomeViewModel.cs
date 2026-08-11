@@ -14,7 +14,7 @@ namespace Example.ViewModels
         IContentDialogService contentDialogService,
         ITaskDialogService taskDialogService,
         IIocConfiguration iocConfiguration,
-        INotificationManager notificationManager,
+        INotificationService notificationManager,
         ISystemNotificationService systemNotificationService,
         IRequestedThemeService requestedTheme,
         ITextToSpeech textToSpeech,
@@ -122,15 +122,8 @@ namespace Example.ViewModels
         [RelayCommand]
         public async Task ShowShare()
         {
-            try
-            {
-                var files = await filePicker.PickMultipleAsync();
-                await share.RequestAsync("hello", files ?? []);
-            }
-            catch (Exception ex)
-            {
-
-            }
+            var files = await filePicker.PickMultipleAsync();
+            await share.RequestAsync("hello", files ?? []);
         }
     }
 }

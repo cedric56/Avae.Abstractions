@@ -5,7 +5,7 @@ using Avalonia.Threading;
 
 namespace Avae.Implementations.Services
 {
-    internal class NotificationService : Avae.Services.INotificationManager
+    internal class NotificationService : Avae.Services.INotificationService
     {
         private WindowNotificationManager? _manager;
 

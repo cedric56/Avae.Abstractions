@@ -1,8 +1,7 @@
-﻿using Avae.Essentials;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Browser;
 using Example;
-using Example.Models;
+using Example.DAL;
 using Microsoft.Extensions.DependencyInjection;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
@@ -18,13 +17,9 @@ internal sealed partial class Program
 
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<BrowserApp>();
-        //.UseReactiveUI(() => { });
 
-
-    public class BrowserApp : Example.App
+    public class BrowserApp : App
     {
-        protected override string Logs => string.Empty;
-
         public override async void Configure(IServiceCollection services)
         {
             base.Configure(services);

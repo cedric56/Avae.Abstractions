@@ -11,7 +11,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Environment.WebRootPath) });
 builder.Services.UseSharedLibrary();
-await builder.Services.UseEmbeddedAvaloniaApp();
+//await builder.Services.UseEmbeddedAvaloniaApp();
 var app = builder.Build();
 ServiceLocator.SetDefault(app.Services);
 // Configure the HTTP request pipeline.

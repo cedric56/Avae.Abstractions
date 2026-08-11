@@ -9,7 +9,7 @@ namespace Avae.Maui
     internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContainer> getContainer, Action<IIocContainer>? configure = null) :
             IIocConfiguration, ITaskDialogService, IContentDialogService, IDialogService,
             ISystemNotificationService, 
-            INotificationManager,
+            INotificationService,
             IRequestedThemeService
     {
         IocContainer? _container = null;
@@ -410,7 +410,8 @@ namespace Avae.Maui
 
         public ISystemNotification CreateNotification(string action, string title, string message, SystemNotificationAction[] actions)
         {
-            return new Notification(action, title, message, actions);
+            throw new NotImplementedException();
+            //return new Notification(action, title, message, actions);
         }
 
         bool _isLoad = false;
@@ -507,23 +508,23 @@ namespace Avae.Maui
                 };
         }
 
-        class Notification(string action, string title, string message, SystemNotificationAction[] actions) : ISystemNotification
-        {
-            public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
+        //class Notification(string action, string title, string message, SystemNotificationAction[] actions) : ISystemNotification
+        //{
+        //    public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
 
-            public void Close()
-            {
-                NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs());
-            }
+        //    public void Close()
+        //    {
+        //        NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs());
+        //    }
 
-            public void Show()
-            {
-                //WindowsToastNotifyApi.Toast.Show(title, message, new WindowsToastNotifyApi.ToastOptions()
-                //{
-                //    PrimaryButton = actions.ElementAtOrDefault(0) is SystemNotificationAction a ? (a.caption, a.tag) : null,
-                //    SecondaryButton = actions.ElementAtOrDefault(1) is SystemNotificationAction b ? (b.caption, b.tag) : null,                     
-                //});
-            }
-        }
+        //    public void Show()
+        //    {
+        //        //WindowsToastNotifyApi.Toast.Show(title, message, new WindowsToastNotifyApi.ToastOptions()
+        //        //{
+        //        //    PrimaryButton = actions.ElementAtOrDefault(0) is SystemNotificationAction a ? (a.caption, a.tag) : null,
+        //        //    SecondaryButton = actions.ElementAtOrDefault(1) is SystemNotificationAction b ? (b.caption, b.tag) : null,                     
+        //        //});
+        //    }
+        //}
     }
 }

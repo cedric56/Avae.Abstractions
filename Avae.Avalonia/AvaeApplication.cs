@@ -6,10 +6,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Styling;
-using Avalonia.Themes.Fluent;
 using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 
 namespace Avae.Implementations
@@ -22,8 +20,6 @@ namespace Avae.Implementations
 
     public abstract class AvaeApplication : Application, IIocConfiguration, IDisposable, IRequestedThemeService
     {
-
-        protected virtual string Logs { get; } = "";
         public abstract string IconUrl { get; }
         public abstract TypeDialog TypeDialog {  get; }
 
@@ -39,11 +35,6 @@ namespace Avae.Implementations
 
         }
 
-        protected virtual void ConfigureLogging(ILoggingBuilder builder)
-        {
-
-        }
-
         public virtual void Configure(IServiceCollection services)
         {            
             services.AddSingleton<IBrokerService, BrokerService>();
@@ -54,10 +45,9 @@ namespace Avae.Implementations
                              sp.GetRequiredService<IContentDialogService>() as ContentDialogService ??
                              throw new InvalidOperationException("Failed to resolve IContentDialogService.");
             });
-            services.AddTransient<INotificationManager,NotificationService>();
+            services.AddTransient<INotificationService,NotificationService>();
             services.AddSingleton<IContentDialogService>(sp => new ContentDialogService(sp));
-            services.AddSingleton<ITaskDialogService, TaskDialogService>();
-            services.AddSingleton<ILogger>(LoggerFactory.Create(ConfigureLogging).CreateLogger<AvaeApplication>());
+            services.AddSingleton<ITaskDialogService, TaskDialogService>();            
             services.AddSingleton<ISystemNotificationService, SystemNotificationService>();
             services.AddSingleton<IRequestedThemeService>(this);
         }
@@ -130,7 +120,7 @@ namespace Avae.Implementations
             {
                 Source = new Uri("avares://Avae.Avalonia/Modal/ModalStyle.axaml")
             });
-            Styles.Add(new FluentTheme());
+            //Styles.Add(new FluentTheme());
             Styles.Add(new FluentAvaloniaTheme());
 
             TopLevelStateManager.Initialize();

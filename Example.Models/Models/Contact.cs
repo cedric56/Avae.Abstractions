@@ -1,5 +1,4 @@
-﻿using Avae.Abstractions;
-using Avae.DAL;
+﻿using Avae.DAL;
 using Dapper.Contrib.Extensions;
 using MessagePack;
 using System.ComponentModel;
@@ -8,7 +7,7 @@ namespace Example.Models
 {
     [Table(nameof(Contact))]
     [MessagePackObject]
-    public partial class Contact : INotifyPropertyChanged, IModelBase
+    public partial class Contact : INotifyPropertyChanged
     {
         private Person? person;
         private Person? contact;

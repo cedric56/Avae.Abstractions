@@ -11,6 +11,7 @@ using Example.Views;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Linq;
@@ -34,7 +35,7 @@ public partial class App : AvaeApplication, IIocConfiguration
 
     public override TypeDialog TypeDialog => TypeDialog.Fluent;
 
-    protected override string Logs =>
+    protected string Logs =>
         Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Example"), "logs");
 
     public override void Configure(IIocContainer container)
@@ -76,11 +77,20 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
         services.AddTransient<ModalViewModel>();
         services.UseAvaeEssentials();
+        
         if (!OperatingSystem.IsBrowser())
         {
             //services.UseAvaeEssentials();
             services.UseDBSqlLayer<SqliteConnection>(out signalRService, out unsuscribe);
             //services.UseDBOnionLayer(out signalRService, out unsuscribe);
+        }
+
+        if(OperatingSystem.IsWindows())
+        {
+            services.AddSingleton<ILogger>(LoggerFactory.Create(b =>
+            {
+
+            }).CreateLogger<App>());
         }
     }
 
