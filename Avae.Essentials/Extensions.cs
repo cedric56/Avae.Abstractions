@@ -1,7 +1,4 @@
-﻿using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Maui.Essentials;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Maui.Accessibility;
 using Microsoft.Maui.ApplicationModel;
@@ -15,9 +12,7 @@ using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
-#if MACOS
-//using Microsoft.Maui.Platforms.MacOS.Essentials;
-#endif
+
 namespace Avae.Essentials
 {
     public static class Extensions
@@ -29,7 +24,7 @@ namespace Avae.Essentials
             IBarometer barometer,
             IBattery battery,
             IBrowser browser,
-            Microsoft.Maui.ApplicationModel.DataTransfer.IClipboard clipboard,
+            IClipboard clipboard,
             ICompass compass,
             IConnectivity connectivity,
             IContacts contacts,
@@ -52,7 +47,7 @@ namespace Avae.Essentials
             ITextToSpeech textToSpeech,
             IVibration vibration)
         {
-            var platformProvider = new Avae.Essentials.AvaeTopLevelStateManager();
+            var platformProvider = new AvaeTopLevelStateManager();
             EssentialsDefaults.SetScreenshot(null, new Avalonia.Controls.Maui.Essentials.AvaloniaScreenshot(platformProvider));
             EssentialsDefaults.SetFilePicker(null, (IFilePicker)AvaloniaDefaults.CreateAvaloniaFilePicker(platformProvider));
             EssentialsDefaults.SetMediaPicker(null, (IMediaPicker)AvaloniaDefaults.CreateAvaloniaMediaPicker(platformProvider));
@@ -98,34 +93,34 @@ namespace Avae.Essentials
         {
             await JSHost.ImportAsync("essentials", $"/_content/{projectName}/essentials.js");
             services.UseAvaloniaEssentials(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!);
 
             services.RegisterServices();
         }
@@ -134,38 +129,38 @@ namespace Avae.Essentials
         [SupportedOSPlatform("macos")]
         [SupportedOSPlatform("ios")]
         [SupportedOSPlatform("android")]
-        public static void UseAvaeEssentials(this IServiceCollection services, string? projectName = null)
+        public static void UseAvaeEssentials(this IServiceCollection services)
         {
 #if MACOS
             services.UseAvaloniaEssentials(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
+                null!,
+                null!,
+                (IAppInfo)MacosDefaults.CreateAppInfo(),
+                null!,
+                (IBattery)MacosDefaults.CreateBattery(),
+                (IBrowser)MacosDefaults.CreateBrowser(),
+                (IClipboard)MacosDefaults.CreateClipboard(),
+                null!,
+                (IConnectivity)MacosDefaults.CreateConnectivity(),
+                null!,
+                (IDeviceDisplay)MacosDefaults.CreateDeviceDisplay(),
+                (IDeviceInfo)MacosDefaults.CreateDeviceInfo(),
+                (IEmail)MacosDefaults.CreateEmail(),
+                (IFlashlight)MacosDefaults.CreateFlashlight(),
+                null!,
+                (IGeolocation)MacosDefaults.CreateGeolocation(),
+                null!,
+                (ILauncher)MacosDefaults.CreateLauncher(),
+                null!,
+                (IMap)MacosDefaults.CreateMap(),
+                null!,
+                (IPhoneDialer)MacosDefaults.CreatePhoneDialer(),
+                () => (ISecureStorage)MacosDefaults.CreateSecureStorage(),
+                (ISemanticScreenReader)MacosDefaults.CreateSemanticScreenReader(),
+                (IShare)MacosDefaults.CreateShare(),
+                (ISms)MacosDefaults.CreateSms(),
+                (ITextToSpeech)MacosDefaults.CreateTextToSpeech(),
+                (IVibration)MacosDefaults.CreateVibratioh());            
 
 #elif WINDOWS_OS && !IOS && !ANDROID
 
