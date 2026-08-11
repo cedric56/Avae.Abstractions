@@ -1,5 +1,4 @@
 ﻿using Avae.Abstractions;
-using Avae.Essentials;
 using Avae.Razor;
 using Avae.Razor.Components;
 using Avae.Services;
@@ -70,7 +69,6 @@ namespace Example.Razor
             services.AddTransient<ModalViewModel>();
             services.AddTransient<FormPage2ViewModel>();
             services.AddTransient<FormPage3ViewModel>();
-            services.UseAvaeEssentials();
             if (!OperatingSystem.IsBrowser())
             {
                 services.UseDBSqlLayer<SqliteConnection>(out _, out _);

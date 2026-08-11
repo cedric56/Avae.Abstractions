@@ -1,8 +1,8 @@
 ﻿using Avae.Abstractions;
+using Avae.Essentials;
 using Avae.Implementations;
 using Avae.SignalR;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Example.Models;
 using Example.ViewModels;
@@ -15,7 +15,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Ursa.Themes.Semi;
-using Avae.Essentials;
 
 namespace Example;
 
@@ -75,10 +74,10 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<FormPage2ViewModel>();
         services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
         services.AddTransient<ModalViewModel>();
-        
+        services.UseAvaeEssentials();
         if (!OperatingSystem.IsBrowser())
         {
-            services.UseAvaeEssentials();
+            //services.UseAvaeEssentials();
             services.UseDBSqlLayer<SqliteConnection>(out signalRService, out unsuscribe);
             //services.UseDBOnionLayer(out signalRService, out unsuscribe);
         }

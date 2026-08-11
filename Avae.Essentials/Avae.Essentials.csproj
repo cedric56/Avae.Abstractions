@@ -1,27 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net11.0;net11.0-ios;net11.0-windows;net11.0-android;net11.0-macos</TargetFrameworks>
+    <TargetFrameworks>net11.0;net11.0-browser;net11.0-ios;net11.0-android;net11.0-macos</TargetFrameworks>
+    <TargetFrameworks>$(TargetFrameworks);net11.0-windows</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsWindowsTarget>$([MSBuild]::IsOSPlatform('Windows'))</IsWindowsTarget>    
-    <IsAndroidTarget>$(TargetFramework.Contains('-android'))</IsAndroidTarget>
-    <IsIosTarget>$(TargetFramework.Contains('-ios'))</IsIosTarget>
+    <IsAndroidTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-android'))</IsAndroidTarget>
+    <IsIosTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-ios'))</IsIosTarget>
     <IsMacTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-macos'))</IsMacTarget>
-    <!--<PackageId>Avae.Essentials</PackageId>-->
+    <IsBrowserTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-browser'))</IsBrowserTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <SupportedOSPlatformVersion Condition="'$(IsAndroidTarget)' == 'true'">24</SupportedOSPlatformVersion>
-  </PropertyGroup>
+  </PropertyGroup>  
 
   <!-- Conditionally define the symbols -->
   <PropertyGroup>
     <DefineConstants Condition="'$(IsWindowsTarget)' == 'true'">$(DefineConstants);WINDOWS_OS</DefineConstants>
-    <DefineConstants Condition="'$(IsWebProject)' == 'true'">$(DefineConstants);BROWSER</DefineConstants>
-  </PropertyGroup>
-  
-
-  <PropertyGroup Condition="'$(IsWebProject)' == 'true'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <!-- Start clean -->
@@ -31,15 +27,16 @@
     <Compile Remove="**\*.desktop.cs" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(IsWindowsTarget)' == 'true' AND '$(IsWebProject)' != 'true' AND '$(IsMacTarget)' != 'true' AND '$(IsIosTarget)' != 'true'">
+  <ItemGroup Condition="'$(IsWindowsTarget)' == 'true' AND '$(IsBrowserTarget)' != 'true' AND '$(IsMacTarget)' != 'true' AND '$(IsIosTarget)' != 'true'">
     <PackageReference Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" />
     <Compile Include="**\*.windows.cs" />
     <Compile Include="**\*.desktop.cs" />
   </ItemGroup>
 
   <!-- Browser / Web -->
-  <ItemGroup Condition="'$(IsWebProject)' == 'true'">
+  <ItemGroup Condition="'$(IsBrowserTarget)' == 'true'">
     <Compile Include="**\*.browser.cs" />
+    <PackageReference Include="Avalonia.Browser" Version="12.1.1" />
   </ItemGroup>
 
   <!-- macOS -->
@@ -48,10 +45,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="12.1.1" />
+    <PackageReference Include="Avalonia" Version="12.1.1" />    
     <PackageReference Include="Avalonia.Controls.Maui.Essentials" Version="11.0.0-preview.6.26198.1455" />
     <PackageReference Include="Microsoft.Maui.Essentials" Version="11.0.0-preview.6.26360.8" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-preview.6.26359.118" />
+    <PackageReference Include="Moq" Version="4.20.72" />
   </ItemGroup>
   
 </Project>

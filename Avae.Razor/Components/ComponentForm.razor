@@ -7,7 +7,7 @@
         <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
     </MudOverlay>
     <div>
-        <MudList T="PageViewModelBase"
+        <MudList T="ViewModelDescriptor"
                  @bind-SelectedValue="@ViewModel.SelectedViewModel">
             @foreach (var page in ViewModel.ViewModels)
             {
@@ -46,7 +46,7 @@
     public bool IsBusy { get; set; }
 
     [Parameter]
-    public required PagesViewModelBase ViewModel { get; set; }
+    public required RoutesViewModelBase ViewModel { get; set; }
 
     private ComponentView? CurrentView => ViewModel.CurrentView as ComponentView;
 

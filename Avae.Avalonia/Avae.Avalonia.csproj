@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />    
-    <ProjectReference Include="..\Avae.Services\Avae.Services.csproj" />
+    <ProjectReference Include="..\Avae.Services\Avae.Services.csproj" />    
   </ItemGroup>
 
 </Project>

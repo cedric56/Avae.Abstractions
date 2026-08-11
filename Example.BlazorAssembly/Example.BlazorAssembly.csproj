@@ -1,12 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net11.0</TargetFramework>
+    <TargetFramework>net11.0-browser</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
-    <!-- This is the value you want to send to A -->
-    <MyPropertyFromB>HelloFromB</MyPropertyFromB>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,12 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalTargetFrameworkInfoProperty Include="MyPropertyFromB" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />
-    
+    <ProjectReference Include="..\Avae.Essentials\Avae.Essentials.csproj"/>
+    <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />    
   </ItemGroup>
 
 </Project>

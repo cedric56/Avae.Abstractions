@@ -272,7 +272,7 @@ namespace Avae.Essentials
 
         [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
         [return: UnsafeAccessorType("Microsoft.Maui.Platforms.MacOS.Essentials.VibrationImplementation, Microsoft.Maui.Platforms.MacOS.Essentials")]
-        internal extern static object CreateVibratioh();
+        internal extern static object CreateVibration();
 
         [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
         [return: UnsafeAccessorType("Microsoft.Maui.Platforms.MacOS.Essentials.FilePickerImplementation, Microsoft.Maui.Platforms.MacOS.Essentials")]

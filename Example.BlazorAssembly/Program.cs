@@ -11,9 +11,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.UseSharedLibrary();
-builder.Services.UseAvaeEssentials("Example.Razor");
+await builder.Services.UseEmbeddedAvaloniaApp();
 var app = builder.Build();
 ServiceLocator.SetDefault(app.Services);
 await app.RunAsync();
-
-
