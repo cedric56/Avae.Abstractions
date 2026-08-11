@@ -15,7 +15,7 @@ using Microsoft.Maui.Devices.Sensors;
 using Microsoft.Maui.Media;
 using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
-
+using Avae.Shared;
 
 namespace Avae.Essentials
 {

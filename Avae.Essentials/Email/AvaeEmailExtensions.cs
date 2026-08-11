@@ -1,46 +1,20 @@
-﻿using Microsoft.Maui.ApplicationModel.Communication;
+﻿using Avae.Shared;
+using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.Storage;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Avalonia.Controls.Maui.Essentials;
+namespace Avae.Essentials;
 
 /// <summary>
 /// Provides extension methods for sending emails with attachments and converting emails to different formats.
 /// </summary>
-public static class AvaloniaEmailExtensions
+public static class AvaeEmailExtensions
 {
     [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "ResolveContentType")]
     [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaFileResult, Avalonia.Controls.Maui.Essentials")]
     extern static object ResolveContentType(string filename);
-
-
-    /// <summary>
-    /// Composes an email with attachments asynchronously, handling different attachment types.
-    /// </summary>
-    /// <param name="email">The email service implementation.</param>
-    /// <param name="files">The collection of files to attach.</param>
-    /// <param name="message">The email message to send.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    /// <remarks>
-    /// <b>Note:</b> For <see cref="EmailBodyFormat.Html"/> The email client must be associated with the MIME type <c>message/rfc822</c> for .eml files to open correctly.
-    /// On Linux, this can be configured with: <c>xdg-mime default thunderbird.desktop message/rfc822</c>
-    /// On Mac, command+shift+d to enter compose mode
-    /// </remarks>
-    public static Task ComposeAsync(this IEmail email, IEnumerable<FileBase> files, EmailMessage message)
-    {
-        var attachments = new List<EmailAttachment>();
-        foreach (var file in files ?? [])
-        {
-            if (file is AvaloniaFileResult result)
-                attachments.Add(new AvaloniaEmailAttachment(result));
-            else
-                attachments.Add(new EmailAttachment(file.FullPath));
-        }
-        message.Attachments = attachments;
-        return email.ComposeAsync(message);
-    }
 
     /// <summary>
     /// Converts an <see cref="EmailMessage"/> to a <c>mailto:</c> URI string.
@@ -166,7 +140,7 @@ public static class AvaloniaEmailExtensions
             // Attachments
             foreach (var attachment in message.Attachments ?? [])
             {
-                if (attachment is AvaloniaEmailAttachment)
+                if (attachment is Avalonia.Controls.Maui.Essentials.AvaeEmailAttachment)
                 {
                     using var stream = await attachment.OpenReadAsync();
                     await AppendAttachement(attachment.ContentType, stream);
@@ -179,7 +153,7 @@ public static class AvaloniaEmailExtensions
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Only {nameof(ComposeAsync)} is supported");
+                    throw new InvalidOperationException("Unable to resolve ContentType ");
                 }
 
                 async Task AppendAttachement(string contentType, Stream stream)

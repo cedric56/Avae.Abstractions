@@ -1,14 +1,14 @@
 ﻿using Avae.Abstractions;
 using Avae.Services;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Windows.Input;
 
 namespace Example.ViewModels
 {
-    public partial class ModalViewModel : ReactiveObject, 
+    public partial class ModalViewModel(IDialogService dialogService) : ObservableValidator, 
         ICloseableViewModel<string?>,
         IViewModelErrorInfo
     {
@@ -17,20 +17,7 @@ namespace Example.ViewModels
             InputValidation<ModalViewModel>.Init();
         }
 
-        IDialogService dialogService;
-
-        public ModalViewModel(IDialogService dialogService)
-        {
-            this.dialogService = dialogService;
-            //this.WhenAnyValue(x => x.Message)
-            //    //.Skip(1)
-            //    //.Throttle(TimeSpan.FromSeconds(1))
-            //    //.Where(string.IsNullOrWhiteSpace)
-            //    .ObserveOn(RxApp.MainThreadScheduler)
-            //    .Subscribe(text => this.RaisePropertyChanged("Item"));
-        }
-
-        [ReactiveUI.SourceGenerators.Reactive]
+        [ObservableProperty]
         [Required(ErrorMessage = "You have to enter a value.")]
         private string? _message;        
 
@@ -91,7 +78,7 @@ namespace Example.ViewModels
 
         public void RaiseErrorChanged()
         {
-            this.RaisePropertyChanged("Item");
+            this.OnPropertyChanged("Item");
         }
     }
 }

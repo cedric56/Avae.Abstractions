@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  
   <PropertyGroup>
     <TargetFrameworks>net11.0;net11.0-browser;net11.0-ios;net11.0-android;net11.0-macos</TargetFrameworks>
     <TargetFrameworks>$(TargetFrameworks);net11.0-windows</TargetFrameworks>
@@ -8,7 +9,7 @@
     <IsAndroidTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-android'))</IsAndroidTarget>
     <IsIosTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-ios'))</IsIosTarget>
     <IsMacTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-macos'))</IsMacTarget>
-    <IsBrowserTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-browser'))</IsBrowserTarget>
+    <IsBrowserTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-browser'))</IsBrowserTarget>    
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
@@ -27,13 +28,14 @@
     <Compile Remove="**\*.desktop.cs" />
   </ItemGroup>
 
+  <!-- Windows -->
   <ItemGroup Condition="'$(IsWindowsTarget)' == 'true' AND '$(IsBrowserTarget)' != 'true' AND '$(IsMacTarget)' != 'true' AND '$(IsIosTarget)' != 'true'">
     <PackageReference Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" />
     <Compile Include="**\*.windows.cs" />
     <Compile Include="**\*.desktop.cs" />
   </ItemGroup>
 
-  <!-- Browser / Web -->
+  <!-- Browser -->
   <ItemGroup Condition="'$(IsBrowserTarget)' == 'true'">
     <Compile Include="**\*.browser.cs" />
     <PackageReference Include="Avalonia.Browser" Version="12.1.1" />
@@ -49,7 +51,10 @@
     <PackageReference Include="Avalonia.Controls.Maui.Essentials" Version="11.0.0-preview.6.26198.1455" />
     <PackageReference Include="Microsoft.Maui.Essentials" Version="11.0.0-preview.6.26360.8" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-preview.6.26359.118" />
-    <PackageReference Include="Moq" Version="4.20.72" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Avae.Shared\Avae.Shared.csproj" />
   </ItemGroup>
   
 </Project>

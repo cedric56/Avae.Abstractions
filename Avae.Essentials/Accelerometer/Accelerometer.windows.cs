@@ -120,7 +120,7 @@ namespace Avae.Essentials
     partial class AccelerometerImplementation
 	{
 		// keep around a reference so we can stop this same instance
-		WindowsAccelerometer sensor;
+		WindowsAccelerometer? sensor;
 
 		internal static WindowsAccelerometer DefaultSensor =>
 			WindowsAccelerometer.GetDefault();
@@ -147,8 +147,11 @@ namespace Avae.Essentials
 
 		void PlatformStop()
 		{
-			sensor.ReadingChanged -= DataUpdated;
-			sensor.ReportInterval = 0;
+            if (sensor != null)
+            {
+                sensor.ReadingChanged -= DataUpdated;
+                sensor.ReportInterval = 0;
+            }
 		}
 	}
 }

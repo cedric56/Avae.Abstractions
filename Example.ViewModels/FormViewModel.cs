@@ -7,7 +7,6 @@ using Example.Models;
 using Example.ViewModels.Defaults;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Reactive.Linq;
 
 namespace Example.ViewModels
 {

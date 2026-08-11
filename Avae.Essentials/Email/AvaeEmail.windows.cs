@@ -1,12 +1,10 @@
-﻿using Avalonia.Controls.Maui.Essentials;
+﻿using Avae.Shared;
 using Microsoft.Maui.ApplicationModel.Communication;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.Maui.Storage;
 
 namespace Avae.Essentials
 {
-    internal partial class AvaeEmail : IEmail
+    internal partial class AvaeEmail : IAvaeEmail
     {
         public bool IsComposeSupported => true;
 
@@ -28,6 +26,20 @@ namespace Avae.Essentials
             {
                 return await message.ConvertToEml();
             }
+        }
+
+        public Task ComposeAsync(IEnumerable<FileBase> files, EmailMessage message)
+        {
+            var attachments = new List<EmailAttachment>();
+            foreach (var file in files ?? [])
+            {
+                if (file is Avalonia.Controls.Maui.Essentials.AvaloniaFileResult result)
+                    attachments.Add(new Avalonia.Controls.Maui.Essentials.AvaeEmailAttachment(result));
+                else
+                    attachments.Add(new EmailAttachment(file.FullPath));
+            }
+            message.Attachments = attachments;
+            return ComposeAsync(message);
         }
     }
 }

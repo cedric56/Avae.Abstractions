@@ -6,6 +6,8 @@ namespace Avae.Essentials
 {
     class AvaeTopLevelStateManager : IAvaloniaEssentialsPlatformProvider
     {
+        TopLevel? _active;
+
         public AvaeTopLevelStateManager()
         {
             TopLevel.GotFocusEvent.AddClassHandler(typeof(TopLevel), (sender, args) =>
@@ -13,8 +15,6 @@ namespace Avae.Essentials
                 OnActivated((TopLevel)sender!);
             });
         }
-
-        TopLevel? _active;
 
         public void OnActivated(TopLevel topLevel)
         {
@@ -27,7 +27,6 @@ namespace Avae.Essentials
         public TopLevel? GetTopLevel()
         {
             var lifetime = Avalonia.Application.Current?.ApplicationLifetime;
-
             var active = lifetime switch
             {
                 IClassicDesktopStyleApplicationLifetime desktop => _active ?? TopLevel.GetTopLevel(desktop.MainWindow),

@@ -3,10 +3,10 @@ using Microsoft.Maui.ApplicationModel.Communication;
 
 namespace Avalonia.Controls.Maui.Essentials;
 
-class AvaloniaEmailAttachment : EmailAttachment
+class AvaeEmailAttachment : EmailAttachment
 {
     private IStorageFile storageFile;
-    public AvaloniaEmailAttachment(AvaloniaFileResult file)
+    public AvaeEmailAttachment(AvaloniaFileResult file)
         : base(file.FullPath, file.ContentType)
     {
         FileName = file.FileName;

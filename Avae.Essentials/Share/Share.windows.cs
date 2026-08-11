@@ -1,5 +1,8 @@
+using Avae.Shared;
+using Avalonia.Controls.Maui.Essentials;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
+using Microsoft.Maui.Storage;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Windows.ApplicationModel.DataTransfer;
@@ -9,7 +12,7 @@ using WinRT;
 namespace Avae.Essentials
 {
     [SupportedOSPlatform("windows10.0.10240")]
-    partial class ShareImplementation : IShare
+    partial class ShareImplementation : IAvaeShare
 	{
         public Task RequestAsync(ShareTextRequest request)
         {
@@ -74,7 +77,34 @@ namespace Avae.Essentials
                 dataTransferManager.DataRequested -= ShareTextHandler;
             }
         }
-	}
+
+        public Task RequestAsync(string title, IEnumerable<FileBase> files)
+        {
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(title, nameof(title));
+            ArgumentNullException.ThrowIfNull(files, nameof(files));
+
+            // Convert the enumerable to a list to avoid multiple enumeration and get accurate count
+            var shareFiles = new List<ShareFile>(files.Count());
+
+            foreach (var file in files)
+            {
+                // Check if the file is an Avalonia-specific file result
+                if (file is AvaloniaFileResult f)
+                    // Wrap it with the Avalonia adapter for proper handling
+                    shareFiles.Add(new AvaeShareFile(f));
+                else
+                    // Use standard MAUI ShareFile for regular files
+                    shareFiles.Add(new ShareFile(file));
+            }
+
+            // Execute the native share request with the converted files
+            return RequestAsync(new ShareMultipleFilesRequest()
+            {
+                Title = title,
+                Files = shareFiles
+            });
+        }
+    }
 
 	static class DataTransferManagerHelper
 	{

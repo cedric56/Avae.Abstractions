@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Essentials", "Avae.Ess
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Windows", "Example.Windows\Example.Windows.csproj", "{84E74E36-3B06-45D0-BBC0-C6D3609EB31E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Shared", "Avae.Shared\Avae.Shared.csproj", "{6F351A4E-4339-4697-97F4-A478806B75D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +173,10 @@ Global
 		{84E74E36-3B06-45D0-BBC0-C6D3609EB31E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84E74E36-3B06-45D0-BBC0-C6D3609EB31E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84E74E36-3B06-45D0-BBC0-C6D3609EB31E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F351A4E-4339-4697-97F4-A478806B75D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F351A4E-4339-4697-97F4-A478806B75D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F351A4E-4339-4697-97F4-A478806B75D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F351A4E-4339-4697-97F4-A478806B75D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
