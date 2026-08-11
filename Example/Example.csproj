@@ -44,6 +44,7 @@
     <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />    
     <ProjectReference Include="..\Avae.SignalR\Avae.SignalR.csproj" />
     <ProjectReference Include="..\Avae.SqlTableDependency\Avae.SqlTableDependency.csproj" />
+    <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
     <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
   </ItemGroup>

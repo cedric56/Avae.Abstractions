@@ -12,7 +12,6 @@
   
   <ItemGroup>    
     <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
-    <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />
     <ProjectReference Include="..\Avae.Services\Avae.Services.csproj" />    
     <ProjectReference Include="..\Avae.Shared\Avae.Shared.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />

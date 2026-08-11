@@ -1,7 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
 using Avae.DAL.Interfaces;
-using CommunityToolkit.Mvvm.ComponentModel;
 using Dapper.Contrib.Extensions;
 using MessagePack;
 using System.ComponentModel;
@@ -11,35 +10,40 @@ namespace Example.Models
 {
     [Table(nameof(Person))]
     //[MessagePackObject]    
-    [ObservableObject]
-    public partial class Person : DBTransactional, IModelBase, IDataErrorInfo
+    public partial class Person : DBTransactional, INotifyPropertyChanged, IModelBase, IDataErrorInfo
     {
         private IList<Contact>? _contacts;
         private string? _firstName;
         private string? _lastName;
 
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         [Dapper.Contrib.Extensions.Key]
-        //[MessagePack.Key(0)]
         public long Id { get; set; }
 
         [Required(ErrorMessage = "FirstName must be set")]
-        //[MessagePack.Key(1)]
         public string? FirstName
         {
             get => _firstName;
-            set => SetProperty(ref _firstName, value);
+            set
+            {
+                _firstName = value;
+                OnPropertyChanged(nameof(FirstName));
+            }
         }
 
         [Required(ErrorMessage = "LastName must be set")]
-        //[MessagePack.Key(2)]
         public string? LastName
         {
-            get => _lastName; 
-            set => SetProperty(ref _lastName, value);
+            get => _lastName;
+            set
+            {
+                _lastName = value;
+                OnPropertyChanged(nameof(LastName));
+            }
         }
 
         [Computed]
-        //[MessagePack.Key(3)]
         public IList<Contact> Contacts
         {
             get
@@ -227,6 +231,11 @@ namespace Example.Models
         public string? FullName
         {
             get { return FirstName + " " + LastName; }
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -18,7 +18,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Avae.Razor\Avae.Razor.csproj" />    
-    <ProjectReference Include="..\Avae.SignalR\Avae.SignalR.csproj" />
+    <ProjectReference Include="..\Avae.SignalR\Avae.SignalR.csproj" />    
+    <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
     <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
   </ItemGroup>
 

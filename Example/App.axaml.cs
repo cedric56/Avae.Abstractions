@@ -4,6 +4,7 @@ using Avae.Implementations;
 using Avae.SignalR;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Example.DAL;
 using Example.Models;
 using Example.ViewModels;
 using Example.Views;

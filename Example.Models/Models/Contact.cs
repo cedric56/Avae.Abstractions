@@ -1,14 +1,14 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
-using CommunityToolkit.Mvvm.ComponentModel;
 using Dapper.Contrib.Extensions;
 using MessagePack;
+using System.ComponentModel;
 
 namespace Example.Models
 {
     [Table(nameof(Contact))]
     [MessagePackObject]
-    public partial class Contact : ObservableObject, IModelBase
+    public partial class Contact : INotifyPropertyChanged, IModelBase
     {
         private Person? person;
         private Person? contact;
@@ -22,7 +22,10 @@ namespace Example.Models
         public Person Person
         {
             get { return person ??= DBBase.Instance.Get<Person>(IdPerson)!; }
-            set { SetProperty(ref person, value); }
+            set {
+                person = value;
+                OnPropertyChanged(nameof(Person));
+            }
         }
 
         [MessagePack.Key(1)]
@@ -36,8 +39,14 @@ namespace Example.Models
         public Person PersonContact
         {
             get { return contact ??= DBBase.Instance.Get<Person>(IdContact)!; }
-            set { SetProperty(ref contact, value); }
+            set 
+            {
+                contact = value;
+                OnPropertyChanged(nameof(PersonContact));
+            }
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public override bool Equals(object? obj)
         {
@@ -47,6 +56,11 @@ namespace Example.Models
         public override int GetHashCode()
         {
             return Id.GetHashCode();
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Avae.Abstractions;
 using Avae.Maui;
+using Example.DAL;
 using Example.Maui.Views;
-using Example.Models;
 using Example.ViewModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
