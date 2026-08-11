@@ -3,7 +3,7 @@ using Avalonia.Threading;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
 
-namespace Avae.Implementations
+namespace Avae.Avalonia
 {
     public class TaskDialogService : ITaskDialogService
     {

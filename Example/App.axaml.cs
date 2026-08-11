@@ -1,6 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avae.Essentials;
-using Avae.Implementations;
+using Avae.Avalonia;
 using Avae.SignalR;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;

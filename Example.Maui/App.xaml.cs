@@ -1,8 +1,4 @@
-﻿using Avae.Abstractions;
-using Example.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Example.Maui
+﻿namespace Example.Maui
 {
     public partial class App : Application
     {
@@ -15,10 +11,10 @@ namespace Example.Maui
         {
             return new Window(new AppShell());
 
-            return new Window(new NavigationPage(new MainPage()
-            {
-                BindingContext = new MainViewModel(new Avae.Abstractions.Router(ServiceLocator.Default)),
-            }));
+            //return new Window(new NavigationPage(new MainPage()
+            //{
+            //    BindingContext = new MainViewModel(new Avae.Abstractions.Router(ServiceLocator.Default)),
+            //}));
         }
     }
 }

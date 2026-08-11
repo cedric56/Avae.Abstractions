@@ -3,7 +3,7 @@ using Avae.Services;
 using Avalonia.Controls;
 using MsBox.Avalonia;
 
-namespace Avae.Implementations;
+namespace Avae.Avalonia;
 
 public abstract class DialogViewBase : UserControl
 {

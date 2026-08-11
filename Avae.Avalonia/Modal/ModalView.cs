@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using MsBox.Avalonia.Base;
 
-namespace Avae.Implementations
+namespace Avae.Avalonia
 {
     internal partial class ModalView<T, TResult> : UserControl, IFullApi<TResult?>, ISetCloseAction
         where T : ICloseableViewModel<TResult?>

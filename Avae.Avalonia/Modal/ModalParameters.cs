@@ -5,7 +5,7 @@ using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Models;
 using System.Windows.Input;
 
-namespace Avae.Implementations;
+namespace Avae.Avalonia;
 
 internal class ModalButton : ButtonDefinition
 {

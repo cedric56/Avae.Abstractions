@@ -1,6 +1,6 @@
 ﻿using Avae.Abstractions;
 
-namespace Avae.Implementations
+namespace Avae.Avalonia
 {
     public class BrokerService : IBrokerService
     {

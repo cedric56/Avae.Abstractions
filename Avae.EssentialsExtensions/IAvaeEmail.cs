@@ -1,7 +1,7 @@
 ﻿using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.Storage;
 
-namespace Avae.Shared
+namespace Avae.EssentialsExtensions
 {
     public interface IAvaeEmail : IEmail
     {

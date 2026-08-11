@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Browser;
 using System.Runtime.Versioning;
 #endif
+using Avae.EssentialsExtensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Maui.Accessibility;
@@ -15,7 +16,6 @@ using Microsoft.Maui.Devices.Sensors;
 using Microsoft.Maui.Media;
 using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
-using Avae.Shared;
 
 namespace Avae.Essentials
 {
@@ -237,43 +237,7 @@ namespace Avae.Essentials
                 null,
                 webAuthenticator);
 #endif
-            services.RegisterServices();
-        }
-
-        private static void RegisterServices(this IServiceCollection services)
-        {
-            services.TryAddSingleton<IAccelerometer>(Accelerometer.Default);
-            services.TryAddSingleton<IAppActions>(AppActions.Current);
-            services.TryAddSingleton<IAppInfo>(AppInfo.Current);
-            services.TryAddSingleton<IBarometer>(Barometer.Default);
-            services.TryAddSingleton<IBattery>(Battery.Default);
-            services.TryAddSingleton<IBrowser>(Browser.Default);
-            services.TryAddSingleton<IClipboard>(Clipboard.Default);
-            services.TryAddSingleton<ICompass>(Compass.Default);
-            services.TryAddSingleton<IConnectivity>(Connectivity.Current);
-            services.TryAddSingleton<IContacts>(Microsoft.Maui.ApplicationModel.Communication.Contacts.Default);
-            services.TryAddSingleton<IDeviceDisplay>(DeviceDisplay.Current);
-            services.TryAddSingleton<IDeviceInfo>(DeviceInfo.Current);
-            services.TryAddSingleton<IEmail>(Email.Default);
-            services.TryAddSingleton<IFilePicker>(FilePicker.Default);
-            services.TryAddSingleton<IFlashlight>(Flashlight.Default);
-            services.TryAddSingleton<IGeocoding>(Geocoding.Default);
-            services.TryAddSingleton<IGeolocation>(Geolocation.Default);
-            services.TryAddSingleton<IGyroscope>(Gyroscope.Default);
-            services.TryAddSingleton<IHapticFeedback>(HapticFeedback.Default);
-            services.TryAddSingleton<ILauncher>(Launcher.Default);
-            services.TryAddSingleton<IMagnetometer>(Magnetometer.Default);
-            services.TryAddSingleton<IMap>(Map.Default);
-            services.TryAddSingleton<IMediaPicker>(MediaPicker.Default);
-            services.TryAddSingleton<IOrientationSensor>(OrientationSensor.Default);
-            services.TryAddSingleton<IPhoneDialer>(PhoneDialer.Default);
-            services.TryAddSingleton<ISecureStorage>(SecureStorage.Default);
-            services.TryAddSingleton<ISemanticScreenReader>(SemanticScreenReader.Default);
-            services.TryAddSingleton<IShare>(Share.Default);
-            services.TryAddSingleton<ISms>(Sms.Default);
-            services.TryAddSingleton<ITextToSpeech>(TextToSpeech.Default);
-            services.TryAddSingleton<IVibration>(Vibration.Default);
-            services.TryAddSingleton<IWebAuthenticator>(WebAuthenticator.Default);
+            services.RegisterEssentials();
         }
     }
 }

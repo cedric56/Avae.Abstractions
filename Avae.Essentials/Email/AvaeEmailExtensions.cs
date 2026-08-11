@@ -1,4 +1,4 @@
-﻿using Avae.Shared;
+﻿using Avae.EssentialsExtensions;
 using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.Storage;
 using System.Runtime.CompilerServices;

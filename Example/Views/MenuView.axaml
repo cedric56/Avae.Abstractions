@@ -2,15 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:BindingConverters="using:Example"
-             xmlns:behavior="using:Avae.Implementations"
+             xmlns:behavior="using:Avae.Avalonia"
              xmlns:model="using:Example.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Example.MenuView"
              xmlns:vm="using:Example.ViewModels"
              x:DataType="{x:Type vm:MenuViewModel}">
     <UserControl.Resources>
-		<BindingConverters:NullConverter x:Key="NullConverter" />
+		<behavior:NullConverter x:Key="NullConverter" />
     </UserControl.Resources>
     <Grid>
         <TransitioningContentControl Content="{Binding CurrentView}"/>    

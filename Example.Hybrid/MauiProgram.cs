@@ -1,4 +1,5 @@
 ﻿using Avae.Abstractions;
+using Avae.EssentialsExtensions;
 using Example.Razor;
 using Microsoft.Extensions.Logging;
 
@@ -17,6 +18,7 @@ namespace Example.Hybrid
                 });
 
             builder.Services.UseSharedLibrary();
+            builder.Services.RegisterEssentials();
             builder.Services.AddMauiBlazorWebView();            
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

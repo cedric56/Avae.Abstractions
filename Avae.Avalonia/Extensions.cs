@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Avae.Implementations
+namespace Avae.Avalonia
 {
     internal static partial class Extensions
     {

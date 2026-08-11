@@ -9,7 +9,7 @@ using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
 
-namespace Avae.Implementations
+namespace Avae.Avalonia
 {
     public class DialogService(IServiceProvider serviceProvider, string iconUrl) : IDialogService
     {

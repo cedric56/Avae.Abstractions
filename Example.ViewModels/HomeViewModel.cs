@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Media;
 using Microsoft.Maui.Storage;
-using Avae.Shared;
+using Avae.EssentialsExtensions;
 
 namespace Example.ViewModels
 {

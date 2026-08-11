@@ -3,7 +3,7 @@ using Avalonia.Controls.Notifications;
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
 
-namespace Avae.Implementations.Services
+namespace Avae.Avalonia
 {
     internal class NotificationService : Avae.Services.INotificationService
     {

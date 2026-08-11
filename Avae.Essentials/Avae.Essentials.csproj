@@ -58,7 +58,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Avae.Shared\Avae.EssentialsExtensions.csproj" />
+    <ProjectReference Include="..\Avae.EssentialsExtensions\Avae.EssentialsExtensions.csproj" />
   </ItemGroup>
   
 </Project>

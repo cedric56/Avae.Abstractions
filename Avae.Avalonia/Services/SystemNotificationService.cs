@@ -1,7 +1,7 @@
 ﻿using Avae.Services;
 using Avalonia.Labs.Notifications;
 
-namespace Avae.Implementations.Services
+namespace Avae.Avalonia
 {
     public class SystemNotificationService : ISystemNotificationService
     {

@@ -86,6 +86,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Avae.EssentialsExtensions\Avae.EssentialsExtensions.csproj" />
       <ProjectReference Include="..\Avae.Maui\Avae.Maui.csproj" />
       <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />
       <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />

@@ -1,5 +1,4 @@
 ﻿using Avae.Abstractions;
-using Avae.Implementations.Services;
 using Avae.Services;
 using Avalonia;
 using Avalonia.Controls;
@@ -10,7 +9,7 @@ using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 
 
-namespace Avae.Implementations
+namespace Avae.Avalonia
 {
     public enum TypeDialog
     {

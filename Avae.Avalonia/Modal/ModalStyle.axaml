@@ -1,9 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:converters="using:Avae.Implementations"
-             xmlns:behaviors="using:Avae.Implementations"
-             xmlns:viewModels="clr-namespace:MsBox.Avalonia.ViewModels;assembly=MsBox.Avalonia"
-             x:DataType="converters:ModalViewModelBase">
+        xmlns:local="using:Avae.Avalonia"
+        x:DataType="local:ModalViewModelBase">
 
   <Design.PreviewWith>
     <Border Padding="20">
@@ -11,7 +9,7 @@
     </Border>
   </Design.PreviewWith>
 
-    <Style Selector="converters|DialogViewBase">
+    <Style Selector="local|DialogViewBase">
 	    <Setter Property="Template">
 			<Setter.Value>
                 <ControlTemplate>

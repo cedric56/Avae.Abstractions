@@ -1,4 +1,4 @@
-using Avae.Implementations;
+using Avae.Avalonia;
 using Example.ViewModels;
 
 namespace Example;

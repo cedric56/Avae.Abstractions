@@ -6,7 +6,7 @@ using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using ContentDialogResult = Avae.Services.ContentDialogResult;
 
-namespace Avae.Implementations
+namespace Avae.Avalonia
 {
     public class ContentDialogService(IServiceProvider serviceProvider) : IContentDialogService, IDialogService
     {

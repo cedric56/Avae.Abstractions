@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using MsBox.Avalonia.Base;
 using MsBox.Avalonia.ViewModels;
 
-namespace Avae.Implementations;
+namespace Avae.Avalonia;
 
 internal abstract class ModalViewModelBase(ModalParameters parameters) : 
     MsBoxCustomViewModel(parameters)
