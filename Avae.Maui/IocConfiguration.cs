@@ -172,7 +172,7 @@ namespace Avae.Maui
             // Content Presenter
             var contentPresenter = new Microsoft.Maui.Controls.ContentView
             {
-                Content = @params.Content as View,
+                Content = @params.Content as Microsoft.Maui.Controls.View,
                 HorizontalOptions = LayoutOptions.Fill,
                 VerticalOptions = LayoutOptions.Fill
             };
@@ -204,7 +204,7 @@ namespace Avae.Maui
             {
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Fill,
-                Content = @params.Footer as View,
+                Content = @params.Footer as Microsoft.Maui.Controls.View,
                 IsVisible = @params.Footer is not null
             };
             moreDetailsPanel.Children.Add(footerHost);
@@ -285,7 +285,7 @@ namespace Avae.Maui
             view.Context = viewModel;
             var modal = new AvaePopupPage<TResult>(viewModel.Title, viewModel.Commands)
             {
-                Content = view as View
+                Content = view as Microsoft.Maui.Controls.View
             };
             viewModel.CloseRequested += CloseRequestedHandler;
             return await IPopupService.Current.PushAsync(modal);

@@ -1,0 +1,41 @@
+﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Maui.Essentials;
+
+namespace Avae.Essentials
+{
+    class AvaeTopLevelStateManager : IAvaloniaEssentialsPlatformProvider
+    {
+        public AvaeTopLevelStateManager()
+        {
+            TopLevel.GotFocusEvent.AddClassHandler(typeof(TopLevel), (sender, args) =>
+            {
+                OnActivated((TopLevel)sender!);
+            });
+        }
+
+        TopLevel? _active;
+
+        public void OnActivated(TopLevel topLevel)
+        {
+            if (_active == topLevel)
+                return;
+
+            _active = topLevel;
+        }
+
+        public TopLevel? GetTopLevel()
+        {
+            var lifetime = Avalonia.Application.Current?.ApplicationLifetime;
+
+            var active = lifetime switch
+            {
+                IClassicDesktopStyleApplicationLifetime desktop => _active ?? TopLevel.GetTopLevel(desktop.MainWindow),
+                ISingleViewApplicationLifetime singleView => _active ?? TopLevel.GetTopLevel(singleView.MainView),
+                _ => _active ?? TopLevel.GetTopLevel(null)
+            };
+
+            return active ?? TopLevel.GetTopLevel(null);
+        }
+    }
+}

@@ -70,11 +70,11 @@ namespace Example.ViewModels
 
         public override string Title => "Form";
 
-        protected override ObservableCollection<PageViewModelBase> GetViewModels()
+        protected override ObservableCollection<ViewModelDescriptor> GetViewModels()
         {
-            return new ObservableCollection<PageViewModelBase>
+            return new ObservableCollection<ViewModelDescriptor>
                 {
-                    new PageViewModelBase<FormViewModel>(this, "Page One", "fa-solid fa-gear")
+                    new ViewModelDescriptor<FormViewModel>(this, "Page One", "fa-solid fa-gear")
                     {
                          NavigationContext = new NavigationContext
                          {
@@ -86,8 +86,8 @@ namespace Example.ViewModels
                             SelectedItems = [.. Person.Contacts.Select(c => c.Person)];
                          }
                     },
-                    new PageViewModelBase<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),
-                    new PageViewModelBase<FormPage3ViewModel>("Page Three", "fa-solid fa-gear")
+                    new ViewModelDescriptor<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),
+                    new ViewModelDescriptor<FormPage3ViewModel>("Page Three", "fa-solid fa-gear")
                     {
                         //Possibility to set parameters on ctor
                         //ViewParameters = [Person]
@@ -95,7 +95,7 @@ namespace Example.ViewModels
                 };
         }
 
-        protected override IViewFor GoTo(PageViewModelBase value, out IViewModelBase viewModel)
+        protected override IViewFor GoTo(ViewModelDescriptor value, out IViewModelBase viewModel)
         {
             //Possibility to set parameters on call
             if (value.ViewModelType == typeof(FormPage3ViewModel))

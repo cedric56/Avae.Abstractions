@@ -7,7 +7,7 @@ namespace Avae.Abstractions
     /// <param name="viewModelType"></param>
     /// <param name="displayName"></param>
     /// <param name="icon"></param>
-    public class PageViewModelBase(Type viewModelType, string displayName, string icon) : IViewModelBase
+    public class ViewModelDescriptor(Type viewModelType, string displayName, string icon) : IViewModelBase
     {
         public Func<IViewModelBase, Task>? Launched { get; set; }
         public IViewModelBase? ViewModel { get; protected set; }
@@ -26,17 +26,17 @@ namespace Avae.Abstractions
         }
     }
 
-    public class PageViewModelBase<T> : PageViewModelBase where T : IViewModelBase
+    public class ViewModelDescriptor<T> : ViewModelDescriptor where T : IViewModelBase
     {
         public new Func<T, Task>? Launched { get; set; }
 
-        public PageViewModelBase(string displayName, string icon)
+        public ViewModelDescriptor(string displayName, string icon)
             : base(typeof(T), displayName, icon)
         {
 
         }
 
-        public PageViewModelBase(T viewModel, string displayName, string icon)
+        public ViewModelDescriptor(T viewModel, string displayName, string icon)
             : base(typeof(T), displayName, icon)
         {
             ViewModel = viewModel;

@@ -75,9 +75,10 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<FormPage2ViewModel>();
         services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
         services.AddTransient<ModalViewModel>();
-        services.UseAvaeEssentials();
+        
         if (!OperatingSystem.IsBrowser())
         {
+            services.UseAvaeEssentials();
             services.UseDBSqlLayer<SqliteConnection>(out signalRService, out unsuscribe);
             //services.UseDBOnionLayer(out signalRService, out unsuscribe);
         }

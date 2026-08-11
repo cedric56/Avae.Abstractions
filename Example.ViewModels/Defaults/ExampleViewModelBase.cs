@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 namespace Example.ViewModels.Defaults
 {
     public abstract partial class ExampleViewModelBase(Router router, bool initialize = true) : 
-        PagesViewModelBase(router, initialize)
+        RoutesViewModelBase(router, initialize)
     {
         [RelayCommand]
         public override void GoBack()

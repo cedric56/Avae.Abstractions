@@ -6,7 +6,7 @@ namespace Avae.Abstractions
     /// <summary>
     /// This class is used to manage the pages in the application.
     /// </summary>
-    public abstract partial class PagesViewModelBase : RouterViewModelBase, IViewModelBase 
+    public abstract partial class RoutesViewModelBase : RouterViewModelBase, IViewModelBase 
     {
         public EventHandler<IViewFor>? CurrentViewChanged;
 
@@ -30,7 +30,7 @@ namespace Avae.Abstractions
         /// <summary>
         /// A dictionary to store the context for each page.
         /// </summary>
-        private readonly Dictionary<PageViewModelBase, KeyValuePair<IViewFor, IViewModelBase>> dico = [];
+        private readonly Dictionary<ViewModelDescriptor, KeyValuePair<IViewFor, IViewModelBase>> dico = [];
 
         /// <summary>
         /// The currently selected page in the menu.
@@ -50,8 +50,8 @@ namespace Avae.Abstractions
         /// <summary>
         /// The currently selected page in the menu.
         /// </summary>
-        private PageViewModelBase? _selectedViewModel;
-        public PageViewModelBase? SelectedViewModel
+        private ViewModelDescriptor? _selectedViewModel;
+        public ViewModelDescriptor? SelectedViewModel
         {
             get { return _selectedViewModel; }
             set
@@ -62,7 +62,7 @@ namespace Avae.Abstractions
             }
         }
 
-        public PagesViewModelBase(Router router, bool initialize = true)
+        public RoutesViewModelBase(Router router, bool initialize = true)
             : base(router)
         {
             if (initialize)
@@ -71,19 +71,19 @@ namespace Avae.Abstractions
             }
         }
 
-        private ObservableCollection<PageViewModelBase>? _viewModels;
+        private ObservableCollection<ViewModelDescriptor>? _viewModels;
         /// <summary>
         /// The list of pages to be displayed in the menu.
         /// </summary>
-        public ObservableCollection<PageViewModelBase> ViewModels { get {return _viewModels ??= GetViewModels(); } }
+        public ObservableCollection<ViewModelDescriptor> ViewModels { get {return _viewModels ??= GetViewModels(); } }
 
-        protected abstract ObservableCollection<PageViewModelBase> GetViewModels();
+        protected abstract ObservableCollection<ViewModelDescriptor> GetViewModels();
 
         /// <summary>
         /// This method is called when the selected page changes.
         /// </summary>
         /// <param name="value"></param>
-        protected async void OnSelectedViewModelChanged(PageViewModelBase? value)
+        protected async void OnSelectedViewModelChanged(ViewModelDescriptor? value)
         {
             if (value == null)
                 return;
@@ -104,7 +104,7 @@ namespace Avae.Abstractions
             RaiseCanExecutesChanged();
         }
 
-        protected virtual IViewFor GoTo(PageViewModelBase value, out IViewModelBase viewModel)
+        protected virtual IViewFor GoTo(ViewModelDescriptor value, out IViewModelBase viewModel)
         {
             IViewFor viewFor;
             if (value.ViewModel != null)

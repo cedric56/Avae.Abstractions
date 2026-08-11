@@ -14,6 +14,7 @@ using Microsoft.Maui.Media;
 using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
 using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.Versioning;
 #if MACOS
 //using Microsoft.Maui.Platforms.MacOS.Essentials;
 #endif
@@ -21,40 +22,6 @@ namespace Avae.Essentials
 {
     public static class Extensions
     {
-        class AvaeTopLevelStateManager : IAvaloniaEssentialsPlatformProvider
-        {
-            public AvaeTopLevelStateManager()
-            {
-                TopLevel.GotFocusEvent.AddClassHandler(typeof(TopLevel), (sender, args) =>
-                {
-                    OnActivated((TopLevel)sender!);
-                });
-            }
-
-            TopLevel? _active;
-
-            public void OnActivated(TopLevel topLevel)
-            {
-                if (_active == topLevel)
-                    return;
-
-                _active = topLevel;
-            }
-
-            public TopLevel? GetTopLevel()
-            {
-                var lifetime = Avalonia.Application.Current?.ApplicationLifetime;
-
-                var active = lifetime switch
-                {
-                    IClassicDesktopStyleApplicationLifetime desktop => _active ?? TopLevel.GetTopLevel(desktop.MainWindow),
-                    ISingleViewApplicationLifetime singleView => _active ?? TopLevel.GetTopLevel(singleView.MainView),
-                    _ => _active ?? TopLevel.GetTopLevel(null)
-                };
-
-                return active ?? TopLevel.GetTopLevel(null);
-            }
-        }
         private static void UseAvaloniaEssentials(this IServiceCollection services,
             IAccelerometer accelerometer,
             IAppActions appActions,
@@ -85,7 +52,7 @@ namespace Avae.Essentials
             ITextToSpeech textToSpeech,
             IVibration vibration)
         {
-            var platformProvider = new AvaeTopLevelStateManager();
+            var platformProvider = new Avae.Essentials.AvaeTopLevelStateManager();
             EssentialsDefaults.SetScreenshot(null, new Avalonia.Controls.Maui.Essentials.AvaloniaScreenshot(platformProvider));
             EssentialsDefaults.SetFilePicker(null, (IFilePicker)AvaloniaDefaults.CreateAvaloniaFilePicker(platformProvider));
             EssentialsDefaults.SetMediaPicker(null, (IMediaPicker)AvaloniaDefaults.CreateAvaloniaMediaPicker(platformProvider));
@@ -126,13 +93,82 @@ namespace Avae.Essentials
             EssentialsDefaults.SetVibration(null, vibration);
         }
 
+        [SupportedOSPlatform("browser")]
+        public static async Task UseBrowserEssentials(this IServiceCollection services, string projectName)
+        {
+            await JSHost.ImportAsync("essentials", $"/_content/{projectName}/essentials.js");
+            services.UseAvaloniaEssentials(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+            services.RegisterServices();
+        }
+
+        [SupportedOSPlatform("windows")]
+        [SupportedOSPlatform("macos")]
+        [SupportedOSPlatform("ios")]
+        [SupportedOSPlatform("android")]
         public static void UseAvaeEssentials(this IServiceCollection services, string? projectName = null)
         {
-            if (OperatingSystem.IsBrowser())
-                Task.Run(async () => await JSHost.ImportAsync("essentials", $"/_content/{projectName}/essentials.js"));
 #if MACOS
-            throw new NotImplementedException("TODO");
-#elif WINDOWS_OS && !IOS && !BROWSER
+            services.UseAvaloniaEssentials(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+#elif WINDOWS_OS && !IOS && !ANDROID
+
             services.UseAvaloniaEssentials(
                 new Avae.Essentials.AccelerometerImplementation(),
                 new Avae.Essentials.AppActionsImplementation(),
@@ -166,8 +202,14 @@ namespace Avae.Essentials
                 new Avae.Essentials.SmsImplementation(),
                 new Avae.Essentials.TextToSpeechImplementation(),
                 new Avae.Essentials.VibrationImplementation());
+
 #endif
 
+            services.RegisterServices();
+        }
+
+        private static void RegisterServices(this IServiceCollection services)
+        {
             services.TryAddSingleton<IAccelerometer>(Accelerometer.Default);
             services.TryAddSingleton<IAppActions>(AppActions.Current);
             services.TryAddSingleton<IAppInfo>(AppInfo.Current);

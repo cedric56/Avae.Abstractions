@@ -5,7 +5,7 @@ using System.Windows.Input;
 namespace Avae.Abstractions
 {
     public abstract partial class FormViewModelBase<TResult>(Router router, bool initialize = true) : 
-        PagesViewModelBase(router, initialize), 
+        RoutesViewModelBase(router, initialize), 
         ICloseableViewModel<TResult>
     {
         public event EventHandler<TResult?>? CloseRequested;

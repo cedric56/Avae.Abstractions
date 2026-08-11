@@ -27,6 +27,8 @@ public class MainActivity : AvaloniaMainActivity
         {
             base.OnCreate(savedInstanceState);
 
+            
+
             // Optional: Additional Android-specific initialization
             // For example, setting up services, notifications, etc.
             Log.Info("Avalonia", "✅ OnCreate completed");
@@ -67,6 +69,7 @@ public class MainApplication : AvaloniaAndroidApplication<AndroidApp>
 
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
+        Microsoft.Maui.ApplicationModel.Platform.Init(this);
         return base.CustomizeAppBuilder(builder)
            .UseAndroid()
            .WithInterFont()

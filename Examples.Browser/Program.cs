@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using Avae.Essentials;
+using Avalonia;
 using Avalonia.Browser;
 using Example;
 using Example.Models;
@@ -19,11 +20,13 @@ internal sealed partial class Program
     {
         protected override string Logs => string.Empty;
 
-        public override void Configure(IServiceCollection services)
+        public override async void Configure(IServiceCollection services)
         {
             base.Configure(services);
 
             services.UseDBOnionLayer(out _, out _);
+
+            await services.UseBrowserEssentials("Examples.Browser");
         }
     }
 }
