@@ -8,8 +8,8 @@
     </MudOverlay>
     <div>
         <MudList T="PageViewModelBase"
-                 @bind-SelectedValue="@ViewModel.SelectedPage">
-            @foreach (var page in ViewModel.Pages)
+                 @bind-SelectedValue="@ViewModel.SelectedViewModel">
+            @foreach (var page in ViewModel.ViewModels)
             {
                 var name = page.DisplayName;
                 <MudListItem Text="@name" Value="page" />
@@ -48,7 +48,7 @@
     [Parameter]
     public required PagesViewModelBase ViewModel { get; set; }
 
-    private ComponentView? CurrentView => ViewModel.ContextFor as ComponentView;
+    private ComponentView? CurrentView => ViewModel.CurrentView as ComponentView;
 
     private bool isDone = false;
 
@@ -59,11 +59,11 @@
         if(!isDone)
         {
             isDone = true;
-            ViewModel.ContextForChanged += OnContextForChanged;
+            ViewModel.CurrentViewChanged += OnViewChanged;
         }
     }
 
-    private async void OnContextForChanged(object? sender, IContextFor page)
+    private async void OnViewChanged(object? sender, IViewFor view)
     {
         await InvokeAsync(StateHasChanged);
     }

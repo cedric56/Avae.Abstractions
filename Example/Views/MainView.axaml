@@ -27,8 +27,8 @@
 					   Margin="5">
 						<ListBox
 							x:Name="MenuItemsListBox"
-							ItemsSource="{Binding Pages}"
-							SelectedItem="{Binding SelectedPage}">
+							ItemsSource="{Binding ViewModels}"
+							SelectedItem="{Binding SelectedViewModel}">
 							<ListBox.Styles>
 								<Style Selector="ListBoxItem">
 									<Setter Property="Padding" Value="10" />
@@ -57,7 +57,7 @@
 					<Rectangle Height="2" Width="20" Fill="White"/>
 				</StackPanel>
 			</Button>
-					<TransitioningContentControl Content="{Binding ContextFor}"/>
+					<TransitioningContentControl Content="{Binding CurrentView}"/>
 						</Grid>
 				</SplitView.Content>
 			</SplitView>

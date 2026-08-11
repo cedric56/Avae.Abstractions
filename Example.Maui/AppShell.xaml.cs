@@ -13,15 +13,15 @@ namespace Example.Maui
 
             BindingContext = vm;
 
-            foreach(var page in vm.Pages)
+            foreach(var page in vm.ViewModels)
             {
                 this.Items.Add(new ShellContent()
                 {
                     Title = page.DisplayName,
                     ContentTemplate = new DataTemplate(() =>
                     {
-                        vm.SelectedPage = page;
-                        return vm.ContextFor;
+                        vm.SelectedViewModel = page;
+                        return vm.CurrentView;
                     })
                 });
             }

@@ -14,11 +14,10 @@
 		<OutputType>Exe</OutputType>
 		<RootNamespace>Example.Maui</RootNamespace>
 		<UseMaui>true</UseMaui>
-    <UseMauiEssentials>true</UseMauiEssentials>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-
+    <IsMauiTarget>true</IsMauiTarget>
 
 		<!-- Display name -->
 		<ApplicationTitle>Example.Maui</ApplicationTitle>
@@ -60,45 +59,23 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!--<PackageReference Include="Avalonia.Controls.Maui" Version="11.0.0-preview.6.26198.1455" />
-		<PackageReference Include="Avalonia.Controls.Maui.Desktop" Version="11.0.0-preview.6.26198.1455" />-->
-		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0-preview.5.*" />		
+		<PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0-preview.6.26360.8" />
+    <PackageReference Update="Microsoft.Maui.Essentials" Version="11.0.0-preview.6.26360.8" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0-preview.6.26359.118" />		
 	</ItemGroup>
 
 	<ItemGroup>
+    <AdditionalTargetFrameworkInfoProperty Include="MyPropertyFromB" />
 	  <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
 	  <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />
+    <!--<ProjectReference Include="..\Avae.Essentials\Avae.Essentials.csproj">
+      <AdditionalProperties>UseMaui=true</AdditionalProperties>
+    </ProjectReference>-->
 	  <ProjectReference Include="..\Avae.Maui\Avae.Maui.csproj" />
 	  <ProjectReference Include="..\Avae.SignalR\Avae.SignalR.csproj" />
 	  <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <MauiXaml Update="Views\FormView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\HomeView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\MenuView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\ModalView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="Views\HomeView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="Views\MenuView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="Views\ModalView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	</ItemGroup>
+  <!--<Import Project="..\Avae.Essentials\build\Avae.Essentials.targets" />-->  
 
 </Project>

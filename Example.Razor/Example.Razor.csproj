@@ -16,7 +16,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.10" />    
   </ItemGroup>
 
-  <ItemGroup>    
+  <ItemGroup>
+    <ProjectReference Include="..\Avae.Essentials\Avae.Essentials.csproj"/>
     <ProjectReference Include="..\Avae.Razor\Avae.Razor.csproj" />    
     <ProjectReference Include="..\Avae.SignalR\Avae.SignalR.csproj" />
     <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />

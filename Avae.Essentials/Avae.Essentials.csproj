@@ -1,38 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net11.0;net11.0-ios;net11.0-windows;net11.0-android;net11.0-macos</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <IsWindowsTarget>$([MSBuild]::IsOSPlatform('Windows'))</IsWindowsTarget>
+    <IsWindowsTarget>$([MSBuild]::IsOSPlatform('Windows'))</IsWindowsTarget>    
     <IsAndroidTarget>$(TargetFramework.Contains('-android'))</IsAndroidTarget>
     <IsIosTarget>$(TargetFramework.Contains('-ios'))</IsIosTarget>
     <IsMacTarget>$([System.String]::Copy('$(TargetFramework)').Contains('-macos'))</IsMacTarget>
-    <!--<IsWebProject Condition="'$(IsWebProject)' == ''">false</IsWebProject>-->
-    <!-- Accept the value passed from the consumer -->
-    <!--<IsWebProject>$(DefineConstants)</IsWebProject>    -->
-    <!-- Detect both Microsoft.NET.Sdk.Web and Microsoft.NET.Sdk.BlazorWebAssembly -->
-    <!--<IsWebProject>$(UsingMicrosoftNETSdkBlazorWebAssembly)</IsWebProject>-->
-    <!--<IsWebProject Condition="'$(UsingMicrosoftNETSdkWeb)' == 'true' OR '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true' OR '$(UsingMicrosoftNETSdkWebAssembly)' == 'true'">true</IsWebProject>-->
-    <!--<IsWebProject Condition="'$(MSBuildProjectExtension)' == '.csproj' AND '$(UsingMicrosoftNETSdk)' == 'true'">
-      <IsWebProject Condition="'$(ProjectSdk)' == 'Microsoft.NET.Sdk.BlazorWebAssembly'">true</IsWebProject>
-    </IsWebProject>-->
-    <!--<IsWebProject>false</IsWebProject>-->
-    <!-- Check if it's a Blazor WebAssembly project -->
-    <!--<IsWebProject Condition="'$(ProjectSdk)' == 'Microsoft.NET.Sdk.BlazorWebAssembly' OR '$(ProjectSdk)' == 'Microsoft.NET.Sdk.Web'">true</IsWebProject>  -->
-    
-</PropertyGroup>
+    <!--<PackageId>Avae.Essentials</PackageId>-->
+  </PropertyGroup>
   <PropertyGroup>
     <SupportedOSPlatformVersion Condition="'$(IsAndroidTarget)' == 'true'">24</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <!-- Conditionally define the symbols -->
   <PropertyGroup>
-    <DefineConstants>$(DefineConstants)</DefineConstants>
-    <DefineConstants Condition="'$(IsWindowsTarget)' == 'true'">$(DefineConstants);IsWindowsOS</DefineConstants>
-    <DefineConstants Condition="'$(IsWebProject)' == 'true'">$(DefineConstants);IsWebProject</DefineConstants>
+    <DefineConstants Condition="'$(IsWindowsTarget)' == 'true'">$(DefineConstants);WINDOWS_OS</DefineConstants>
+    <DefineConstants Condition="'$(IsWebProject)' == 'true'">$(DefineConstants);BROWSER</DefineConstants>
   </PropertyGroup>
-
   
 
   <PropertyGroup Condition="'$(IsWebProject)' == 'true'">
@@ -46,9 +31,7 @@
     <Compile Remove="**\*.desktop.cs" />
   </ItemGroup>
 
-  <!-- Windows desktop (Avalonia etc.) -->
   <ItemGroup Condition="'$(IsWindowsTarget)' == 'true' AND '$(IsWebProject)' != 'true' AND '$(IsMacTarget)' != 'true' AND '$(IsIosTarget)' != 'true'">
-    <PackageReference Include="Avalonia" Version="12.1.1" />
     <PackageReference Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" />
     <Compile Include="**\*.windows.cs" />
     <Compile Include="**\*.desktop.cs" />
@@ -60,15 +43,15 @@
   </ItemGroup>
 
   <!-- macOS -->
-  <ItemGroup Condition="'$(IsMacTarget)' == 'true'">
-    <PackageReference Include="Avalonia" Version="12.1.1" />
+  <ItemGroup Condition="'$(IsMacTarget)' == 'true'">    
     <PackageReference Include="Microsoft.Maui.Platforms.MacOS.Essentials" Version="0.1.0-preview.12.26368.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.1" />
     <PackageReference Include="Avalonia.Controls.Maui.Essentials" Version="11.0.0-preview.6.26198.1455" />
     <PackageReference Include="Microsoft.Maui.Essentials" Version="11.0.0-preview.6.26360.8" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-preview.6.26359.118" />
   </ItemGroup>
-
+  
 </Project>

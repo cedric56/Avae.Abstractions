@@ -7,7 +7,7 @@ using WindowsOrientationSensor = Windows.Devices.Sensors.OrientationSensor;
 namespace Avae.Essentials
 {
     /// <summary>
-    /// Concrete implementation of the <see cref="IOrientationSensor"/> APIs.
+    /// Concrete implementation of the <see cref="Microsoft.Maui.Devices.Sensors.IOrientationSensor"/> APIs.
     /// </summary>
     public partial class OrientationSensorImplementation : IOrientationSensor
     {

@@ -3,7 +3,7 @@ using Example.ViewModels;
 
 namespace Example.Maui.Views;
 
-public partial class HomeView : ContentPage, IContextFor<HomeViewModel>
+public partial class HomeView : ContentPage, IViewFor<HomeViewModel>
 {
 	public HomeView()
 	{

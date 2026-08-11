@@ -18,7 +18,7 @@ namespace Example.ViewModels.Defaults
             base.GoForward();
         }
 
-        protected override void RaiseCanExecuteChanged()
+        protected override void RaiseCanExecutesChanged()
         {
             GoBackCommand.NotifyCanExecuteChanged();
             GoForwardCommand.NotifyCanExecuteChanged();

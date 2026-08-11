@@ -44,7 +44,7 @@ namespace Avae.Abstractions
             _factories[key] = new ViewFactory(factory);
         }
 
-        public void Register<TContextFor>(Func<IServiceProvider, NavigationContext, TContextFor> factory) where TContextFor : IContextFor
+        public void Register<TContextFor>(Func<IServiceProvider, NavigationContext, TContextFor> factory) where TContextFor : IViewFor
         {
             _factories[TContextFor.Name] = new ViewFactory((sp, args) => factory.Invoke(sp, (NavigationContext)args[0]));
         }
@@ -54,32 +54,32 @@ namespace Avae.Abstractions
             _factories[typeof(T).Name] = new ViewFactory((sp, args) => factory.Invoke(sp, (NavigationContext)args[0]));
         }
 
-        public void Register<TContextFor>() where TContextFor : IContextFor, new()
+        public void Register<TContextFor>() where TContextFor : IViewFor, new()
         {
             Register((sp, args) => new TContextFor());
         }
 
-        public void Register<TContextFor, TArg1>(Func<IServiceProvider, TArg1, TContextFor> func) where TContextFor : IContextFor
+        public void Register<TContextFor, TArg1>(Func<IServiceProvider, TArg1, TContextFor> func) where TContextFor : IViewFor
         {
             Register((sp, args) => func(sp, (TArg1)args.Parameters[0]));
         }
 
-        public void Register<TContextFor, TArg1, TArg2>(Func<IServiceProvider, TArg1, TArg2, TContextFor> func) where TContextFor : IContextFor
+        public void Register<TContextFor, TArg1, TArg2>(Func<IServiceProvider, TArg1, TArg2, TContextFor> func) where TContextFor : IViewFor
         {
             Register((sp, args) => func(sp, (TArg1)args.Parameters[0], (TArg2)args.Parameters[1]));
         }
 
-        public void Register<TContextFor, TArg1, TArg2, TArgs3>(Func<IServiceProvider, TArg1, TArg2, TArgs3, TContextFor> func) where TContextFor : IContextFor
+        public void Register<TContextFor, TArg1, TArg2, TArgs3>(Func<IServiceProvider, TArg1, TArg2, TArgs3, TContextFor> func) where TContextFor : IViewFor
         {
             Register((sp, args) => func(sp, (TArg1)args.Parameters[0], (TArg2)args.Parameters[1], (TArgs3)args.Parameters[2]));
         }
 
-        public void Register<TContextFor, TArg1, TArg2, TArgs3, TArgs4>(Func<IServiceProvider, TArg1, TArg2, TArgs3, TArgs4, TContextFor> func) where TContextFor : IContextFor
+        public void Register<TContextFor, TArg1, TArg2, TArgs3, TArgs4>(Func<IServiceProvider, TArg1, TArg2, TArgs3, TArgs4, TContextFor> func) where TContextFor : IViewFor
         {
             Register((sp, args) => func(sp, (TArg1)args.Parameters[0], (TArg2)args.Parameters[1], (TArgs3)args.Parameters[2], (TArgs4)args.Parameters[3]));
         }
 
-        public void Register<TContextFor, TArg1, TArg2, TArgs3, TArgs4, TArgs5>(Func<IServiceProvider, TArg1, TArg2, TArgs3, TArgs4, TArgs5, TContextFor> func) where TContextFor : IContextFor
+        public void Register<TContextFor, TArg1, TArg2, TArgs3, TArgs4, TArgs5>(Func<IServiceProvider, TArg1, TArg2, TArgs3, TArgs4, TArgs5, TContextFor> func) where TContextFor : IViewFor
         {
             Register((sp, args) => func(sp, (TArg1)args.Parameters[0], (TArg2)args.Parameters[1], (TArgs3)args.Parameters[2], (TArgs4)args.Parameters[3], (TArgs5)args.Parameters[4]));
         }

@@ -45,14 +45,14 @@ namespace Avae.Razor
             throw new NotImplementedException();
         }
 
-        public IContextFor? GetContextFor(string key, NavigationContext context)
+        public IViewFor? GetContextFor(string key, NavigationContext context)
         {
-            return Container.GetView(key, context is null ? [] : [context]) as IContextFor;
+            return Container.GetView(key, context is null ? [] : [context]) as IViewFor;
         }
 
-        public IContextFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase
+        public IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase
         {
-            return Container.GetView(typeof(TViewModel).Name, context is null ? [] : [context]) as IContextFor<TViewModel>;
+            return Container.GetView(typeof(TViewModel).Name, context is null ? [] : [context]) as IViewFor<TViewModel>;
         }
 
         public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : ICloseableViewModel<TResult>

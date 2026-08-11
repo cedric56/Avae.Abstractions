@@ -3,7 +3,7 @@ using Example.ViewModels;
 
 namespace Example.Maui.Views;
 
-public partial class MenuView : ContentPage, IContextFor<MenuViewModel>
+public partial class MenuView : ContentPage, IViewFor<MenuViewModel>
 {
 	public MenuView()
 	{

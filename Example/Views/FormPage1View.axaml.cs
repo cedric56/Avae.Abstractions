@@ -6,7 +6,7 @@ using Example.ViewModels;
 namespace Example;
 
 public partial class FormPage1View : UserControl, 
-    IContextFor<FormViewModel>
+    IViewFor<FormViewModel>
 {
     public object? Context { get => DataContext; set => DataContext = value; }
     public FormPage1View()

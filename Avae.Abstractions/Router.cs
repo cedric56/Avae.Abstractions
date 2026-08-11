@@ -55,24 +55,24 @@ namespace Avae.Abstractions
         /// <typeparam name="TBaseType">The base type of the view model.</typeparam>
         /// <param name="viewModelType">The view model type.</param>
         /// <returns>The created view model cast to the <typeparamref name="TBaseType"/>.</returns>        
-        public IContextFor GoTo(Type viewModelType, out IViewModelBase viewModel, NavigationContext? context = null)
+        public IViewFor GoTo(Type viewModelType, out IViewModelBase viewModel, NavigationContext? context = null)
         {
             viewModel = provider.GetViewModel(viewModelType, context);
             AddHistory(viewModel);
             CurrentViewModelChanged?.Invoke(viewModel);
-            return GetContext(viewModel, context);
+            return GetViewFor(viewModel, context);
         }
 
-        public IContextFor GoTo(Type viewModelType, NavigationContext? context = null)
+        public IViewFor GoTo(Type viewModelType, NavigationContext? context = null)
         {
             return GoTo(viewModelType, out var _, context);
         }
 
-        public IContextFor GoTo<TViewModel>(TViewModel viewModel, NavigationContext? context = null) where TViewModel : IViewModelBase
+        public IViewFor GoTo<TViewModel>(TViewModel viewModel, NavigationContext? context = null) where TViewModel : IViewModelBase
         {
             AddHistory(viewModel);
             CurrentViewModelChanged?.Invoke(viewModel);
-            return GetContext(viewModel, context);
+            return GetViewFor(viewModel, context);
         }
 
         /// <summary>
@@ -80,12 +80,12 @@ namespace Avae.Abstractions
         /// </summary>
         /// <typeparam name="TViewModel">The type of the view model.</typeparam>
         /// <returns>The created view model.</returns>
-        public IContextFor GoTo<TViewModel>(out TViewModel viewModel, NavigationContext? context = null) where TViewModel : class, IViewModelBase
+        public IViewFor GoTo<TViewModel>(out TViewModel viewModel, NavigationContext? context = null) where TViewModel : class, IViewModelBase
         {
             viewModel = provider.GetViewModel<TViewModel>(context);
             AddHistory(viewModel);
             CurrentViewModelChanged?.Invoke(viewModel);
-            return GetContext(viewModel, context);
+            return GetViewFor(viewModel, context);
         }
 
         public void AddHistory(IViewModelBase item)
@@ -109,18 +109,18 @@ namespace Avae.Abstractions
             _currentIndex = _history.Count - 1;
         }
 
-        private IContextFor GetContext(IViewModelBase viewModel, NavigationContext? context = null)
+        private IViewFor GetViewFor(IViewModelBase viewModel, NavigationContext? context = null)
         {
             var configuration = provider.GetRequiredService<IIocConfiguration>();
-            var contextFor = configuration.GetContextFor(viewModel.GetType().Name, context ?? new NavigationContext());
+            var viewFor = configuration.GetContextFor(viewModel.GetType().Name, context ?? new NavigationContext());
             //Avoid binding error due to propagating context
-            if (contextFor != null)
+            if (viewFor != null)
             {
-                contextFor.Context = null;
-                contextFor.Context = viewModel;
+                viewFor.Context = null;
+                viewFor.Context = viewModel;
             }
 
-            return contextFor ?? throw new NotImplementedException($"Unable to find view for {viewModel.GetType().Name}");
+            return viewFor ?? throw new NotImplementedException($"Unable to find view for {viewModel.GetType().Name}");
         }
     }
 }

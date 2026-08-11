@@ -30,7 +30,6 @@ namespace Avae.Essentials
 		/// Sets the new active window that can be retrieved with <see cref="GetActiveWindow"/>.
 		/// </summary>
 		/// <param name="window">The <see cref="Window"/> object that is activated.</param>
-		/// <param name="args">The associated event arguments for this window activation event.</param>
 		void OnActivated(Window window);
 	}
 

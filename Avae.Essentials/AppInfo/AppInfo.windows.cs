@@ -60,7 +60,22 @@ namespace Avae.Essentials
 		public void ShowSettingsUI()
 		{
 			if (AppInfoUtils.IsPackagedApp)
-				global::Windows.System.Launcher.LaunchUriAsync(new Uri(SettingsUri)).WatchForError();
+				global::Windows.System.Launcher.LaunchUriAsync(new Uri(SettingsUri)).AsTask().ContinueWith(self =>
+				{
+                    var context = SynchronizationContext.Current;
+                    if (context == null)
+                        return;
+
+                    self.ContinueWith(
+                        t =>
+                        {
+                            var exception = t.Exception?.InnerExceptions.Count > 1 ? t.Exception : t.Exception?.InnerException;
+                            context.Post(e => { if (e is Exception ex) throw ex; }, exception);
+
+                        }, CancellationToken.None,
+                        TaskContinuationOptions.OnlyOnFaulted,
+                        TaskScheduler.Default);
+                });
 			else
 				Process.Start(new ProcessStartInfo { FileName = SettingsUri, UseShellExecute = true });
 		}

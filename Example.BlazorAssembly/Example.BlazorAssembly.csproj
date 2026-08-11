@@ -19,9 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Avae.Essentials\Avae.Essentials.csproj">
-      <AdditionalProperties>IsWebProjectAdditional=true</AdditionalProperties>
-    </ProjectReference>
     <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />
     
   </ItemGroup>

@@ -63,6 +63,9 @@ namespace Avae.Essentials
 
             void ShareTextHandler(DataTransferManager sender, DataRequestedEventArgs e)
             {
+                if (storageFiles.Count == 0)
+                    return;
+
                 var newRequest = e.Request;
 
                 newRequest.Data.SetStorageItems(storageFiles.ToArray());

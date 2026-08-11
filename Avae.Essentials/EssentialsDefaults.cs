@@ -13,6 +13,21 @@ using System.Runtime.CompilerServices;
 
 namespace Avae.Essentials
 {
+    static class AvaloniaDefaults
+    {
+        [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
+        [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaFilePicker, Avalonia.Controls.Maui.Essentials")]
+        internal extern static object CreateAvaloniaFilePicker(IAvaloniaEssentialsPlatformProvider provider);
+
+        [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
+        [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaMediaPicker, Avalonia.Controls.Maui.Essentials")]
+        internal extern static object CreateAvaloniaMediaPicker(IAvaloniaEssentialsPlatformProvider provider);
+
+        [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
+        [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaWebAuthenticator, Avalonia.Controls.Maui.Essentials")]
+        internal extern static object CreateAvaloniaWebAuthenticator(IAvaloniaEssentialsPlatformProvider provider);
+    }
+
     /// <summary>
     /// Installs Avalonia implementations into the Microsoft.Maui.Essentials static facades.
     /// The facades only expose internal SetDefault/SetCurrent hooks, so these accessors use
@@ -198,31 +213,5 @@ namespace Avae.Essentials
         internal static extern void SetWebAuthenticator(
             [UnsafeAccessorType("Microsoft.Maui.Authentication.WebAuthenticator, Microsoft.Maui.Essentials")] object? facade,
             IWebAuthenticator? implementation);
-
-
-
-
-
-
-
-
-
-
-
-
-
-        [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
-        [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaFilePicker, Avalonia.Controls.Maui.Essentials")]
-        internal extern static object CreateAvaloniaFilePicker(IAvaloniaEssentialsPlatformProvider provider);
-
-        [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
-        [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaMediaPicker, Avalonia.Controls.Maui.Essentials")]
-        internal extern static object CreateAvaloniaMediaPicker(IAvaloniaEssentialsPlatformProvider provider);
-
-        [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
-        [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaWebAuthenticator, Avalonia.Controls.Maui.Essentials")]
-        internal extern static object CreateAvaloniaWebAuthenticator(IAvaloniaEssentialsPlatformProvider provider);
-
-
     }
 }

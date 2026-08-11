@@ -47,7 +47,7 @@ namespace Example.ViewModels
             RemoveCommand.NotifyCanExecuteChanged();
         }
 
-        protected override ObservableCollection<PageViewModelBase> GetPages()
+        protected override ObservableCollection<PageViewModelBase> GetViewModels()
         {
             return
             [
@@ -108,10 +108,10 @@ namespace Example.ViewModels
                     action(e);                    
                 }
 
-                ContextFor = null!;
+                CurrentView = null!;
             };
 
-            ContextFor = _router.GoTo(viewModel);
+            CurrentView = _router.GoTo(viewModel);
         }
 
         protected override void NotifyPropertyChanged(string propertyName)

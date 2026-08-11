@@ -8,19 +8,19 @@ namespace Avae.Abstractions
     /// </summary>
     public abstract partial class PagesViewModelBase : RouterViewModelBase, IViewModelBase 
     {
-        public EventHandler<IContextFor>? ContextForChanged;
+        public EventHandler<IViewFor>? CurrentViewChanged;
 
         protected override void OnViewModelChanged(IViewModelBase viewModel)
         {
             var type = viewModel.GetType();
-            _selectedPage = Pages.First(p => p.ViewModelType == type);
-            if (dico.TryGetValue(_selectedPage, out var context))
+            _selectedViewModel = ViewModels.First(p => p.ViewModelType == type);
+            if (dico.TryGetValue(_selectedViewModel, out var context))
             {
-                _contextFor = context.Key;
+                _currentView = context.Key;
             }
-            NotifyPropertyChanged(nameof(SelectedPage));
-            NotifyPropertyChanged(nameof(ContextFor));
-            ContextForChanged?.Invoke(this, _contextFor);
+            NotifyPropertyChanged(nameof(SelectedViewModel));
+            NotifyPropertyChanged(nameof(CurrentView));
+            CurrentViewChanged?.Invoke(this, _currentView);
             base.OnViewModelChanged(viewModel);
         }
 
@@ -30,35 +30,35 @@ namespace Avae.Abstractions
         /// <summary>
         /// A dictionary to store the context for each page.
         /// </summary>
-        private readonly Dictionary<PageViewModelBase, KeyValuePair<IContextFor, IViewModelBase>> dico = [];
+        private readonly Dictionary<PageViewModelBase, KeyValuePair<IViewFor, IViewModelBase>> dico = [];
 
         /// <summary>
         /// The currently selected page in the menu.
         /// </summary>
-        private IContextFor _contextFor = null!;
-        public IContextFor ContextFor 
+        private IViewFor _currentView = null!;
+        public IViewFor CurrentView 
         { 
-            get { return _contextFor; } 
+            get { return _currentView; } 
             set 
             { 
-                _contextFor = value;
-                NotifyPropertyChanged(nameof(ContextFor));
-                ContextForChanged?.Invoke(this, _contextFor);
+                _currentView = value;
+                NotifyPropertyChanged(nameof(CurrentView));
+                CurrentViewChanged?.Invoke(this, _currentView);
             } 
         }
 
         /// <summary>
         /// The currently selected page in the menu.
         /// </summary>
-        private PageViewModelBase? _selectedPage;
-        public PageViewModelBase? SelectedPage
+        private PageViewModelBase? _selectedViewModel;
+        public PageViewModelBase? SelectedViewModel
         {
-            get { return _selectedPage; }
+            get { return _selectedViewModel; }
             set
             {
-                _selectedPage = value;
-                OnSelectedPageChanged(value);
-                NotifyPropertyChanged(nameof(SelectedPage));
+                _selectedViewModel = value;
+                OnSelectedViewModelChanged(value);
+                NotifyPropertyChanged(nameof(SelectedViewModel));
             }
         }
 
@@ -67,56 +67,56 @@ namespace Avae.Abstractions
         {
             if (initialize)
             {
-                SelectedPage = Pages.FirstOrDefault();
+                SelectedViewModel = ViewModels.FirstOrDefault();
             }
         }
 
-        private ObservableCollection<PageViewModelBase>? _pages;
+        private ObservableCollection<PageViewModelBase>? _viewModels;
         /// <summary>
         /// The list of pages to be displayed in the menu.
         /// </summary>
-        public ObservableCollection<PageViewModelBase> Pages { get {return _pages ??= GetPages(); } }
+        public ObservableCollection<PageViewModelBase> ViewModels { get {return _viewModels ??= GetViewModels(); } }
 
-        protected abstract ObservableCollection<PageViewModelBase> GetPages();
+        protected abstract ObservableCollection<PageViewModelBase> GetViewModels();
 
         /// <summary>
         /// This method is called when the selected page changes.
         /// </summary>
         /// <param name="value"></param>
-        protected async void OnSelectedPageChanged(PageViewModelBase? value)
+        protected async void OnSelectedViewModelChanged(PageViewModelBase? value)
         {
             if (value == null)
                 return;
 
-            if (dico.TryGetValue(value, out var context))
+            if (dico.TryGetValue(value, out var view))
             {
-                ContextFor = context.Key;
-                _router.AddHistory(context.Value);
+                CurrentView = view.Key;
+                _router.AddHistory(view.Value);
             }
             else
             {
-                var contextFor = GoTo(value, out var viewModel);                  
-                dico.Add(value, new KeyValuePair<IContextFor, IViewModelBase>(contextFor, viewModel));
+                var viewFor = GoTo(value, out var viewModel);                  
+                dico.Add(value, new KeyValuePair<IViewFor, IViewModelBase>(viewFor, viewModel));
                 await value.OnLaunched(viewModel);
-                ContextFor = contextFor;
+                CurrentView = viewFor;
             }
 
-            RaiseCanExecuteChanged();
+            RaiseCanExecutesChanged();
         }
 
-        protected virtual IContextFor GoTo(PageViewModelBase value, out IViewModelBase viewModel)
+        protected virtual IViewFor GoTo(PageViewModelBase value, out IViewModelBase viewModel)
         {
-            IContextFor contextFor;
+            IViewFor viewFor;
             if (value.ViewModel != null)
             {
-                contextFor = _router.GoTo(viewModel = value.ViewModel, value.NavigationContext);
+                viewFor = _router.GoTo(viewModel = value.ViewModel, value.NavigationContext);
             }
             else
             {
-                contextFor = _router.GoTo(value.ViewModelType, out viewModel, value.NavigationContext);
+                viewFor = _router.GoTo(value.ViewModelType, out viewModel, value.NavigationContext);
             }
 
-            return contextFor;
+            return viewFor;
         }
     }
 }

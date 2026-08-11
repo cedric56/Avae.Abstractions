@@ -13,8 +13,8 @@
 		<BindingConverters:NullConverter x:Key="NullConverter" />
     </UserControl.Resources>
     <Grid>
-        <TransitioningContentControl Content="{Binding ContextFor}"/>    
-        <Grid RowDefinitions="Auto, *" IsVisible="{Binding ContextFor, Converter={StaticResource NullConverter}}">
+        <TransitioningContentControl Content="{Binding CurrentView}"/>    
+        <Grid RowDefinitions="Auto, *" IsVisible="{Binding CurrentView, Converter={StaticResource NullConverter}}">
             <Grid>
                 <TextBlock Text="{Binding Title}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 <Grid ColumnDefinitions="Auto,Auto,Auto" HorizontalAlignment="Right" >

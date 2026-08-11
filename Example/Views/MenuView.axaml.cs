@@ -4,7 +4,7 @@ using Example.ViewModels;
 
 namespace Example;
 
-public partial class MenuView : UserControl, IContextFor<MenuViewModel>
+public partial class MenuView : UserControl, IViewFor<MenuViewModel>
 {
     public MenuView()
     {

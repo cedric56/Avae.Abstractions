@@ -13,6 +13,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Example\Example.csproj" />
-    <ProjectReference Include="..\Avae.Essentials\Avae.Essentials.csproj" />
   </ItemGroup>
 </Project>

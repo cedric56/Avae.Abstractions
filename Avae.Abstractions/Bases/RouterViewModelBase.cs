@@ -38,9 +38,9 @@
 
         protected virtual void OnViewModelChanged(IViewModelBase viewModel)
         {
-            RaiseCanExecuteChanged();
+            RaiseCanExecutesChanged();
         }
 
-        protected abstract void RaiseCanExecuteChanged();
+        protected abstract void RaiseCanExecutesChanged();
     }
 }

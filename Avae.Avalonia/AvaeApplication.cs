@@ -60,7 +60,6 @@ namespace Avae.Implementations
             services.AddSingleton<ILogger>(LoggerFactory.Create(ConfigureLogging).CreateLogger<AvaeApplication>());
             services.AddSingleton<ISystemNotificationService, SystemNotificationService>();
             services.AddSingleton<IRequestedThemeService>(this);
-            
         }
 
         public void Configure(IServiceProvider provider)
@@ -73,9 +72,9 @@ namespace Avae.Implementations
             return Container.GetView(key, @params);
         }
 
-        public IContextFor? GetContextFor(string key, NavigationContext context)
+        public IViewFor? GetContextFor(string key, NavigationContext context)
         {
-            return Container.GetView(key, [context]) as IContextFor;
+            return Container.GetView(key, [context]) as IViewFor;
         }
 
         /// <summary>
@@ -84,9 +83,9 @@ namespace Avae.Implementations
         /// <typeparam name="TViewModel"></typeparam>
         /// <param name="params"></param>
         /// <returns></returns>
-        public IContextFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase
+        public IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase
         {
-            return Container.GetView(typeof(TViewModel).Name, [context]) as IContextFor<TViewModel>;
+            return Container.GetView(typeof(TViewModel).Name, [context]) as IViewFor<TViewModel>;
         }
 
         /// <summary>

@@ -39,7 +39,7 @@ namespace Avae.Razor.Components
         public override string Class => "center";
     }
 
-    public class ComponentView<TView, TViewModel> : ComponentView, IContextFor<TViewModel> where TViewModel : class, IViewModelBase
+    public class ComponentView<TView, TViewModel> : ComponentView, IViewFor<TViewModel> where TViewModel : class, IViewModelBase
     {
         private object? _context;
         public object? Context { get => _context; set { _context = value; OnContextChanged(_context); } }

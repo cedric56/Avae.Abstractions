@@ -23,8 +23,8 @@
 					   Margin="5" >
 						
 						<ListBox Margin="5"
-							ItemsSource="{Binding Pages}"
-							SelectedItem="{Binding SelectedPage}"
+							ItemsSource="{Binding ViewModels}"
+							SelectedItem="{Binding SelectedViewModel}"
 						>
 							<ListBox.Styles>
 								<Style Selector="ListBoxItem">
@@ -53,7 +53,7 @@
 							<Button Content="X" Command="{Binding CloseCommand}" />
 						</StackPanel>
 						
-						<TransitioningContentControl Content="{Binding ContextFor}" Padding="15" Grid.Row="1" />						
+						<TransitioningContentControl Content="{Binding CurrentView}" Padding="15" Grid.Row="1" />						
 						<StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
 							<Button Content="Validate" Command="{Binding ValidateCommand}" />	
 							<Button Content="Cancel" Command="{Binding CloseCommand}" />	

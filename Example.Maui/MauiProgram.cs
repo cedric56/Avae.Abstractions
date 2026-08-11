@@ -50,6 +50,7 @@ namespace Example.Maui
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            //builder.Services.UseAvaeEssentials();
             builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddSingleton<HomeViewModel>();
             builder.Services.AddSingleton<MenuViewModel>();

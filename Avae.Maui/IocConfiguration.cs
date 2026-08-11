@@ -41,17 +41,17 @@ namespace Avae.Maui
             return Container.GetView(key, @params);
         }
 
-        public IContextFor? GetContextFor(string key, NavigationContext context)
+        public IViewFor? GetContextFor(string key, NavigationContext context)
         {
             var view = Container.GetView(key, [context]);
-            if (view is not null && view is not IContextFor)
+            if (view is not null && view is not IViewFor)
                 throw new InvalidOperationException("View must implement IContextFor");
-            return view as IContextFor;
+            return view as IViewFor;
         }
 
-        public IContextFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase
+        public IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase
         {
-            return Container.GetView(typeof(TViewModel).Name, [context]) as IContextFor<TViewModel>;
+            return Container.GetView(typeof(TViewModel).Name, [context]) as IViewFor<TViewModel>;
         }
 
         public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : ICloseableViewModel<TResult>

@@ -70,7 +70,7 @@ namespace Example.ViewModels
 
         public override string Title => "Form";
 
-        protected override ObservableCollection<PageViewModelBase> GetPages()
+        protected override ObservableCollection<PageViewModelBase> GetViewModels()
         {
             return new ObservableCollection<PageViewModelBase>
                 {
@@ -95,7 +95,7 @@ namespace Example.ViewModels
                 };
         }
 
-        protected override IContextFor GoTo(PageViewModelBase value, out IViewModelBase viewModel)
+        protected override IViewFor GoTo(PageViewModelBase value, out IViewModelBase viewModel)
         {
             //Possibility to set parameters on call
             if (value.ViewModelType == typeof(FormPage3ViewModel))

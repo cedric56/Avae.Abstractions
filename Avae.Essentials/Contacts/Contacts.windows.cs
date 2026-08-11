@@ -11,7 +11,7 @@ namespace Avae.Essentials
     [SupportedOSPlatform("windows10.0.10240")]
     class ContactsImplementation : IContacts
 	{
-		public Task<Contact> PickContactAsync()
+		public Task<Contact?> PickContactAsync()
 		{
 			throw new NotImplementedException();
 			//var contactPicker = new ContactPicker();

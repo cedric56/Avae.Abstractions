@@ -3,7 +3,7 @@ using Example.ViewModels;
 
 namespace Example.Maui
 {
-    public partial class MainPage : FlyoutEx, IContextFor<MainViewModel>
+    public partial class MainPage : FlyoutEx, IViewFor<MainViewModel>
     {
         public MainPage()
         {

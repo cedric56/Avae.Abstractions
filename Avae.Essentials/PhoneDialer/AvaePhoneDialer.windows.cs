@@ -3,7 +3,7 @@ using Microsoft.Maui.ApplicationModel.Communication;
 
 namespace Avae.Essentials
 {
-    partial class PhoneDialerImplementation : IPhoneDialer
+    partial class AvaePhoneDialer : IPhoneDialer
     {
         void ValidateOpen(string number)
         {
@@ -15,7 +15,7 @@ namespace Avae.Essentials
         }
     }
 
-    partial class PhoneDialerImplementation : IPhoneDialer
+    partial class AvaePhoneDialer : IPhoneDialer
 	{
 		public bool IsSupported =>
 			true;

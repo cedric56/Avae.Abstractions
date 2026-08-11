@@ -2,6 +2,7 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Maui.Essentials;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Maui.Accessibility;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.Communication;
@@ -86,12 +87,12 @@ namespace Avae.Essentials
         {
             var platformProvider = new AvaeTopLevelStateManager();
             EssentialsDefaults.SetScreenshot(null, new Avalonia.Controls.Maui.Essentials.AvaloniaScreenshot(platformProvider));
-            EssentialsDefaults.SetFilePicker(null, (IFilePicker)EssentialsDefaults.CreateAvaloniaFilePicker(platformProvider));
-            EssentialsDefaults.SetMediaPicker(null, (IMediaPicker)EssentialsDefaults.CreateAvaloniaMediaPicker(platformProvider));
+            EssentialsDefaults.SetFilePicker(null, (IFilePicker)AvaloniaDefaults.CreateAvaloniaFilePicker(platformProvider));
+            EssentialsDefaults.SetMediaPicker(null, (IMediaPicker)AvaloniaDefaults.CreateAvaloniaMediaPicker(platformProvider));
             EssentialsDefaults.SetHapticFeedback(null, new Avalonia.Controls.Maui.Essentials.AvaloniaHapticFeedback());
             EssentialsDefaults.SetPreferences(null, new Avalonia.Controls.Maui.Essentials.AvaloniaPreferences());
             EssentialsDefaults.SetFileSystem(null, new Avalonia.Controls.Maui.Essentials.AvaloniaFileSystem());
-            EssentialsDefaults.SetWebAuthenticator(null, (IWebAuthenticator)EssentialsDefaults.CreateAvaloniaWebAuthenticator(platformProvider));
+            EssentialsDefaults.SetWebAuthenticator(null, (IWebAuthenticator)AvaloniaDefaults.CreateAvaloniaWebAuthenticator(platformProvider));
 
 
 
@@ -123,7 +124,6 @@ namespace Avae.Essentials
             EssentialsDefaults.SetSms(null, sms);
             EssentialsDefaults.SetTextToSpeech(null, textToSpeech);
             EssentialsDefaults.SetVibration(null, vibration);
-
         }
 
         public static void UseAvaeEssentials(this IServiceCollection services, string? projectName = null)
@@ -132,68 +132,74 @@ namespace Avae.Essentials
                 Task.Run(async () => await JSHost.ImportAsync("essentials", $"/_content/{projectName}/essentials.js"));
 #if MACOS
             throw new NotImplementedException("TODO");
-
-#elif ANDROID || IOS
+#elif WINDOWS_OS && !IOS && !BROWSER
             services.UseAvaloniaEssentials(
-                Microsoft.Maui.Devices.Sensors.Accelerometer.Default,
-                AppActions.Current,
-                AppInfo.Current,
-                Microsoft.Maui.Devices.Sensors.Barometer.Default,
-                Battery.Default,
-                Browser.Default,
-                Clipboard.Default,
-                Microsoft.Maui.Devices.Sensors.Compass.Default,
-                Connectivity.Current,
-                Microsoft.Maui.ApplicationModel.Communication.Contacts.Default,
-                DeviceDisplay.Current,
-                DeviceInfo.Current,
-                Email.Default,
-                Flashlight.Default,
+                new Avae.Essentials.AccelerometerImplementation(),
+                new Avae.Essentials.AppActionsImplementation(),
+                new Avae.Essentials.AppInfoImplementation(),
+                new Avae.Essentials.BarometerImplementation(),
+                new Avae.Essentials.BatteryImplementation(),
+                new Avae.Essentials.BrowserImplementation(),
+                new Avae.Essentials.ClipboardImplementation(),
+                new Avae.Essentials.CompassImplementation(),
+                new Avae.Essentials.ConnectivityImplementation(),
+                new Avae.Essentials.ContactsImplementation(),
+                new Avae.Essentials.DeviceDisplayImplementation(),
+                new Avae.Essentials.DeviceInfoImplementation(),
+                new Avae.Essentials.AvaeEmail(),
+                new Avae.Essentials.FlashlightImplementation(),
+#if WINDOWS
                 Geocoding.Default,
-                Geolocation.Default,
-                Gyroscope.Default,
-                Launcher.Default,
-                Microsoft.Maui.Devices.Sensors.Magnetometer.Default,
-                Map.Default,
-                Microsoft.Maui.Devices.Sensors.OrientationSensor.Default,
-                PhoneDialer.Default,
-                () => SecureStorage.Default,
-                SemanticScreenReader.Default,
-                Share.Default,
-                Sms.Default,
-                TextToSpeech.Default,
-                Vibration.Default);
-#elif IsWindowsOS || IsWebProject
-            services.UseAvaloniaEssentials(
-                new AccelerometerImplementation(),
-                new AppActionsImplementation(),
-                new AppInfoImplementation(),
-                new BarometerImplementation(),
-                new BatteryImplementation(),
-                new BrowserImplementation(),
-                new ClipboardImplementation(),
-                new CompassImplementation(),
-                new ConnectivityImplementation(),
-                new ContactsImplementation(),
-                new DeviceDisplayImplementation(),
-                new DeviceInfoImplementation(),
-                new EmailImplementation(),
-                new FlashlightImplementation(),
-                new GeocodingImplementation(),
-                null,
-                new GyroscopeImplementation(),
-                new LauncherImplementation(),
-                new MagnetometerImplementation(),
-                new MapImplementation(),
-                new OrientationSensorImplementation(),
-                new PhoneDialerImplementation(),
-                () => new SecureStorageImplementation(),
-                new AvaeSemanticScreenReader(),
-                new ShareImplementation(),
-                new SmsImplementation(),
-                new TextToSpeechImplementation(),
-                new VibrationImplementation());
+#else
+                new Avae.Essentials.AvaeGeocoding(),
 #endif
+                null,
+                new Avae.Essentials.GyroscopeImplementation(),
+                new Avae.Essentials.LauncherImplementation(),
+                new Avae.Essentials.MagnetometerImplementation(),
+                new Avae.Essentials.MapImplementation(),
+                new Avae.Essentials.OrientationSensorImplementation(),
+                new Avae.Essentials.AvaePhoneDialer(),
+                () => new Avae.Essentials.SecureStorageImplementation(),
+                new Avae.Essentials.AvaeSemanticScreenReader(),
+                new Avae.Essentials.ShareImplementation(),
+                new Avae.Essentials.SmsImplementation(),
+                new Avae.Essentials.TextToSpeechImplementation(),
+                new Avae.Essentials.VibrationImplementation());
+#endif
+
+            services.TryAddSingleton<IAccelerometer>(Accelerometer.Default);
+            services.TryAddSingleton<IAppActions>(AppActions.Current);
+            services.TryAddSingleton<IAppInfo>(AppInfo.Current);
+            services.TryAddSingleton<IBarometer>(Barometer.Default);
+            services.TryAddSingleton<IBattery>(Battery.Default);
+            services.TryAddSingleton<IBrowser>(Browser.Default);
+            services.TryAddSingleton<IClipboard>(Clipboard.Default);
+            services.TryAddSingleton<ICompass>(Compass.Default);
+            services.TryAddSingleton<IConnectivity>(Connectivity.Current);
+            services.TryAddSingleton<IContacts>(Microsoft.Maui.ApplicationModel.Communication.Contacts.Default);
+            services.TryAddSingleton<IDeviceDisplay>(DeviceDisplay.Current);
+            services.TryAddSingleton<IDeviceInfo>(DeviceInfo.Current);
+            services.TryAddSingleton<IEmail>(Email.Default);
+            services.TryAddSingleton<IFilePicker>(FilePicker.Default);
+            services.TryAddSingleton<IFlashlight>(Flashlight.Default);
+            services.TryAddSingleton<IGeocoding>(Geocoding.Default);
+            services.TryAddSingleton<IGeolocation>(Geolocation.Default);
+            services.TryAddSingleton<IGyroscope>(Gyroscope.Default);
+            services.TryAddSingleton<IHapticFeedback>(HapticFeedback.Default);
+            services.TryAddSingleton<ILauncher>(Launcher.Default);
+            services.TryAddSingleton<IMagnetometer>(Magnetometer.Default);
+            services.TryAddSingleton<IMap>(Map.Default);
+            services.TryAddSingleton<IMediaPicker>(MediaPicker.Default);
+            services.TryAddSingleton<IOrientationSensor>(OrientationSensor.Default);
+            services.TryAddSingleton<IPhoneDialer>(PhoneDialer.Default);
+            services.TryAddSingleton<ISecureStorage>(SecureStorage.Default);
+            services.TryAddSingleton<ISemanticScreenReader>(SemanticScreenReader.Default);
+            services.TryAddSingleton<IShare>(Share.Default);
+            services.TryAddSingleton<ISms>(Sms.Default);
+            services.TryAddSingleton<ITextToSpeech>(TextToSpeech.Default);
+            services.TryAddSingleton<IVibration>(Vibration.Default);
+            services.TryAddSingleton<IWebAuthenticator>(WebAuthenticator.Default);
         }
     }
 }

@@ -24,7 +24,7 @@ public partial class MainViewModel(Router router) : ExampleViewModelBase(router)
         OnPropertyChanged(propertyName);
     }
 
-    protected override ObservableCollection<PageViewModelBase> GetPages()
+    protected override ObservableCollection<PageViewModelBase> GetViewModels()
     {
         return
         [

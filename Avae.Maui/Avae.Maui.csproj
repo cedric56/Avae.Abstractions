@@ -26,5 +26,9 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Maui.Controls" Version="10.0.90" />
+  </ItemGroup>
 
 </Project>

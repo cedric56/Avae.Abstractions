@@ -16,7 +16,10 @@ namespace Example.ViewModels
         IIocConfiguration iocConfiguration,
         INotificationManager notificationManager,
         ISystemNotificationService systemNotificationService,
-        IRequestedThemeService requestedTheme) : ObservableObject, IViewModelBase
+        IRequestedThemeService requestedTheme,
+        ITextToSpeech textToSpeech,
+        IShare share,
+        IFilePicker filePicker) : ObservableObject, IViewModelBase
     {
         public static string Title => "Welcome to home";
 
@@ -113,7 +116,7 @@ namespace Example.ViewModels
         [RelayCommand]
         public Task Speak()
         {
-            return TextToSpeech.SpeakAsync("Maui essentials everywhere");
+            return textToSpeech.SpeakAsync("Maui essentials everywhere");
         }
 
         [RelayCommand]
@@ -121,10 +124,10 @@ namespace Example.ViewModels
         {
             try
             {
-                var files = await FilePicker.PickMultipleAsync();
-                await Share.Default.RequestAsync("hello", files ?? []);
+                var files = await filePicker.PickMultipleAsync();
+                await share.RequestAsync("hello", files ?? []);
             }
-            catch
+            catch (Exception ex)
             {
 
             }
