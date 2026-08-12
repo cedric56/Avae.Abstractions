@@ -1,20 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net11.0-windows10.0.19041.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net11.0-macos</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
+
   <ItemGroup>
+    <PackageReference Include="Avalonia.Native" Version="12.1.1" />
     <PackageReference Include="Avalonia.HarfBuzz" Version="12.1.1" />
     <PackageReference Include="Avalonia.Skia" Version="12.1.1" />
-    <PackageReference Include="Avalonia.Win32" Version="12.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Example\Example.csproj" />
   </ItemGroup>
+
 </Project>

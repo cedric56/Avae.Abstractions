@@ -28,6 +28,6 @@ namespace Avae.Everywhere
 		}
 
 		internal static IEnumerable<Placemark> ToPlacemarks(this MapLocationFinderResult result) =>
-			result?.ToPlacemarks();
+			result?.ToPlacemarks() ?? [];
 	}
 }

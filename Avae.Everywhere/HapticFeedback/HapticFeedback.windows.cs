@@ -8,7 +8,7 @@ using Windows.Foundation.Metadata;
 
 namespace Avae.Everywhere
 {
-    [SupportedOSPlatform("windows10.0.10240")]
+    [SupportedOSPlatform("windows10.0.15063")]
     partial class HapticFeedbackImplementation : IHapticFeedback
 	{
 		const string vibrationDeviceApiType = "Windows.Devices.Haptics.VibrationDevice";
@@ -38,7 +38,7 @@ namespace Avae.Everywhere
 			}
 		}
 
-		static SimpleHapticsControllerFeedback FindFeedback(SimpleHapticsController controller, ushort type)
+		static SimpleHapticsControllerFeedback? FindFeedback(SimpleHapticsController controller, ushort type)
 		{
 			foreach (var feedback in controller.SupportedFeedback)
 			{

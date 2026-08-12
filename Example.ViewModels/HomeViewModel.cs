@@ -1,11 +1,11 @@
 ﻿using Avae.Abstractions;
+using Avae.Essentials;
 using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Media;
 using Microsoft.Maui.Storage;
-using Avae.Essentials;
 
 namespace Example.ViewModels
 {
@@ -19,7 +19,8 @@ namespace Example.ViewModels
         IRequestedThemeService requestedTheme,
         ITextToSpeech textToSpeech,
         IShare share,
-        IFilePicker filePicker) : ObservableObject, IViewModelBase
+        IFilePicker filePicker,
+        IMediaPicker mediaPicker) : ObservableObject, IViewModelBase
     {
         public static string Title => "Welcome to home";
 
@@ -124,6 +125,12 @@ namespace Example.ViewModels
         {
             var files = await filePicker.PickMultipleAsync();
             await share.RequestAsync("hello", files ?? []);
+        }
+
+        [RelayCommand]
+        public async Task CaptureVideo()
+        {
+            await mediaPicker.CaptureVideoAsync();
         }
     }
 }

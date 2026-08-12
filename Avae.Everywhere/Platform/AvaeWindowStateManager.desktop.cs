@@ -84,7 +84,7 @@ namespace Avae.Everywhere
 			if (window == null)
 				return IntPtr.Zero;
 
-			var handle = window.TryGetPlatformHandle().Handle;
+			var handle = window.TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
 
 			return handle;
 		}

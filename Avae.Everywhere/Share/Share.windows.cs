@@ -105,8 +105,8 @@ namespace Avae.Everywhere
             });
         }
     }
-
-	static class DataTransferManagerHelper
+    [SupportedOSPlatform("windows10.0.10240")]
+    static class DataTransferManagerHelper
 	{
 		[ComImport]
 		[Guid("3A3DCD6C-3EAB-43DC-BCDE-45671CE800C8")]

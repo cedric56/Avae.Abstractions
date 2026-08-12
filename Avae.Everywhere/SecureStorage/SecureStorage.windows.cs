@@ -66,7 +66,7 @@ namespace Avae.Everywhere
 
 	interface ISecureStorageImplementation
 	{
-		Task<byte[]> GetAsync(string key);
+		Task<byte[]?> GetAsync(string key);
 
 		Task SetAsync(string key, byte[] value);
 
@@ -74,10 +74,10 @@ namespace Avae.Everywhere
 
 		void RemoveAll();
 	}
-
-	class PackagedSecureStorageImplementation : ISecureStorageImplementation
+    [SupportedOSPlatform("windows10.0.10240")]
+    class PackagedSecureStorageImplementation : ISecureStorageImplementation
 	{
-		public Task<byte[]> GetAsync(string key)
+		public Task<byte[]?> GetAsync(string key)
 		{
 			var settings = GetSettings(SecureStorageImplementation.Alias);
 			var encBytes = settings.Values[key] as byte[];
@@ -150,13 +150,14 @@ namespace Avae.Everywhere
 		void Save()
 		{
 			var dir = Path.GetDirectoryName(AppSecureStoragePath);
-			Directory.CreateDirectory(dir);
-
+			if (dir == null)
+				return;
+            Directory.CreateDirectory(dir);
 			using var stream = File.Create(AppSecureStoragePath);
 			JsonSerializer.Serialize(stream, _secureStorage, SecureStorageJsonSerializerContext.Default.SecureStorageDictionary);
 		}
 
-		public Task<byte[]> GetAsync(string key)
+		public Task<byte[]?> GetAsync(string key)
 		{
 			_secureStorage.TryGetValue(key, out var value);
 			return Task.FromResult(value);

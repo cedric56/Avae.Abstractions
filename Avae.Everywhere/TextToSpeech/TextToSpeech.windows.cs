@@ -10,6 +10,7 @@ using Windows.Media.SpeechSynthesis;
 
 namespace Avae.Everywhere
 {
+    [SupportedOSPlatform("windows10.0.10240")]
     partial class TextToSpeechImplementation : ITextToSpeech
     {
         internal const float PitchMax = 2.0f;
@@ -94,7 +95,7 @@ namespace Avae.Everywhere
 
                 void OnCancel()
                 {
-                    if (player != null)
+                    if (player != null && OperatingSystem.IsWindowsVersionAtLeast(10, 0, 14393, 0))
                         player.PlaybackSession.PlaybackRate = 0;
                     tcsUtterance.TrySetResult(true);
                 }

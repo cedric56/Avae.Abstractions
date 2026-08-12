@@ -1,7 +1,9 @@
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.Communication;
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Windows.ApplicationModel.Contacts;
+using WinRT;
 using Contact = Microsoft.Maui.ApplicationModel.Communication.Contact;
 using ContactEmail = Microsoft.Maui.ApplicationModel.Communication.ContactEmail;
 using ContactPhone = Microsoft.Maui.ApplicationModel.Communication.ContactPhone;
@@ -11,16 +13,21 @@ namespace Avae.Everywhere
     [SupportedOSPlatform("windows10.0.10240")]
     class ContactsImplementation : IContacts
 	{
-		public Task<Contact?> PickContactAsync()
+        [ComImport]
+        [Guid("3E68D4BD-7135-4D10-8018-9FB6D9F33FA1")]
+        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)] // WinRT interfaces are IInspectable-based
+        interface IInitializeWithWindow
+        {
+            [PreserveSig] int Initialize(IntPtr hwnd);
+        }
+
+        public async Task<Contact?> PickContactAsync()
 		{
-			throw new NotImplementedException();
-			//var contactPicker = new ContactPicker();
-
-			//var hwnd = WindowStateManager.Default.GetActiveWindowHandle(false);
-   //         WinRT.Interop.InitializeWithWindow.Initialize(contactPicker, hwnd);
-
-			//var contactSelected = await contactPicker.PickContactAsync();
-			//return ConvertContact(contactSelected);
+			var contactPicker = new ContactPicker();
+			var hwnd = AvaeWindowStateManager.Default.GetActiveWindowHandle(false);
+			contactPicker.As<IInitializeWithWindow>().Initialize(hwnd);
+			var contactSelected = await contactPicker.PickContactAsync();
+			return ConvertContact(contactSelected);
 		}
 
 		public async Task<IEnumerable<Contact>> GetAllAsync(CancellationToken cancellationToken)
@@ -41,12 +48,14 @@ namespace Avae.Everywhere
 			{
 				foreach (var item in contacts)
 				{
-					yield return ConvertContact(item);
+					var c = ConvertContact(item);
+					if(c != null)
+						yield return c;
 				}
 			}
 		}
 
-		internal static Contact ConvertContact(global::Windows.ApplicationModel.Contacts.Contact contact)
+		internal static Contact? ConvertContact(global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
 			if (contact == null)
 				return default;

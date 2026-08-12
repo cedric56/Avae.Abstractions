@@ -49,8 +49,8 @@ namespace Avae.Everywhere
 			return Task.CompletedTask;
 		}
 	}
-
-	static partial class AppActionsExtensions
+    [SupportedOSPlatform("windows10.0.10586")]
+    static partial class AppActionsExtensions
 	{
 		internal const string AppActionPrefix = "XE_APP_ACTIONS-";
 

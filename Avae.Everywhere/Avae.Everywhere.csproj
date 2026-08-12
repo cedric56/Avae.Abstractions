@@ -12,6 +12,7 @@
     <IsMacTFM>$([System.String]::Copy('$(TargetFramework)').Contains('-macos'))</IsMacTFM>
     <IsBrowserTFM>$([System.String]::Copy('$(TargetFramework)').Contains('-browser'))</IsBrowserTFM>
     <IsWindowsTFM>$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))</IsWindowsTFM>
+    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
   </PropertyGroup>
   <PropertyGroup>
     <SupportedOSPlatformVersion Condition="'$(IsAndroidTFM)' == 'true'">24</SupportedOSPlatformVersion>
@@ -31,13 +32,13 @@
   </ItemGroup>
 
   <!-- Windows -->
-  <ItemGroup Condition="'$(IsWindowsOS)' == 'true' AND '$(IsBrowserTFM)' != 'true' AND '$(IsMacTFM)' != 'true' AND '$(IsIosTFM)' != 'true' AND '$(IsLinuxOS)' != 'true' AND '$(IsWindowsTFM)' != 'true'">
+  <ItemGroup Condition="'$(IsWindowsOS)' == 'true' AND '$(IsBrowserTFM)' != 'true' AND '$(IsMacTFM)' != 'true' AND '$(IsAndroidTFM)' != 'true' AND '$(IsIosTFM)' != 'true' AND '$(IsLinuxOS)' != 'true' AND '$(IsWindowsTFM)' != 'true'">
     <PackageReference Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" />
     <Compile Include="**\*.windows.cs" />
     <Compile Include="**\*.desktop.cs" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(IsWindowsOS)' == 'true' AND '$(IsBrowserTFM)' != 'true' AND '$(IsMacTFM)' != 'true' AND '$(IsIosTFM)' != 'true' AND '$(IsLinuxOS)' != 'true' AND '$(IsWindowsTFM)' == 'true'">
+  <ItemGroup Condition="'$(IsWindowsOS)' == 'true' AND '$(IsBrowserTFM)' != 'true' AND '$(IsAndroidTFM)' != 'true' AND '$(IsMacTFM)' != 'true' AND '$(IsIosTFM)' != 'true' AND '$(IsLinuxOS)' != 'true' AND '$(IsWindowsTFM)' == 'true'">
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.3.1" />
     <Compile Include="**\*.windows.cs" />
     <Compile Include="**\*.desktop.cs" />

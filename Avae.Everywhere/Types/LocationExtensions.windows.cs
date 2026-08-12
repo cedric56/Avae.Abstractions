@@ -24,10 +24,10 @@ namespace Avae.Everywhere
 			};
 
 		internal static IEnumerable<Location> ToLocations(this IEnumerable<MapLocation> mapLocations) =>
-			mapLocations?.Select(a => a.ToLocation());
+			mapLocations?.Select(a => a.ToLocation()) ?? [];
 
 		internal static IEnumerable<Location> ToLocations(this MapLocationFinderResult result) =>
-			result?.ToLocations();
+			result?.ToLocations() ?? [];
 
 		internal static Location ToLocation(this Geoposition location) =>
 			new Location

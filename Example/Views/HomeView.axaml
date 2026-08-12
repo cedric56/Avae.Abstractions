@@ -17,6 +17,7 @@
             <Button Content="Theme" Command="{Binding ShowRequestedTheme}" />		
             <Button Content="Speak" Command="{Binding Speak}" />		
             <Button Content="Share" Command="{Binding ShowShare}" />		
+            <Button Content="Capture" Command="{Binding CaptureVideo}" />		
         </StackPanel>
         
     </Grid>

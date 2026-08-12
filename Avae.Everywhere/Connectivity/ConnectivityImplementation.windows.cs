@@ -10,12 +10,12 @@ namespace Avae.Everywhere
 {
     partial class ConnectivityImplementation : IConnectivity
     {
-        event EventHandler<ConnectivityChangedEventArgs> ConnectivityChangedInternal;
+        event EventHandler<ConnectivityChangedEventArgs>? ConnectivityChangedInternal;
 
         // a cache so that events aren't fired unnecessarily
         // this is mainly an issue on Android, but we can still do this everywhere
         NetworkAccess currentAccess;
-        List<ConnectionProfile> currentProfiles;
+        List<ConnectionProfile> currentProfiles = [];
 
         public event EventHandler<ConnectivityChangedEventArgs> ConnectivityChanged
         {
@@ -93,18 +93,21 @@ namespace Avae.Everywhere
 				{
 					// Windows 10 workaround for https://github.com/microsoft/WindowsAppSDK/issues/2965
 					var networkList = ConnectivityNativeHelper.GetNetworkListManager();
-					var enumNetworks = networkList.GetNetworks(ConnectivityNativeHelper.NLM_ENUM_NETWORK.NLM_ENUM_NETWORK_CONNECTED);
+					var enumNetworks = networkList?.GetNetworks(ConnectivityNativeHelper.NLM_ENUM_NETWORK.NLM_ENUM_NETWORK_CONNECTED);
 					var connectivity = ConnectivityNativeHelper.NLM_CONNECTIVITY.NLM_CONNECTIVITY_DISCONNECTED;
 
-					foreach (ConnectivityNativeHelper.INetwork networkInterface in enumNetworks)
+
+					if (enumNetworks != null)
 					{
-						if (networkInterface.IsConnected())
+						foreach (ConnectivityNativeHelper.INetwork networkInterface in enumNetworks)
 						{
-							connectivity = networkInterface.GetConnectivity();
-							break;
+							if (networkInterface.IsConnected())
+							{
+								connectivity = networkInterface.GetConnectivity();
+								break;
+							}
 						}
 					}
-
 					if ((connectivity & (ConnectivityNativeHelper.NLM_CONNECTIVITY.NLM_CONNECTIVITY_IPV4_INTERNET | ConnectivityNativeHelper.NLM_CONNECTIVITY.NLM_CONNECTIVITY_IPV6_INTERNET)) != 0)
 					{
 						return NetworkAccess.Internet;

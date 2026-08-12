@@ -59,7 +59,7 @@ namespace Avae.Everywhere
 
 		async Task<bool> PlatformOpenAsync(OpenFileRequest request)
 		{
-			var storageFile = await StorageFile.GetFileFromPathAsync(request.File.FullPath);
+			var storageFile = await StorageFile.GetFileFromPathAsync(request?.File?.FullPath);
 
 			return await WinLauncher.LaunchFileAsync(storageFile).AsTask();
 		}

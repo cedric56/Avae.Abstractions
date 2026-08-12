@@ -86,7 +86,7 @@ namespace Avae.Everywhere
 		internal const uint NormalInterval = 33;
 
 		// keep around a reference so we can stop this same instance
-		WindowsCompass sensor;
+		WindowsCompass? sensor;
 
 		static WindowsCompass DefaultCompass =>
 			WindowsCompass.GetDefault();
@@ -122,8 +122,11 @@ namespace Avae.Everywhere
 
 		void PlatformStop()
 		{
-			sensor.ReadingChanged -= CompassReportedInterval;
-			sensor.ReportInterval = 0;
+            if (sensor != null)
+            {
+                sensor.ReadingChanged -= CompassReportedInterval;
+                sensor.ReportInterval = 0;
+            }
 		}
 	}
 }

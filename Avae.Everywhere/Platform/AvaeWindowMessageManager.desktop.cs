@@ -1,6 +1,4 @@
 ﻿#nullable enable
-using Avalonia.Controls.ApplicationLifetimes;
-
 namespace Avae.Everywhere
 {
 	class WindowMessageManager : IDisposable
@@ -19,7 +17,7 @@ namespace Avae.Everywhere
 
         WindowMessageManager(Avalonia.Controls.Window window)
 		{
-			_windowHandle = window.TryGetPlatformHandle().Handle;
+			_windowHandle = window.TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
 		}
 
 		public IntPtr WindowHandle => _windowHandle;
@@ -100,7 +98,7 @@ namespace Avae.Everywhere
 
 		public static WindowMessageManager Get(Avalonia.Controls.Window window)
 		{
-			var handle = window.TryGetPlatformHandle().Handle;
+			var handle = window.TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
 
 			if (_managers.TryGetValue(handle, out var weakManager) &&
 				weakManager.TryGetTarget(out var manager) &&

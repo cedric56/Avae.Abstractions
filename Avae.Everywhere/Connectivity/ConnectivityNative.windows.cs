@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Runtime.InteropServices;
 
 namespace Avae.Everywhere
@@ -161,8 +159,8 @@ namespace Avae.Everywhere
 
 		internal static INetworkListManager? GetNetworkListManager()
 		{
-			if(Type.GetTypeFromCLSID(new Guid(CNetworkListManagerCoClassGuid)) is Type netProfMgrClass)
 #pragma warning disable IL2072
+			if (Type.GetTypeFromCLSID(new Guid(CNetworkListManagerCoClassGuid)) is Type netProfMgrClass)
 			return Activator.CreateInstance(netProfMgrClass) as INetworkListManager;
 #pragma warning restore
 

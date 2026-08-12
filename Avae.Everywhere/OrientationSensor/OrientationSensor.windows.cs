@@ -100,7 +100,7 @@ namespace Avae.Everywhere
     partial class OrientationSensorImplementation : IOrientationSensor
 	{
 		// keep around a reference so we can stop this same instance
-		WindowsOrientationSensor sensor;
+		WindowsOrientationSensor? sensor;
 
 		static WindowsOrientationSensor DefaultSensor =>
 			WindowsOrientationSensor.GetDefault();
@@ -127,8 +127,11 @@ namespace Avae.Everywhere
 
 		void PlatformStop()
 		{
-			sensor.ReadingChanged -= DataUpdated;
-			sensor.ReportInterval = 0;
+            if (sensor != null)
+            {
+                sensor.ReadingChanged -= DataUpdated;
+                sensor.ReportInterval = 0;
+            }
 		}
 	}
 }

@@ -28,7 +28,9 @@ namespace Avae.Everywhere
 			}
 			catch (Exception ex)
 			{
-				Debug.WriteLine($"Unable to get system product name. {ex.Message}");
+				systemProductName = string.Empty;
+
+                Debug.WriteLine($"Unable to get system product name. {ex.Message}");
 			}
 		}
 
@@ -227,7 +229,7 @@ namespace Avae.Everywhere
             return cancelTokenSrc.Token;
         }
 
-        internal static async Task<T> WithTimeout<T>(Task<T> task, TimeSpan timeSpan)
+        internal static async Task<T?> WithTimeout<T>(Task<T> task, TimeSpan timeSpan)
         {
             var retTask = await Task.WhenAny(task, Task.Delay(timeSpan))
                 .ConfigureAwait(false);

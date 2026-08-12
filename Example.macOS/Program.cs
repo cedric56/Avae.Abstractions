@@ -1,7 +1,6 @@
 ﻿using Avalonia;
-using Avalonia.Labs.Notifications;
 
-namespace Example.Windows;
+namespace Example.macOS;
 
 class Program
 {
@@ -14,17 +13,10 @@ class Program
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-    {
-        return AppBuilder.Configure<App>()
-            .WithAppNotifications(new AppNotificationOptions()
-            {
-                AppIcon = "C:\\Users\\cedri\\source\\repos\\AvaloniaSample\\AvaloniaSample\\Assets\\avalonia-logo.ico",
-                AppName = "AvaloniaSample",
-            })
+        => AppBuilder.Configure<App>()
             .UseHarfBuzz()
-            .UseWin32()
-            .UseSkia()            
+            .UseAvaloniaNative()
+            .UseSkia()
             .WithInterFont()
             .LogToTrace();
-    }
 }

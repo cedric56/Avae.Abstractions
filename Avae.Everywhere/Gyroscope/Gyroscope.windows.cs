@@ -76,7 +76,7 @@ namespace Avae.Everywhere
     partial class GyroscopeImplementation : IGyroscope
 	{
 		// keep around a reference so we can stop this same instance
-		WindowsGyro sensor;
+		WindowsGyro? sensor;
 
 		static WindowsGyro DefaultSensor =>
 			WindowsGyro.GetDefault();
@@ -103,8 +103,11 @@ namespace Avae.Everywhere
 
 		void PlatformStop()
 		{
-			sensor.ReadingChanged -= DataUpdated;
-			sensor.ReportInterval = 0;
+            if (sensor != null)
+            {
+                sensor.ReadingChanged -= DataUpdated;
+                sensor.ReportInterval = 0;
+            }
 		}
 	}
 }

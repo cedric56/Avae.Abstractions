@@ -63,6 +63,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Browser", "Avae.Browse
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.WebApplication", "Example.WebApplication\Example.WebApplication.csproj", "{460D5CEC-A3BF-4688-929E-7332CA00A329}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.macOS", "Example.macOS\Example.macOS.csproj", "{C92A9E1B-797D-4159-A914-40C07F060ECF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -195,6 +197,10 @@ Global
 		{460D5CEC-A3BF-4688-929E-7332CA00A329}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{460D5CEC-A3BF-4688-929E-7332CA00A329}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{460D5CEC-A3BF-4688-929E-7332CA00A329}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C92A9E1B-797D-4159-A914-40C07F060ECF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C92A9E1B-797D-4159-A914-40C07F060ECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C92A9E1B-797D-4159-A914-40C07F060ECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C92A9E1B-797D-4159-A914-40C07F060ECF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
