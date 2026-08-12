@@ -1,10 +1,4 @@
-﻿#if BROWSER
-using Avalonia;
-using Avalonia.Browser;
-using System.Runtime.Versioning;
-#endif
-using Avae.EssentialsExtensions;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Maui.Accessibility;
 using Microsoft.Maui.ApplicationModel;
@@ -17,227 +11,90 @@ using Microsoft.Maui.Media;
 using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
 
-namespace Avae.Essentials
+namespace Avae.Essentials;
+
+public static class Extensions
 {
-    public static class Extensions
+    public static void RegisterEssentials(this IServiceCollection services)
     {
-#if BROWSER
+        services.TryAddSingleton<IAccelerometer>(Accelerometer.Default);
+        services.TryAddSingleton<IAppActions>(AppActions.Current);
+        services.TryAddSingleton<IAppInfo>(AppInfo.Current);
+        services.TryAddSingleton<IBarometer>(Barometer.Default);
+        services.TryAddSingleton<IBattery>(Battery.Default);
+        services.TryAddSingleton<IBrowser>(Browser.Default);
+        services.TryAddSingleton<IClipboard>(Clipboard.Default);
+        services.TryAddSingleton<ICompass>(Compass.Default);
+        services.TryAddSingleton<IConnectivity>(Connectivity.Current);
+        services.TryAddSingleton<IContacts>(Contacts.Default);
+        services.TryAddSingleton<IDeviceDisplay>(DeviceDisplay.Current);
+        services.TryAddSingleton<IDeviceInfo>(DeviceInfo.Current);
+        services.TryAddSingleton<IEmail>(Email.Default);
+        services.TryAddSingleton<IFilePicker>(FilePicker.Default);
+        services.TryAddSingleton<IFlashlight>(Flashlight.Default);
+        services.TryAddSingleton<IGeocoding>(Geocoding.Default);
+        services.TryAddSingleton<IGeolocation>(Geolocation.Default);
+        services.TryAddSingleton<IGyroscope>(Gyroscope.Default);
+        services.TryAddSingleton<IHapticFeedback>(HapticFeedback.Default);
+        services.TryAddSingleton<ILauncher>(Launcher.Default);
+        services.TryAddSingleton<IMagnetometer>(Magnetometer.Default);
+        services.TryAddSingleton<IMap>(Map.Default);
+        services.TryAddSingleton<IMediaPicker>(MediaPicker.Default);
+        services.TryAddSingleton<IOrientationSensor>(OrientationSensor.Default);
+        services.TryAddSingleton<IPhoneDialer>(PhoneDialer.Default);
+        services.TryAddSingleton<ISecureStorage>(SecureStorage.Default);
+        services.TryAddSingleton<ISemanticScreenReader>(SemanticScreenReader.Default);
+        services.TryAddSingleton<IShare>(Share.Default);
+        services.TryAddSingleton<ISms>(Sms.Default);
+        services.TryAddSingleton<ITextToSpeech>(TextToSpeech.Default);
+        services.TryAddSingleton<IVibration>(Vibration.Default);
+        services.TryAddSingleton<IWebAuthenticator>(WebAuthenticator.Default);
+    }
 
-        [SupportedOSPlatform("browser")]
-        public static async Task UseEmbeddedAvaloniaApp(this IServiceCollection services, string appDiv = "app")
+    public static Task ComposeAsync(this IEmail email, IEnumerable<FileBase> files, EmailMessage message)
+    {
+        if (email is IAvaeEmail avae)
         {
-            EmbeddedAvalonia.AppDiv = appDiv;
-            var builder = AppBuilder.Configure<EmbeddedAvalonia>();
-            await builder.SetupBrowserAppAsync();
-            services.UseAvaeEssentials();
+            return avae.ComposeAsync(files, message);
         }
-
-#endif
-
-        private static void UseAvaloniaEssentials(this IServiceCollection services,
-            IAccelerometer accelerometer,
-            IAppActions appActions,
-            IAppInfo appInfo,
-            IBarometer barometer,
-            IBattery battery,
-            IBrowser browser,
-            IClipboard clipboard,
-            ICompass compass,
-            IConnectivity connectivity,
-            IContacts contacts,
-            IDeviceDisplay deviceDisplay,
-            IDeviceInfo deviceInfo,
-            IEmail email,
-            IFilePicker filepicker,
-            IFileSystem fileSystem,
-            IFlashlight flashlight,
-            IGeocoding geocoding,
-            IGeolocation geolocation,
-            IGyroscope gyroscope,
-            IHapticFeedback hapticFeedback,
-            ILauncher launcher,
-            IMagnetometer magnetometer,
-            IMap map,
-            IMediaPicker mediaPicker,
-            IOrientationSensor orientationSensor,
-            IPhoneDialer phoneDialer,
-            IPreferences preferences,
-            IScreenshot screenshot,
-            Func<ISecureStorage> secureStorage,
-            ISemanticScreenReader semanticScreenReader,
-            IShare share,
-            ISms sms,
-            ITextToSpeech textToSpeech,
-            IVibration vibration, 
-            IWebAuthenticator webAuthenticator)
+        else
         {
-            EssentialsDefaults.SetScreenshot(null, screenshot);
-            EssentialsDefaults.SetFilePicker(null, filepicker);
-            EssentialsDefaults.SetMediaPicker(null, mediaPicker);
-            EssentialsDefaults.SetHapticFeedback(null, hapticFeedback);
-            EssentialsDefaults.SetPreferences(null, preferences);
-            EssentialsDefaults.SetFileSystem(null, fileSystem);
-            EssentialsDefaults.SetWebAuthenticator(null, webAuthenticator);            
-            EssentialsDefaults.SetAccelerometer(null, accelerometer);
-            EssentialsDefaults.SetAppActions(null, appActions);
-            EssentialsDefaults.SetAppInfo(null, appInfo);
-            EssentialsDefaults.SetBarometer(null, barometer);
-            EssentialsDefaults.SetBattery(null, battery);
-            EssentialsDefaults.SetBrowser(null, browser);
-            EssentialsDefaults.SetClipboard(null, clipboard);
-            EssentialsDefaults.SetCompass(null, compass);
-            EssentialsDefaults.SetConnectivity(null, connectivity);
-            EssentialsDefaults.SetContacts(null, contacts);
-            EssentialsDefaults.SetDeviceDisplay(null, deviceDisplay);
-            EssentialsDefaults.SetDeviceInfo(null, deviceInfo);
-            EssentialsDefaults.SetEmail(null, email);
-            EssentialsDefaults.SetFlashlight(null, flashlight);
-            EssentialsDefaults.SetGeocoding(null, geocoding);
-            EssentialsDefaults.SetGeocolation(null, geolocation);
-            EssentialsDefaults.SetGyroscope(null, gyroscope);
-            EssentialsDefaults.SetLauncher(null, launcher);
-            EssentialsDefaults.SetMagnetometer(null, magnetometer);
-            EssentialsDefaults.SetMap(null, map);
-            EssentialsDefaults.SetOrientationSensor(null, orientationSensor);
-            EssentialsDefaults.SetPhoneDialer(null, phoneDialer);
-            EssentialsDefaults.SetSecureStorage(null, secureStorage?.Invoke());
-            EssentialsDefaults.SetSemanticScreenReader(null, semanticScreenReader);
-            EssentialsDefaults.SetShare(null, share);
-            EssentialsDefaults.SetSms(null, sms);
-            EssentialsDefaults.SetTextToSpeech(null, textToSpeech);
-            EssentialsDefaults.SetVibration(null, vibration);
+            var attachments = new List<EmailAttachment>();
+            foreach (var file in files ?? [])
+            {
+                attachments.Add(new EmailAttachment(file.FullPath));
+            }
+            message.Attachments = attachments;
+            return email.ComposeAsync(message);
         }
+    }
 
-        public static void UseAvaeEssentials(this IServiceCollection services)
+    public static Task RequestAsync(this IShare share, string title, IEnumerable<FileBase> files)
+    {
+        if (share is IAvaeShare avae)
         {
-            var platformProvider = new AvaeTopLevelStateManager();
-            var screenshot = new Avalonia.Controls.Maui.Essentials.AvaloniaScreenshot(platformProvider);
-            var filepicker = (IFilePicker)AvaloniaDefaults.CreateAvaloniaFilePicker(platformProvider);
-            var mediapicker = (IMediaPicker)AvaloniaDefaults.CreateAvaloniaMediaPicker(platformProvider);
-            var hapticFeedback = new Avalonia.Controls.Maui.Essentials.AvaloniaHapticFeedback();
-            var preferences = new Avalonia.Controls.Maui.Essentials.AvaloniaPreferences();
-            var fileSystem = new Avalonia.Controls.Maui.Essentials.AvaloniaFileSystem();
-            var webAuthenticator = (IWebAuthenticator)AvaloniaDefaults.CreateAvaloniaWebAuthenticator(platformProvider);
+            return avae.RequestAsync(title, files);
+        }
+        else
+        {
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(title, nameof(title));
+            ArgumentNullException.ThrowIfNull(files, nameof(files));
 
-#if MACOS
-            services.UseAvaloniaEssentials(
-                null!,
-                null!,
-                (IAppInfo)MacosDefaults.CreateAppInfo(),
-                null!,
-                (IBattery)MacosDefaults.CreateBattery(),
-                (IBrowser)MacosDefaults.CreateBrowser(),
-                (IClipboard)MacosDefaults.CreateClipboard(),
-                null!,
-                (IConnectivity)MacosDefaults.CreateConnectivity(),
-                null!,
-                (IDeviceDisplay)MacosDefaults.CreateDeviceDisplay(),
-                (IDeviceInfo)MacosDefaults.CreateDeviceInfo(),
-                (IEmail)MacosDefaults.CreateEmail(),
-                filepicker,
-                fileSystem,
-                (IFlashlight)MacosDefaults.CreateFlashlight(),
-                null!,
-                (IGeolocation)MacosDefaults.CreateGeolocation(),
-                null!,
-                hapticFeedback,
-                (ILauncher)MacosDefaults.CreateLauncher(),
-                null!,
-                (IMap)MacosDefaults.CreateMap(),
-                mediapicker,
-                null!,
-                (IPhoneDialer)MacosDefaults.CreatePhoneDialer(),
-                preferences,
-                screenshot,
-                () => (ISecureStorage)MacosDefaults.CreateSecureStorage(),
-                (ISemanticScreenReader)MacosDefaults.CreateSemanticScreenReader(),
-                (IShare)MacosDefaults.CreateShare(),
-                (ISms)MacosDefaults.CreateSms(),
-                (ITextToSpeech)MacosDefaults.CreateTextToSpeech(),
-                (IVibration)MacosDefaults.CreateVibration(),
-                webAuthenticator);
+            // Convert the enumerable to a list to avoid multiple enumeration and get accurate count
+            var shareFiles = new List<ShareFile>(files.Count());
 
-#elif WINDOWS_OS && !IOS && !ANDROID && !BROWSER
+            foreach (var file in files)
+            {
+                // Use standard MAUI ShareFile for regular files
+                shareFiles.Add(new ShareFile(file));
+            }
 
-                services.UseAvaloniaEssentials(
-                    new Avae.Essentials.AccelerometerImplementation(),
-                    new Avae.Essentials.AppActionsImplementation(),
-                    new Avae.Essentials.AppInfoImplementation(),
-                    new Avae.Essentials.BarometerImplementation(),
-                    new Avae.Essentials.BatteryImplementation(),
-                    new Avae.Essentials.BrowserImplementation(),
-                    new Avae.Essentials.ClipboardImplementation(),
-                    new Avae.Essentials.CompassImplementation(),
-                    new Avae.Essentials.ConnectivityImplementation(),
-                    new Avae.Essentials.ContactsImplementation(),
-                    new Avae.Essentials.DeviceDisplayImplementation(),
-                    new Avae.Essentials.DeviceInfoImplementation(),
-                    new Avae.Essentials.AvaeEmail(),
-                    filepicker,
-                    fileSystem,
-                    new Avae.Essentials.FlashlightImplementation(),
-#if WINDOWS
-                Geocoding.Default,
-#else
-                    new Avae.Essentials.AvaeGeocoding(),
-#endif
-                    null,
-                    new Avae.Essentials.GyroscopeImplementation(),
-                    hapticFeedback,
-                    new Avae.Essentials.LauncherImplementation(),
-                    new Avae.Essentials.MagnetometerImplementation(),
-                    new Avae.Essentials.MapImplementation(),
-                    mediapicker,
-                    new Avae.Essentials.OrientationSensorImplementation(),
-                    new Avae.Essentials.AvaePhoneDialer(),
-                    preferences,
-                    screenshot,
-                    () => new Avae.Essentials.SecureStorageImplementation(),
-                    new Avae.Essentials.AvaeSemanticScreenReader(),
-                    new Avae.Essentials.ShareImplementation(),
-                    new Avae.Essentials.SmsImplementation(),
-                    new Avae.Essentials.TextToSpeechImplementation(),
-                    new Avae.Essentials.VibrationImplementation(),
-                    webAuthenticator);
-#elif BROWSER
-            services.UseAvaloniaEssentials(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                filepicker,
-                fileSystem,
-                null,
-                null,
-                null,
-                null,
-                hapticFeedback,
-                null,
-                null,
-                null,
-                mediapicker,
-                null,
-                null,
-                preferences,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                webAuthenticator);
-#endif
-            services.RegisterEssentials();
+            // Execute the native share request with the converted files
+            return share.RequestAsync(new ShareMultipleFilesRequest()
+            {
+                Title = title,
+                Files = shareFiles
+            });
         }
     }
 }

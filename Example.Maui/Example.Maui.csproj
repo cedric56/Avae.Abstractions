@@ -66,18 +66,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <AdditionalTargetFrameworkInfoProperty Include="MyPropertyFromB" />
 	  <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
 	  <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />
-    <!--<ProjectReference Include="..\Avae.Essentials\Avae.Essentials.csproj">
-      <AdditionalProperties>UseMaui=true</AdditionalProperties>
-    </ProjectReference>-->
 	  <ProjectReference Include="..\Avae.Maui\Avae.Maui.csproj" />
 	  <ProjectReference Include="..\Avae.SignalR\Avae.SignalR.csproj" />
 	  <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
 	  <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
 	</ItemGroup>
-
-  <!--<Import Project="..\Avae.Essentials\build\Avae.Essentials.targets" />-->  
 
 </Project>

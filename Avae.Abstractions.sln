@@ -51,11 +51,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Grpc", "Avae.Grpc\Avae
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Server", "Avae.Server\Avae.Server.csproj", "{7C64D268-307B-426C-B128-5B7485829C5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Essentials", "Avae.Essentials\Avae.Essentials.csproj", "{80638273-4225-4532-92D9-4CEDC9493A46}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Everywhere", "Avae.Everywhere\Avae.Everywhere.csproj", "{80638273-4225-4532-92D9-4CEDC9493A46}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Windows", "Example.Windows\Example.Windows.csproj", "{84E74E36-3B06-45D0-BBC0-C6D3609EB31E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.EssentialsExtensions", "Avae.EssentialsExtensions\Avae.EssentialsExtensions.csproj", "{6F351A4E-4339-4697-97F4-A478806B75D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Essentials", "Avae.Essentials\Avae.Essentials.csproj", "{6F351A4E-4339-4697-97F4-A478806B75D8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.DAL", "Example.DAL\Example.DAL.csproj", "{99051E04-4430-4D6B-9357-FD74A75EB959}"
 EndProject

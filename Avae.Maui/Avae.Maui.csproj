@@ -18,7 +18,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Avae.Abstractions\Avae.Abstractions.csproj" />
-    <ProjectReference Include="..\Avae.EssentialsExtensions\Avae.EssentialsExtensions.csproj" />
+    <ProjectReference Include="..\Avae.Essentials\Avae.Essentials.csproj" />
     <ProjectReference Include="..\Avae.Services\Avae.Services.csproj" />
   </ItemGroup>
   

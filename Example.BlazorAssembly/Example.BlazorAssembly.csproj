@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Avae.Essentials\Avae.Essentials.csproj"/>
+    <ProjectReference Include="..\Avae.Everywhere\Avae.Everywhere.csproj" />
     <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />    
   </ItemGroup>
 

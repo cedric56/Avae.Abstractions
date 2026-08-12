@@ -1,6 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avae.Services;
-using Avae.EssentialsExtensions;
+using Avae.Essentials;
 using Microsoft.Extensions.Logging;
 using UXDivers.Popups.Maui;
 

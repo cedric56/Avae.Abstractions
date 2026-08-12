@@ -1,5 +1,5 @@
 ﻿using Avae.Abstractions;
-using Avae.EssentialsExtensions;
+using Avae.Essentials;
 using Example.Razor;
 using Microsoft.Extensions.Logging;
 

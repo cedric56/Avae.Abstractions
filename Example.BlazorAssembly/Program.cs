@@ -1,5 +1,5 @@
 using Avae.Abstractions;
-using Avae.Essentials;
+using Avae.Everywhere;
 using Example.Razor;
 using Example.Razor.Layout;
 using Microsoft.AspNetCore.Components.Web;
