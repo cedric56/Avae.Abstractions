@@ -143,7 +143,7 @@ namespace Avae.Everywhere
             services.UseAvaloniaEssentials(
                 OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avae.Everywhere.AccelerometerImplementation() : null!,
                 OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10586, 0) ? new Avae.Everywhere.AppActionsImplementation() : null!,
-                OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avae.Everywhere.AppInfoImplementation() : null!,
+                OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avae.Everywhere.AvaeAppInfo() : null!,
                 OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avae.Everywhere.BarometerImplementation() : null!,
                 OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avae.Everywhere.BatteryImplementation() : null!,
                 OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avae.Everywhere.BrowserImplementation() : null!,
@@ -151,7 +151,7 @@ namespace Avae.Everywhere
                 OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avae.Everywhere.CompassImplementation() : null!,
                 OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avae.Everywhere.ConnectivityImplementation() : null!,
                 OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avae.Everywhere.ContactsImplementation() : null!,
-                OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avae.Everywhere.DeviceDisplayImplementation() : null!,
+                OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avae.Everywhere.AvaeDeviceDisplay() : null!,
                 OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avae.Everywhere.DeviceInfoImplementation() : null!,
                 new Avae.Everywhere.AvaeEmail(),
                 filepicker,

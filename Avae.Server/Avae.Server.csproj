@@ -14,6 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Avae.Grpc\Avae.Grpc.csproj" />
+    <ProjectReference Include="..\Avae.MagicOnion\Avae.MagicOnion.csproj" />
   </ItemGroup>
 </Project>

@@ -1,9 +1,9 @@
 ﻿#nullable enable
 namespace Avae.Everywhere
 {
-	class WindowMessageManager : IDisposable
+	class AvaeWindowMessageManager : IDisposable
 	{
-		readonly static Dictionary<IntPtr, WeakReference<WindowMessageManager>> _managers = new();
+		readonly static Dictionary<IntPtr, WeakReference<AvaeWindowMessageManager>> _managers = new();
 		readonly static PlatformMethods.WindowProc _newWndProc = new(NewWindowProc);
 
 		readonly object _locker = new();
@@ -15,7 +15,7 @@ namespace Avae.Everywhere
 
 		event EventHandler<WindowMessageEventArgs>? WindowMessageInternal;
 
-        WindowMessageManager(Avalonia.Controls.Window window)
+        AvaeWindowMessageManager(Avalonia.Controls.Window window)
 		{
 			_windowHandle = window.TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
 		}
@@ -24,7 +24,7 @@ namespace Avae.Everywhere
 
 		public bool IsAttached => _oldWndProc != IntPtr.Zero;
 
-		public static IEnumerable<WindowMessageManager> GetAll()
+		public static IEnumerable<AvaeWindowMessageManager> GetAll()
 		{
 			foreach (var weakManager in _managers.Values.ToArray())
 			{
@@ -96,7 +96,7 @@ namespace Avae.Everywhere
 			return PlatformMethods.DefSubclassProc(hWnd, uMsg, wParam, lParam);
 		}
 
-		public static WindowMessageManager Get(Avalonia.Controls.Window window)
+		public static AvaeWindowMessageManager Get(Avalonia.Controls.Window window)
 		{
 			var handle = window.TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
 
@@ -105,9 +105,9 @@ namespace Avae.Everywhere
 				!manager._isDisposed)
 				return manager;
 
-			var newManager = new WindowMessageManager(window);
+			var newManager = new AvaeWindowMessageManager(window);
 
-			_managers[handle] = new WeakReference<WindowMessageManager>(newManager);
+			_managers[handle] = new WeakReference<AvaeWindowMessageManager>(newManager);
 
 			return newManager;
 		}
@@ -137,7 +137,7 @@ namespace Avae.Everywhere
 			}
 		}
 
-		~WindowMessageManager()
+		~AvaeWindowMessageManager()
 		{
 			Dispose(disposing: false);
 		}

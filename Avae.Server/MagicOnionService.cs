@@ -1,14 +1,14 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
 using Avae.DAL.Interfaces;
-using Avae.Grpc;
+using Avae.MagicOnion;
 using MagicOnion;
 using MagicOnion.Server;
 using MessagePack;
 
 namespace Avae.Server
 {    
-    public abstract class GrpcService : ServiceBase<IGrpcLayer>, IGrpcLayer
+    public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicOnionLayer
     {
         private async UnaryResult<DBResult> Request(string type, Func<EntityHandler, UnionMessagePackSerializerOptions?, Task<byte[]>> serialize)
         {            

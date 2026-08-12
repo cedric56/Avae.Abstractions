@@ -32,7 +32,7 @@
 								</Style>
 							</ListBox.Styles>
 							<ListBox.ItemTemplate>
-								<DataTemplate x:DataType="{x:Type abstractions:ViewModelDescriptor}">
+								<DataTemplate x:DataType="{x:Type abstractions:ViewDescriptor}">
 									<StackPanel
 										Spacing="10"
 										Orientation="Horizontal">

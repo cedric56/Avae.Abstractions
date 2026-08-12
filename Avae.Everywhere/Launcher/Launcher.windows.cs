@@ -1,7 +1,5 @@
 using Microsoft.Maui.ApplicationModel;
-using System;
 using System.Runtime.Versioning;
-using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.System;
 using WinLauncher = Windows.System.Launcher;

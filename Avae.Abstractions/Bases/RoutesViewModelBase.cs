@@ -30,7 +30,7 @@ namespace Avae.Abstractions
         /// <summary>
         /// A dictionary to store the context for each page.
         /// </summary>
-        private readonly Dictionary<ViewModelDescriptor, KeyValuePair<IViewFor, IViewModelBase>> dico = [];
+        private readonly Dictionary<ViewDescriptor, KeyValuePair<IViewFor, IViewModelBase>> dico = [];
 
         /// <summary>
         /// The currently selected page in the menu.
@@ -50,8 +50,8 @@ namespace Avae.Abstractions
         /// <summary>
         /// The currently selected page in the menu.
         /// </summary>
-        private ViewModelDescriptor? _selectedViewModel;
-        public ViewModelDescriptor? SelectedViewModel
+        private ViewDescriptor? _selectedViewModel;
+        public ViewDescriptor? SelectedViewModel
         {
             get { return _selectedViewModel; }
             set
@@ -71,19 +71,19 @@ namespace Avae.Abstractions
             }
         }
 
-        private ObservableCollection<ViewModelDescriptor>? _viewModels;
+        private ObservableCollection<ViewDescriptor>? _viewModels;
         /// <summary>
         /// The list of pages to be displayed in the menu.
         /// </summary>
-        public ObservableCollection<ViewModelDescriptor> ViewModels { get {return _viewModels ??= GetViewModels(); } }
+        public ObservableCollection<ViewDescriptor> ViewModels { get {return _viewModels ??= GetViewModels(); } }
 
-        protected abstract ObservableCollection<ViewModelDescriptor> GetViewModels();
+        protected abstract ObservableCollection<ViewDescriptor> GetViewModels();
 
         /// <summary>
         /// This method is called when the selected page changes.
         /// </summary>
         /// <param name="value"></param>
-        protected async void OnSelectedViewModelChanged(ViewModelDescriptor? value)
+        protected async void OnSelectedViewModelChanged(ViewDescriptor? value)
         {
             if (value == null)
                 return;
@@ -104,7 +104,7 @@ namespace Avae.Abstractions
             RaiseCanExecutesChanged();
         }
 
-        protected virtual IViewFor GoTo(ViewModelDescriptor value, out IViewModelBase viewModel)
+        protected virtual IViewFor GoTo(ViewDescriptor value, out IViewModelBase viewModel)
         {
             IViewFor viewFor;
             if (value.ViewModel != null)

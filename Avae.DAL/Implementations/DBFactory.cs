@@ -1,5 +1,4 @@
-﻿using Avae.DAL.Interfaces;
-using System.Data.Common;
+﻿using System.Data.Common;
 
 namespace Avae.DAL;
 

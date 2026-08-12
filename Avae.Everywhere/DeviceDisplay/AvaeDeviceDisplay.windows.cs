@@ -1,6 +1,5 @@
 #nullable enable
 using Avalonia.Threading;
-using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Devices;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -77,12 +76,12 @@ namespace Avae.Everywhere
         protected abstract void StopScreenMetricsListeners();
     }
 
-    sealed partial class DeviceDisplayImplementation : DeviceDisplayImplementationBase
+    sealed partial class AvaeDeviceDisplay : DeviceDisplayImplementationBase
     {
     }
 
     [SupportedOSPlatform("windows10.0.10240")]
-    partial class DeviceDisplayImplementation
+    partial class AvaeDeviceDisplay
 	{
 		readonly object locker = new object();
 		readonly AvaeActiveWindowTracker _activeWindowTracker;
@@ -90,9 +89,9 @@ namespace Avae.Everywhere
 		DisplayRequest? displayRequest;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="DeviceDisplayImplementation"/> class.
+		/// Initializes a new instance of the <see cref="AvaeDeviceDisplay"/> class.
 		/// </summary>
-		public DeviceDisplayImplementation()
+		public AvaeDeviceDisplay()
 		{
 			_activeWindowTracker = new(AvaeWindowStateManager.Default);
 			_activeWindowTracker.WindowMessage += OnWindowMessage;

@@ -24,12 +24,12 @@ public partial class MainViewModel(Router router) : RoutesViewModelImplementatio
         OnPropertyChanged(propertyName);
     }
 
-    protected override ObservableCollection<ViewModelDescriptor> GetViewModels()
+    protected override ObservableCollection<ViewDescriptor> GetViewModels()
     {
         return
         [
-                new ViewModelDescriptor<HomeViewModel>("Home", "fa-solid fa-house"),
-                new ViewModelDescriptor<MenuViewModel>("Menu", "fa-solid fa-gear")
+                new ViewDescriptor<HomeViewModel>("Home", "fa-solid fa-house"),
+                new ViewDescriptor<MenuViewModel>("Menu", "fa-solid fa-gear")
                 {
                     Launched = (viewModel) =>
                     {

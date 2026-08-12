@@ -1,5 +1,4 @@
-﻿using Avae.DAL.Interfaces;
-using Dapper;
+﻿using Dapper;
 using Dapper.Contrib.Extensions;
 using System.Data;
 

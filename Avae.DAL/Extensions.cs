@@ -1,5 +1,4 @@
-﻿using Avae.DAL.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Data.Common;
 using System.Text;

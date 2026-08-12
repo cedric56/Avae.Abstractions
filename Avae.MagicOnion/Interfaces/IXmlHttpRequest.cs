@@ -1,4 +1,4 @@
-﻿namespace Avae.Grpc;
+﻿namespace Avae.MagicOnion;
 
 public interface IXmlHttpRequest
 {

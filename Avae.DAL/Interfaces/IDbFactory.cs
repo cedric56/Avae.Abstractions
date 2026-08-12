@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace Avae.DAL.Interfaces
+namespace Avae.DAL
 {
     public interface IDBFactory
     {

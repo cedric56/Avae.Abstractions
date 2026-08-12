@@ -1,9 +1,9 @@
 ﻿using Avae.DAL;
 using MagicOnion;
 
-namespace Avae.Grpc
+namespace Avae.MagicOnion
 {
-    public interface IGrpcLayer : IService<IGrpcLayer>
+    public interface IMagicOnionLayer : IService<IMagicOnionLayer>
     {
         UnaryResult<DBResult> Remove(DBTransactional transactional);
 

@@ -47,11 +47,11 @@ namespace Example.ViewModels
             RemoveCommand.NotifyCanExecuteChanged();
         }
 
-        protected override ObservableCollection<ViewModelDescriptor> GetViewModels()
+        protected override ObservableCollection<ViewDescriptor> GetViewModels()
         {
             return
             [
-                new ViewModelDescriptor<FormViewModel>("Form", "fa-solid fa-gear")
+                new ViewDescriptor<FormViewModel>("Form", "fa-solid fa-gear")
             ];
         }
 

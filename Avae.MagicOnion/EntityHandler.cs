@@ -1,6 +1,6 @@
 ﻿using Avae.DAL.Interfaces;
 
-namespace Avae.Grpc
+namespace Avae.MagicOnion
 {
     public abstract class EntityHandler
     {

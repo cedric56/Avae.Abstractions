@@ -10,7 +10,7 @@ using Windows.ApplicationModel;
 namespace Avae.Everywhere
 {
 	[SupportedOSPlatform("windows10.0.10240")]
-	class AppInfoImplementation : IAppInfo
+	class AvaeAppInfo : IAppInfo
 	{
 		static readonly Assembly _launchingAssembly = 
 			Assembly.GetEntryAssembly() ??
@@ -25,7 +25,7 @@ namespace Avae.Everywhere
 		/// <summary>
 		/// Initializes a new <see cref="AppInfoImplementation"/> object with default values.
 		/// </summary>
-		public AppInfoImplementation()
+		public AvaeAppInfo()
 		{
 			_activeWindowTracker = new(AvaeWindowStateManager.Default);
 			_activeWindowTracker.Start();

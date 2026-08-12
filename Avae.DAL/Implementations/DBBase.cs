@@ -1,5 +1,4 @@
 ﻿using Avae.Abstractions;
-using Avae.DAL.Interfaces;
 
 namespace Avae.DAL;
 

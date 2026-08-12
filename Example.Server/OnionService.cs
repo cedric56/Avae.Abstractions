@@ -7,7 +7,7 @@ using Example.Models;
 
 namespace Example.Server
 {
-    public class OnionService : GrpcService
+    public class OnionService : MagicOnionService
     {
         static UnionMessagePackSerializerOptions options;
 

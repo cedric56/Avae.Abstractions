@@ -6,7 +6,7 @@ namespace Avae.Everywhere
 	{
 		readonly IAvaeWindowStateManager _windowStateManager;
 
-		WindowMessageManager? _currentWindowManager;
+		AvaeWindowMessageManager? _currentWindowManager;
 
 		public AvaeActiveWindowTracker(IAvaeWindowStateManager windowStateManager)
 		{
@@ -46,7 +46,7 @@ namespace Avae.Everywhere
 
 			if (window is not null)
 			{
-				_currentWindowManager = WindowMessageManager.Get(window);
+				_currentWindowManager = AvaeWindowMessageManager.Get(window);
 				_currentWindowManager.WindowMessage += OnWindowMessage;
 			}
 		}

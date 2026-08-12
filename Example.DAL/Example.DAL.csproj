@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Avae.MagicOnion\Avae.MagicOnion.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
-    <ProjectReference Include="..\Avae.Grpc\Avae.Grpc.csproj" />
     <ProjectReference Include="..\Avae.SignalR\Avae.SignalR.csproj" />
     <ProjectReference Include="..\Avae.Sqlite\Avae.Sqlite.csproj" />
   </ItemGroup>

@@ -47,7 +47,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.SqlTableDependency", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Sqlite", "Avae.Sqlite\Avae.Sqlite.csproj", "{DC68B81A-30FA-4D77-9323-72AFBC1EF9C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Grpc", "Avae.Grpc\Avae.Grpc.csproj", "{866018E5-CFCF-4218-976F-2CB72298D9AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.MagicOnion", "Avae.MagicOnion\Avae.MagicOnion.csproj", "{866018E5-CFCF-4218-976F-2CB72298D9AD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Server", "Avae.Server\Avae.Server.csproj", "{7C64D268-307B-426C-B128-5B7485829C5B}"
 EndProject

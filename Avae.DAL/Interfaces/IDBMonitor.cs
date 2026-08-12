@@ -1,4 +1,4 @@
-﻿namespace Avae.DAL.Interfaces
+﻿namespace Avae.DAL
 {
     public interface IDBMonitor
     {

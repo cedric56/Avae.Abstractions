@@ -1,6 +1,5 @@
 ﻿using Avae.DAL;
-using Avae.DAL.Interfaces;
-using Avae.Grpc;
+using Avae.MagicOnion;
 using Avae.SignalR;
 using Avae.Sqlite;
 using Example.Models;
@@ -18,7 +17,7 @@ namespace Example.DAL;
 public static class Extensions
 {
     static string HubUrl = "http://localhost:5001/PersonHub";
-    static string OnionUrl = $"http://localhost:5001/{typeof(IGrpcLayer).Name}/";
+    static string OnionUrl = $"http://localhost:5001/{typeof(IMagicOnionLayer).Name}/";
 
     private static string GetCommandText(IDbConnection connection)
     {
@@ -88,15 +87,14 @@ public static class Extensions
 
         var monitor = new DBMonitor<Person>();
         signal = monitor.AddSignalR(HubUrl, out unsuscribe);
-        
+        services.AddSingleton<ISqlMonitor<Person>>(monitor);
         services.AddSingleton<IXmlHttpRequest>(sp => new XmlHttpRequest(OnionUrl));
         services.AddSingleton(sp =>
         {
             var channel = sp.GetGrpcChannel(OperatingSystem.IsBrowser() ? "http://localhost:5001" : "http://localhost:5000");
-            return MagicOnionClient.Create<IGrpcLayer>(channel);
+            return MagicOnionClient.Create<IMagicOnionLayer>(channel);
         });
-        services.UseLayer(sp => new GrpcLayer(sp));        
-        services.AddSingleton<ISqlMonitor<Person>>(monitor);
+        services.UseLayer(sp => new MagicOnionLayer(sp));        
     }
 
     public static void UseDBSqlLayer<TDBConnection>(this IServiceCollection services, out ISignalRService? signal, out Action unsuscribe)

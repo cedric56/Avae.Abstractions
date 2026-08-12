@@ -1,3 +1,4 @@
+using Avalonia.Threading;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Devices.Sensors;
 using System.Runtime.Versioning;
@@ -90,7 +91,7 @@ namespace Avae.Everywhere
             var args = new OrientationSensorChangedEventArgs(reading);
 
             if (UseSyncContext)
-                MainThread.BeginInvokeOnMainThread(() => ReadingChanged?.Invoke(null, args));
+                Dispatcher.UIThread.Invoke(() => ReadingChanged?.Invoke(null, args));
             else
                 ReadingChanged?.Invoke(null, args);
         }

@@ -6,16 +6,16 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Diagnostics;
 
-namespace Avae.Grpc
+namespace Avae.MagicOnion
 {
     //TODO CommandTimeout on WHERE AND FINDBYANY
-    public partial class GrpcLayer(IServiceProvider provider) : IDBLayer
+    public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
     {        
         public async Task<DBResult> Remove(DBTransactional transactional)
         {
             try
             {
-                var service = provider.GetRequiredService<IGrpcLayer>();
+                var service = provider.GetRequiredService<IMagicOnionLayer>();
                 return await service.Remove(transactional);
             }
             catch (Exception ex)
@@ -32,7 +32,7 @@ namespace Avae.Grpc
         {
             try
             {
-                var service = provider.GetRequiredService<IGrpcLayer>();
+                var service = provider.GetRequiredService<IMagicOnionLayer>();
                 return await service.Save(transactional);
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@ namespace Avae.Grpc
         {
             try
             {
-                var service = provider.GetRequiredService<IGrpcLayer>();
+                var service = provider.GetRequiredService<IMagicOnionLayer>();
                 var result = await service.FindByAnyAsync(typeof(T).Name, filters);
                 if (!result.Successful) throw new Exception(result.Exception);
                 if (result.Data == Array.Empty<byte>()) return [];
@@ -126,7 +126,7 @@ namespace Avae.Grpc
         {
             try
             {
-                var service = provider.GetRequiredService<IGrpcLayer>();
+                var service = provider.GetRequiredService<IMagicOnionLayer>();
                 var result = await service.GetAllAsync(typeof(T).Name);
                 if (!result.Successful) throw new Exception(result.Exception);
                 if (result.Data == Array.Empty<byte>()) return [];
@@ -143,7 +143,7 @@ namespace Avae.Grpc
         {
             try
             {
-                var service = provider.GetRequiredService<IGrpcLayer>();
+                var service = provider.GetRequiredService<IMagicOnionLayer>();
                 var result = await service.GetAsync(typeof(T).Name, id);
                 if (!result.Successful) throw new Exception(result.Exception);
                 if (result.Data == Array.Empty<byte>()) return null;
@@ -180,7 +180,7 @@ namespace Avae.Grpc
         {
             try
             {
-                var service = provider.GetRequiredService<IGrpcLayer>();
+                var service = provider.GetRequiredService<IMagicOnionLayer>();
                 var result = await service.WhereAsync(typeof(T).Name, filters);
                 if (!result.Successful) throw new Exception(result.Exception);
                 if (result.Data == Array.Empty<byte>()) return [];
