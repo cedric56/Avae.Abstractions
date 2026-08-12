@@ -1,11 +1,5 @@
-﻿#if BROWSER
-using Avalonia;
-using Avalonia.Browser;
-using System.Runtime.Versioning;
-#endif
-using Avae.Essentials;
+﻿using Avae.Essentials;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Maui.Accessibility;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.Communication;
@@ -21,19 +15,6 @@ namespace Avae.Everywhere
 {
     public static class Extensions
     {
-#if BROWSER
-
-        [SupportedOSPlatform("browser")]
-        public static async Task UseEmbeddedAvaloniaApp(this IServiceCollection services, string appDiv = "app")
-        {
-            EmbeddedAvalonia.AppDiv = appDiv;
-            var builder = AppBuilder.Configure<EmbeddedAvalonia>();
-            await builder.SetupBrowserAppAsync();
-            services.UseAvaeEssentials();
-        }
-
-#endif
-
         private static void UseAvaloniaEssentials(this IServiceCollection services,
             IAccelerometer accelerometer,
             IAppActions appActions,

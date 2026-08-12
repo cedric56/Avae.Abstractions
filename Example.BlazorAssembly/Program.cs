@@ -1,4 +1,5 @@
 using Avae.Abstractions;
+using Avae.Browser;
 using Avae.Everywhere;
 using Example.Razor;
 using Example.Razor.Layout;
@@ -11,6 +12,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.UseSharedLibrary();
+builder.Services.UseAvaeEssentials();
 await builder.Services.UseEmbeddedAvaloniaApp();
 var app = builder.Build();
 ServiceLocator.SetDefault(app.Services);

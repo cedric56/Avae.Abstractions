@@ -4,7 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 
-namespace Avae.Everywhere;
+namespace Avae.Browser;
 
 [SupportedOSPlatform("browser")]
 class EmbeddedAvalonia : Avalonia.Application

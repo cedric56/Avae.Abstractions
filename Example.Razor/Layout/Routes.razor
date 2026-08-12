@@ -1,10 +1,33 @@
-﻿@using Microsoft.AspNetCore.Components.Routing
+﻿@using System.Diagnostics
+@using Microsoft.AspNetCore.Components.Routing
 <Router AppAssembly="typeof(Example.Razor.Components.Home).Assembly"
-        AdditionalAssemblies="new[] { typeof(Avae.Razor.Layout.MainLayout).Assembly }"
+AdditionalAssemblies="new[] { typeof(Avae.Razor.Layout.MainLayout).Assembly }"
         NotFoundPage="typeof(Avae.Razor.Components.NotFound)">
     <Found Context="routeData">
         <RouteView RouteData="routeData" DefaultLayout="typeof(Avae.Razor.Layout.MainLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
 </Router>
+
+@code
+{
+    public static Func<Task>? Execute { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender && OperatingSystem.IsBrowser())
+        {
+            Debug.WriteLine($"IsBrowser = {OperatingSystem.IsBrowser()}");
+            Debug.WriteLine($"Runtime = {System.Runtime.InteropServices.RuntimeInformation.OSDescription}");
+            if (Execute != null)
+                await Execute.Invoke();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+}
 
