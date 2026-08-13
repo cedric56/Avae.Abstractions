@@ -1,6 +1,5 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
-using Avae.DAL.Interfaces;
 using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -15,10 +14,10 @@ namespace Example.ViewModels
     public partial class MenuViewModel : RoutesViewModelImplementation, IDisposable
     {
         IServiceProvider provider;
-        ISqlMonitor<Person> monitor;
+        IDBMonitor<Person> monitor;
 
         IDialogService dialogService;
-        public MenuViewModel(IServiceProvider provider, ISqlMonitor<Person> monitor, IDialogService dialogService, Router router)
+        public MenuViewModel(IServiceProvider provider, IDBMonitor<Person> monitor, IDialogService dialogService, Router router)
             :base(router,false)
         {
             this.provider = provider;

@@ -8,7 +8,7 @@ namespace Avae.DAL
     {
         List<IMessagePackFormatter> _formatters = [new DBTransactionalFormatter()];
 
-        public void Register<T>(IDBTransactionalFormatter formatter) where T : DBTransactional?
+        public void RegisterTransactional<T>(IDBTransactionalFormatter formatter) where T : DBTransactional?
         {
             _formatters.Add(formatter);
             DBTransactionalFormatter.Register<T>(formatter);
@@ -17,10 +17,11 @@ namespace Avae.DAL
         private static UnionResolver GetInstance()
         {
             var resolver = new UnionResolver();
-            MessagePackSerializer.DefaultOptions = MessagePackSerializer.DefaultOptions.WithResolver(CompositeResolver.Create(
+            //MessagePackSerializer.DefaultOptions = 
+            MessagePackSerializer.DefaultOptions.WithResolver(CompositeResolver.Create(
 
-                StandardResolver.Instance,       // For primitive types
-                BuiltinResolver.Instance,         // For built-in types
+                //StandardResolver.Instance,       // For primitive types
+                //BuiltinResolver.Instance,         // For built-in types
                 resolver
             ));
             return resolver;
@@ -45,7 +46,7 @@ namespace Avae.DAL
         public IMessagePackFormatter<T> GetFormatter<T>()
         {
             var formatter = _formatters.OfType<IMessagePackFormatter<T>>().FirstOrDefault();
-            return formatter ?? StandardResolver.Instance.GetFormatter<T>() ?? throw new NotImplementedException();
+            return formatter ?? BuiltinResolver.Instance.GetFormatter<T>() ?? StandardResolver.Instance.GetFormatter<T>() ?? throw new NotImplementedException();
         }
     }
 

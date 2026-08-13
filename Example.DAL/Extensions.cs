@@ -1,22 +1,20 @@
 ﻿using Avae.DAL;
-using Avae.MagicOnion;
+using Avae.MagicClient;
+using Avae.MagicLayer;
 using Avae.SignalR;
 using Avae.Sqlite;
 using Example.Models;
-using Grpc.Net.Client;
-using Grpc.Net.Client.Web;
-using MagicOnion.Client;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Data.Common;
-using System.Net;
 
 namespace Example.DAL;
 public static class Extensions
 {
-    static string HubUrl = "http://localhost:5001/PersonHub";
+    static string MagicHubUrl = $"http://localhost:5000/OnionHub";
+    static string SignalHubUrl = "http://localhost:5001/PersonHub";
     static string OnionUrl = $"http://localhost:5001/{typeof(IMagicOnionLayer).Name}/";
 
     private static string GetCommandText(IDbConnection connection)
@@ -70,6 +68,25 @@ public static class Extensions
         }
     }
 
+    public static Task<Func<Task>> AddStreamingHub<TObject>(
+        this IServiceProvider provider,
+        IDBMonitor<TObject> monitor)
+        where TObject : class, new()
+    {
+        IDBFactory.Monitors.Add(monitor);
+        var channel = Avae.MagicClient.Extensions.GetGrpcChannel(MagicHubUrl);
+        return monitor.AddStreamingHub(channel);
+    }
+
+    public static Task<Func<Task>> AddSignalR<TObject>(
+        this IServiceProvider provider,
+        IDBMonitor<TObject> monitor)
+        where TObject : class, new()
+    {
+        IDBFactory.Monitors.Add(monitor);
+        return monitor.AddSignalR(SignalHubUrl);
+    }
+
     private static DBConnectionType GetConnectionType<TDBConnection>()
     {
         var type = typeof(TDBConnection);
@@ -80,44 +97,15 @@ public static class Extensions
         return DBConnectionType.Unspecified;
     }
 
-    public static void UseDBOnionLayer(this IServiceCollection services, out ISignalRService? signal, out Action? unsuscribe)
+    public static void UseDBOnionLayer(this IServiceCollection services)
     {
-        signal = null;
-        unsuscribe = null;
-
-        var monitor = new DBMonitor<Person>();
-        signal = monitor.AddSignalR(HubUrl, out unsuscribe);
-        services.AddSingleton<ISqlMonitor<Person>>(monitor);
+        services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
         services.AddSingleton<IXmlHttpRequest>(sp => new XmlHttpRequest(OnionUrl));
-        services.AddSingleton(sp =>
-        {
-            var channel = sp.GetGrpcChannel(OperatingSystem.IsBrowser() ? "http://localhost:5001" : "http://localhost:5000");
-            return MagicOnionClient.Create<IMagicOnionLayer>(channel);
-        });
+        services.AddSingleton(sp => sp.Create<IMagicOnionLayer>(OperatingSystem.IsBrowser() ? "http://localhost:5001" : "http://localhost:5000"));
         services.UseLayer(sp => new MagicOnionLayer(sp));        
     }
 
-    public static void UseDBSqlLayer<TDBConnection>(this IServiceCollection services, out ISignalRService? signal, out Action unsuscribe)
-        where TDBConnection : DbConnection, new()
-    {
-        Action unsuscribeSignal = () => { };
-        SignalRService? service = null;
-        services.UseDBSqlLayer<TDBConnection>(monitor =>
-        {
-            service = monitor.AddSignalR(HubUrl, out unsuscribeSignal);
-        });
-        signal = service!;
-        unsuscribe = unsuscribeSignal;
-    }
-
     public static void UseDBSqlLayer<TDBConnection>(this IServiceCollection services)
-        where TDBConnection : DbConnection, new()
-    {
-        services.UseDBSqlLayer<TDBConnection>(null);
-    }
-
-    public static void UseDBSqlLayer<TDBConnection>(this IServiceCollection services,
-        Action<DBMonitor<Person>>? action = null)
         where TDBConnection : DbConnection, new()
     {
         var type = GetConnectionType<TDBConnection>();
@@ -128,23 +116,15 @@ public static class Extensions
 
         }, type);
 
+        services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
+
         if (type == DBConnectionType.Sqlite)
         {
-            services.UseSqliteFactory(ConnectionString, (factory) =>
-            {
-                var monitor = factory.AddDbMonitor<Person>();
-                action?.Invoke(monitor);
-                services.AddSingleton<ISqlMonitor<Person>>(monitor);
-            });
+            services.UseSqliteFactory(ConnectionString);
         }
         else
         {
-            services.UseFactory<TDBConnection>(ConnectionString, (factory) =>
-            {
-                var monitor = factory.AddDbMonitor<Person>();
-                action?.Invoke(monitor);
-                services.AddSingleton<ISqlMonitor<Person>>(monitor);
-            });
+            services.UseFactory<TDBConnection>(ConnectionString);
         }
 
         void CreateDB(IServiceProvider provider)
@@ -159,19 +139,5 @@ public static class Extensions
                 cmd.ExecuteNonQuery();
             }
         }
-    }
-
-    private static GrpcChannel GetGrpcChannel(this IServiceProvider provider, string url)
-    {
-        var client = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()))
-        {
-            DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact,
-            DefaultRequestVersion = HttpVersion.Version20,
-            Timeout = TimeSpan.FromSeconds(5)
-        };
-        return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
-        {
-            HttpClient = client,
-        });
     }
 }

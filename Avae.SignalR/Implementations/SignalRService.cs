@@ -9,7 +9,7 @@ namespace Avae.SignalR
             return TimeSpan.FromSeconds(5);
         }
     }
-    public class SignalRService : ISignalRService, IDisposable
+    public class SignalRService : ISignalRService
     {
         public HubConnection Hub { get; }
 
@@ -20,27 +20,6 @@ namespace Avae.SignalR
                 .WithUrl(url)
                 .WithAutomaticReconnect(retryPolicy ?? new FiveSecondsReconnectPolicy())
                 .Build();
-            Hub.Closed += OnClosedAsync;
-            Hub.Reconnecting += OnReconnectingAsync;
-            Hub.Reconnected += OnReconnectedAsync;
-        }
-
-        private Task OnReconnectedAsync(string? arg)
-        {
-            Reconnected?.Invoke(this, true);
-            return Task.CompletedTask;
-        }
-
-        private Task OnReconnectingAsync(Exception? arg)
-        {
-            Reconnected?.Invoke(this, true);
-            return Task.CompletedTask;
-        }
-
-        private Task OnClosedAsync(Exception? arg)
-        {
-            Reconnected?.Invoke(this, true);
-            return Task.CompletedTask;
         }
 
         public TimeSpan DefaultServerTimeout => HubConnection.DefaultServerTimeout;
@@ -54,8 +33,6 @@ namespace Avae.SignalR
         public TimeSpan ServerTimeout { get => Hub.ServerTimeout; set => Hub.ServerTimeout = value; }
 
         public bool Connected => Hub.State == HubConnectionState.Connected;
-
-        public event EventHandler<bool>? Reconnected;
 
         public ValueTask DisposeAsync()
         {
@@ -312,7 +289,31 @@ namespace Avae.SignalR
             return Hub.StopAsync(cancellationToken);
         }
 
-        public event Func<Exception, Task> Closed
+        public event Func<Exception?, Task>? Reconnecting
+{
+            add
+            {
+                Hub.Reconnecting += value;
+            }
+            remove
+            {
+                Hub.Reconnecting -= value;
+            }
+        }
+
+        public event Func<string?, Task>? Reconnected
+        {
+            add
+            {
+                Hub.Reconnected += value;
+            }
+            remove
+            {
+                Hub.Reconnected -= value;
+            }
+        }
+
+        public event Func<Exception, Task>? Closed
         {
             add
             {
@@ -322,15 +323,6 @@ namespace Avae.SignalR
             {
                 Hub.Closed -= value;
             }
-        }
-
-        public void Dispose()
-        {
-            Hub.Closed -= OnClosedAsync;
-            Hub.Reconnecting -= OnReconnectingAsync;
-            Hub.Reconnected -= OnReconnectedAsync;
-
-            GC.SuppressFinalize(this);
         }
     }
 }

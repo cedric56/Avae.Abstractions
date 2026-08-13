@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Avae.DAL\Avae.DAL.csproj" />
+    <ProjectReference Include="..\Avae.MagicLayer\Avae.MagicLayer.csproj" />
     <ProjectReference Include="..\Avae.Server\Avae.Server.csproj" />
     <ProjectReference Include="..\Avae.SignalR\Avae.SignalR.csproj" />
     <ProjectReference Include="..\Avae.SqlTableDependency\Avae.SqlTableDependency.csproj" />

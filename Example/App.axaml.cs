@@ -1,7 +1,8 @@
 ﻿using Avae.Abstractions;
 using Avae.Avalonia;
+using Avae.DAL;
 using Avae.Everywhere;
-using Avae.SignalR;
+using Avae.MagicClient;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Example.DAL;
@@ -9,7 +10,6 @@ using Example.Models;
 using Example.ViewModels;
 using Example.Views;
 using FluentAvalonia.UI.Controls;
-using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,8 +22,7 @@ namespace Example;
 
 public partial class App : AvaeApplication, IIocConfiguration
 {
-    ISignalRService? signalRService = null;
-    Action? unsuscribe = null;
+    Func<Task>? unsuscribe = null;
 
     public App()
         : base()
@@ -80,9 +79,8 @@ public partial class App : AvaeApplication, IIocConfiguration
         
         if (!OperatingSystem.IsBrowser())
         {
-            //services.UseAvaeEssentials();
-            services.UseDBSqlLayer<SqliteConnection>(out signalRService, out unsuscribe);
-            //services.UseDBOnionLayer(out signalRService, out unsuscribe);
+            //services.UseDBSqlLayer<SqliteConnection>();
+            services.UseDBOnionLayer();
         }
 
         if(OperatingSystem.IsWindows())
@@ -119,18 +117,20 @@ public partial class App : AvaeApplication, IIocConfiguration
         };
     }
 
-    public override void Dispose()
+    protected override async Task AfterCompletedAsync()
     {
-        if (signalRService is not null)
-        {
-            _ = Task.Run(async () =>
-            {
-                await signalRService.StopAsync();
-                await signalRService.DisposeAsync();
-            });
-        }
+        await base.AfterCompletedAsync();
 
-        unsuscribe?.Invoke();
+        var monitor = Container.Provider.GetRequiredService<IDBMonitor<Person>>();
+
+        unsuscribe = await Container.Provider.AddStreamingHub(monitor);
+        //unsuscribe = await Container.Provider.AddSignalR(monitor);
+    }
+
+    public override async void Dispose()
+    {
+        if (unsuscribe != null)
+            await unsuscribe();
 
         base.Dispose();
     }

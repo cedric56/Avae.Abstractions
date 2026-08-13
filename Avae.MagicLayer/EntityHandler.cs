@@ -1,6 +1,6 @@
-﻿using Avae.DAL.Interfaces;
+﻿using Avae.DAL;
 
-namespace Avae.MagicOnion
+namespace Avae.MagicLayer
 {
     public abstract class EntityHandler
     {

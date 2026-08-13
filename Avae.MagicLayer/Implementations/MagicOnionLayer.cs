@@ -1,13 +1,14 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
-using Avae.DAL.Interfaces;
 using MessagePack;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Diagnostics;
 
-namespace Avae.MagicOnion
+namespace Avae.MagicLayer
 {
+    
+
     //TODO CommandTimeout on WHERE AND FINDBYANY
     public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
     {        

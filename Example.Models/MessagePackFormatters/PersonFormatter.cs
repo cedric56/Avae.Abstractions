@@ -5,23 +5,6 @@ using System.Text;
 
 namespace Example.Models.MessagePackFormatters
 {
-    //public abstract class DBT<T> : IMessagePackFormatter<T?>, IDBTransactionalFormatter
-    //{
-    //    //public object? Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
-    //    //{
-    //    //    throw new NotImplementedException();
-    //    //}
-
-    //    public void Serialize(ref MessagePackWriter writer, object? value, MessagePackSerializerOptions options)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    public abstract void Serialize(ref MessagePackWriter writer, T? value, MessagePackSerializerOptions options);
-
-    //    public abstract T? Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options);
-    //}
-
     public class PersonFormatter : IMessagePackFormatter<Person?>, IDBTransactionalFormatter//, IMessagePackFormatter<DBTransactional?>
     {
         public void Serialize(ref MessagePackWriter writer, Person? value, MessagePackSerializerOptions options)
@@ -55,7 +38,7 @@ namespace Example.Models.MessagePackFormatters
                 writer.WriteArrayHeader(headers);
                 writer.WriteInt64(value.Id);
                 writer.WriteString(Encoding.UTF8.GetBytes(value.FirstName ?? string.Empty));
-                writer.WriteString(Encoding.UTF8.GetBytes(value.FirstName ?? string.Empty));
+                writer.WriteString(Encoding.UTF8.GetBytes(value.LastName ?? string.Empty));
             }
 
             void SetContactFields(ref MessagePackWriter writer, Contact contact)

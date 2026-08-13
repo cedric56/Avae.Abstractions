@@ -24,7 +24,7 @@ internal sealed partial class Program
         {
             base.Configure(services);
 
-            services.UseDBOnionLayer(out _, out _);
+            _ = services.UseDBOnionLayer();//out _, out _);
         }
     }
 }

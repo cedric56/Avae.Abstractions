@@ -8,7 +8,9 @@ namespace Avae.SignalR
     {
         public const string DBMessage = "DBChanged";
 
-        public static SignalRService AddSignalR<TObject>(this DBMonitor<TObject> monitor, string url, out Action unsuscribe)
+        public static async Task<Func<Task>> AddSignalR<TObject>(
+            this IDBMonitor<TObject> monitor, 
+            string url)
             where TObject : class, new()
         {
             var signalRService = new SignalRService(url);
@@ -21,25 +23,57 @@ namespace Avae.SignalR
 
                 monitor.OnChanged(record);
             });
+            monitor.Restart = TryConnect;
             monitor.OnRecordChanged += OnRecordChanged;
-            Task.Run(async () =>
+            signalRService.Closed += Closed;
+            signalRService.Reconnected += Reconnected;
+            await TryConnect();
+            return async () =>
             {
                 try
                 {
-                    await signalRService.StartAsync();
+                    await signalRService.StopAsync();
+                    await signalRService.DisposeAsync();
+                }
+                finally
+                {
+                    monitor.OnRecordChanged -= OnRecordChanged;
+                    signalRService.Closed -= Closed;
+                    signalRService.Reconnected -= Reconnected;
+                }
+            };
+
+            async Task TryConnect()
+            {
+                try
+                {
+                    using var httpCts = new CancellationTokenSource(TimeSpan.FromSeconds(1));
+                    using var httpClient = new HttpClient();
+                    var response = await httpClient.PostAsync($"{url}/negotiate", null, httpCts.Token);
+                    if (response.IsSuccessStatusCode)
+                        await signalRService.StartAsync();
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex);
                 }
-            });
+                finally
+                {
+                    monitor.IsRunning = signalRService.Connected;
+                }
+            }
 
-            unsuscribe = () =>
+            Task Reconnected(string? value)
             {
-                monitor.OnRecordChanged -= OnRecordChanged;
-            };
+                monitor.IsRunning = signalRService.Connected;
+                return Task.CompletedTask;
+            }
 
-            return signalRService;
+            Task Closed(Exception ex)
+            {
+                monitor.IsRunning = signalRService.Connected;
+                return Task.CompletedTask;
+            }
 
             async void OnRecordChanged(object? sender, Record<TObject> e)
             {
@@ -47,10 +81,10 @@ namespace Avae.SignalR
                     e.Connections.Add(signalRService.Hub.ConnectionId);
 
                 if (signalRService.Connected)
-                    await signalRService.InvokeAsync(nameof(SqlHub<TObject>.OnRecordChanged), signalRService, e);
+                    await signalRService.InvokeAsync(nameof(SignalRHub<TObject>.OnRecordChanged), signalRService, e);
 
                 //If an embedded server, we notify clients
-                var hub = ServiceLocator.GetService<SqlHub<TObject>>();
+                var hub = ServiceLocator.GetService<SignalRHub<TObject>>();
                 if (hub is not null)
                     hub.OnRecordChanged(signalRService, e);
             }

@@ -59,7 +59,7 @@ namespace Avae.Everywhere
 			}
 		}
 
-		public Version Version => Utils.ParseVersion(VersionString);
+		public Version Version => ParseVersion(VersionString);
 
 		public DevicePlatform Platform => DevicePlatform.WinUI;
 
@@ -179,7 +179,18 @@ namespace Avae.Everywhere
 
 			return false;
 		}
-	}
+
+        static Version ParseVersion(string version)
+        {
+            if (Version.TryParse(version, out var number))
+                return number;
+
+            if (int.TryParse(version, out var major))
+                return new Version(major, 0);
+
+            return new Version(0, 0);
+        }
+    }
 
 	/// <summary>
 	/// Represents the OEM's preferred power management profile,
@@ -202,39 +213,4 @@ namespace Avae.Everywhere
 		AR_LAPTOP = 0x80,
 		AR_NOSENSOR = 0x10,
 	}
-
-    static class Utils
-    {
-        internal static Version ParseVersion(string version)
-        {
-            if (Version.TryParse(version, out var number))
-                return number;
-
-            if (int.TryParse(version, out var major))
-                return new Version(major, 0);
-
-            return new Version(0, 0);
-        }
-
-        internal static CancellationToken TimeoutToken(CancellationToken cancellationToken, TimeSpan timeout)
-        {
-            // create a new linked cancellation token source
-            var cancelTokenSrc = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-
-            // if a timeout was given, make the token source cancel after it expires
-            if (timeout > TimeSpan.Zero)
-                cancelTokenSrc.CancelAfter(timeout);
-
-            // our Cancel method will handle the actual cancellation logic
-            return cancelTokenSrc.Token;
-        }
-
-        internal static async Task<T?> WithTimeout<T>(Task<T> task, TimeSpan timeSpan)
-        {
-            var retTask = await Task.WhenAny(task, Task.Delay(timeSpan))
-                .ConfigureAwait(false);
-
-            return retTask is Task<T> ? task.Result : default(T);
-        }
-    }
 }

@@ -13,7 +13,7 @@ namespace Example.Models
         public static void Init()
         {
             InputValidation<Person>.Init();
-            UnionResolver.Instance.Register<Person?>(new PersonFormatter());                       
+            UnionResolver.Instance.RegisterTransactional<Person?>(new PersonFormatter());                       
         }
     }
 }

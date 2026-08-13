@@ -1,6 +1,5 @@
 ﻿using Avae.Abstractions;
 using Avae.DAL;
-using Avae.DAL.Interfaces;
 using Dapper.Contrib.Extensions;
 using MessagePack;
 using System.ComponentModel;

@@ -7,7 +7,7 @@
         <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
     </MudOverlay>
     <div>
-        <MudList T="ViewModelDescriptor"
+        <MudList T="ViewDescriptor"
                  @bind-SelectedValue="@ViewModel.SelectedViewModel">
             @foreach (var page in ViewModel.ViewModels)
             {

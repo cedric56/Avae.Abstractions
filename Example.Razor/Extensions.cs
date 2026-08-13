@@ -72,11 +72,11 @@ namespace Example.Razor
             services.AddTransient<FormPage3ViewModel>();
             if (!OperatingSystem.IsBrowser())
             {
-                services.UseDBSqlLayer<SqliteConnection>(out _, out _);
+                services.UseDBSqlLayer<SqliteConnection>();
             }
             else
             {
-               services.UseDBOnionLayer(out _, out _);
+               services.UseDBOnionLayer();
             }
         }
     }

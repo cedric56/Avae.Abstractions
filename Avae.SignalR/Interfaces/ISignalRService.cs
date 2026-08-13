@@ -9,8 +9,9 @@
         TimeSpan KeepAliveInterval { get; set; }
         TimeSpan ServerTimeout { get; set; }
         bool Connected { get; }
-        event Func<Exception, Task> Closed;
-        event EventHandler<bool> Reconnected;
+        event Func<Exception, Task>? Closed;
+        event Func<string?, Task>? Reconnected;
+        event Func<Exception?, Task>? Reconnecting;
         ValueTask DisposeAsync();
         IDisposable On(string methodName, Type[] parameterTypes, Func<object?[], object, Task> handler, object state);
         void Remove(string methodName);

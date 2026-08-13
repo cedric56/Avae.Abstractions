@@ -1,7 +1,9 @@
 ﻿@using Example.Models
 @using Example.ViewModels
+@using Microsoft.AspNetCore.Components.Forms
 @using MudBlazor
 
+<EditForm Model="@ViewModel.Person">
 <MudTextField label="First name" 
                 aria-required="true"
                 @bind-Value="@ViewModel.Person.FirstName"
@@ -10,7 +12,7 @@
                 aria-required="true"
                 For="@(() => @ViewModel.Person.LastName)"
                 @bind-Value="@ViewModel.Person.LastName" />
-
+</EditForm>
 <MudList T="Example.Models.Person"
     @bind-SelectedValues="SelectedPersons"
     SelectionMode="SelectionMode.MultiSelection">
@@ -20,7 +22,7 @@
     }
 </MudList>
 
-    @code {
+@code {
     [Parameter]
     public required FormViewModel ViewModel { get; set; }    
 

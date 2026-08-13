@@ -143,11 +143,18 @@ namespace Avae.Avalonia
 
             base.OnFrameworkInitializationCompleted();
 
+            Task.Run(AfterCompletedAsync);
+
             void OnDesktopExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
             {
                 desktop?.Exit -= OnDesktopExit;
                 Dispose();
             }
+        }
+
+        protected virtual Task AfterCompletedAsync()
+        {
+            return Task.CompletedTask;
         }
 
         protected abstract Window GetMainWindow();

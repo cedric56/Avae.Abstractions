@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 
-namespace Avae.MagicOnion
+namespace Avae.MagicLayer
 {
     public partial class XmlHttpRequest(string url) : IXmlHttpRequest
     {

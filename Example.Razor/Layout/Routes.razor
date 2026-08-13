@@ -1,5 +1,11 @@
 ﻿@using System.Diagnostics
+@using Avae.DAL
+@using Example.DAL
+@using Example.Models
 @using Microsoft.AspNetCore.Components.Routing
+@inject IServiceProvider provider;
+@inject IDBMonitor<Person> monitor;
+@implements IAsyncDisposable
 <Router AppAssembly="typeof(Example.Razor.Components.Home).Assembly"
 AdditionalAssemblies="new[] { typeof(Avae.Razor.Layout.MainLayout).Assembly }"
         NotFoundPage="typeof(Avae.Razor.Components.NotFound)">
@@ -11,6 +17,8 @@ AdditionalAssemblies="new[] { typeof(Avae.Razor.Layout.MainLayout).Assembly }"
 
 @code
 {
+    Func<Task>? unsuscribe;
+
     public static Func<Task>? Execute { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -28,6 +36,15 @@ AdditionalAssemblies="new[] { typeof(Avae.Razor.Layout.MainLayout).Assembly }"
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+
+        unsuscribe = await provider.AddStreamingHub(monitor);
+        //unsuscribe = await provider.AddSignalR(monitor);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (unsuscribe != null)
+            await unsuscribe();
     }
 }
 

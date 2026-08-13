@@ -8,12 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MagicOnion.Client" Version="7.10.2" />
-    <PackageReference Include="Grpc.Net.Client.Web" Version="2.83.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Avae.MagicOnion\Avae.MagicOnion.csproj" />
+    <ProjectReference Include="..\Avae.MagicClient\Avae.MagicClient.csproj" />
+    <ProjectReference Include="..\Avae.MagicLayer\Avae.MagicLayer.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
     <ProjectReference Include="..\Avae.SignalR\Avae.SignalR.csproj" />
     <ProjectReference Include="..\Avae.Sqlite\Avae.Sqlite.csproj" />

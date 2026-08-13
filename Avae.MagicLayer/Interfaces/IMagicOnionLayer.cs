@@ -1,7 +1,7 @@
 ﻿using Avae.DAL;
 using MagicOnion;
 
-namespace Avae.MagicOnion
+namespace Avae.MagicLayer
 {
     public interface IMagicOnionLayer : IService<IMagicOnionLayer>
     {

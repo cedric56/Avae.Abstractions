@@ -1,4 +1,6 @@
-﻿namespace Avae.DAL
+﻿using MessagePack;
+
+namespace Avae.DAL
 {
     public enum ChangeType
     {
@@ -8,6 +10,7 @@
         Update
     }
 
+    [MessagePackObject]
     public class Record<T> where T : class, new()
     {
         public Record()
@@ -23,10 +26,13 @@
             Connections = connections;
         }
 
+        [Key(0)]
         public long RowId { get; set; }
 
+        [Key(1)]
         public ChangeType ChangeType { get; set; }
 
+        [Key(2)]
         public IList<string> Connections { get; set; }
 
         public override string ToString()

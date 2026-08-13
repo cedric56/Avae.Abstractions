@@ -1,4 +1,4 @@
-﻿namespace Avae.MagicOnion;
+﻿namespace Avae.MagicLayer;
 
 public interface IXmlHttpRequest
 {

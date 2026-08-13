@@ -1,15 +1,15 @@
 ﻿using Avae.DAL;
-using Avae.DAL.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Avae.SignalR
 {
-    public class SqlHub<TObject> : Hub where TObject : class, new()
+    public class SignalRHub<TObject> : Hub where TObject : class, new()
     {
-        public ISqlMonitor<TObject> monitor;
+        public IDBMonitor<TObject> monitor;
 
-        public SqlHub(ISqlMonitor<TObject> monitor)
+        public SignalRHub(IDBMonitor<TObject> monitor)
         {
+            IDBFactory.Monitors.Add(monitor);
             this.monitor = monitor;
             this.monitor.OnRecordChanged += OnRecordChanged;
         }
