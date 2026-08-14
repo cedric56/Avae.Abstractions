@@ -3,17 +3,14 @@ using Avalonia.Browser;
 using Example;
 using Example.DAL;
 using Microsoft.Extensions.DependencyInjection;
-using System.Runtime.InteropServices.JavaScript;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 internal sealed partial class Program
 {
     private static Task Main(string[] args)=>BuildAvaloniaApp()
-                .StartBrowserAppAsync("out")
-                .ContinueWith(async t =>
-                {
-                    await JSHost.ImportAsync("essentials", $"/essentials.js");
-                });
+                .StartBrowserAppAsync("out");
 
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<BrowserApp>();
@@ -24,7 +21,8 @@ internal sealed partial class Program
         {
             base.Configure(services);
 
-            _ = services.UseDBOnionLayer();//out _, out _);
+            services.UseDBOnionLayer();
         }
     }
 }
+

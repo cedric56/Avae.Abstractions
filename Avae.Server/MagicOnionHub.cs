@@ -1,51 +1,75 @@
 ﻿using Avae.DAL;
 using Avae.MagicServices;
-using Cysharp.Runtime.Multicast;
 using MagicOnion.Server.Hubs;
-using System.Collections.Concurrent;
 
 namespace Avae.Server
 {
-    public class MagicOnionHub<TObject> :
-    StreamingHubBase<IRecordHub<TObject>, IRecordHubReceiver<TObject>>,
-    IRecordHub<TObject>, IDisposable where TObject : class, new()
+    public class RecordHubRepository<TObject> where TObject : class, new()
     {
-        public IDBMonitor<TObject> monitor;
-        IGroup<IRecordHubReceiver<TObject>>? customers;
+        readonly Dictionary<Guid, byte> customerIds = new(); // just tracking membership, group itself is shared
+        IGroup<IRecordHubReceiver<TObject>>? group;
+        readonly object gate = new();
 
-        public MagicOnionHub(IDBMonitor<TObject> monitor)
+        public RecordHubRepository(IDBMonitor<TObject> monitor)
         {
-            this.monitor = monitor;
-            this.monitor.OnRecordChanged += MonitorChanged;
+            IDBFactory.Monitors.Add(monitor);
+            monitor.OnRecordChanged += (_, e) => Raise(e); // subscribed exactly ONCE, for the app lifetime
         }
 
-        // No sessionId/receiver needed — the group call itself
-        // registers the CURRENT connection (this.Context) as a member.
-        public async Task AddReceiverAsync()
+        // Called by each connecting hub instance; captures the shared group once.
+        public void RegisterGroup(IGroup<IRecordHubReceiver<TObject>> g, Guid contextId)
         {
-            customers = await Group.AddAsync("customers");
+            lock (gate)
+            {
+                group ??= g; // same underlying group object every time, but only need to capture it once
+                customerIds[contextId] = 0;
+            }
         }
 
-        // Removing the current connection from the group
-        public async Task RemoveAsync()
+        public void Unregister(Guid contextId)
         {
-            if (customers != null)
-                await customers.RemoveAsync(this.Context);
+            lock (gate) customerIds.Remove(contextId);
         }
 
-        void MonitorChanged(object? sender , Record<TObject> e)
+        public void Raise(Record<TObject> e)
         {
-            OnRecordChanged(e);
+            var ids = (e.Connections ?? []).Select(id => new Guid(id)).ToList();
+            group?.Except(ids).OnChanged(e);
+        }
+    }
+
+    public class MagicOnionHub<TObject> :
+     StreamingHubBase<IRecordHub<TObject>, IRecordHubReceiver<TObject>>,
+     IRecordHub<TObject>, IDisposable where TObject : class, new()
+    {
+        readonly RecordHubRepository<TObject> repository;
+
+        public MagicOnionHub(RecordHubRepository<TObject> repository)
+        {
+            this.repository = repository; // no monitor subscription here anymore
         }
 
-        public void OnRecordChanged(Record<TObject> e)
+        public async Task<Guid> AddReceiverAsync()
         {
-            customers?.All.OnChanged(e);
+            var group = await Group.AddAsync("customers");
+            repository.RegisterGroup(group, this.Context.ContextId);
+            return this.Context.ContextId;
+        }
+
+        public Task RemoveAsync()
+        {
+            repository.Unregister(this.Context.ContextId);
+            return Task.CompletedTask;
         }
 
         public void Dispose()
         {
-            monitor.OnRecordChanged -= MonitorChanged;
+            // nothing to unsubscribe here anymore — repository owns the monitor subscription for the app's lifetime
+        }
+
+        public void OnRecordChanged(Record<TObject> e)
+        {
+            repository.Raise(e);
         }
     }
 }

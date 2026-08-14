@@ -14,9 +14,9 @@ namespace Avae.DAL
     public class Record<T> where T : class, new()
     {
         public Record()
-        {
+        {            
             ChangeType = ChangeType.None;
-            Connections = [];
+            //Connections = [];
         }
 
         public Record(long rowId, ChangeType changeType, List<string> connections)
@@ -33,11 +33,38 @@ namespace Avae.DAL
         public ChangeType ChangeType { get; set; }
 
         [Key(2)]
-        public IList<string> Connections { get; set; }
+        public List<string>? Connections { get; set; }
 
         public override string ToString()
         {
-            return $"{typeof(T).Name} : {RowId} {ChangeType} {string.Join(",", Connections)}";
+            return $"{typeof(T).Name} : {RowId} {ChangeType} {string.Join(",", Connections ?? [])}";
+        }
+
+        public void Add(Guid connectionId)
+        {
+            Add(connectionId.ToString());
+        }
+
+        public void Add(string? connectionId)
+        {
+            if (!string.IsNullOrWhiteSpace(connectionId))
+            {
+                Connections ??= [];
+                Connections.Add(connectionId);
+            }
+        }
+
+        public bool Contains(Guid connectionId)
+        {
+            return Contains(connectionId.ToString());
+        }
+
+        public bool Contains(string? connectionId)
+        {
+            if (string.IsNullOrWhiteSpace(connectionId))
+                return false;
+
+            return (Connections ?? []).Contains(connectionId);
         }
     }
 }

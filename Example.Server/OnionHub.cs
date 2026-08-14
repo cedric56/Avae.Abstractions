@@ -6,7 +6,7 @@ namespace Example.Server
 {
     public class OnionHub : MagicOnionHub<Person>
     {
-        public OnionHub(IDBMonitor<Person> monitor) : base(monitor)
+        public OnionHub(RecordHubRepository<Person> repository) : base(repository)
         {
 
         }

@@ -16,8 +16,10 @@ namespace Avae.MagicLayer
         {
             try
             {
+                //TODO difference of class 
+                IDBLayer.Sessions.TryGetValue(transactional.GetType(), out var sessionId);
                 var service = provider.GetRequiredService<IMagicOnionLayer>();
-                return await service.Remove(transactional);
+                return await service.Remove(transactional, sessionId);
             }
             catch (Exception ex)
             {
@@ -33,8 +35,10 @@ namespace Avae.MagicLayer
         {
             try
             {
+                //TODO difference of class 
+                IDBLayer.Sessions.TryGetValue(transactional.GetType(), out var sessionId);
                 var service = provider.GetRequiredService<IMagicOnionLayer>();
-                return await service.Save(transactional);
+                return await service.Save(transactional, sessionId);
             }
             catch (Exception ex)
             {

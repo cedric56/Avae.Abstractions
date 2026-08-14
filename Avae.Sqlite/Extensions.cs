@@ -70,7 +70,7 @@ namespace Avae.Sqlite
                     foreach (var monitor in IDBFactory.Monitors.OfType<DBMonitor>())
                         foreach (var record in records.DistinctBy(r => r.rowid))
                         {                            
-                            monitor.OnChanged(record.type, record.database, record.table, record.rowid);
+                            monitor.OnChanged(record.type, record.database, record.table, record.rowid, SessionContext.CurrentSessionId.Value);
                         }
                 }
 
@@ -79,10 +79,9 @@ namespace Avae.Sqlite
         }
 
         public static void UseSqliteFactory(this IServiceCollection services,
-           string connectionString, Action<SqliteFactory>? action = null, bool isTransaction = true)
+           string connectionString, bool isTransaction = true)
         {
             var factory = new SqliteFactory(connectionString, isTransaction);
-            action?.Invoke(factory);
             services.AddSingleton<IDBFactory>(sp => factory);
             services.AddTransient<IDbConnection>(_ => factory.CreateConnection()!);
         }

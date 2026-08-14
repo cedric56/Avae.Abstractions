@@ -1,5 +1,10 @@
 ﻿namespace Avae.DAL
 {
+    public static class SessionContext
+    {
+        public static readonly AsyncLocal<Guid?> CurrentSessionId = new();
+    }
+
     public interface IDBMonitor
     {
         bool IsRunning { get; set; }

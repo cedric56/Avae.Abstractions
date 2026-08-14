@@ -16,44 +16,51 @@ namespace Avae.MagicClient
         {
             try
             {
-                var sessionId = Guid.NewGuid();
-                var receiver = new RecordHubReceiver<TObject>(sessionId, monitor);
-                var hub = await StreamingHubClient.ConnectAsync<IRecordHub<TObject>, IRecordHubReceiver<TObject>>(channel, receiver);
-                await hub.AddReceiverAsync();
+                //using var cts = new CancellationTokenSource(
+                //    TimeSpan.FromSeconds(2));
+
+                var receiver = new RecordHubReceiver<TObject>(monitor);
+                var hub = await StreamingHubClient.ConnectAsync<IRecordHub<TObject>, IRecordHubReceiver<TObject>>(channel, receiver);//, cancellationToken: cts.Token);
+                IDBLayer.Sessions.Add(typeof(TObject), await hub.AddReceiverAsync());
                 monitor.OnRecordChanged += OnRecordChanged;
+                return async () =>
+                {
+                    try
+                    {
+                        await hub.RemoveAsync();
+                        await hub.WaitForDisconnectAsync();
+                        await hub.DisposeAsync();
+                    }
+                    finally
+                    {
+                        monitor.OnRecordChanged -= OnRecordChanged;                        
+                    }
+                };
 
                 void OnRecordChanged(object? sender, Record<TObject> e)
                 {
-                    if (receiver.SessionId != null)
-                        e.Connections.Add(receiver.SessionId?.ToString() ?? string.Empty);
-
+                    IDBLayer.Sessions.TryGetValue(typeof(TObject), out var sessionId);
+                    e.Add(sessionId);
                     hub.OnRecordChanged(e);
                 }
-                IDBFactory.Monitors.Add(monitor);
-                return async () =>
-                {
-                    monitor.OnRecordChanged -= OnRecordChanged;
-                    await hub.RemoveAsync();
-                    await hub.WaitForDisconnectAsync();
-                    await hub.DisposeAsync();
-                };
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                Console.WriteLine(ex);
                 return () => Task.CompletedTask;
             }
         }
 
         public static IMagicService Create<IMagicService>(this IServiceProvider provider, string url) where IMagicService : IService<IMagicService>
         {
-            var channel = GetGrpcChannel(url);
+            var channel = provider.GetGrpcChannel(url);
             return MagicOnionClient.Create<IMagicService>(channel);
         }
 
-        public static GrpcChannel GetGrpcChannel(string url)
+        public static GrpcChannel GetGrpcChannel(this IServiceProvider provider, string url, HttpClient? client = null)
         {
-            var client = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()))
+            client = client ?? new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()))
             {
                 DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact,
                 DefaultRequestVersion = HttpVersion.Version20,

@@ -4,6 +4,7 @@ using Avae.MagicLayer;
 using MagicOnion;
 using MagicOnion.Server;
 using MessagePack;
+using System.Collections.Concurrent;
 
 namespace Avae.Server
 {    
@@ -73,16 +74,32 @@ namespace Avae.Server
             return null;
         }
 
-        public async UnaryResult<DBResult> Remove(DBTransactional transactional)
+        public async UnaryResult<DBResult> Remove(DBTransactional transactional, Guid sessionId)
         {
             var layer = ServiceLocator.GetRequiredService<IDBLayer>();
-            return await transactional.Remove(layer);
+            SessionContext.CurrentSessionId.Value = sessionId;
+            try
+            {
+                return await transactional.Remove(layer);
+            }
+            finally
+            {
+                SessionContext.CurrentSessionId.Value = null;
+            }            
         }
 
-        public async UnaryResult<DBResult> Save(DBTransactional transactional)
+        public async UnaryResult<DBResult> Save(DBTransactional transactional, Guid sessionId)
         {
             var layer = ServiceLocator.GetRequiredService<IDBLayer>();
-            return await transactional.Save(layer);
+            SessionContext.CurrentSessionId.Value = sessionId;
+            try
+            {
+                return await transactional.Save(layer);
+            }
+            finally
+            {
+                SessionContext.CurrentSessionId.Value = null;
+            }
         }
     }
 }

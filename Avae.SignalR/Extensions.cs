@@ -17,8 +17,7 @@ namespace Avae.SignalR
             signalRService.On<Record<TObject>>(DBMessage, record=>
             {
                 //we stop propagating to avoid stackoverflow
-                if (signalRService.Hub.ConnectionId != null && 
-                    record.Connections.Contains(signalRService.Hub.ConnectionId))
+                if (record.Contains(signalRService.Hub.ConnectionId))
                     return;
 
                 monitor.OnChanged(record);
@@ -47,9 +46,21 @@ namespace Avae.SignalR
             {
                 try
                 {
-                    using var httpCts = new CancellationTokenSource(TimeSpan.FromSeconds(1));
-                    using var httpClient = new HttpClient();
-                    var response = await httpClient.PostAsync($"{url}/negotiate", null, httpCts.Token);
+                    using var cts = new CancellationTokenSource(
+                          OperatingSystem.IsBrowser() ?
+                          TimeSpan.FromSeconds(2) :
+                          TimeSpan.FromSeconds(1));
+
+                    HttpResponseMessage response;                    
+                    if (ServiceLocator.GetService<HttpClient>() is { } client)
+                    {
+                        response = await client.PostAsync($"{url}/negotiate", null, cts.Token);
+                    }
+                    else
+                    {
+                        using var httpClient = new HttpClient();
+                        response = await httpClient.PostAsync($"{url}/negotiate", null, cts.Token);
+                    }
                     if (response.IsSuccessStatusCode)
                         await signalRService.StartAsync();
                 }
@@ -77,8 +88,7 @@ namespace Avae.SignalR
 
             async void OnRecordChanged(object? sender, Record<TObject> e)
             {
-                if (signalRService.Hub.ConnectionId != null)
-                    e.Connections.Add(signalRService.Hub.ConnectionId);
+                e.Add(signalRService.Hub.ConnectionId);
 
                 if (signalRService.Connected)
                     await signalRService.InvokeAsync(nameof(SignalRHub<TObject>.OnRecordChanged), signalRService, e);

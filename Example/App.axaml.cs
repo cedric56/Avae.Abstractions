@@ -123,8 +123,14 @@ public partial class App : AvaeApplication, IIocConfiguration
 
         var monitor = Container.Provider.GetRequiredService<IDBMonitor<Person>>();
 
-        unsuscribe = await Container.Provider.AddStreamingHub(monitor);
-        //unsuscribe = await Container.Provider.AddSignalR(monitor);
+        if (OperatingSystem.IsBrowser())
+        {
+            unsuscribe = await Container.Provider.AddSignalR(monitor);
+        }
+        else
+        {
+            unsuscribe = await Container.Provider.AddStreamingHub(monitor);
+        }
     }
 
     public override async void Dispose()

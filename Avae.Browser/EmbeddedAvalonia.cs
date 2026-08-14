@@ -21,7 +21,7 @@ class EmbeddedAvalonia : Avalonia.Application
 
         GetView(ApplicationLifetime!) = new AvaloniaView(AppDiv)
         {
-            Content = new Control()
+            Content = new Control(),
         };
     }
 }

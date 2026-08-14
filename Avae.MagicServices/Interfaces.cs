@@ -12,7 +12,7 @@ namespace Avae.MagicServices
         IStreamingHub<IRecordHub<TObject>, IRecordHubReceiver<TObject>>
         where TObject : class, new()
     {
-        Task AddReceiverAsync();
+        Task<Guid> AddReceiverAsync();
         Task RemoveAsync();
         void OnRecordChanged(Record<TObject> e);
     }

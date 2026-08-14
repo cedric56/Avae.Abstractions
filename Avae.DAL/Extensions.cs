@@ -7,21 +7,41 @@ namespace Avae.DAL
 {
     public static class Extensions
     {
-        public static void  UseFactory<TDBConnection>(this IServiceCollection services,
-            string connectionString, Action<DBFactory<TDBConnection>>? action = null)
+        public static void UseFactory<TDBConnection>(this IServiceCollection services,
+            string connectionString)
             where TDBConnection : DbConnection, new()
         {
             var factory = new DBFactory<TDBConnection>(connectionString);
-
-            action?.Invoke(factory);
             services.AddSingleton<IDBFactory>(sp => factory);
             services.AddTransient<IDbConnection>(_ => factory.CreateConnection()!);
         }
 
-        public static void UseLayer(this IServiceCollection services, Func<IServiceProvider, IDBLayer> getLayer, DBConnectionType connectionType = DBConnectionType.Unspecified)
+        public static void UseLayer(this IServiceCollection services,
+            Func<IServiceProvider, IDBLayer> getLayer,
+            DBConnectionType connectionType = DBConnectionType.Unspecified,
+            Func<string>? getDBCreateCommand = null)
         {
             services.AddSingleton<DBOptions>(new DBOptions() { ConnectionType = connectionType });
-            services.AddSingleton<IDBLayer>(sp => getLayer(sp));
+            services.AddSingleton<IDBLayer>(sp =>
+            {
+                if (getDBCreateCommand != null)
+                    CreateDB(sp);
+
+                return getLayer(sp);
+            });
+
+            void CreateDB(IServiceProvider provider)
+            {
+                using var connection = provider.GetService<IDbConnection>();
+                if (connection is not null)
+                {
+                    connection.Open();
+
+                    using var cmd = connection.CreateCommand();
+                    cmd.CommandText = getDBCreateCommand?.Invoke();
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         internal static string ReplaceWholeWord(this string s, string word, string bywhat)

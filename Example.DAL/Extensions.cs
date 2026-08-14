@@ -4,59 +4,21 @@ using Avae.MagicLayer;
 using Avae.SignalR;
 using Avae.Sqlite;
 using Example.Models;
+using Grpc.Net.Client.Web;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
-using System.Data;
 using System.Data.Common;
+using System.Net;
 
 namespace Example.DAL;
 public static class Extensions
 {
-    static string MagicHubUrl = $"http://localhost:5000/OnionHub";
-    static string SignalHubUrl = "http://localhost:5001/PersonHub";
-    static string OnionUrl = $"http://localhost:5001/{typeof(IMagicOnionLayer).Name}/";
+    static string ServerUrl = "https://localhost:5001";
 
-    private static string GetCommandText(IDbConnection connection)
-    {
-        if (connection is SqliteConnection)
-        {
-            return @"
-            CREATE TABLE IF NOT EXISTS Person(
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                FirstName TEXT,
-                LastName TEXT
-            );
-
-            CREATE TABLE IF NOT EXISTS Contact(
-                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            IdPerson INTEGER  NOT NULL,
-                            IdContact INTEGER  NOT NULL,
-                            CONSTRAINT FK_Contact_Person FOREIGN KEY(IdPerson) REFERENCES Person(Id),
-                            CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY(IdContact) REFERENCES Person(Id)
-                        );
-            ";
-        }
-        else if (connection is SqlConnection)
-        {
-            return @"CREATE TABLE IF NOT EXISTS Person (
-                        Id INT PRIMARY KEY IDENTITY(1,1),
-                        FirstName NVARCHAR(255) NULL,
-                        LastName NVARCHAR(255) NULL,
-                        Photo VARBINARY(MAX) NULL
-                    );
-
-                    CREATE TABLE IF NOT EXISTS Contact (
-                        Id INT PRIMARY KEY IDENTITY(1,1),
-                        IdPerson INT NOT NULL,
-                        IdContact INT NOT NULL,
-                        CONSTRAINT FK_Contact_Person FOREIGN KEY (IdPerson) REFERENCES Person(Id),
-                        CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY (IdContact) REFERENCES Person(Id)
-                    );";
-        }
-
-        throw new NotImplementedException();
-    }
+    static string MagicHubUrl = $"{ServerUrl}/OnionHub";
+    static string SignalHubUrl = $"{ServerUrl}/PersonHub";
+    static string OnionUrl = $"{ServerUrl}/{typeof(IMagicOnionLayer).Name}/";
 
     private static string ConnectionString
     {
@@ -68,13 +30,38 @@ public static class Extensions
         }
     }
 
+    public class WasmDuplexHandler : DelegatingHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            request.Options.Set(new HttpRequestOptionsKey<bool>("WebAssemblyEnableStreamingRequest"), true);
+            request.Options.Set(new HttpRequestOptionsKey<bool>("WebAssemblyEnableStreamingResponse"), true);
+            return base.SendAsync(request, cancellationToken);
+        }
+    }
+
     public static Task<Func<Task>> AddStreamingHub<TObject>(
         this IServiceProvider provider,
         IDBMonitor<TObject> monitor)
         where TObject : class, new()
     {
+        HttpClient? client = null;
+        if (OperatingSystem.IsBrowser())
+        {
+            client = new HttpClient(new WasmDuplexHandler()
+            {
+                InnerHandler = new HttpClientHandler(),
+            })
+            {
+                DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact,
+                DefaultRequestVersion = HttpVersion.Version20,
+                Timeout = TimeSpan.FromSeconds(5)
+            };
+        }
+
         IDBFactory.Monitors.Add(monitor);
-        var channel = Avae.MagicClient.Extensions.GetGrpcChannel(MagicHubUrl);
+        var channel = provider.GetGrpcChannel(MagicHubUrl, client);
         return monitor.AddStreamingHub(channel);
     }
 
@@ -101,7 +88,7 @@ public static class Extensions
     {
         services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
         services.AddSingleton<IXmlHttpRequest>(sp => new XmlHttpRequest(OnionUrl));
-        services.AddSingleton(sp => sp.Create<IMagicOnionLayer>(OperatingSystem.IsBrowser() ? "http://localhost:5001" : "http://localhost:5000"));
+        services.AddSingleton(sp => sp.Create<IMagicOnionLayer>(ServerUrl));
         services.UseLayer(sp => new MagicOnionLayer(sp));        
     }
 
@@ -109,35 +96,54 @@ public static class Extensions
         where TDBConnection : DbConnection, new()
     {
         var type = GetConnectionType<TDBConnection>();
-        services.UseLayer(sp =>
-        {
-            CreateDB(sp);
-            return new DBLayer(sp);
-
-        }, type);
 
         services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
 
         if (type == DBConnectionType.Sqlite)
-        {
             services.UseSqliteFactory(ConnectionString);
-        }
         else
-        {
             services.UseFactory<TDBConnection>(ConnectionString);
-        }
 
-        void CreateDB(IServiceProvider provider)
+        services.UseLayer(sp => new DBLayer(sp), type,
+        () =>
         {
-            using var connection = provider.GetService<IDbConnection>();
-            if (connection is not null)
+            if (type == DBConnectionType.Sqlite)
             {
-                connection.Open();
+                return @"
+            CREATE TABLE IF NOT EXISTS Person(
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                FirstName TEXT,
+                LastName TEXT
+            );
 
-                using var cmd = connection.CreateCommand();
-                cmd.CommandText = GetCommandText(connection);
-                cmd.ExecuteNonQuery();
+            CREATE TABLE IF NOT EXISTS Contact(
+                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            IdPerson INTEGER  NOT NULL,
+                            IdContact INTEGER  NOT NULL,
+                            CONSTRAINT FK_Contact_Person FOREIGN KEY(IdPerson) REFERENCES Person(Id),
+                            CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY(IdContact) REFERENCES Person(Id)
+                        );
+            ";
             }
-        }
+            else if (type == DBConnectionType.Microsoft)
+            {
+                return @"CREATE TABLE IF NOT EXISTS Person (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+                        FirstName NVARCHAR(255) NULL,
+                        LastName NVARCHAR(255) NULL,
+                        Photo VARBINARY(MAX) NULL
+                    );
+
+                    CREATE TABLE IF NOT EXISTS Contact (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+                        IdPerson INT NOT NULL,
+                        IdContact INT NOT NULL,
+                        CONSTRAINT FK_Contact_Person FOREIGN KEY (IdPerson) REFERENCES Person(Id),
+                        CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY (IdContact) REFERENCES Person(Id)
+                    );";
+            }
+
+            throw new NotImplementedException();
+        });
     }
 }

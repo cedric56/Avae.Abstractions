@@ -143,7 +143,7 @@ namespace Avae.Avalonia
 
             base.OnFrameworkInitializationCompleted();
 
-            Task.Run(AfterCompletedAsync);
+            _ = Task.Run(AfterCompletedAsync);
 
             void OnDesktopExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
             {
