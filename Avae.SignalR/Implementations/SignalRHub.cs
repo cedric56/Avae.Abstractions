@@ -3,28 +3,72 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Avae.SignalR
 {
+    public class ConnectionTracker<TObject> where TObject : class, new()
+    {
+        readonly HashSet<string> connections = new();
+        readonly object gate = new();
+        readonly IHubContext<SignalRHub<TObject>> hubContext;
+
+        public ConnectionTracker(IHubContext<SignalRHub<TObject>> hubContext, IDBMonitor<TObject> monitor)
+        {
+            this.hubContext = hubContext;
+            IDBFactory.Monitors.Add(monitor);
+            monitor.OnRecordChanged += OnRecordChanged; // subscribed exactly ONCE, ever
+        }
+
+        public void Add(string connectionId)
+        {
+            lock (gate) connections.Add(connectionId);
+        }
+
+        public void Remove(string connectionId)
+        {
+            lock (gate) connections.Remove(connectionId);
+        }
+
+        public async void OnRecordChanged(object? sender, Record<TObject> e)
+        {
+            var excludedIds = e.Connections ?? [];
+
+            List<string> notified;
+            lock (gate)
+            {
+                notified = connections.Where(id => !excludedIds.Contains(id)).ToList();
+            }
+
+            foreach (var id in notified)
+                Console.WriteLine($"Notifying customer: {id}");
+
+            await hubContext.Clients.AllExcept(excludedIds).SendAsync(Extensions.DBMessage, e);
+        }
+    }
+
     public class SignalRHub<TObject> : Hub where TObject : class, new()
     {
-        public IDBMonitor<TObject> monitor;
+        readonly ConnectionTracker<TObject> tracker;
 
-        public SignalRHub(IDBMonitor<TObject> monitor)
+        public SignalRHub(ConnectionTracker<TObject> tracker)
         {
-            IDBFactory.Monitors.Add(monitor);
-            this.monitor = monitor;
-            this.monitor.OnRecordChanged += OnRecordChanged;
+            this.tracker = tracker; // no monitor subscription here anymore
         }
 
-        public void OnRecordChanged(object? sender, Record<TObject> e)
+        public override Task OnConnectedAsync()
         {
-            if (Clients != null && Clients.All != null)
-                _ = Task.Run(async () => await Clients.All.SendAsync(Extensions.DBMessage, e));
+            tracker.Add(Context.ConnectionId);
+            Console.WriteLine($"Customer connected: {Context.ConnectionId}");
+            return base.OnConnectedAsync();
         }
 
-        protected override void Dispose(bool disposing)
+        public override Task OnDisconnectedAsync(Exception? exception)
         {
-            base.Dispose(disposing);
+            tracker.Remove(Context.ConnectionId);
+            Console.WriteLine($"Customer disconnected: {Context.ConnectionId}");
+            return base.OnDisconnectedAsync(exception);
+        }
 
-            monitor.OnRecordChanged -= OnRecordChanged;
+        public void OnRecordChanged(Record<TObject> record)
+        {
+            tracker.OnRecordChanged(this, record);
         }
     }
 }

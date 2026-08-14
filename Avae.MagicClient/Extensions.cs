@@ -1,6 +1,7 @@
 ﻿using Avae.DAL;
 using Avae.MagicServices;
 using Grpc.Net.Client;
+using Grpc.Net.Client.Configuration;
 using Grpc.Net.Client.Web;
 using MagicOnion;
 using MagicOnion.Client;
@@ -16,12 +17,16 @@ namespace Avae.MagicClient
         {
             try
             {
+                if (OperatingSystem.IsBrowser())
+                    throw new NotImplementedException("Use SignalR for WebAssembly");
+
                 //using var cts = new CancellationTokenSource(
                 //    TimeSpan.FromSeconds(2));
 
                 var receiver = new RecordHubReceiver<TObject>(monitor);
                 var hub = await StreamingHubClient.ConnectAsync<IRecordHub<TObject>, IRecordHubReceiver<TObject>>(channel, receiver);//, cancellationToken: cts.Token);
-                IDBLayer.Sessions.Add(typeof(TObject), await hub.AddReceiverAsync());
+                var guid = await hub.AddReceiverAsync();
+                IDBLayer.Sessions.Add(typeof(TObject), guid.ToString());
                 monitor.OnRecordChanged += OnRecordChanged;
                 return async () =>
                 {
@@ -33,7 +38,7 @@ namespace Avae.MagicClient
                     }
                     finally
                     {
-                        monitor.OnRecordChanged -= OnRecordChanged;                        
+                        monitor.OnRecordChanged -= OnRecordChanged;
                     }
                 };
 
@@ -58,9 +63,9 @@ namespace Avae.MagicClient
             return MagicOnionClient.Create<IMagicService>(channel);
         }
 
-        public static GrpcChannel GetGrpcChannel(this IServiceProvider provider, string url, HttpClient? client = null)
+        public static GrpcChannel GetGrpcChannel(this IServiceProvider provider, string url)
         {
-            client = client ?? new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()))
+            var client = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()))
             {
                 DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact,
                 DefaultRequestVersion = HttpVersion.Version20,

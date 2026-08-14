@@ -4,7 +4,7 @@
     {
         public bool IsRunning { get; set; }
 
-        public abstract void OnChanged(ChangeType type, string database, string table, long rowid, Guid? sessionID);
+        public abstract void OnChanged(ChangeType type, string database, string table, long rowid, string? connectionId);
 
         public Func<Task> Restart { get; set; } = new Func<Task>(() => Task.CompletedTask);
     }
@@ -21,11 +21,11 @@
             OnRecordChanged?.Invoke(this, record);
         }
 
-        public override void OnChanged(ChangeType type, string database, string table, long rowid, Guid? sessionID)
+        public override void OnChanged(ChangeType type, string database, string table, long rowid, string? connectionId)
         {
             if (table == typeof(TObject).Name)
             {
-                var record = new Record<TObject>(rowid, type, sessionID.HasValue ? [sessionID.Value.ToString()] : []);
+                var record = new Record<TObject>(rowid, type, !string.IsNullOrWhiteSpace(connectionId) ? [connectionId] : []);
                 OnChanged(record);
             }
         }

@@ -4,12 +4,10 @@ using Avae.MagicLayer;
 using Avae.SignalR;
 using Avae.Sqlite;
 using Example.Models;
-using Grpc.Net.Client.Web;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data.Common;
-using System.Net;
 
 namespace Example.DAL;
 public static class Extensions
@@ -30,38 +28,13 @@ public static class Extensions
         }
     }
 
-    public class WasmDuplexHandler : DelegatingHandler
-    {
-        protected override Task<HttpResponseMessage> SendAsync(
-            HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            request.Options.Set(new HttpRequestOptionsKey<bool>("WebAssemblyEnableStreamingRequest"), true);
-            request.Options.Set(new HttpRequestOptionsKey<bool>("WebAssemblyEnableStreamingResponse"), true);
-            return base.SendAsync(request, cancellationToken);
-        }
-    }
-
     public static Task<Func<Task>> AddStreamingHub<TObject>(
         this IServiceProvider provider,
         IDBMonitor<TObject> monitor)
         where TObject : class, new()
     {
-        HttpClient? client = null;
-        if (OperatingSystem.IsBrowser())
-        {
-            client = new HttpClient(new WasmDuplexHandler()
-            {
-                InnerHandler = new HttpClientHandler(),
-            })
-            {
-                DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact,
-                DefaultRequestVersion = HttpVersion.Version20,
-                Timeout = TimeSpan.FromSeconds(5)
-            };
-        }
-
         IDBFactory.Monitors.Add(monitor);
-        var channel = provider.GetGrpcChannel(MagicHubUrl, client);
+        var channel = provider.GetGrpcChannel(MagicHubUrl);
         return monitor.AddStreamingHub(channel);
     }
 

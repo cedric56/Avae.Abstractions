@@ -4,7 +4,7 @@ namespace Avae.DAL
 {
     public interface IDBLayer
     {
-        public static Dictionary<Type, Guid> Sessions { get; set; } = new();
+        public static Dictionary<Type, string> Sessions { get; set; } = new();
 
         T? Get<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new();
 

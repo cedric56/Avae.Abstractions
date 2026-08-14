@@ -2,7 +2,7 @@
 {
     public static class SessionContext
     {
-        public static readonly AsyncLocal<Guid?> CurrentSessionId = new();
+        public static readonly AsyncLocal<string?> CurrentConnectionId = new();
     }
 
     public interface IDBMonitor

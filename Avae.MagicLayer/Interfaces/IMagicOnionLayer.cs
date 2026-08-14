@@ -5,9 +5,9 @@ namespace Avae.MagicLayer
 {
     public interface IMagicOnionLayer : IService<IMagicOnionLayer>
     {
-        UnaryResult<DBResult> Remove(DBTransactional transactional, Guid sessionId);
+        UnaryResult<DBResult> Remove(DBTransactional transactional, string connectionId);
 
-        UnaryResult<DBResult> Save(DBTransactional transactional, Guid sessionId);
+        UnaryResult<DBResult> Save(DBTransactional transactional, string connectionId);
 
         UnaryResult<DBResult> FindByAnyAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null);
         

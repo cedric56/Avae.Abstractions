@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton<ConnectionTracker<Person>>();
 builder.Services.AddSingleton<RecordHubRepository<Person>>();
 builder.Services.AddSingleton<SignalRHub<Person>>();
 builder.Services.UseDBSqlLayer<SqliteConnection>();
-builder.Services.AddSignalR();
+builder.Services.AddSignalR().AddMessagePackProtocol();
 builder.Services.AddMagicOnion();
 builder.Services.AddGrpc(opt =>
 {
@@ -29,12 +30,17 @@ builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
 }));
 builder.WebHost.ConfigureKestrel(options =>
 {
-    //GRPC port
-    //options.ListenAnyIP(5000, o => o.Protocols = HttpProtocols.Http2);
-    //REST port
-    options.ListenAnyIP(5001, o =>
+    // Desktop/server gRPC clients — HTTP/2 only is fine here (native gRPC channel, not browser)
+    options.ListenAnyIP(5000, o =>
     {
         o.Protocols = HttpProtocols.Http2;
+        o.UseHttps();
+    });
+
+    // Browser-facing gRPC-Web port — MUST allow HTTP/1.1
+    options.ListenAnyIP(5001, o =>
+    {
+        o.Protocols = HttpProtocols.Http1AndHttp2;
         o.UseHttps();
     });
 });

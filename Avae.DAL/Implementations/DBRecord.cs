@@ -40,11 +40,6 @@ namespace Avae.DAL
             return $"{typeof(T).Name} : {RowId} {ChangeType} {string.Join(",", Connections ?? [])}";
         }
 
-        public void Add(Guid connectionId)
-        {
-            Add(connectionId.ToString());
-        }
-
         public void Add(string? connectionId)
         {
             if (!string.IsNullOrWhiteSpace(connectionId))
@@ -52,11 +47,6 @@ namespace Avae.DAL
                 Connections ??= [];
                 Connections.Add(connectionId);
             }
-        }
-
-        public bool Contains(Guid connectionId)
-        {
-            return Contains(connectionId.ToString());
         }
 
         public bool Contains(string? connectionId)
