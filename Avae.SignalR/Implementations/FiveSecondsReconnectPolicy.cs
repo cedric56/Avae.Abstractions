@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 
-namespace Avae.SignalR
+namespace Avae.SignalR;
+
+public class FiveSecondsReconnectPolicy : IRetryPolicy
 {
-    public class FiveSecondsReconnectPolicy : IRetryPolicy
+    public TimeSpan? NextRetryDelay(RetryContext retryContext)
     {
-        public TimeSpan? NextRetryDelay(RetryContext retryContext)
-        {
-            return TimeSpan.FromSeconds(5);
-        }
+        return TimeSpan.FromSeconds(5);
     }
 }

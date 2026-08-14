@@ -37,8 +37,8 @@ AdditionalAssemblies="new[] { typeof(Avae.Razor.Layout.MainLayout).Assembly }"
     {
         await base.OnInitializedAsync();
 
-        unsuscribe = await provider.AddStreamingHub(monitor);
-        //unsuscribe = await provider.AddSignalR(monitor);
+        //unsuscribe = await provider.AddStreamingHub(monitor);
+        unsuscribe = await provider.AddSignalR(monitor);
     }
 
     public async ValueTask DisposeAsync()
