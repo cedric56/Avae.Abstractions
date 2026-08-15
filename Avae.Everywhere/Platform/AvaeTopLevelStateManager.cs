@@ -4,7 +4,7 @@ using Avalonia.Controls.Maui.Essentials;
 
 namespace Avae.Everywhere
 {
-    class AvaeTopLevelStateManager : IAvaloniaEssentialsPlatformProvider
+    public class AvaeTopLevelStateManager : IAvaloniaEssentialsPlatformProvider
     {
         TopLevel? _active;
 

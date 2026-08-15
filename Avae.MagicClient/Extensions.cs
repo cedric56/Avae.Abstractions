@@ -12,6 +12,8 @@ namespace Avae.MagicClient
 {
     public static class Extensions
     {
+        
+
         public static async Task<Func<Task>> AddStreamingHub<TObject>(this IDBMonitor<TObject> monitor, GrpcChannel channel)
             where TObject : class, new()
         {

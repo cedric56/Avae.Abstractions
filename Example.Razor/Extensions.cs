@@ -9,6 +9,7 @@ using Example.Razor.Layout;
 using Example.ViewModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using MudBlazor;
 using NavigationContext = Avae.Abstractions.NavigationContext;
 
@@ -59,14 +60,24 @@ namespace Example.Razor
         }
 
         public static void UseSharedLibrary(this IServiceCollection services,
+            bool useScoped = false,
             NotificationPosition position = NotificationPosition.BottomLeft,
             int maxDispayments = 5)
         {
             var navMenu = new ComponentView<NavMenu>();
 
             services.ConfigureBase(navMenu, position, maxDispayments, RegisterViews);
-            services.AddSingleton<HomeViewModel>();
-            services.AddSingleton<MenuViewModel>();
+            if (useScoped)
+            {
+                services.AddScoped<HomeViewModel>();
+                services.AddScoped<MenuViewModel>();
+            }
+            else
+            {
+                services.AddSingleton<HomeViewModel>();
+                services.AddSingleton<MenuViewModel>();
+            }
+
             services.AddTransient<ModalViewModel>();
             services.AddTransient<FormPage2ViewModel>();
             services.AddTransient<FormPage3ViewModel>();

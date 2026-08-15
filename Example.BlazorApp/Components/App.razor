@@ -1,6 +1,11 @@
-﻿@using Example.Razor.Layout
+﻿@using Avae.DAL
+@using Example.DAL
+@using Example.Models
+@using Example.Razor.Layout
 @using Microsoft.AspNetCore.Components.Web
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
+@inject IDBMonitor<Person> monitor;
+@inject IServiceProvider provider;
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,55 +13,36 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
-    <ResourcePreloader />
-    @* <link rel="preload" href="_framework/blazor.web.js" as="script" /> *@
+    @* <ResourcePreloader @rendermode="InteractiveWebAssembly" />*@
     <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["Example.BlazorApp.styles.css"]" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
-    <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
-    <link href="@Assets["_content/Avae.Razor/theme.css"]" rel="stylesheet" />
-    <ImportMap />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    @* <link href="@Assets["_content/Avae.Razor/theme.css"]" rel="stylesheet" /> *@
+    @* <ImportMap @rendermode="InteractiveWebAssembly" /> *@
     <link rel="icon" type="image/png" href="favicon.png" />
-    @* <HeadOutlet @rendermode="InteractiveServer" /> *@
     <HeadOutlet @rendermode="InteractiveServer" />
 </head>
 
 <body>
     <div id="app"></div>
     <Routes @rendermode="InteractiveServer" />
-    @* <Routes @rendermode="InteractiveServer" /> *@
-    @* <Example.Razor.Layout.ReconnectModal /> *@
-   
-    @* <script src="@Assets["_framework/blazor.server.js"]"></script> *@
-    <script src="@Assets["_framework/blazor.web.js"]"></script>
-
-    @* <script src="@Assets["_framework/blazor.webview.js"]"></script> *@
-    <script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="_framework/blazor.web.js"></script>
+    @* <script src="_framework/blazor.server.js"></script>*@
+    @* <script src="_framework/dotnet.js"></script> *@
 </body>
 
 </html>
 
 @code
 {
-    protected override void OnInitialized()
+    Func<Task>? unsuscribe;
+
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-
-        // var a = Assets;
-
-        Routes.Execute = Create;
-    }
-
-    public Func<Task> Create
-    {
-        get
-        {
-            return () => Avae.Browser.Extensions.UseEmbeddedAvaloniaApp()
-            .ContinueWith(t =>
-            {
-
-            });
-        }
+        unsuscribe = await provider.AddStreamingHub(monitor);
+        await base.OnInitializedAsync();
     }
 }

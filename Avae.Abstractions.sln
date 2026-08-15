@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.MagicServices", "Avae.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.PostgreSQL", "Avae.PostgreSQL\Avae.PostgreSQL.csproj", "{B1F7EC09-E18E-472D-B585-667B9202B82A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.BlazorEssentials", "Avae.BlazorEssentials\Avae.BlazorEssentials.csproj", "{955BBA7C-03A5-4C89-BE8B-F1A371FDB1D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -219,6 +221,10 @@ Global
 		{B1F7EC09-E18E-472D-B585-667B9202B82A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1F7EC09-E18E-472D-B585-667B9202B82A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1F7EC09-E18E-472D-B585-667B9202B82A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{955BBA7C-03A5-4C89-BE8B-F1A371FDB1D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{955BBA7C-03A5-4C89-BE8B-F1A371FDB1D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{955BBA7C-03A5-4C89-BE8B-F1A371FDB1D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{955BBA7C-03A5-4C89-BE8B-F1A371FDB1D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -77,9 +77,6 @@ public static class Extensions
         }
         else
         {
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(title, nameof(title));
-            ArgumentNullException.ThrowIfNull(files, nameof(files));
-
             // Convert the enumerable to a list to avoid multiple enumeration and get accurate count
             var shareFiles = new List<ShareFile>(files.Count());
 

@@ -19,7 +19,6 @@ public static class Extensions
     static string SignalHubUrl = $"{ServerUrl}/PersonHub";
     static string OnionUrl = $"{ServerUrl}/{typeof(IMagicOnionLayer).Name}/";
 
-
     public static Task<Func<Task>> AddStreamingHub<TObject>(
         this IServiceProvider provider,
         IDBMonitor<TObject> monitor)

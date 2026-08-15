@@ -299,11 +299,11 @@ namespace Avae.Everywhere
         internal extern static object CreateFileSystem();
     }
 
-    static class AvaloniaDefaults
+    public static class AvaloniaDefaults
     {
         [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
         [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaFilePicker, Avalonia.Controls.Maui.Essentials")]
-        internal extern static object CreateAvaloniaFilePicker(IAvaloniaEssentialsPlatformProvider provider);
+        public extern static object CreateAvaloniaFilePicker(IAvaloniaEssentialsPlatformProvider provider);
 
         [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
         [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaMediaPicker, Avalonia.Controls.Maui.Essentials")]
