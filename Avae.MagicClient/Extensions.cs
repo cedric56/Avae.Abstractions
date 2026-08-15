@@ -56,7 +56,8 @@ namespace Avae.MagicClient
 
         public static IMagicService Create<IMagicService>(this IServiceProvider provider, string url) where IMagicService : IService<IMagicService>
         {
-            var channel = OperatingSystem.IsBrowser() ? provider.GetGrpcWebChannel(url) : provider.GetGrpcSocketChannel(url);
+            //var channel = OperatingSystem.IsBrowser() ? provider.GetGrpcWebChannel(url) : provider.GetGrpcSocketChannel(url);
+            var channel = provider.GetGrpcSocketChannel(url);
             return MagicOnionClient.Create<IMagicService>(channel);
         }
 
