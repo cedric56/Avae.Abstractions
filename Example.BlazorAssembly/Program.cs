@@ -12,10 +12,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient 
 { 
-    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
-    //DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact,
-    //DefaultRequestVersion = HttpVersion.Version20,
-    //Timeout = TimeSpan.FromSeconds(5)
+    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
 });
 builder.Services.UseSharedLibrary();
 builder.Services.UseAvaeEssentials();

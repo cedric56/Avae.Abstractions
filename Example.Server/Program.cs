@@ -6,12 +6,14 @@ using Example.DAL;
 using Example.Models;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<ConnectionTracker<Person>>();
 builder.Services.AddSingleton<RecordHubRepository<Person>>();
 builder.Services.AddSingleton<SignalRHub<Person>>();
-builder.Services.UseDBSqlLayer<SqliteConnection>();
+//builder.Services.UseDBSqlLayer<SqliteConnection>();
+builder.Services.UseDBSqlLayer<NpgsqlConnection>();
 builder.Services.AddSignalR().AddMessagePackProtocol();
 builder.Services.AddMagicOnion();
 builder.Services.AddGrpc(opt =>
@@ -48,19 +50,14 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 var app = builder.Build();
-// Enable CORS, WebSocket, GrpcWebSocketRequestRoutingEnabler
-// NOTE: These need to be called before `UseRouting`.  
-app.UseCors("AllowAll");
-app.UseWebSockets();                     // required
-app.UseGrpcWebSocketRequestRoutingEnabler(); // ← often missing
 
+app.UseCors("AllowAll");
+//required for StreamingHub on WebAssembly
+app.UseWebSockets();
+app.UseGrpcWebSocketRequestRoutingEnabler();
 app.UseRouting();
-//app.MapMagicOnionService();              // after the bridge
-//app.UseWebSockets();
-//app.UseGrpcWebSocketRequestRoutingEnabler();
-//app.UseRouting();
-// NOTE: `UseGrpcWebSocketBridge` must be called after calling `UseRouting`.
 app.UseGrpcWebSocketBridge();
+//required for XmlHttpRequest
 app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
 app.MapMagicOnionService().EnableGrpcWeb();
 app.MapHub<SignalRHub<Person>>("/PersonHub");

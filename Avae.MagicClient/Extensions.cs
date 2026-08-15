@@ -1,15 +1,12 @@
 ﻿using Avae.DAL;
 using Avae.MagicServices;
 using Grpc.Net.Client;
-using Grpc.Net.Client.Configuration;
 using Grpc.Net.Client.Web;
 using GrpcWebSocketBridge.Client;
 using MagicOnion;
 using MagicOnion.Client;
 using System.Diagnostics;
 using System.Net;
-using System.Net.Security;
-using System.Net.WebSockets;
 
 namespace Avae.MagicClient
 {

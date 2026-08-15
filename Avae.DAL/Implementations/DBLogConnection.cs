@@ -21,7 +21,11 @@ namespace Avae.DAL
         public override ConnectionState State => Inner.State;
         public override void ChangeDatabase(string databaseName) => Inner.ChangeDatabase(databaseName);
         public override void Close() => Inner.Close();
-        public override void Open() => Inner.Open();
+        public override void Open()
+        {
+            if (Inner.State != ConnectionState.Open)
+                Inner.Open();
+        }
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
             => Inner.BeginTransaction(isolationLevel);

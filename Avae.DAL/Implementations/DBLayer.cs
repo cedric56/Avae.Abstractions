@@ -8,7 +8,9 @@ public enum DBConnectionType
 {
     Unspecified,
     Microsoft,
-    Sqlite
+    Sqlite,
+
+    PostgreSql
 }
 
 public class DBOptions

@@ -12,6 +12,7 @@ using Example.Views;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using System;
 using System.IO;
 using System.Linq;
@@ -79,8 +80,8 @@ public partial class App : AvaeApplication, IIocConfiguration
         
         if (!OperatingSystem.IsBrowser())
         {
-            //services.UseDBSqlLayer<SqliteConnection>();
-            services.UseDBOnionLayer();
+            services.UseDBSqlLayer<NpgsqlConnection>();
+            //services.UseDBOnionLayer();
         }
 
         if(OperatingSystem.IsWindows())

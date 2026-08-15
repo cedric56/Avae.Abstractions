@@ -1,13 +1,14 @@
 ﻿using Avae.DAL;
 using Avae.MagicClient;
 using Avae.MagicLayer;
+using Avae.PostgreSQL;
 using Avae.SignalR;
 using Avae.Sqlite;
 using Example.Models;
-using GrpcWebSocketBridge.Client;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using System.Data.Common;
 
 namespace Example.DAL;
@@ -19,15 +20,6 @@ public static class Extensions
     static string SignalHubUrl = $"{ServerUrl}/PersonHub";
     static string OnionUrl = $"{ServerUrl}/{typeof(IMagicOnionLayer).Name}/";
 
-    private static string ConnectionString
-    {
-        get
-        {
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var dbPath = Path.Combine(folder, "database.db");
-            return $"Data Source={dbPath};Foreign Keys=True";
-        }
-    }
 
     public static Task<Func<Task>> AddStreamingHub<TObject>(
         this IServiceProvider provider,
@@ -55,6 +47,8 @@ public static class Extensions
             return DBConnectionType.Microsoft;
         else if (type == typeof(SqliteConnection))
             return DBConnectionType.Sqlite;
+        else if (type == typeof(NpgsqlConnection))
+            return DBConnectionType.PostgreSql;
         return DBConnectionType.Unspecified;
     }
 
@@ -74,9 +68,22 @@ public static class Extensions
         services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
 
         if (type == DBConnectionType.Sqlite)
-            services.UseSqliteFactory(ConnectionString);
+        {
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var dbPath = Path.Combine(folder, "database.db");
+            var connectionString = $"Data Source={dbPath};Foreign Keys=True";
+            services.UseSqliteFactory(connectionString);
+        }
+        else if (type == DBConnectionType.PostgreSql)
+        {
+            var connectionString = "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=Postgre";
+            services.UseNpgsqlFactory(connectionString);
+        }
         else
-            services.UseFactory<TDBConnection>(ConnectionString);
+        {
+            var connectionString = @"Server=Desktop\\SQLEXPRESS;Database=Kundalini;User ID=cedric;Password=Ex@duS56;TrustServerCertificate=True";
+            services.UseFactory<TDBConnection>(connectionString);
+        }
 
         services.UseLayer(sp => new DBLayer(sp), type,
         () =>
@@ -115,6 +122,23 @@ public static class Extensions
                         CONSTRAINT FK_Contact_Person FOREIGN KEY (IdPerson) REFERENCES Person(Id),
                         CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY (IdContact) REFERENCES Person(Id)
                     );";
+            }
+            else if(type == DBConnectionType.PostgreSql)
+            {
+                return @"CREATE TABLE IF NOT EXISTS Person (
+                            Id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                            FirstName VARCHAR(255) NULL,
+                            LastName VARCHAR(255) NULL,
+                            Photo BYTEA NULL
+                        );
+
+                        CREATE TABLE IF NOT EXISTS Contact (
+                            Id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                            IdPerson INT NOT NULL,
+                            IdContact INT NOT NULL,
+                            CONSTRAINT FK_Contact_Person FOREIGN KEY (IdPerson) REFERENCES Person(Id),
+                            CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY (IdContact) REFERENCES Person(Id)
+                        );";
             }
 
             throw new NotImplementedException();

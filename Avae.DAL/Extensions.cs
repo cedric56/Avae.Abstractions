@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Text;
 
 namespace Avae.DAL

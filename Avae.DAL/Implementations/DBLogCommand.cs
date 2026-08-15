@@ -17,7 +17,8 @@ namespace Avae.DAL
             {
                 if (value != null && connectionType == DBConnectionType.Sqlite)
                     value = value.Replace("SCOPE_IDENTITY", "last_insert_rowid");
-
+                else if(value != null && connectionType == DBConnectionType.PostgreSql)
+                    value = value.Replace("SCOPE_IDENTITY", "id");
                 command.CommandText = value;
             }
         }
