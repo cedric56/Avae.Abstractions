@@ -1,19 +1,16 @@
-﻿namespace Avae.DAL
+﻿namespace Avae.DAL;
+
+public interface IDBMonitor
 {
-    public static class SessionContext
-    {
-        public static readonly AsyncLocal<string?> CurrentConnectionId = new();
-    }
+    [Obsolete]
+    bool IsRunning { get; set; }
 
-    public interface IDBMonitor
-    {
-        bool IsRunning { get; set; }
-        Func<Task> Restart { get; set; }
-    }
+    [Obsolete]
+    Func<Task> Restart { get; set; }
+}
 
-    public interface IDBMonitor<T> : IDBMonitor where T : class, new()
-    {
-        void OnChanged(Record<T> record);
-        event EventHandler<Record<T>> OnRecordChanged;
-    }
+public interface IDBMonitor<T> : IDBMonitor where T : class, new()
+{
+    void OnChanged(Record<T> record);
+    event EventHandler<Record<T>> OnRecordChanged;
 }

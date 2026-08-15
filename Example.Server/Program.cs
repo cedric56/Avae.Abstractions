@@ -16,6 +16,7 @@ builder.Services.AddSignalR().AddMessagePackProtocol();
 builder.Services.AddMagicOnion();
 builder.Services.AddGrpc(opt =>
 {
+    //opt.ResponseCompressionAlgorithm = null;
     opt.EnableDetailedErrors = true;
     opt.MaxReceiveMessageSize = int.MaxValue;
     opt.MaxSendMessageSize = int.MaxValue;
@@ -25,9 +26,10 @@ builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
     builder.AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader()
-            .WithExposedHeaders("grpc-status", "grpc-message", "grpc-encoding")
+            .WithExposedHeaders("grpc-status", "grpc-message", "grpc-encoding", "grpc-web-text")
             .SetIsOriginAllowed(origin => true);
 }));
+
 builder.WebHost.ConfigureKestrel(options =>
 {
     // Desktop/server gRPC clients — HTTP/2 only is fine here (native gRPC channel, not browser)
@@ -46,9 +48,21 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 var app = builder.Build();
+// Enable CORS, WebSocket, GrpcWebSocketRequestRoutingEnabler
+// NOTE: These need to be called before `UseRouting`.  
 app.UseCors("AllowAll");
+app.UseWebSockets();                     // required
+app.UseGrpcWebSocketRequestRoutingEnabler(); // ← often missing
+
+app.UseRouting();
+//app.MapMagicOnionService();              // after the bridge
+//app.UseWebSockets();
+//app.UseGrpcWebSocketRequestRoutingEnabler();
+//app.UseRouting();
+// NOTE: `UseGrpcWebSocketBridge` must be called after calling `UseRouting`.
+app.UseGrpcWebSocketBridge();
 app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
-var endpointConventionBuilder = app.MapMagicOnionService().EnableGrpcWeb();
+app.MapMagicOnionService().EnableGrpcWeb();
 app.MapHub<SignalRHub<Person>>("/PersonHub");
 
 ServiceLocator.SetDefault(app.Services);

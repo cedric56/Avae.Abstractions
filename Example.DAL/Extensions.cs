@@ -4,6 +4,7 @@ using Avae.MagicLayer;
 using Avae.SignalR;
 using Avae.Sqlite;
 using Example.Models;
+using GrpcWebSocketBridge.Client;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +35,7 @@ public static class Extensions
         where TObject : class, new()
     {
         IDBFactory.Monitors.Add(monitor);
-        var channel = provider.GetGrpcChannel(MagicHubUrl);
+        var channel = provider.GetGrpcHandlerChannel(MagicHubUrl);
         return monitor.AddStreamingHub(channel);
     }
 

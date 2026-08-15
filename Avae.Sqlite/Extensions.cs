@@ -70,7 +70,7 @@ namespace Avae.Sqlite
                     foreach (var monitor in IDBFactory.Monitors.OfType<DBMonitor>())
                         foreach (var record in records.DistinctBy(r => r.rowid))
                         {                            
-                            monitor.OnChanged(record.type, record.database, record.table, record.rowid, SessionContext.CurrentConnectionId.Value);
+                            monitor.OnChanged(record.type, record.database, record.table, record.rowid, DBContext.CurrentConnectionId.Value);
                         }
                 }
 

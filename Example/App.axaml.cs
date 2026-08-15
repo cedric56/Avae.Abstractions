@@ -125,11 +125,11 @@ public partial class App : AvaeApplication, IIocConfiguration
 
         //if (OperatingSystem.IsBrowser())
         //{
-        unsuscribe = await Container.Provider.AddSignalR(monitor);
+        //unsuscribe = await Container.Provider.AddSignalR(monitor);
         //}
         //else
         //{
-        //    unsuscribe = await Container.Provider.AddStreamingHub(monitor);
+        unsuscribe = await Container.Provider.AddStreamingHub(monitor);
         //}
     }
 

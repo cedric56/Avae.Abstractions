@@ -3,10 +3,13 @@ using Avae.MagicServices;
 using Grpc.Net.Client;
 using Grpc.Net.Client.Configuration;
 using Grpc.Net.Client.Web;
+using GrpcWebSocketBridge.Client;
 using MagicOnion;
 using MagicOnion.Client;
 using System.Diagnostics;
 using System.Net;
+using System.Net.Security;
+using System.Net.WebSockets;
 
 namespace Avae.MagicClient
 {
@@ -17,12 +20,6 @@ namespace Avae.MagicClient
         {
             try
             {
-                if (OperatingSystem.IsBrowser())
-                    throw new NotImplementedException("Use SignalR for WebAssembly");
-
-                //using var cts = new CancellationTokenSource(
-                //    TimeSpan.FromSeconds(2));
-
                 var receiver = new RecordHubReceiver<TObject>(monitor);
                 var hub = await StreamingHubClient.ConnectAsync<IRecordHub<TObject>, IRecordHubReceiver<TObject>>(channel, receiver);//, cancellationToken: cts.Token);
                 var guid = await hub.AddReceiverAsync();
@@ -59,11 +56,11 @@ namespace Avae.MagicClient
 
         public static IMagicService Create<IMagicService>(this IServiceProvider provider, string url) where IMagicService : IService<IMagicService>
         {
-            var channel = provider.GetGrpcChannel(url);
+            var channel = OperatingSystem.IsBrowser() ? provider.GetGrpcWebChannel(url) : provider.GetGrpcSocketChannel(url);
             return MagicOnionClient.Create<IMagicService>(channel);
         }
 
-        public static GrpcChannel GetGrpcChannel(this IServiceProvider provider, string url)
+        private static GrpcChannel GetGrpcWebChannel(this IServiceProvider provider, string url)
         {
             var client = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()))
             {
@@ -73,7 +70,24 @@ namespace Avae.MagicClient
             };
             return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
             {
-                HttpClient = client,
+                HttpClient = client
+            });
+        }
+
+        public static GrpcChannel GetGrpcSocketChannel(this IServiceProvider provider, string url)
+        {
+            var client = new HttpClient(new GrpcWebSocketBridgeHandler());
+            return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
+            {
+                HttpClient = client
+            });
+        }
+
+        public static GrpcChannel GetGrpcHandlerChannel(this IServiceProvider provider, string url)
+        {
+            return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
+            {
+                HttpHandler = new GrpcWebSocketBridgeHandler()
             });
         }
     }

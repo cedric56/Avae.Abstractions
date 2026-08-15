@@ -38,7 +38,7 @@ public static class Extensions
 
             monitor.OnChanged(record);
         });
-        monitor.Restart = TryConnect;
+        //monitor.Restart = TryConnect;
         monitor.OnRecordChanged += OnRecordChanged;
         hub.Closed += Closed;
         hub.Reconnected += Reconnected;
@@ -99,21 +99,21 @@ public static class Extensions
             }
             finally
             {
-                monitor.IsRunning = hub.State == HubConnectionState.Connected;
-                if (monitor.IsRunning)
-                    IDBLayer.Sessions.Add(typeof(TObject), hub.ConnectionId ?? throw new InvalidOperationException("Connection must be known"));
+                //monitor.IsRunning = hub.State == HubConnectionState.Connected;
+                //if (monitor.IsRunning)
+                IDBLayer.Sessions.Add(typeof(TObject), hub.ConnectionId ?? throw new InvalidOperationException("Connection must be known"));
             }
         }
 
         Task Reconnected(string? value)
         {
-            monitor.IsRunning = hub.State == HubConnectionState.Connected;
+            //monitor.IsRunning = hub.State == HubConnectionState.Connected;
             return Task.CompletedTask;
         }
 
         Task Closed(Exception? ex)
         {
-            monitor.IsRunning = hub.State == HubConnectionState.Connected;
+            //monitor.IsRunning = hub.State == HubConnectionState.Connected;
             return Task.CompletedTask;
         }
     }

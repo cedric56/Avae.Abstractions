@@ -76,28 +76,28 @@ namespace Avae.Server
         public async UnaryResult<DBResult> Remove(DBTransactional transactional, string connectionId)
         {
             var layer = ServiceLocator.GetRequiredService<IDBLayer>();
-            SessionContext.CurrentConnectionId.Value = connectionId;
+            DBContext.CurrentConnectionId.Value = connectionId;
             try
             {
                 return await transactional.Remove(layer);
             }
             finally
             {
-                SessionContext.CurrentConnectionId.Value = null;
+                DBContext.CurrentConnectionId.Value = null;
             }            
         }
 
         public async UnaryResult<DBResult> Save(DBTransactional transactional, string connectionId)
         {
             var layer = ServiceLocator.GetRequiredService<IDBLayer>();
-            SessionContext.CurrentConnectionId.Value = connectionId;
+            DBContext.CurrentConnectionId.Value = connectionId;
             try
             {
                 return await transactional.Save(layer);
             }
             finally
             {
-                SessionContext.CurrentConnectionId.Value = null;
+                DBContext.CurrentConnectionId.Value = null;
             }
         }
     }
