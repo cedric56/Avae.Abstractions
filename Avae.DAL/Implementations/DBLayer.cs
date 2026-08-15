@@ -4,20 +4,6 @@ using System.Data;
 
 namespace Avae.DAL;
 
-public enum DBConnectionType
-{
-    Unspecified,
-    Microsoft,
-    Sqlite,
-
-    PostgreSql
-}
-
-public class DBOptions
-{
-    public DBConnectionType ConnectionType { get; set; } = DBConnectionType.Unspecified;
-}
-
 public class DBLayer(IServiceProvider provider) : IDBLayer
 {
     public Task<DBResult> Remove(DBTransactional transactional)

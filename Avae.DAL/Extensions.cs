@@ -19,10 +19,8 @@ namespace Avae.DAL
 
         public static void UseLayer(this IServiceCollection services,
             Func<IServiceProvider, IDBLayer> getLayer,
-            DBConnectionType connectionType = DBConnectionType.Unspecified,
             Func<string>? getDBCreateCommand = null)
         {
-            services.AddSingleton<DBOptions>(new DBOptions() { ConnectionType = connectionType });
             services.AddSingleton<IDBLayer>(sp =>
             {
                 if (getDBCreateCommand != null)

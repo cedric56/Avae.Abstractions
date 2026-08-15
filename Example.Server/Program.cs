@@ -6,14 +6,12 @@ using Example.DAL;
 using Example.Models;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
-using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<ConnectionTracker<Person>>();
 builder.Services.AddSingleton<RecordHubRepository<Person>>();
 builder.Services.AddSingleton<SignalRHub<Person>>();
-//builder.Services.UseDBSqlLayer<SqliteConnection>();
-builder.Services.UseDBSqlLayer<NpgsqlConnection>();
+builder.Services.UseDBSqlLayer<SqliteConnection>();
 builder.Services.AddSignalR().AddMessagePackProtocol();
 builder.Services.AddMagicOnion();
 builder.Services.AddGrpc(opt =>

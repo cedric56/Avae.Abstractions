@@ -10,9 +10,9 @@ using Example.Models;
 using Example.ViewModels;
 using Example.Views;
 using FluentAvalonia.UI.Controls;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Npgsql;
 using System;
 using System.IO;
 using System.Linq;
@@ -80,7 +80,7 @@ public partial class App : AvaeApplication, IIocConfiguration
         
         if (!OperatingSystem.IsBrowser())
         {
-            services.UseDBSqlLayer<NpgsqlConnection>();
+            services.UseDBSqlLayer<SqliteConnection>();
             //services.UseDBOnionLayer();
         }
 

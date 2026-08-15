@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Avae.DAL
 {
-    public class DBLogCommand(ILogger? logger, DbCommand command, DBConnectionType connectionType) : DbCommand
+    public class DBLogCommand(ILogger? logger, DbCommand command, IDBIdentity? identity = null) : DbCommand
     {
         private bool _disposed;
 
@@ -15,10 +15,10 @@ namespace Avae.DAL
             get => command.CommandText;            
             set
             {
-                if (value != null && connectionType == DBConnectionType.Sqlite)
-                    value = value.Replace("SCOPE_IDENTITY", "last_insert_rowid");
-                else if(value != null && connectionType == DBConnectionType.PostgreSql)
-                    value = value.Replace("SCOPE_IDENTITY", "id");
+
+                if (value != null && identity != null)
+                    value = identity.Parse(value);
+
                 command.CommandText = value;
             }
         }

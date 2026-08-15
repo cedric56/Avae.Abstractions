@@ -5,7 +5,6 @@ using Avae.PostgreSQL;
 using Avae.SignalR;
 using Avae.Sqlite;
 using Example.Models;
-using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
@@ -40,18 +39,6 @@ public static class Extensions
         return monitor.AddSignalR(SignalHubUrl);
     }
 
-    private static DBConnectionType GetConnectionType<TDBConnection>()
-    {
-        var type = typeof(TDBConnection);
-        if (type == typeof(SqlConnection))
-            return DBConnectionType.Microsoft;
-        else if (type == typeof(SqliteConnection))
-            return DBConnectionType.Sqlite;
-        else if (type == typeof(NpgsqlConnection))
-            return DBConnectionType.PostgreSql;
-        return DBConnectionType.Unspecified;
-    }
-
     public static void UseDBOnionLayer(this IServiceCollection services)
     {
         services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
@@ -63,18 +50,18 @@ public static class Extensions
     public static void UseDBSqlLayer<TDBConnection>(this IServiceCollection services)
         where TDBConnection : DbConnection, new()
     {
-        var type = GetConnectionType<TDBConnection>();
+        var type = typeof(TDBConnection);
 
         services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
 
-        if (type == DBConnectionType.Sqlite)
+        if (type == typeof(SqliteConnection))
         {
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             var dbPath = Path.Combine(folder, "database.db");
             var connectionString = $"Data Source={dbPath};Foreign Keys=True";
             services.UseSqliteFactory(connectionString);
         }
-        else if (type == DBConnectionType.PostgreSql)
+        else if (type == typeof(NpgsqlConnection))
         {
             var connectionString = "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=Postgre";
             services.UseNpgsqlFactory(connectionString);
@@ -85,10 +72,10 @@ public static class Extensions
             services.UseFactory<TDBConnection>(connectionString);
         }
 
-        services.UseLayer(sp => new DBLayer(sp), type,
+        services.UseLayer(sp => new DBLayer(sp),
         () =>
         {
-            if (type == DBConnectionType.Sqlite)
+            if (type == typeof(SqliteConnection))
             {
                 return @"
             CREATE TABLE IF NOT EXISTS Person(
@@ -106,24 +93,7 @@ public static class Extensions
                         );
             ";
             }
-            else if (type == DBConnectionType.Microsoft)
-            {
-                return @"CREATE TABLE IF NOT EXISTS Person (
-                        Id INT PRIMARY KEY IDENTITY(1,1),
-                        FirstName NVARCHAR(255) NULL,
-                        LastName NVARCHAR(255) NULL,
-                        Photo VARBINARY(MAX) NULL
-                    );
-
-                    CREATE TABLE IF NOT EXISTS Contact (
-                        Id INT PRIMARY KEY IDENTITY(1,1),
-                        IdPerson INT NOT NULL,
-                        IdContact INT NOT NULL,
-                        CONSTRAINT FK_Contact_Person FOREIGN KEY (IdPerson) REFERENCES Person(Id),
-                        CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY (IdContact) REFERENCES Person(Id)
-                    );";
-            }
-            else if(type == DBConnectionType.PostgreSql)
+            else if (type == typeof(NpgsqlConnection))
             {
                 return @"CREATE TABLE IF NOT EXISTS Person (
                             Id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -140,6 +110,24 @@ public static class Extensions
                             CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY (IdContact) REFERENCES Person(Id)
                         );";
             }
+            else
+            {
+                return @"CREATE TABLE IF NOT EXISTS Person (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+                        FirstName NVARCHAR(255) NULL,
+                        LastName NVARCHAR(255) NULL,
+                        Photo VARBINARY(MAX) NULL
+                    );
+
+                    CREATE TABLE IF NOT EXISTS Contact (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+                        IdPerson INT NOT NULL,
+                        IdContact INT NOT NULL,
+                        CONSTRAINT FK_Contact_Person FOREIGN KEY (IdPerson) REFERENCES Person(Id),
+                        CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY (IdContact) REFERENCES Person(Id)
+                    );";
+            }
+            
 
             throw new NotImplementedException();
         });

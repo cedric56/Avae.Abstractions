@@ -9,6 +9,14 @@ namespace Avae.Sqlite
 {
     public static class Extensions
     {
+        class SqliteIdentity : IDBIdentity
+        {
+            public string Parse(string commandText)
+            {
+                return commandText.Replace("SCOPE_IDENTITY", "last_insert_rowid");
+            }
+        }
+
         public class SqliteFactory : DBFactory<SqliteConnection>
         {
             private readonly string connectionString;
@@ -82,6 +90,7 @@ namespace Avae.Sqlite
            string connectionString, bool isTransaction = true)
         {
             var factory = new SqliteFactory(connectionString, isTransaction);
+            services.AddSingleton<IDBIdentity, SqliteIdentity>();
             services.AddSingleton<IDBFactory>(sp => factory);
             services.AddTransient<IDbConnection>(_ => factory.CreateConnection()!);
         }

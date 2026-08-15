@@ -11,7 +11,7 @@ namespace Avae.DAL
         public readonly DbConnection Inner = (DbConnection)provider.GetRequiredService<IDbConnection>();
         
         protected override DbCommand CreateDbCommand()
-            => new DBLogCommand(provider.GetService<ILogger>(), Inner.CreateCommand(), provider.GetService<DBOptions>()?.ConnectionType ?? DBConnectionType.Unspecified);
+            => new DBLogCommand(provider.GetService<ILogger>(), Inner.CreateCommand(), provider.GetService<IDBIdentity>());
 
         [AllowNull]
         public override string ConnectionString { get => Inner.ConnectionString; set => Inner.ConnectionString = value; }
@@ -21,11 +21,7 @@ namespace Avae.DAL
         public override ConnectionState State => Inner.State;
         public override void ChangeDatabase(string databaseName) => Inner.ChangeDatabase(databaseName);
         public override void Close() => Inner.Close();
-        public override void Open()
-        {
-            if (Inner.State != ConnectionState.Open)
-                Inner.Open();
-        }
+        public override void Open() => Inner.Open();
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
             => Inner.BeginTransaction(isolationLevel);

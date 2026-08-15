@@ -13,6 +13,14 @@ namespace Avae.PostgreSQL
         public static extern ref ISqlAdapter GetDefaultAdapter(
          [UnsafeAccessorType("Dapper.Contrib.Extensions.SqlMapperExtensions, Dapper.Contrib")] object? facade);
 
+        class PostgreIdentity : IDBIdentity
+        {
+            public string Parse(string commandText)
+            {
+                return commandText.Replace("SCOPE_IDENTITY", "id");
+            }
+        }
+
         public class SqlPostgreFactory : DBFactory<NpgsqlConnection>
         {
             private readonly string connectionString;
@@ -39,6 +47,7 @@ namespace Avae.PostgreSQL
             GetDefaultAdapter(null) = new PostgresLowercaseAdapter();
 
             var factory = new SqlPostgreFactory(connectionString);
+            services.AddSingleton<IDBIdentity, PostgreIdentity>();
             services.AddSingleton<IDBFactory>(sp => factory);
             services.AddTransient<IDbConnection>(_ => factory.CreateConnection()!);
         }
