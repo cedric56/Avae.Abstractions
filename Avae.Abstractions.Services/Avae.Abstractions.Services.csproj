@@ -1,18 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net11.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MagicOnion.Serialization.MessagePack" Version="7.10.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Layers\Avae.DAL\Avae.DAL.csproj" />
+    <ProjectReference Include="..\Avae.Abstractions.Core\Avae.Abstractions.Core.csproj" />
   </ItemGroup>
 
 </Project>

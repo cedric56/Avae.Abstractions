@@ -1,5 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avae.Essentials;
+using Avae.Essentials.Core;
 using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -85,14 +86,17 @@ namespace Example.ViewModels
         [RelayCommand]
         public async Task ShowSystemNotification()
         {
-            var notification = systemNotificationService.CreateNotification(
+            var notification = await systemNotificationService.CreateNotification(
                 "action",
                 "Hello",
                 "World",
                 [new SystemNotificationAction("caption","tag")]);
-            notification.NotificationCompleted += OnNotificationCompleted;
-            notification.Show();
 
+            if (notification != null)
+            {
+                notification.NotificationCompleted += OnNotificationCompleted;
+                notification.Show();
+            }
             void OnNotificationCompleted(object? sender , SystemNotificationEventArgs e)
             {
                 notification.NotificationCompleted -= OnNotificationCompleted;

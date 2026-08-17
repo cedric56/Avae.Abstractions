@@ -1,0 +1,42 @@
+﻿@page "/"
+@inherits Avae.Razor.Components.ComponentPage
+@inject IServiceProvider provider
+@using Example.ViewModels
+@using Microsoft.AspNetCore.Components.Web
+@using MudBlazor
+
+@inject HomeViewModel homeViewModel
+
+<style>
+    .rows
+    {
+        display:grid;
+        grid-template-rows:auto auto auto auto auto
+    }
+</style>
+
+<PageTitle>homeViewModel.Title</PageTitle>
+
+<div class="rows center">
+    <MudButton OnClick="() => homeViewModel.ShowModal()">Show Modal</MudButton>
+    <MudButton OnClick="() => homeViewModel.ShowContentDialog()">Show ContentDialog</MudButton>
+    <MudButton OnClick="() => homeViewModel.ShowTaskDialog()">Show TaskDialog</MudButton>
+    <MudButton OnClick="() => homeViewModel.ShowNotification()">Show Snack</MudButton>
+    <MudButton OnClick="() => homeViewModel.ShowRequestedTheme()">Theme</MudButton>
+    <MudButton OnClick="() => homeViewModel.Speak()">Speak</MudButton>
+    <MudButton OnClick="() => homeViewModel.ShowShare()">Share</MudButton>
+    <MudButton OnClick="() => homeViewModel.ShowSystemNotification()">Notification</MudButton>
+    <MudButton OnClick="() => homeViewModel.CaptureVideo()">Capture</MudButton>
+</div>
+
+    @code
+{
+    public static IAvaloniaEmbeddedApp? AvaloniaEmbedded{ get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (AvaloniaEmbedded != null)
+            await AvaloniaEmbedded.UseAvaloniaEmbedded(provider);
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

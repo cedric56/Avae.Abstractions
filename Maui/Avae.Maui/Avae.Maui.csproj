@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net11.0;net11.0-android</TargetFrameworks>
+    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net11.0-ios;net11.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <RootNamespace>Avae.Maui</RootNamespace>
+    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="UXDivers.Popups.Maui" Version="0.9.4" />
+    <ProjectReference Include="..\..\Avae.Abstractions.Services\Avae.Abstractions.Services.csproj" />
+    <ProjectReference Include="..\..\Avae.Essentials.Core\Avae.Essentials.Core.csproj" />
+    <PackageReference Update="Microsoft.Maui.Controls" Version="11.0.0-preview.5.26304.4" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <MauiXaml Update="AvaePopupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+  </ItemGroup>
+
+</Project>

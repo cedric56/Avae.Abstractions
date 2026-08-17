@@ -1,0 +1,32 @@
+﻿@page
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Example.WebApplication</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Example.WebApplication.styles.css" asp-append-version="true" />
+    <base href="/" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Required container for Blazor WebAssembly -->
+    <div id="app">
+        @* @RenderBody() *@
+        @(await Html.RenderComponentAsync<Example.Razor.Layout.Routes>(RenderMode.Static))
+        <!-- Use Static render mode for the root component -->
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Required Blazor WebAssembly script -->
+    <script src="~/_framework/blazor.webassembly.js"></script>
+
+    <script src="~/_content/MudBlazor/MudBlazor.min.js"></script>
+</body>
+</html>

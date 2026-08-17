@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="11.0.0-preview.6.26359.118" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\Avae.Abstractions.Core\Avae.Abstractions.Core.csproj" />
+    <ProjectReference Include="..\..\Avalonia\Avae.Essentials.Avalonia\Avae.Essentials.Avalonia.csproj" />
+    <ProjectReference Include="..\..\Razor\Example.Razor\Example.Razor.csproj" />
+    <ProjectReference Include="..\Avae.Essentials.Blazor\Avae.Essentials.Blazor.csproj" AdditionalProperties="ExtraConstants=WEB" />
+  </ItemGroup>
+
+</Project>
