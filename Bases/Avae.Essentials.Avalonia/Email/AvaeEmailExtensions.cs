@@ -1,7 +1,5 @@
-﻿using Avae.Essentials;
-using Microsoft.Maui.ApplicationModel.Communication;
+﻿using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.Storage;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -12,10 +10,7 @@ namespace Avae.Essentials.Avalonia;
 /// </summary>
 public static class AvaeEmailExtensions
 {
-    [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "ResolveContentType")]
-    [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaFileResult, Avalonia.Controls.Maui.Essentials")]
-    extern static object ResolveContentType(string filename);
-
+    
     /// <summary>
     /// Converts an <see cref="EmailMessage"/> to a <c>mailto:</c> URI string.
     /// </summary>
@@ -149,7 +144,7 @@ public static class AvaeEmailExtensions
                 {
                     using var stream = new FileStream(attachment.FullPath, FileMode.Open, FileAccess.Read);
                     //await AppendAttachement(AvaloniaFileResult.ResolveContentType(attachment.FileName), stream);
-                    await AppendAttachement((string)ResolveContentType(attachment.FileName), stream);
+                    await AppendAttachement((string)AvaloniaDefaults.ResolveContentType(attachment.FileName), stream);
                 }
                 else
                 {

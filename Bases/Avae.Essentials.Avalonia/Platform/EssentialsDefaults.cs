@@ -1,14 +1,4 @@
 ﻿using Avalonia.Controls.Maui.Essentials;
-using Microsoft.Maui.Accessibility;
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.ApplicationModel.Communication;
-using Microsoft.Maui.ApplicationModel.DataTransfer;
-using Microsoft.Maui.Authentication;
-using Microsoft.Maui.Devices;
-using Microsoft.Maui.Devices.Sensors;
-using Microsoft.Maui.Media;
-using Microsoft.Maui.Networking;
-using Microsoft.Maui.Storage;
 using System.Runtime.CompilerServices;
 
 namespace Avae.Essentials.Avalonia
@@ -312,7 +302,9 @@ namespace Avae.Essentials.Avalonia
         [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
         [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaWebAuthenticator, Avalonia.Controls.Maui.Essentials")]
         internal extern static object CreateAvaloniaWebAuthenticator(IAvaloniaEssentialsPlatformProvider provider);
-    }
 
-    
+        [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "ResolveContentType")]
+        [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaFileResult, Avalonia.Controls.Maui.Essentials")]
+        internal extern static object ResolveContentType(string filename);
+    }
 }

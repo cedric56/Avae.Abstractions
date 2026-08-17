@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Media;
+﻿using Avae.Essentials.Core;
+using Microsoft.Maui.Media;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -62,12 +63,8 @@ namespace Avae.Essentials.Avalonia
     [SupportedOSPlatform("windows10.0.10240")]
     partial class TextToSpeechImplementation : ITextToSpeech
     {
-        [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
-        [return: UnsafeAccessorType("Microsoft.Maui.Media.Locale, Microsoft.Maui.Essentials")]
-        extern static object CreateClass(string language, string country, string name, string id);
-
         Task<IEnumerable<Locale>> PlatformGetLocalesAsync() =>
-            Task.FromResult(SpeechSynthesizer.AllVoices.Select(v => (Locale)CreateClass(v.Language, string.Empty, v.DisplayName, v.Id)));
+            Task.FromResult(SpeechSynthesizer.AllVoices.Select(v => EssentialsAccessors.CreateLocale(v.Language, string.Empty, v.DisplayName, v.Id)));
 
         async Task PlatformSpeakAsync(string text, SpeechOptions? options, CancellationToken cancelToken = default)
         {

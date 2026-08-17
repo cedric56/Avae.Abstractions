@@ -120,7 +120,7 @@ namespace Example.ViewModels
         [RelayCommand]
         public Task Speak()
         {
-            return textToSpeech.SpeakAsync("Maui essentials Essentials.Avalonia");
+            return textToSpeech.SpeakAsync("Done");
         }
 
         [RelayCommand]
