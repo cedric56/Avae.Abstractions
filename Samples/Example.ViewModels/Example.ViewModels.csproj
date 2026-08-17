@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bases\Avae.Abstractions.Services\Avae.Abstractions.Services.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.Essentials.Avalonia\Avae.Essentials.Avalonia.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.Essentials.Core\Avae.Essentials.Core.csproj" />
+    <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
+  </ItemGroup>
+
+</Project>

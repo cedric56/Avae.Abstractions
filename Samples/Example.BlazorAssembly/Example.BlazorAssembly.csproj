@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0-browser</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.9" PrivateAssets="all" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bases\Avae.Abstractions.Core\Avae.Abstractions.Core.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.Avalonia.Browser\Avae.Avalonia.Browser.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.Essentials.Avalonia\Avae.Essentials.Avalonia.csproj" />
+    <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />
+  </ItemGroup>
+
+</Project>

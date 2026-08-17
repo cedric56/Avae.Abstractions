@@ -1,0 +1,36 @@
+﻿@using Avae.DAL
+@using Example.DAL
+@using Example.Models
+@using Microsoft.AspNetCore.Components.Routing
+@inject IServiceProvider provider;
+@inject IDBMonitor<Person> monitor;
+@implements IAsyncDisposable
+<Router AppAssembly="typeof(Example.Razor.Components.Home).Assembly"
+        AdditionalAssemblies="new[] { typeof(Avae.Razor.Layout.MainLayout).Assembly }"
+        NotFoundPage="typeof(Avae.Razor.Components.NotFound)">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(Avae.Razor.Layout.MainLayout)" />
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+</Router>
+
+@code
+{
+    Func<Task>? unsuscribe;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (OperatingSystem.IsBrowser())
+            unsuscribe = await provider.AddStreamingHub(monitor);
+        //unsuscribe = await provider.AddSignalR(monitor);
+
+        await base.OnInitializedAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (unsuscribe != null)
+            await unsuscribe();
+    }
+}
+

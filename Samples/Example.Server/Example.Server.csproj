@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GrpcWebSocketBridge.AspNetCore" Version="1.4.1" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bases\Avae.Abstractions.Core\Avae.Abstractions.Core.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.DAL\Avae.DAL.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.Server\Avae.Server.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.SignalR\Avae.SignalR.csproj" />
+    <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
+    <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
+  </ItemGroup>
+
+</Project>

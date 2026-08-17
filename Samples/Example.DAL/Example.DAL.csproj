@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bases\Avae.DAL\Avae.DAL.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.MagicClient\Avae.MagicClient.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.MagicLayer\Avae.MagicLayer.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.PostgreSQL\Avae.PostgreSQL.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.SignalR\Avae.SignalR.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.Sqlite\Avae.Sqlite.csproj" />
+    <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
+  </ItemGroup>
+
+</Project>
