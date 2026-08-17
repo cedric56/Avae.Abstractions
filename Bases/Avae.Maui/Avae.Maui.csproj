@@ -16,7 +16,7 @@
     <PackageReference Include="UXDivers.Popups.Maui" Version="0.9.4" />
     <ProjectReference Include="..\Avae.Abstractions.Services\Avae.Abstractions.Services.csproj" />
     <ProjectReference Include="..\Avae.Essentials.Core\Avae.Essentials.Core.csproj" />
-    <PackageReference Update="Microsoft.Maui.Controls" Version="11.0.0-preview.5.26304.4" />
+    <PackageReference Update="Microsoft.Maui.Controls" Version="11.0.0-preview.6.26359.118" />
   </ItemGroup>
   
   <ItemGroup>

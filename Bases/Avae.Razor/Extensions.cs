@@ -4,13 +4,19 @@ using Avae.Razor.Components;
 using Avae.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 using MudBlazor;
 using MudBlazor.Services;
+using System.Runtime.CompilerServices;
 
 namespace Avae.Razor
 {
     public static class Extensions
     {
+        [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
+        [return: UnsafeAccessorType("Append.Blazor.Notifications.NotificationService, Append.Blazor.Notifications")]
+        internal extern static object CreateService(IJSRuntime jSRuntime);
+
         public static void ConfigureBase(this IServiceCollection services,
             ComponentView navMenu,
             NotificationPosition position = NotificationPosition.BottomLeft,

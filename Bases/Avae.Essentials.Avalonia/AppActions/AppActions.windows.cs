@@ -1,4 +1,5 @@
 using Microsoft.Maui.ApplicationModel;
+using Microsoft.UI.Xaml;
 using System.Runtime.Versioning;
 using System.Text;
 using Windows.UI.StartScreen;
@@ -6,7 +7,10 @@ using Windows.UI.StartScreen;
 namespace Avae.Essentials.Avalonia
 {
     [SupportedOSPlatform("windows10.0.10586")]
-    class AppActionsImplementation : IAppActions//, IPlatformAppActions
+    class AppActionsImplementation : IAppActions
+#if WINDOWS
+		, IPlatformAppActions
+#endif
 	{
 		public bool IsSupported => true;
 
@@ -48,6 +52,12 @@ namespace Avae.Essentials.Avalonia
 			AppActionActivated?.Invoke(null, new AppActionEventArgs(a));
 			return Task.CompletedTask;
 		}
+#if WINDOWS
+		public Task OnLaunched(LaunchActivatedEventArgs e)
+        {
+			return Task.CompletedTask;
+        }
+#endif
 	}
     [SupportedOSPlatform("windows10.0.10586")]
     static partial class AppActionsExtensions

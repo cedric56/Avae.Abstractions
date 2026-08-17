@@ -43,12 +43,15 @@ namespace Avae.Razor
 
         public async Task<ISystemNotification?> CreateNotification(string action, string title, string message, SystemNotificationAction[] actions)
         {
-            var service = Container.Provider.GetRequiredService<Append.Blazor.Notifications.INotificationService>();
-            if (await service.IsSupportedByBrowserAsync())
+            using (var scope = ServiceLocator.Default.CreateScope())
             {
-                if (service.PermissionStatus != PermissionType.Granted)
-                    await service.RequestPermissionAsync();
-                return new N(service, title);
+                var scopedService = scope.ServiceProvider.GetRequiredService<Append.Blazor.Notifications.INotificationService>();
+                if (await scopedService.IsSupportedByBrowserAsync())
+                {
+                    if (scopedService.PermissionStatus != PermissionType.Granted)
+                        await scopedService.RequestPermissionAsync();
+                    return new N(scopedService, title);
+                }
             }
             return null;
         }

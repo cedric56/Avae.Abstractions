@@ -1,5 +1,5 @@
 ﻿using Avae.Abstractions;
-using Avae.Essentials.Avalonia;
+using Avae.Essentials.Core;
 using Example.Razor;
 using Microsoft.Extensions.Logging;
 
@@ -16,7 +16,7 @@ namespace Example.Hybrid
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 });
-            builder.Services.UseAvaeEssentials();
+            builder.Services.RegisterEssentials();
             builder.Services.UseSharedLibrary();
             builder.Services.AddMauiBlazorWebView();            
 #if DEBUG

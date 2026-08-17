@@ -26,15 +26,20 @@ public static class Extensions
         services.AddWebShare();
         services.AddAsyncClipboardService();
         services.AddMediaDevicesService();
-        services.AddSpeechSynthesis();
+        services.AddSpeechSynthesis();        
         services.AddSingleton<VideoCaptureCoordinator>();
+        services.AddSingleton<BlazorSensors.Accelerometer>();
+        services.AddSingleton<BlazorSensors.Gyroscope>();
+        services.AddSingleton<BlazorSensors.Magnetometer>();
+        services.AddSingleton<BlazorSensors.AbsoluteOrientationSensor>();
 
-        services.TryAddScoped<IAccelerometer>(_ => Accelerometer.Default);
+
+        services.TryAddScoped<IAccelerometer, BlazorAccelerometer>();
         services.TryAddScoped<IAppActions>(_ => AppActions.Current);
         services.TryAddScoped<IAppInfo>(_ => AppInfo.Current);
         services.TryAddScoped<IBarometer>(_ => Barometer.Default);
         services.TryAddScoped<IBattery>(_ => Battery.Default);
-        services.TryAddScoped<IBrowser>(_ => Browser.Default);
+        services.TryAddScoped<IBrowser, BlazorBrowser>();
         services.TryAddScoped<IClipboard, BlazorClipboard>();
         services.TryAddScoped<ICompass>(_ => Compass.Default);
         services.TryAddScoped<IConnectivity>(_ => Connectivity.Current);
@@ -46,18 +51,18 @@ public static class Extensions
         services.TryAddScoped<IFlashlight>(_ => Flashlight.Default);
         services.TryAddScoped<IGeocoding>(_ => Geocoding.Default);
         services.TryAddScoped<IGeolocation>(_ => Geolocation.Default);
-        services.TryAddScoped<IGyroscope>(_ => Gyroscope.Default);
+        services.TryAddScoped<IGyroscope, BlazorGyroscope>();
         services.TryAddScoped<IHapticFeedback>(_ => HapticFeedback.Default);
         services.TryAddScoped<ILauncher, BlazorLauncher>();
-        services.TryAddScoped<IMagnetometer>(_ => Magnetometer.Default);
+        services.TryAddScoped<IMagnetometer, BlazorMagnetometer>();
         services.TryAddScoped<IMap>(_ => Map.Default);
         services.TryAddScoped<IMediaPicker, BlazorMediaPicker>();
-        services.TryAddScoped<IOrientationSensor>(_ => OrientationSensor.Default);
-        services.TryAddScoped<IPhoneDialer>(_ => PhoneDialer.Default);
+        services.TryAddScoped<IOrientationSensor, BlazorOrientationSensor>();
+        services.TryAddScoped<IPhoneDialer, BlazorPhoneDialer>();
         services.TryAddScoped<ISecureStorage>(_ => SecureStorage.Default);
         services.TryAddScoped<ISemanticScreenReader>(_ => SemanticScreenReader.Default);
         services.TryAddScoped<IShare, BlazorShare>();
-        services.TryAddScoped<ISms>(_ => Sms.Default);
+        services.TryAddScoped<ISms, BlazorSms>();
         services.TryAddScoped<ITextToSpeech, BlazorTextToSpeech>();
         services.TryAddScoped<IVibration>(_ => Vibration.Default);
         services.TryAddScoped<IWebAuthenticator>(_ => WebAuthenticator.Default);
