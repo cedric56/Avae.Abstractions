@@ -13,6 +13,12 @@ public static class Extensions
 
     public static MauiAppBuilder WithSystemNotifications(this MauiAppBuilder builder, AppNotificationOptions? options = null)
     {
+#if ANDROID
+        if (Android.App.Application.Context is null)
+            throw new InvalidOperationException("Context must not be null");
+
+#endif
+
         builder.Services.AddSingleton<ISystemNotificationService, SystemNotificationService>();
 
 #if WINDOWS
@@ -28,8 +34,11 @@ public static class Extensions
 #endif
            options
            );
-#if ANDROID
 
+#if ANDROID
+        appBuilder.UseAndroid();
+#elif IOS || MACCATALYST
+        appBuilder.UseiOS();
 #else
         appBuilder.UsePlatformDetect();
 #endif

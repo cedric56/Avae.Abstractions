@@ -1,5 +1,6 @@
 ﻿using Avae.Services;
 using Avalonia.Labs.Notifications;
+using Microsoft.Maui.Platform;
 
 namespace Avae.Maui.Notifications
 {
@@ -27,7 +28,15 @@ namespace Avae.Maui.Notifications
 
         public Task<ISystemNotification?> CreateNotification(string action, string title, string message, SystemNotificationAction[] actions)
         {
-            var _currentNotification = NativeNotificationManager.Current?.CreateNotification(action);
+            var manager = NativeNotificationManager.Current;
+            if (manager == null)
+                throw new InvalidOperationException("Manager is not defined");
+
+//#if ANDROID
+//            manager.SetPermissionActivity(Android.App.Application.Context.GetActivity()!);
+//#endif
+
+            var _currentNotification = manager.CreateNotification(action);
             if (_currentNotification is not null)
             {
                 var current = new AvaloniaNotification(_currentNotification);
@@ -35,25 +44,18 @@ namespace Avae.Maui.Notifications
                 _currentNotification.Message = message;
                 _currentNotification.SetActions(actions.Select(a => new NativeNotificationAction(a.caption, a.tag)).ToList());
 
-                //mock.Setup(m => m.Show()).Callback(() => _currentNotification.Show());
-                //mock.Setup(m => m.Close()).Callback(() => _currentNotification.Close());
-
-                var manager = NativeNotificationManager.Current;
-                if (manager != null)
+                manager.NotificationCompleted += OnNotificationCompleted;
+                void OnNotificationCompleted(object? sender, NativeNotificationCompletedEventArgs args)
                 {
-                    manager.NotificationCompleted += OnNotificationCompleted;
-                    void OnNotificationCompleted(object? sender, NativeNotificationCompletedEventArgs args)
+                    manager.NotificationCompleted -= OnNotificationCompleted;
+                    current.OnNativeCompleted(new SystemNotificationEventArgs()
                     {
-                        manager.NotificationCompleted -= OnNotificationCompleted;
-                        current.OnNativeCompleted(new SystemNotificationEventArgs()
-                        {
-                            ActionTag = args.ActionTag,
-                            IsActivated = args.IsActivated,
-                            IsCancelled = args.IsCancelled,
-                            NotificationId = args.NotificationId,
-                            UserData = args.UserData,
-                        });
-                    }
+                        ActionTag = args.ActionTag,
+                        IsActivated = args.IsActivated,
+                        IsCancelled = args.IsCancelled,
+                        NotificationId = args.NotificationId,
+                        UserData = args.UserData,
+                    });
                 }
                 return Task.FromResult<ISystemNotification?>(current);
             }

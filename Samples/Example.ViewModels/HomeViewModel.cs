@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Media;
 using Microsoft.Maui.Storage;
+using System.Diagnostics;
 
 namespace Example.ViewModels
 {
@@ -85,20 +86,27 @@ namespace Example.ViewModels
         [RelayCommand]
         public async Task ShowSystemNotification()
         {
-            var notification = await systemNotificationService.CreateNotification(
-                "action",
-                "Hello",
-                "World",
-                [new SystemNotificationAction("caption","tag")]);
+            try
+            {
+                var notification = await systemNotificationService.CreateNotification(
+                    "action",
+                    "Hello",
+                    "World",
+                    [new SystemNotificationAction("caption", "tag")]);
 
-            if (notification != null)
-            {
-                notification.NotificationCompleted += OnNotificationCompleted;
-                notification.Show();
+                if (notification != null)
+                {
+                    notification.NotificationCompleted += OnNotificationCompleted;
+                    notification.Show();
+                }
+                void OnNotificationCompleted(object? sender, SystemNotificationEventArgs e)
+                {
+                    notification.NotificationCompleted -= OnNotificationCompleted;
+                }
             }
-            void OnNotificationCompleted(object? sender , SystemNotificationEventArgs e)
+            catch (Exception ex)
             {
-                notification.NotificationCompleted -= OnNotificationCompleted;
+                Debug.WriteLine(ex);
             }
         }
 

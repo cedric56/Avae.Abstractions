@@ -15,8 +15,9 @@
     <PackageReference Include="Avalonia" Version="12.1.1" />
     <PackageReference Include="Avalonia.Desktop" Version="12.1.1" />
     <PackageReference Include="Avalonia.Labs.Notifications" Version="12.0.2"/>
-    <PackageReference Include="UXDivers.Popups.Maui" Version="0.9.4" />    
-    <PackageReference Update="Microsoft.Maui.Controls" Version="11.0.0-preview.6.26359.118" />
+    <PackageReference Include="UXDivers.Popups.Maui" Version="0.9.4" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0-preview.6.26360.8" />
+    <!--<PackageReference Update="Microsoft.Maui.Controls" Version="11.0.0-preview.6.26359.118" />-->
   </ItemGroup>
 
   <ItemGroup>
