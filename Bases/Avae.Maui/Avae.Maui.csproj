@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net11.0;net11.0-android</TargetFrameworks>
-    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net11.0-ios;net11.0-maccatalyst</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>net11.0;net11.0-android;net11.0-ios;net11.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks>$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UseMaui>true</UseMaui>
@@ -13,12 +12,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="UXDivers.Popups.Maui" Version="0.9.4" />
-    <ProjectReference Include="..\Avae.Abstractions.Services\Avae.Abstractions.Services.csproj" />
-    <ProjectReference Include="..\Avae.Essentials.Core\Avae.Essentials.Core.csproj" />
+    <PackageReference Include="Avalonia" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Labs.Notifications" Version="12.0.2"/>
+    <PackageReference Include="UXDivers.Popups.Maui" Version="0.9.4" />    
     <PackageReference Update="Microsoft.Maui.Controls" Version="11.0.0-preview.6.26359.118" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <ProjectReference Include="..\Avae.Maui.Notifications\Avae.Maui.Notifications.csproj" />
+    <ProjectReference Include="..\Avae.Abstractions.Services\Avae.Abstractions.Services.csproj" />
+    <ProjectReference Include="..\Avae.Essentials.Core\Avae.Essentials.Core.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <MauiXaml Update="AvaePopupPage.xaml">
       <Generator>MSBuild:Compile</Generator>

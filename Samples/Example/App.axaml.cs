@@ -25,12 +25,6 @@ public partial class App : AvaeApplication, IIocConfiguration
 {
     Func<Task>? unsuscribe = null;
 
-    public App()
-        : base()
-    {        
-        //IconProvider.Current.Register<FontAwesomeIconProvider>();
-    }
-
     public override string IconUrl => "avares://Example/Assets/avalonia-logo.ico";
 
     public override TypeDialog TypeDialog => TypeDialog.Fluent;

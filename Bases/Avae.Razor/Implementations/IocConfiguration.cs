@@ -12,7 +12,6 @@ namespace Avae.Razor
     public class IocConfiguration(IServiceProvider serviceProvider, Action<IIocContainer>? configure = null) :
             IIocConfiguration, ITaskDialogService, IContentDialogService, 
             IDialogService,
-            ISystemNotificationService,
             Services.INotificationService,
             IRequestedThemeService
     {
@@ -33,47 +32,12 @@ namespace Avae.Razor
 
         public void Configure(IServiceCollection services)
         {
-            services.AddMudServices();
+            throw new InvalidOperationException("Must not be called");
         }
 
         public void Configure(IServiceProvider provider)
         {
-            
-        }
-
-        public async Task<ISystemNotification?> CreateNotification(string action, string title, string message, SystemNotificationAction[] actions)
-        {
-            using (var scope = ServiceLocator.Default.CreateScope())
-            {
-                var scopedService = scope.ServiceProvider.GetRequiredService<Append.Blazor.Notifications.INotificationService>();
-                if (await scopedService.IsSupportedByBrowserAsync())
-                {
-                    if (scopedService.PermissionStatus != PermissionType.Granted)
-                        await scopedService.RequestPermissionAsync();
-                    return new N(scopedService, title);
-                }
-            }
-            return null;
-        }
-
-        class N(Append.Blazor.Notifications.INotificationService service, string title) : ISystemNotification
-        {
-            public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
-
-            public void Close()
-            {
-                throw new NotImplementedException();
-            }
-
-            public async void Show()
-            {
-                NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs());
-                await service.CreateAsync(title, new NotificationOptions()
-                {
-                    //Body = message,
-                    //Data = action,
-                });
-            }
+            throw new InvalidOperationException("Must not be called");
         }
 
         public IViewFor? GetContextFor(string key, NavigationContext context)

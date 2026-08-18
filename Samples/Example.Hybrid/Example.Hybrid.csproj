@@ -67,16 +67,6 @@
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
 
-    <!--<ItemGroup>
-      <AndroidResource Remove="Components\**" />
-      <AvaloniaXaml Remove="Components\**" />
-      <Compile Remove="Components\**" />
-      <Content Remove="Components\**" />
-      <EmbeddedResource Remove="Components\**" />
-      <MauiXaml Remove="Components\**" />
-      <None Remove="Components\**" />
-    </ItemGroup>-->
-
     <ItemGroup>
         <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0-preview.6.26360.8" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="10.0.90" />
@@ -84,6 +74,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Bases\Avae.Maui.Notifications\Avae.Maui.Notifications.csproj" />
       <ProjectReference Include="..\..\Bases\Avae.Abstractions.Core\Avae.Abstractions.Core.csproj" />
       <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />
     </ItemGroup>

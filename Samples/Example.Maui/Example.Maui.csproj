@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <TargetFrameworks>net11.0-android;net11.0-ios;net11.0-maccatalyst;</TargetFrameworks>
+    <TargetFrameworks>net11.0;net11.0-android;net11.0-ios;net11.0-maccatalyst;</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
 
 		<!-- Note for MacCatalyst:

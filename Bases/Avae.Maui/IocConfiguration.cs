@@ -8,7 +8,6 @@ namespace Avae.Maui
 {
     internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContainer> getContainer, Action<IIocContainer>? configure = null) :
             IIocConfiguration, ITaskDialogService, IContentDialogService, IDialogService,
-            ISystemNotificationService, 
             INotificationService,
             IRequestedThemeService
     {
@@ -455,12 +454,6 @@ namespace Avae.Maui
            
 #endif
             throw new NotImplementedException();
-        }
-
-        public Task<ISystemNotification?> CreateNotification(string action, string title, string message, SystemNotificationAction[] actions)
-        {
-            throw new NotImplementedException();
-            //return new Notification(action, title, message, actions);
         }
 
         bool _isLoad = false;

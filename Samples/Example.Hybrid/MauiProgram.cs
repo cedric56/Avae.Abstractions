@@ -1,5 +1,6 @@
 ﻿using Avae.Abstractions;
 using Avae.Essentials.Core;
+using Avae.Maui.Notifications;
 using Example.Razor;
 using Microsoft.Extensions.Logging;
 
@@ -11,6 +12,7 @@ namespace Example.Hybrid
         {
             var builder = MauiApp.CreateBuilder();
             builder
+                .WithSystemNotifications()
                 .UseMauiApp<App>()               
                 .ConfigureFonts(fonts =>
                 {

@@ -73,6 +73,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Essentials.Core", "Bas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Essentials.Blazor", "Bases\Avae.Essentials.Blazor\Avae.Essentials.Blazor.csproj", "{01D0AB98-5E0D-4662-B1FC-8CEA29C64238}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Maui.Notifications", "Bases\Avae.Maui.Notifications\Avae.Maui.Notifications.csproj", "{7762EE74-1D9F-4E38-B99A-10ACCF293FFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -225,6 +227,10 @@ Global
 		{01D0AB98-5E0D-4662-B1FC-8CEA29C64238}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01D0AB98-5E0D-4662-B1FC-8CEA29C64238}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01D0AB98-5E0D-4662-B1FC-8CEA29C64238}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7762EE74-1D9F-4E38-B99A-10ACCF293FFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7762EE74-1D9F-4E38-B99A-10ACCF293FFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7762EE74-1D9F-4E38-B99A-10ACCF293FFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7762EE74-1D9F-4E38-B99A-10ACCF293FFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

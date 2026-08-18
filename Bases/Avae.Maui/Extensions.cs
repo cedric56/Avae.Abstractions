@@ -1,6 +1,9 @@
 ﻿using Avae.Abstractions;
 using Avae.Essentials.Core;
+using Avae.Maui.Notifications;
 using Avae.Services;
+using Avalonia;
+using Avalonia.Labs.Notifications;
 using Microsoft.Extensions.Logging;
 using UXDivers.Popups.Maui;
 
@@ -10,9 +13,11 @@ namespace Avae.Maui
     {
         public static MauiAppBuilder ConfigureIocContainer<TApp>(this MauiAppBuilder builder,
             Action<IIocContainer>? configure = null,
-            Action<ILoggingBuilder>? build = null)
-            where TApp : Application
+            Action<ILoggingBuilder>? build = null,
+            AppNotificationOptions? options = null)
+            where TApp : Microsoft.Maui.Controls.Application
         {
+            builder.WithSystemNotifications(options);
             builder.Services.RegisterEssentials();
 
             //WindowsToastNotifyApi.Toast.Initialize("test", "here");
@@ -24,7 +29,7 @@ namespace Avae.Maui
             builder.Services.AddSingleton<IDialogService>(GetConfiguration);
             builder.Services.AddSingleton<IContentDialogService>(GetConfiguration);
             builder.Services.AddSingleton<ITaskDialogService>(GetConfiguration);
-            builder.Services.AddSingleton<ISystemNotificationService>(GetConfiguration);
+            
             builder.Services.AddSingleton<INotificationService>(GetConfiguration);
             builder.Services.AddSingleton<IRequestedThemeService>(GetConfiguration);
             builder.Services.AddSingleton<ILogger>(LoggerFactory.Create(builder =>

@@ -54,7 +54,7 @@ namespace Avae.Razor
             services.AddSingleton<Avae.Services.IDialogService>(GetConfiguration);
             services.AddSingleton<IContentDialogService>(GetConfiguration);
             services.AddSingleton<ITaskDialogService>(GetConfiguration);
-            services.AddSingleton<ISystemNotificationService>(GetConfiguration);
+            //services.AddSingleton<ISystemNotificationService>(GetConfiguration);
             services.AddSingleton<Services.INotificationService>(GetConfiguration);
             services.AddSingleton<IRequestedThemeService>(GetConfiguration);
             services.AddNotifications();
