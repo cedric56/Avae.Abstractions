@@ -60,14 +60,13 @@ public static class Extensions
 
 
     public static void UseSharedLibrary(this IServiceCollection services,
-        bool useSystemNotificationService = false,
         bool useScoped = false,
         NotificationPosition position = NotificationPosition.BottomLeft,
         int maxDispayments = 5)
     {
         var navMenu = new ComponentView<NavMenu>();
 
-        services.ConfigureBase(navMenu, useSystemNotificationService, position, maxDispayments, RegisterViews);
+        services.ConfigureBase(navMenu, position, maxDispayments, RegisterViews);
         if (useScoped)
         {
             services.AddScoped<HomeViewModel>();

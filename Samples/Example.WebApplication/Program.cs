@@ -1,11 +1,13 @@
 using Avae.Core;
-using Avae.Essentials.Blazor;
+using Avae.Blazor.Notifications;
+using Avae.Blazor.Essentials;
 using Example.Razor;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Environment.WebRootPath) });
 builder.Services.RegisterBlazorEssentials();
-builder.Services.UseSharedLibrary(true, true);
+builder.Services.UseBlazorNotifications();
+builder.Services.UseSharedLibrary(true);
 builder.Services.AddRazorPages();
 
 var app = builder.Build();

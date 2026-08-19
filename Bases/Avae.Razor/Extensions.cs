@@ -1,14 +1,13 @@
 ﻿using Append.Blazor.Notifications;
-using Avae.ViewModels;
 using Avae.Razor.Components;
 using Avae.Services;
+using Avae.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using MudBlazor;
 using MudBlazor.Services;
 using System.Runtime.CompilerServices;
-using Avae.Razor.Implementations;
 
 namespace Avae.Razor;
 
@@ -20,14 +19,10 @@ public static class Extensions
 
     public static void ConfigureBase(this IServiceCollection services,
         ComponentView navMenu,
-        bool useSystemNotificationService = false,
         NotificationPosition position = NotificationPosition.BottomLeft,
         int maxDispayments = 5,            
         Action<IIocContainer>? configure = null)
     {
-        if (useSystemNotificationService)
-            services.AddSingleton<ISystemNotificationService, SystemNotificationService>();
-
         services.AddSingleton<ComponentView>(navMenu);
         services.AddMudServices(config =>
         {

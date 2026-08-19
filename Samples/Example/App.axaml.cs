@@ -1,6 +1,6 @@
 ﻿using Avae.Avalonia;
 using Avae.DAL;
-using Avae.Essentials.Avalonia;
+using Avae.Avalonia.Essentials;
 using Avae.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;

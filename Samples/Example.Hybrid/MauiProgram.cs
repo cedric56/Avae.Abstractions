@@ -1,5 +1,5 @@
 ﻿using Avae.Core;
-using Avae.Essentials.Core;
+using Avae.Essentials;
 using Avae.Maui.Notifications;
 using Example.Razor;
 using Microsoft.Extensions.Logging;

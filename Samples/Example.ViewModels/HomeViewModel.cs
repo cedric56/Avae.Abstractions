@@ -1,6 +1,6 @@
-﻿using Avae.ViewModels;
-using Avae.Essentials.Core;
+﻿using Avae.Essentials;
 using Avae.Services;
+using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.ApplicationModel.DataTransfer;

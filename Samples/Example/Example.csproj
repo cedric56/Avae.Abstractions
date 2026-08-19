@@ -21,10 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Bases\Avae.Avalonia.Essentials\Avae.Avalonia.Essentials.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.Avalonia\Avae.Avalonia.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.DAL\Avae.DAL.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.Essentials.Avalonia\Avae.Essentials.Avalonia.csproj" />
     <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
     <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />

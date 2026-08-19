@@ -51,7 +51,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.gRPC", "Bases\Avae
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Server", "Bases\Avae.Server\Avae.Server.csproj", "{7C64D268-307B-426C-B128-5B7485829C5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Essentials.Avalonia", "Bases\Avae.Essentials.Avalonia\Avae.Essentials.Avalonia.csproj", "{80638273-4225-4532-92D9-4CEDC9493A46}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Avalonia.Essentials", "Bases\Avae.Avalonia.Essentials\Avae.Avalonia.Essentials.csproj", "{80638273-4225-4532-92D9-4CEDC9493A46}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Windows", "Samples\Example.Windows\Example.Windows.csproj", "{84E74E36-3B06-45D0-BBC0-C6D3609EB31E}"
 EndProject
@@ -69,13 +69,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.gRPC.Services", "B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.PostgreSQL", "Bases\Avae.DAL.PostgreSQL\Avae.DAL.PostgreSQL.csproj", "{B1F7EC09-E18E-472D-B585-667B9202B82A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Essentials.Core", "Bases\Avae.Essentials.Core\Avae.Essentials.Core.csproj", "{6BC2B39F-0E00-4DC1-855C-75029175F4B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Essentials", "Bases\Avae.Essentials\Avae.Essentials.csproj", "{6BC2B39F-0E00-4DC1-855C-75029175F4B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Essentials.Blazor", "Bases\Avae.Essentials.Blazor\Avae.Essentials.Blazor.csproj", "{01D0AB98-5E0D-4662-B1FC-8CEA29C64238}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Blazor.Essentials", "Bases\Avae.Blazor.Essentials\Avae.Blazor.Essentials.csproj", "{01D0AB98-5E0D-4662-B1FC-8CEA29C64238}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Maui.Notifications", "Bases\Avae.Maui.Notifications\Avae.Maui.Notifications.csproj", "{7762EE74-1D9F-4E38-B99A-10ACCF293FFA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Core", "Bases\Avae.Core\Avae.Core.csproj", "{210D2D29-2CA9-4A72-B091-215D08393BCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Blazor.Notifications", "Bases\Avae.Blazor.Notifications\Avae.Blazor.Notifications.csproj", "{2C18BC4E-F802-4F26-B3E4-41EA68C56F4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.ViewModels.Tests", "Bases\Avae.ViewModels.Tests\Avae.ViewModels.Tests.csproj", "{0C3EB69D-6F71-4F39-A72A-64DA4AA4F072}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.ViewModels.Tests", "Samples\Example.ViewModels.Tests\Example.ViewModels.Tests.csproj", "{6287E434-0050-4195-8A5D-6DB62DEB2702}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -237,6 +243,18 @@ Global
 		{210D2D29-2CA9-4A72-B091-215D08393BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{210D2D29-2CA9-4A72-B091-215D08393BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{210D2D29-2CA9-4A72-B091-215D08393BCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C18BC4E-F802-4F26-B3E4-41EA68C56F4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C18BC4E-F802-4F26-B3E4-41EA68C56F4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C18BC4E-F802-4F26-B3E4-41EA68C56F4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C18BC4E-F802-4F26-B3E4-41EA68C56F4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C3EB69D-6F71-4F39-A72A-64DA4AA4F072}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C3EB69D-6F71-4F39-A72A-64DA4AA4F072}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C3EB69D-6F71-4F39-A72A-64DA4AA4F072}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C3EB69D-6F71-4F39-A72A-64DA4AA4F072}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6287E434-0050-4195-8A5D-6DB62DEB2702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6287E434-0050-4195-8A5D-6DB62DEB2702}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6287E434-0050-4195-8A5D-6DB62DEB2702}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6287E434-0050-4195-8A5D-6DB62DEB2702}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

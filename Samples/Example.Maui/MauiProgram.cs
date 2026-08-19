@@ -1,13 +1,13 @@
-﻿using Avae.ViewModels;
-using Avae.Core;
+﻿using Avae.Core;
+using Avae.Essentials;
 using Avae.Maui;
 using Avae.Maui.Notifications;
+using Avae.ViewModels;
 using Example.DAL;
 using Example.Maui.Views;
 using Example.ViewModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
-using Avae.Essentials.Core;
 
 namespace Example.Maui;
 

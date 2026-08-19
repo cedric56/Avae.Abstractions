@@ -1,0 +1,165 @@
+﻿@* VideoCaptureDialog.razor *@
+@using Avae.Blazor.Essentials
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+@using KristofferStrube.Blazor.DOM
+@using KristofferStrube.Blazor.FileAPI
+@using KristofferStrube.Blazor.MediaCaptureStreams
+@using KristofferStrube.Blazor.MediaStreamRecording
+@using KristofferStrube.Blazor.WebIDL.Exceptions
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@using Microsoft.Maui.Storage
+@inject IMediaDevicesService MediaDevicesService
+@inject IJSRuntime JSRuntime
+
+<div class="video-capture-overlay">
+    <div class="video-capture-dialog">
+        @if (_error is not null)
+        {
+            <p style="color:red">@_error</p>
+        }
+
+        <video @ref="_videoElement" width="480" height="360" autoplay muted></video>
+
+        <div class="controls">
+            @if (!_streamReady)
+            {
+                <button @onclick="StartCameraAsync">Load Camera</button>
+            }
+            else if (!_isRecording && _recordedBytes is null)
+            {
+                <button @onclick="StartRecordingAsync">● Record</button>
+            }
+            else if (_isRecording)
+            {
+                <button @onclick="StopRecordingAsync">■ Stop</button>
+            }
+            else if (_recordedBytes is not null)
+            {
+                <button @onclick="Accept">Use video</button>
+                <button @onclick="Retake">Retake</button>
+            }
+            <button @onclick="Cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback<FileResult?> OnCompleted { get; set; }
+
+    private ElementReference _videoElement;
+    private MediaDevices? _mediaDevices;
+    private MediaStream? _mediaStream;
+    private MediaRecorder? _recorder;
+    private EventListener<BlobEvent>? _dataListener;
+    private readonly List<Blob> _chunks = new();
+    private byte[]? _recordedBytes;
+    private bool _isRecording;
+    private bool _streamReady;
+    private string? _error;
+
+    private async Task StartCameraAsync()
+    {
+        try
+        {
+            _mediaDevices ??= await MediaDevicesService.GetMediaDevicesAsync();
+            _mediaStream = await _mediaDevices.GetUserMediaAsync(new MediaStreamConstraints
+            {
+                Video = true,
+                Audio = true
+            });
+
+            await using var htmlMediaElement =
+                await JSRuntime.InvokeAsync<IJSObjectReference>("getReference", _videoElement);
+            await JSRuntime.InvokeVoidAsync("setAttribute", htmlMediaElement, "srcObject", _mediaStream.JSReference);
+
+            _streamReady = true;
+            _error = null;
+        }
+        catch (WebIDLException ex)
+        {
+            _error = $"{ex.GetType().Name}: {ex.Message}";
+        }
+    }
+
+    private async Task StartRecordingAsync()
+    {
+        if (_mediaStream is null) return;
+
+        _chunks.Clear();
+        _recorder = await MediaRecorder.CreateAsync(JSRuntime, _mediaStream);
+
+        _dataListener = await EventListener<BlobEvent>.CreateAsync(JSRuntime, async e =>
+        {
+            _chunks.Add(await e.GetDataAsync());
+        });
+        await _recorder.AddOnDataAvailableEventListenerAsync(_dataListener);
+
+        await _recorder.StartAsync();
+        _isRecording = true;
+    }
+
+    private async Task StopRecordingAsync()
+    {
+        if (_recorder is null) return;
+
+        await _recorder.StopAsync();
+        _isRecording = false;
+
+        await using var combined = await Blob.CreateAsync(JSRuntime, [.. _chunks]);
+        _recordedBytes = await combined.ArrayBufferAsync();
+        await combined.JSReference.DisposeAsync();
+
+        foreach (var chunk in _chunks)
+            await chunk.JSReference.DisposeAsync();
+        _chunks.Clear();
+
+        if (_dataListener is not null)
+        {
+            await _dataListener.DisposeAsync();
+            _dataListener = null;
+        }
+        await _recorder.DisposeAsync();
+        _recorder = null;
+    }
+
+    private async Task Accept()
+    {
+        FileResult? result = _recordedBytes is null
+            ? null
+            : new BlazorFileResult("capture.webm", "video/webm", _recordedBytes);
+
+        await CleanupAsync();
+        await OnCompleted.InvokeAsync(result);
+    }
+
+    private async Task Retake()
+    {
+        _recordedBytes = null;
+        await StartRecordingAsync();
+    }
+
+    private async Task Cancel()
+    {
+        await CleanupAsync();
+        await OnCompleted.InvokeAsync(null);
+    }
+
+    private async Task CleanupAsync()
+    {
+        if (_recorder is not null) { await _recorder.DisposeAsync(); _recorder = null; }
+        if (_mediaStream is not null)
+        {
+            foreach (var track in await _mediaStream.GetTracksAsync())
+                await track.StopAsync();
+            await _mediaStream.DisposeAsync();
+            _mediaStream = null;
+        }
+        if (_mediaDevices is not null) { await _mediaDevices.DisposeAsync(); _mediaDevices = null; }
+        _streamReady = false;
+    }
+
+    public async ValueTask DisposeAsync() => await CleanupAsync();
+}
