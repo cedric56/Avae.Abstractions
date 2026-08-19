@@ -3,8 +3,6 @@ using Avalonia.Browser;
 using Example;
 using Example.DAL;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 
 internal sealed partial class Program

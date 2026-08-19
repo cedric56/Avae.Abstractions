@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Avae.Avalonia.Notifications\Avae.Avalonia.Notifications.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.Avalonia.Essentials\Avae.Avalonia.Essentials.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.Avalonia\Avae.Avalonia.csproj" />

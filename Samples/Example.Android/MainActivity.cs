@@ -2,12 +2,12 @@
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
-using Android.Util;
+using Avae.Avalonia.Notifications;
 using Avalonia;
 using Avalonia.Android;
-using Example;
+using Avalonia.Labs.Notifications;
 
-namespace Examples.Android;
+namespace Example.Android;
 
 [Activity(
     Label = "Examples.Android",
@@ -17,49 +17,23 @@ namespace Examples.Android;
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
 public class MainActivity : AvaloniaMainActivity
 {
-
-    // Override OnCreate if you need additional initialization
     protected override void OnCreate(Bundle? savedInstanceState)
     {
-        try
-        {
-            base.OnCreate(savedInstanceState);
+        SystemNotificationService.Activity = this;
 
-            
-
-            // Optional: Additional Android-specific initialization
-            // For example, setting up services, notifications, etc.
-            Log.Info("Avalonia", "✅ OnCreate completed");
-        }
-        catch (System.Exception ex)
-        {
-            Log.Error("Avalonia", $"❌ OnCreate failed: {ex}");
-            throw;
-        }
+        base.OnCreate(savedInstanceState);
     }
 
-    // Override OnDestroy if you need cleanup
     protected override void OnDestroy()
     {
-        try
-        {
-            Log.Info("Avalonia", "🧹 OnDestroy starting");
+        if (Avalonia.Application.Current is App app)
+            app.Dispose();
 
-            if (Avalonia.Application.Current is AndroidApp app)
-                app.Dispose();
-
-            base.OnDestroy();
-            Log.Info("Avalonia", "✅ OnDestroy completed");
-        }
-        catch (System.Exception ex)
-        {
-            Log.Error("Avalonia", $"❌ OnDestroy failed: {ex}");
-            throw;
-        }
+        base.OnDestroy();
     }
 }
 [Application]
-public class MainApplication : AvaloniaAndroidApplication<AndroidApp>
+public class MainApplication : AvaloniaAndroidApplication<App>
 {
     protected MainApplication(nint javaReference, JniHandleOwnership transfer) : base(javaReference, transfer)
     {
@@ -69,12 +43,8 @@ public class MainApplication : AvaloniaAndroidApplication<AndroidApp>
     {
         Microsoft.Maui.ApplicationModel.Platform.Init(this);
         return base.CustomizeAppBuilder(builder)
+           .WithAppNotifications(ApplicationContext!)
            .UseAndroid()
            .WithInterFont();
     }
-}
-
-public class AndroidApp : App
-{
-
 }

@@ -1,6 +1,7 @@
 ﻿using Avae.Avalonia;
 using Avae.DAL;
 using Avae.Avalonia.Essentials;
+using Avae.Avalonia.Notifications;
 using Avae.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -62,6 +63,7 @@ public partial class App : AvaeApplication, IIocConfiguration
     {
         base.Configure(services);
 
+        services.UseSystemNotificationService();
         services.AddTransient<Router>();
         services.AddSingleton<HomeViewModel>();
         services.AddSingleton<MenuViewModel>();

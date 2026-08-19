@@ -1,14 +1,13 @@
-﻿using Avae.ViewModels;
-using Avae.Core;
+﻿using Avae.Core;
 using Avae.Services;
-using Avalonia;
+using Avae.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Styling;
 using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
-
+using Application = Avalonia.Application;
+using StyleInclude = Avalonia.Markup.Xaml.Styling.StyleInclude;
 
 namespace Avae.Avalonia;
 
@@ -48,7 +47,6 @@ public abstract class AvaeApplication : Application, IIocConfiguration, IDisposa
         services.AddTransient<INotificationService,NotificationService>();
         services.AddSingleton<IContentDialogService>(sp => new ContentDialogService(sp));
         services.AddSingleton<ITaskDialogService, TaskDialogService>();            
-        services.AddSingleton<ISystemNotificationService, SystemNotificationService>();
         services.AddSingleton<IRequestedThemeService>(this);
     }
 
@@ -67,23 +65,11 @@ public abstract class AvaeApplication : Application, IIocConfiguration, IDisposa
         return Container.GetView(key, [context]) as IViewFor;
     }
 
-    /// <summary>
-    /// Obtain the view by the viewModel association
-    /// </summary>
-    /// <typeparam name="TViewModel"></typeparam>
-    /// <param name="params"></param>
-    /// <returns></returns>
     public IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase
     {
         return Container.GetView(typeof(TViewModel).Name, [context]) as IViewFor<TViewModel>;
     }
 
-    /// <summary>
-    /// Obtain the view by the modalViewModel association
-    /// </summary>
-    /// <typeparam name="TViewModel"></typeparam>
-    /// <param name="params"></param>
-    /// <returns></returns>
     public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : ICloseableViewModel<TResult>
     {
         var view = Container.GetView(typeof(TViewModel).Name, [context]);

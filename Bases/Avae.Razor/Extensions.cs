@@ -51,10 +51,9 @@ public static class Extensions
         services.AddSingleton<IIocContainer>(sp => new IocContainer(GetConfiguration(sp), false));
         services.AddSingleton<IIocConfiguration>(sp => new IocConfiguration(sp, configure));
         services.AddTransient<Router>(sp => new Router(sp));
-        services.AddSingleton<Avae.Services.IDialogService>(GetConfiguration);
+        services.AddSingleton<Services.IDialogService>(GetConfiguration);
         services.AddSingleton<IContentDialogService>(GetConfiguration);
         services.AddSingleton<ITaskDialogService>(GetConfiguration);
-        //services.AddSingleton<ISystemNotificationService>(GetConfiguration);
         services.AddSingleton<Services.INotificationService>(GetConfiguration);
         services.AddSingleton<IRequestedThemeService>(GetConfiguration);
         services.AddNotifications();

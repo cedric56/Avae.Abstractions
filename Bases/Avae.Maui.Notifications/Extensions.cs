@@ -16,7 +16,6 @@ public static class Extensions
 #if ANDROID
         if (Android.App.Application.Context is null)
             throw new InvalidOperationException("Context must not be null");
-
 #endif
 
         builder.Services.AddSingleton<ISystemNotificationService, SystemNotificationService>();
