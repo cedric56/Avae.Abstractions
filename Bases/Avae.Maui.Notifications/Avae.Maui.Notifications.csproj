@@ -1,19 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net11.0;net11.0-android</TargetFrameworks>
-    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net11.0-ios;net11.0-maccatalyst;net11.0-macos</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>net11.0;net11.0-android;net11.0-ios;net11.0-maccatalyst;net11.0-macos</TargetFrameworks>
+    <TargetFrameworks>$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UseMaui>true</UseMaui>
   </PropertyGroup>
 
   <ItemGroup>
-    <!--<PackageReference Update="Microsoft.Maui.Controls" Version="11.0.0-preview.6.26359.118" />-->
     <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0-preview.6.26360.8" />
     <PackageReference Include="Avalonia" Version="12.1.1" />
-    <PackageReference Include="Avalonia.Labs.Notifications" Version="12.0.2" />
     <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" Include="Avalonia.Desktop" Version="12.1.1" />
     <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-macos'))" Include="Avalonia.Desktop" Version="12.1.1" />
     <PackageReference Condition="'$(TargetFramework)' == 'net11.0'" Include="Avalonia.Desktop" Version="12.1.1" />
@@ -23,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Avae.Avalonia.Notifications\Avae.Avalonia.Notifications.csproj" />
     <ProjectReference Include="..\Avae.Services\Avae.Services.csproj" />
   </ItemGroup>
-
 
 </Project>

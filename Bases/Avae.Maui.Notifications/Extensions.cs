@@ -1,17 +1,19 @@
-﻿using Avae.Services;
+﻿using Avae.Avalonia.Notifications;
+using Avae.Services;
 using Avalonia;
 using Avalonia.Labs.Notifications;
+using Application = Avalonia.Application;
 
 namespace Avae.Maui.Notifications;
 
 public static class Extensions
 {
-    private class App : Avalonia.Application
+    private class EmbeddedApp : Application
     {
 
     }
 
-    public static MauiAppBuilder WithSystemNotifications(this MauiAppBuilder builder, AppNotificationOptions? options = null)
+    public static MauiAppBuilder WithAppNotifications(this MauiAppBuilder builder, AppNotificationOptions? options = null)
     {
 #if ANDROID
         if (Android.App.Application.Context is null)
@@ -26,7 +28,7 @@ public static class Extensions
             throw new InvalidOperationException($"{nameof(AppNotificationOptions)} {nameof(AppNotificationOptions.AppName)} must be declared");
 #endif
 
-        var appBuilder = AppBuilder.Configure<App>()
+        var appBuilder = AppBuilder.Configure<EmbeddedApp>()
             .WithAppNotifications(
 #if ANDROID
             Android.App.Application.Context,

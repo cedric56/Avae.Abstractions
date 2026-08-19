@@ -83,7 +83,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.ViewModels.Tests", "Ba
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.ViewModels.Tests", "Samples\Example.ViewModels.Tests\Example.ViewModels.Tests.csproj", "{6287E434-0050-4195-8A5D-6DB62DEB2702}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Avalonia.Notifications", "Avae.Avalonia.Notifications\Avae.Avalonia.Notifications.csproj", "{15214E8F-E8A8-4738-824E-345C046AEB73}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Avalonia.Notifications", "Bases\Avae.Avalonia.Notifications\Avae.Avalonia.Notifications.csproj", "{15214E8F-E8A8-4738-824E-345C046AEB73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

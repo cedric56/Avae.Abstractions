@@ -12,7 +12,7 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-            .WithSystemNotifications()
+            .WithAppNotifications()
             .UseMauiApp<App>()               
             .ConfigureFonts(fonts =>
             {

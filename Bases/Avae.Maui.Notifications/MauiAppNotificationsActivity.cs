@@ -1,7 +1,8 @@
-﻿namespace Avae.Maui.Notifications;
+﻿#if ANDROID
+using IActivityResultHandler = Avalonia.Android.IActivityResultHandler;
+namespace Avae.Maui.Notifications;
 
-#if ANDROID
-public class MauiAppNotificationsActivity : MauiAppCompatActivity, Avalonia.Android.IActivityResultHandler
+public class MauiAppNotificationsActivity : MauiAppCompatActivity, IActivityResultHandler
 {
     Action<int, Android.App.Result, Android.Content.Intent?>? _activityResultAction;
     Action<int, string[], Android.Content.PM.Permission[]>? _permissionsResultAction;
@@ -21,7 +22,7 @@ public class MauiAppNotificationsActivity : MauiAppCompatActivity, Avalonia.Andr
 
     protected override void OnCreate(Android.OS.Bundle? savedInstanceState)
     {
-        SystemNotificationService.Activity = this;
+        Avae.Avalonia.Notifications.SystemNotificationService.Activity = this;
 
         base.OnCreate(savedInstanceState);
     }
