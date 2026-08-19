@@ -2,7 +2,7 @@
 
 namespace Avae.Blazor.Essentials;
 
-internal class BlazorBrowser(BlazorLauncher launcher) : IBrowser
+internal class BlazorBrowser(ILauncher launcher) : IBrowser
 {
     public Task<bool> OpenAsync(Uri uri, BrowserLaunchOptions options)
     {

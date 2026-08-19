@@ -28,10 +28,10 @@ public static class Extensions
         services.AddMediaDevicesService();
         services.AddSpeechSynthesis();        
         services.AddSingleton<VideoCaptureCoordinator>();
-        services.AddSingleton<BlazorSensors.Accelerometer>();
-        services.AddSingleton<BlazorSensors.Gyroscope>();
-        services.AddSingleton<BlazorSensors.Magnetometer>();
-        services.AddSingleton<BlazorSensors.AbsoluteOrientationSensor>();
+        services.TryAddScoped<BlazorSensors.Accelerometer>();
+        services.TryAddScoped<BlazorSensors.Gyroscope>();
+        services.TryAddScoped<BlazorSensors.Magnetometer>();
+        services.TryAddScoped<BlazorSensors.AbsoluteOrientationSensor>();
 
 
         services.TryAddScoped<IAccelerometer, BlazorAccelerometer>();

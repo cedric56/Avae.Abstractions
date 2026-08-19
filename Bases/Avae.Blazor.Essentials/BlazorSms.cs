@@ -1,8 +1,9 @@
-﻿using Microsoft.Maui.ApplicationModel.Communication;
+﻿using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.ApplicationModel.Communication;
 
 namespace Avae.Blazor.Essentials;
 
-internal class BlazorSms(BlazorLauncher launcher) : ISms
+internal class BlazorSms(ILauncher launcher) : ISms
 {
     public bool IsComposeSupported => true;
 
