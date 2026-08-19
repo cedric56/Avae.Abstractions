@@ -1,4 +1,5 @@
-using Avae.Abstractions;
+using Avae.ViewModels;
+using Avae.Core;
 using Avae.Essentials.Blazor;
 using Avae.Essentials.Blazor.Components;
 using Example.BlazorApp.Components;
@@ -9,7 +10,7 @@ using Microsoft.Maui.Storage;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Environment.WebRootPath) });
 builder.Services.RegisterBlazorEssentials();
-builder.Services.UseSharedLibrary(true);
+builder.Services.UseSharedLibrary(true, true);
 builder.Services.AddSingleton<IVideoCaptureHandles, VideoCapture>();
 builder.Services
     .AddRazorComponents()

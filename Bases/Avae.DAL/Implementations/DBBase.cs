@@ -1,4 +1,4 @@
-﻿using Avae.Abstractions;
+﻿using Avae.Core;
 
 namespace Avae.DAL;
 

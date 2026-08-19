@@ -1,6 +1,6 @@
-﻿using Avae.Abstractions;
+﻿using Avae.Core;
 using Avae.DAL;
-using Avae.MagicLayer;
+using Avae.DAL.gRPC;
 using Avae.Server;
 using Example.Models;
 

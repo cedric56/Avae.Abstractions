@@ -1,6 +1,6 @@
-﻿using Avae.Abstractions;
+﻿using Avae.Core;
 using Avae.DAL;
-using Avae.MagicLayer;
+using Avae.DAL.gRPC;
 using MagicOnion;
 using MagicOnion.Server;
 using MessagePack;

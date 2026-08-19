@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.8.11918.235
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Abstractions.Core", "Bases\Avae.Abstractions.Core\Avae.Abstractions.Core.csproj", "{B29C2E54-E8C4-4C24-BC99-F9EAEDE414B3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.ViewModels", "Bases\Avae.ViewModels\Avae.ViewModels.csproj", "{B29C2E54-E8C4-4C24-BC99-F9EAEDE414B3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Samples\Example\Example.csproj", "{A0FC842C-5103-E242-CA0E-06B13ABAA9ED}"
 EndProject
@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Maui", "Samples\Exa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.ViewModels", "Samples\Example.ViewModels\Example.ViewModels.csproj", "{DCAF5F6A-BEC5-4525-8381-9D55901189B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Abstractions.Services", "Bases\Avae.Abstractions.Services\Avae.Abstractions.Services.csproj", "{41B6648D-4F90-4D6C-99B2-55586E88AC50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Services", "Bases\Avae.Services\Avae.Services.csproj", "{41B6648D-4F90-4D6C-99B2-55586E88AC50}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Maui", "Bases\Avae.Maui\Avae.Maui.csproj", "{6DC57DEA-1EF1-4298-A3AF-6A60CBBDFEE5}"
 EndProject
@@ -41,13 +41,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Hybrid", "Samples\E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Razor", "Bases\Avae.Razor\Avae.Razor.csproj", "{B93CC2FF-B006-4655-829A-32D5103AD3EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.SignalR", "Bases\Avae.SignalR\Avae.SignalR.csproj", "{728E0D80-576E-4DBD-B30D-23377F3B5F1C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.SignalR", "Bases\Avae.DAL.SignalR\Avae.DAL.SignalR.csproj", "{728E0D80-576E-4DBD-B30D-23377F3B5F1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.SqlTableDependency", "Bases\Avae.SqlTableDependency\Avae.SqlTableDependency.csproj", "{DD247354-4B8E-4132-8836-DF926B4F169E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.SqlTableDependency", "Bases\Avae.DAL.SqlTableDependency\Avae.DAL.SqlTableDependency.csproj", "{DD247354-4B8E-4132-8836-DF926B4F169E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Sqlite", "Bases\Avae.Sqlite\Avae.Sqlite.csproj", "{DC68B81A-30FA-4D77-9323-72AFBC1EF9C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.Sqlite", "Bases\Avae.DAL.Sqlite\Avae.DAL.Sqlite.csproj", "{DC68B81A-30FA-4D77-9323-72AFBC1EF9C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.MagicLayer", "Bases\Avae.MagicLayer\Avae.MagicLayer.csproj", "{866018E5-CFCF-4218-976F-2CB72298D9AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.gRPC", "Bases\Avae.DAL.gRPC\Avae.DAL.gRPC.csproj", "{866018E5-CFCF-4218-976F-2CB72298D9AD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Server", "Bases\Avae.Server\Avae.Server.csproj", "{7C64D268-307B-426C-B128-5B7485829C5B}"
 EndProject
@@ -63,17 +63,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.WebApplication", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.macOS", "Samples\Example.macOS\Example.macOS.csproj", "{C92A9E1B-797D-4159-A914-40C07F060ECF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.MagicClient", "Bases\Avae.MagicClient\Avae.MagicClient.csproj", "{061E88F6-E5DA-4B0E-A951-9176037A9BA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.gRPC.Client", "Bases\Avae.DAL.gRPC.Client\Avae.DAL.gRPC.Client.csproj", "{061E88F6-E5DA-4B0E-A951-9176037A9BA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.MagicServices", "Bases\Avae.MagicServices\Avae.MagicServices.csproj", "{22EA1ED4-B52E-4C7A-B22D-06D613D1E84B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.gRPC.Services", "Bases\Avae.DAL.gRPC.Services\Avae.DAL.gRPC.Services.csproj", "{22EA1ED4-B52E-4C7A-B22D-06D613D1E84B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.PostgreSQL", "Bases\Avae.PostgreSQL\Avae.PostgreSQL.csproj", "{B1F7EC09-E18E-472D-B585-667B9202B82A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.PostgreSQL", "Bases\Avae.DAL.PostgreSQL\Avae.DAL.PostgreSQL.csproj", "{B1F7EC09-E18E-472D-B585-667B9202B82A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Essentials.Core", "Bases\Avae.Essentials.Core\Avae.Essentials.Core.csproj", "{6BC2B39F-0E00-4DC1-855C-75029175F4B9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Essentials.Blazor", "Bases\Avae.Essentials.Blazor\Avae.Essentials.Blazor.csproj", "{01D0AB98-5E0D-4662-B1FC-8CEA29C64238}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Maui.Notifications", "Bases\Avae.Maui.Notifications\Avae.Maui.Notifications.csproj", "{7762EE74-1D9F-4E38-B99A-10ACCF293FFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Core", "Bases\Avae.Core\Avae.Core.csproj", "{210D2D29-2CA9-4A72-B091-215D08393BCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -231,6 +233,10 @@ Global
 		{7762EE74-1D9F-4E38-B99A-10ACCF293FFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7762EE74-1D9F-4E38-B99A-10ACCF293FFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7762EE74-1D9F-4E38-B99A-10ACCF293FFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{210D2D29-2CA9-4A72-B091-215D08393BCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{210D2D29-2CA9-4A72-B091-215D08393BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{210D2D29-2CA9-4A72-B091-215D08393BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{210D2D29-2CA9-4A72-B091-215D08393BCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Avae.MagicServices\Avae.MagicServices.csproj" />
-    <ProjectReference Include="..\Avae.MagicLayer\Avae.MagicLayer.csproj" />
+    <ProjectReference Include="..\Avae.DAL.gRPC.Services\Avae.DAL.gRPC.Services.csproj" />
+    <ProjectReference Include="..\Avae.DAL.gRPC\Avae.DAL.gRPC.csproj" />
   </ItemGroup>
 </Project>

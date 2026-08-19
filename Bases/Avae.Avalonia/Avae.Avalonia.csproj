@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Avae.Abstractions.Core\Avae.Abstractions.Core.csproj" />
-    <ProjectReference Include="..\Avae.Abstractions.Services\Avae.Abstractions.Services.csproj" />
+    <ProjectReference Include="..\Avae.Services\Avae.Services.csproj" />
+    <ProjectReference Include="..\Avae.ViewModels\Avae.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

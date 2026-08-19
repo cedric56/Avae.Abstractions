@@ -1,4 +1,4 @@
-﻿using Avae.Abstractions;
+﻿using Avae.ViewModels;
 using Microsoft.AspNetCore.Components;
 
 namespace Avae.Razor.Components

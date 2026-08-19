@@ -1,0 +1,16 @@
+﻿using Avae.DAL.gRPC.Services;
+
+namespace Avae.DAL.gRPC.Client;
+
+public partial class RecordHubReceiver<TObject>(IDBMonitor<TObject> monitor) : IRecordHubReceiver<TObject> where TObject : class, new()
+{
+    public void OnChanged(Record<TObject> record)
+    {
+        IDBLayer.Sessions.TryGetValue(typeof(TObject), out var sessionId);
+
+        if (record.Contains(sessionId))
+            return;
+
+        monitor?.OnChanged(record);
+    }
+}

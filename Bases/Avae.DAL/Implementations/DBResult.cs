@@ -1,17 +1,16 @@
 ﻿using MessagePack;
 
-namespace Avae.DAL
+namespace Avae.DAL;
+
+[MessagePackObject]
+public partial class DBResult
 {
-    [MessagePackObject]
-    public partial class DBResult
-    {
-        [Key(0)]
-        public string? Exception { get; set; }
+    [Key(0)]
+    public string? Exception { get; set; }
 
-        [Key(1)]
-        public bool Successful { get; set; }
+    [Key(1)]
+    public bool Successful { get; set; }
 
-        [Key(2)]
-        public byte[]? Data { get; set; }
-    }
+    [Key(2)]
+    public byte[]? Data { get; set; }
 }

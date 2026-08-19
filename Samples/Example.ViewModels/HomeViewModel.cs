@@ -1,4 +1,4 @@
-﻿using Avae.Abstractions;
+﻿using Avae.ViewModels;
 using Avae.Essentials.Core;
 using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -8,140 +8,139 @@ using Microsoft.Maui.Media;
 using Microsoft.Maui.Storage;
 using System.Diagnostics;
 
-namespace Example.ViewModels
+namespace Example.ViewModels;
+
+public partial class HomeViewModel(
+    IDialogService dialogService,
+    IContentDialogService contentDialogService,
+    ITaskDialogService taskDialogService,
+    IIocConfiguration iocConfiguration,
+    INotificationService notificationManager,
+    ISystemNotificationService systemNotificationService,
+    IRequestedThemeService requestedTheme,
+    ITextToSpeech textToSpeech,
+    IShare share,
+    IFilePicker filePicker,
+    IMediaPicker mediaPicker) : ObservableObject, IViewModelBase
 {
-    public partial class HomeViewModel(
-        IDialogService dialogService,
-        IContentDialogService contentDialogService,
-        ITaskDialogService taskDialogService,
-        IIocConfiguration iocConfiguration,
-        INotificationService notificationManager,
-        ISystemNotificationService systemNotificationService,
-        IRequestedThemeService requestedTheme,
-        ITextToSpeech textToSpeech,
-        IShare share,
-        IFilePicker filePicker,
-        IMediaPicker mediaPicker) : ObservableObject, IViewModelBase
+    public static string Title => "Welcome to home";
+
+    [RelayCommand]
+    public async Task ShowModal()
     {
-        public static string Title => "Welcome to home";
-
-        [RelayCommand]
-        public async Task ShowModal()
+        string? result = string.Empty;
+        try
         {
-            string? result = string.Empty;
-            try
-            {
-                result = await dialogService.ShowModalAsync<ModalViewModel, string?>();
-            }
-            catch(Exception ex)
-            {
-                result = ex.Message;
-            }
-            finally
-            {
-                await dialogService.ShowOkCancelAsync(result ?? string.Empty, "Result");
-            }
+            result = await dialogService.ShowModalAsync<ModalViewModel, string?>();
         }
-
-        public const string TaskDialogKey = "TaskDialog";
-
-        [RelayCommand]
-        public async Task ShowTaskDialog()
+        catch(Exception ex)
         {
-            await taskDialogService.ShowAsync(new TaskDialogParams()
-            {
-                Header = "Header",
-                Footer = iocConfiguration.GetView(TaskDialogKey, "Footer"),
-                IconSource = iocConfiguration.GetView(TaskDialogKey, "IconSource"),
-                Title = "Title",
-                SubHeader = "SubHeader",
-                Content = iocConfiguration.GetView(TaskDialogKey, "Content"),
-                FooterVisibility = TaskDialogFooterVisibility.Auto
-            },
-            TaskDialogStandardResult.OK,
-            TaskDialogStandardResult.Cancel);
+            result = ex.Message;
         }
-
-        [RelayCommand]
-        public async Task ShowContentDialog()
+        finally
         {
-            await contentDialogService.ShowAsync(new ContentDialogParams()
-            {
-                Title = "Title",
-                CloseButtonText = "Close",
-                Content = iocConfiguration.GetView(TaskDialogKey, "Content"),
-            });
+            await dialogService.ShowOkCancelAsync(result ?? string.Empty, "Result");
         }
+    }
 
-        [RelayCommand]
-        public async Task ShowNotification()
+    public const string TaskDialogKey = "TaskDialog";
+
+    [RelayCommand]
+    public async Task ShowTaskDialog()
+    {
+        await taskDialogService.ShowAsync(new TaskDialogParams()
         {
-            notificationManager.Show(
+            Header = "Header",
+            Footer = iocConfiguration.GetView(TaskDialogKey, "Footer"),
+            IconSource = iocConfiguration.GetView(TaskDialogKey, "IconSource"),
+            Title = "Title",
+            SubHeader = "SubHeader",
+            Content = iocConfiguration.GetView(TaskDialogKey, "Content"),
+            FooterVisibility = TaskDialogFooterVisibility.Auto
+        },
+        TaskDialogStandardResult.OK,
+        TaskDialogStandardResult.Cancel);
+    }
+
+    [RelayCommand]
+    public async Task ShowContentDialog()
+    {
+        await contentDialogService.ShowAsync(new ContentDialogParams()
+        {
+            Title = "Title",
+            CloseButtonText = "Close",
+            Content = iocConfiguration.GetView(TaskDialogKey, "Content"),
+        });
+    }
+
+    [RelayCommand]
+    public async Task ShowNotification()
+    {
+        notificationManager.Show(
+            "Hello",
+            "World",
+            NotificationType.Success,
+            TimeSpan.FromSeconds(2));
+    }
+
+    [RelayCommand]
+    public async Task ShowSystemNotification()
+    {
+        try
+        {
+            var notification = await systemNotificationService.CreateNotification(
+                "action",
                 "Hello",
                 "World",
-                NotificationType.Success,
-                TimeSpan.FromSeconds(2));
-        }
+                [new SystemNotificationAction("caption", "tag")]);
 
-        [RelayCommand]
-        public async Task ShowSystemNotification()
-        {
-            try
+            if (notification != null)
             {
-                var notification = await systemNotificationService.CreateNotification(
-                    "action",
-                    "Hello",
-                    "World",
-                    [new SystemNotificationAction("caption", "tag")]);
-
-                if (notification != null)
-                {
-                    notification.NotificationCompleted += OnNotificationCompleted;
-                    notification.Show();
-                }
-                void OnNotificationCompleted(object? sender, SystemNotificationEventArgs e)
-                {
-                    notification.NotificationCompleted -= OnNotificationCompleted;
-                }
+                notification.NotificationCompleted += OnNotificationCompleted;
+                notification.Show();
             }
-            catch (Exception ex)
+            void OnNotificationCompleted(object? sender, SystemNotificationEventArgs e)
             {
-                Debug.WriteLine(ex);
+                notification.NotificationCompleted -= OnNotificationCompleted;
             }
         }
-
-        RequestedTheme? actual = null;
-
-        [RelayCommand]
-        public async Task ShowRequestedTheme()
+        catch (Exception ex)
         {
-            var theme = actual switch
-            {
-                RequestedTheme.Light => RequestedTheme.Dark,
-                RequestedTheme.Dark => RequestedTheme.Light,
-                _ => RequestedTheme.Light
-            };
-            actual = theme;
-            requestedTheme.Request(actual.Value);
+            Debug.WriteLine(ex);
         }
+    }
 
-        [RelayCommand]
-        public Task Speak()
-        {
-            return textToSpeech.SpeakAsync("Done");
-        }
+    RequestedTheme? actual = null;
 
-        [RelayCommand]
-        public async Task ShowShare()
+    [RelayCommand]
+    public async Task ShowRequestedTheme()
+    {
+        var theme = actual switch
         {
-            var files = await filePicker.PickMultipleAsync();
-            await share.RequestAsync("hello", files ?? []);
-        }
+            RequestedTheme.Light => RequestedTheme.Dark,
+            RequestedTheme.Dark => RequestedTheme.Light,
+            _ => RequestedTheme.Light
+        };
+        actual = theme;
+        requestedTheme.Request(actual.Value);
+    }
 
-        [RelayCommand]
-        public async Task CaptureVideo()
-        {
-            await mediaPicker.CaptureVideoAsync();
-        }
+    [RelayCommand]
+    public Task Speak()
+    {
+        return textToSpeech.SpeakAsync("Done");
+    }
+
+    [RelayCommand]
+    public async Task ShowShare()
+    {
+        var files = await filePicker.PickMultipleAsync();
+        await share.RequestAsync("hello", files ?? []);
+    }
+
+    [RelayCommand]
+    public async Task CaptureVideo()
+    {
+        await mediaPicker.CaptureVideoAsync();
     }
 }

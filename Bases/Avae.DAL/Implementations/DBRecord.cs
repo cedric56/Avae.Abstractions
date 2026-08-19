@@ -1,60 +1,59 @@
 ﻿using MessagePack;
 
-namespace Avae.DAL
+namespace Avae.DAL;
+
+public enum ChangeType
 {
-    public enum ChangeType
-    {
-        None,
-        Delete,
-        Insert,
-        Update
+    None,
+    Delete,
+    Insert,
+    Update
+}
+
+[MessagePackObject]
+public class Record<T> where T : class, new()
+{
+    public Record()
+    {            
+        ChangeType = ChangeType.None;
+        //Connections = [];
     }
 
-    [MessagePackObject]
-    public class Record<T> where T : class, new()
+    public Record(long rowId, ChangeType changeType, List<string> connections)
     {
-        public Record()
-        {            
-            ChangeType = ChangeType.None;
-            //Connections = [];
-        }
+        RowId = rowId;
+        ChangeType = changeType;
+        Connections = connections;
+    }
 
-        public Record(long rowId, ChangeType changeType, List<string> connections)
+    [Key(0)]
+    public long RowId { get; set; }
+
+    [Key(1)]
+    public ChangeType ChangeType { get; set; }
+
+    [Key(2)]
+    public List<string>? Connections { get; set; }
+
+    public override string ToString()
+    {
+        return $"{typeof(T).Name} : {RowId} {ChangeType} {string.Join(",", Connections ?? [])}";
+    }
+
+    public void Add(string? connectionId)
+    {
+        if (!string.IsNullOrWhiteSpace(connectionId))
         {
-            RowId = rowId;
-            ChangeType = changeType;
-            Connections = connections;
+            Connections ??= [];
+            Connections.Add(connectionId);
         }
+    }
 
-        [Key(0)]
-        public long RowId { get; set; }
+    public bool Contains(string? connectionId)
+    {
+        if (string.IsNullOrWhiteSpace(connectionId))
+            return false;
 
-        [Key(1)]
-        public ChangeType ChangeType { get; set; }
-
-        [Key(2)]
-        public List<string>? Connections { get; set; }
-
-        public override string ToString()
-        {
-            return $"{typeof(T).Name} : {RowId} {ChangeType} {string.Join(",", Connections ?? [])}";
-        }
-
-        public void Add(string? connectionId)
-        {
-            if (!string.IsNullOrWhiteSpace(connectionId))
-            {
-                Connections ??= [];
-                Connections.Add(connectionId);
-            }
-        }
-
-        public bool Contains(string? connectionId)
-        {
-            if (string.IsNullOrWhiteSpace(connectionId))
-                return false;
-
-            return (Connections ?? []).Contains(connectionId);
-        }
+        return (Connections ?? []).Contains(connectionId);
     }
 }

@@ -1,9 +1,9 @@
 ﻿using Avae.DAL;
-using Avae.MagicClient;
-using Avae.MagicLayer;
-using Avae.PostgreSQL;
-using Avae.SignalR;
-using Avae.Sqlite;
+using Avae.DAL.gRPC.Client;
+using Avae.DAL.gRPC;
+using Avae.DAL.PostgreSQL;
+using Avae.DAL.SignalR;
+using Avae.DAL.Sqlite;
 using Example.Models;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;

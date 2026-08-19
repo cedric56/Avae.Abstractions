@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.Abstractions.Services\Avae.Abstractions.Services.csproj" />
     <ProjectReference Include="..\Example\Example.csproj" />
   </ItemGroup>
 </Project>

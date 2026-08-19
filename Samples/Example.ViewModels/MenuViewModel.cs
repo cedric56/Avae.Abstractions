@@ -1,4 +1,4 @@
-﻿using Avae.Abstractions;
+﻿using Avae.ViewModels;
 using Avae.DAL;
 using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -8,119 +8,118 @@ using Example.ViewModels.Defaults;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 
-namespace Example.ViewModels
+namespace Example.ViewModels;
+
+[ObservableObject]
+public partial class MenuViewModel : RoutesViewModelImplementation, IDisposable
 {
-    [ObservableObject]
-    public partial class MenuViewModel : RoutesViewModelImplementation, IDisposable
+    IServiceProvider provider;
+    IDBMonitor<Person> monitor;
+
+    IDialogService dialogService;
+    public MenuViewModel(IServiceProvider provider, IDBMonitor<Person> monitor, IDialogService dialogService, Router router)
+        :base(router,false)
     {
-        IServiceProvider provider;
-        IDBMonitor<Person> monitor;
+        this.provider = provider;
+        this.monitor = monitor;
+        this.dialogService = dialogService;
 
-        IDialogService dialogService;
-        public MenuViewModel(IServiceProvider provider, IDBMonitor<Person> monitor, IDialogService dialogService, Router router)
-            :base(router,false)
+        this.monitor.OnRecordChanged += Monitor_OnChanged;
+    }
+
+    private void Monitor_OnChanged(object? sender, Record<Person> e)
+    {
+        Persons = new(DBBase.Instance.GetAll<Person>());
+    }
+
+    public string Title { get; set; } = "Persons";
+
+    [ObservableProperty]
+    private ObservableCollection<Person> _persons = [];
+
+    [ObservableProperty]
+    private Person? _selectedPerson = null;
+
+    partial void OnSelectedPersonChanged(Person? value)
+    {
+        UpdateCommand.NotifyCanExecuteChanged();
+        RemoveCommand.NotifyCanExecuteChanged();
+    }
+
+    protected override ObservableCollection<ViewDescriptor> GetViewModels()
+    {
+        return
+        [
+            new ViewDescriptor<FormViewModel>("Form", "fa-solid fa-gear")
+        ];
+    }
+
+    [RelayCommand]
+    public void Add()
+    {
+        OpenForm(new Person(), person =>
         {
-            this.provider = provider;
-            this.monitor = monitor;
-            this.dialogService = dialogService;
+            Persons.Add(person);
+            SelectedPerson = person;
+        });
+    }
 
-            this.monitor.OnRecordChanged += Monitor_OnChanged;
+    [RelayCommand(CanExecute = nameof(CanExecute))]
+    public void Update()
+    {
+        OpenForm(SelectedPerson!, person =>
+        {
+            Persons[Persons.IndexOf(SelectedPerson!)] = person;
+            SelectedPerson = person;
+        });
+    }
+
+    [RelayCommand(CanExecute = nameof(CanExecute))]
+    public async Task Remove()
+    {
+        await SelectedPerson!.LoadContactsAsync();
+        var result = await DBBase.Instance.Remove(SelectedPerson);
+        if (!result.Successful)
+        {
+            await dialogService.ShowOkAsync(result.Exception!, "Error");
         }
-
-        private void Monitor_OnChanged(object? sender, Record<Person> e)
+        else
         {
-            Persons = new(DBBase.Instance.GetAll<Person>());
+            Persons.Remove(SelectedPerson);
         }
+    }
 
-        public string Title { get; set; } = "Persons";
+    public bool CanExecute()
+    {
+        return SelectedPerson != null;
+    }
 
-        [ObservableProperty]
-        private ObservableCollection<Person> _persons = [];
+    public void OpenForm(Person person, Action<Person> action)
+    {
+        var viewModel = new FormViewModel(dialogService, provider.GetRequiredService<Router>(), person);
 
-        [ObservableProperty]
-        private Person? _selectedPerson = null;
-
-        partial void OnSelectedPersonChanged(Person? value)
+        EventHandler<Person>? closeRequested = null!;
+        viewModel.CloseRequested += closeRequested = (sender, e) =>
         {
-            UpdateCommand.NotifyCanExecuteChanged();
-            RemoveCommand.NotifyCanExecuteChanged();
-        }
-
-        protected override ObservableCollection<ViewDescriptor> GetViewModels()
-        {
-            return
-            [
-                new ViewDescriptor<FormViewModel>("Form", "fa-solid fa-gear")
-            ];
-        }
-
-        [RelayCommand]
-        public void Add()
-        {
-            OpenForm(new Person(), person =>
+            viewModel.CloseRequested -= closeRequested;
+            if (e is not null)
             {
-                Persons.Add(person);
-                SelectedPerson = person;
-            });
-        }
-
-        [RelayCommand(CanExecute = nameof(CanExecute))]
-        public void Update()
-        {
-            OpenForm(SelectedPerson!, person =>
-            {
-                Persons[Persons.IndexOf(SelectedPerson!)] = person;
-                SelectedPerson = person;
-            });
-        }
-
-        [RelayCommand(CanExecute = nameof(CanExecute))]
-        public async Task Remove()
-        {
-            await SelectedPerson!.LoadContactsAsync();
-            var result = await DBBase.Instance.Remove(SelectedPerson);
-            if (!result.Successful)
-            {
-                await dialogService.ShowOkAsync(result.Exception!, "Error");
+                action(e);                    
             }
-            else
-            {
-                Persons.Remove(SelectedPerson);
-            }
-        }
 
-        public bool CanExecute()
-        {
-            return SelectedPerson != null;
-        }
+            CurrentView = null!;
+        };
 
-        public void OpenForm(Person person, Action<Person> action)
-        {
-            var viewModel = new FormViewModel(dialogService, provider.GetRequiredService<Router>(), person);
+        CurrentView = _router.GoTo(viewModel);
+    }
 
-            EventHandler<Person>? closeRequested = null!;
-            viewModel.CloseRequested += closeRequested = (sender, e) =>
-            {
-                viewModel.CloseRequested -= closeRequested;
-                if (e is not null)
-                {
-                    action(e);                    
-                }
+    protected override void NotifyPropertyChanged(string propertyName)
+    {
+        OnPropertyChanged(propertyName);
+    }
 
-                CurrentView = null!;
-            };
-
-            CurrentView = _router.GoTo(viewModel);
-        }
-
-        protected override void NotifyPropertyChanged(string propertyName)
-        {
-            OnPropertyChanged(propertyName);
-        }
-
-        public void Dispose()
-        {
-            this.monitor.OnRecordChanged -= Monitor_OnChanged;
-        }
+    public void Dispose()
+    {
+        this.monitor.OnRecordChanged -= Monitor_OnChanged;
     }
 }

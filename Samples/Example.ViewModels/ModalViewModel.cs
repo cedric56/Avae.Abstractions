@@ -1,4 +1,5 @@
-﻿using Avae.Abstractions;
+﻿using Avae.ViewModels;
+using Avae.Core;
 using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -6,79 +7,78 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Windows.Input;
 
-namespace Example.ViewModels
+namespace Example.ViewModels;
+
+public partial class ModalViewModel(IDialogService dialogService) : ObservableValidator, 
+    ICloseableViewModel<string?>,
+    IViewModelErrorInfo
 {
-    public partial class ModalViewModel(IDialogService dialogService) : ObservableValidator, 
-        ICloseableViewModel<string?>,
-        IViewModelErrorInfo
+    static ModalViewModel()
     {
-        static ModalViewModel()
+        InputValidation<ModalViewModel>.Init();
+    }
+
+    [ObservableProperty]
+    [Required(ErrorMessage = "You have to enter a value.")]
+    private string? _message;        
+
+    public event EventHandler<string?>? CloseRequested;
+
+    public string Error
+    {
+        get
         {
-            InputValidation<ModalViewModel>.Init();
+            return InputValidation<ModalViewModel>.Error(this);
         }
+    }
 
-        [ObservableProperty]
-        [Required(ErrorMessage = "You have to enter a value.")]
-        private string? _message;        
+    public ICommand? CloseCommand { get; }
 
-        public event EventHandler<string?>? CloseRequested;
+    public ObservableCollection<NamedCommand> Commands =>
+        [
+            new() { Command = ValidateCommand, Name = "Valider"},
+            new() { Command = CancelCommand, Name="Annuler"}
+        ];
 
-        public string Error
+    public string Title => "Modal";
+
+    public string this[string columnName]
+    {
+
+        get
         {
-            get
-            {
-                return InputValidation<ModalViewModel>.Error(this);
-            }
+            return InputValidation<ModalViewModel>.Validate(this, columnName);
         }
+    }
 
-        public ICommand? CloseCommand { get; }
+    [RelayCommand()]
+    public async Task Validate()
+    {
+        if (await CanClose())
+            await Close(Message!);
+        else
+            await dialogService.ShowOkAsync(Error, "Error");
+    }
 
-        public ObservableCollection<NamedCommand> Commands =>
-            [
-                new() { Command = ValidateCommand, Name = "Valider"},
-                new() { Command = CancelCommand, Name="Annuler"}
-            ];
+    [RelayCommand]
+    public Task Cancel()
+    {
+        return Close(null);
+    }
 
-        public string Title => "Modal";
+    protected Task<bool> CanClose()
+    {
+        return Task.FromResult(string.IsNullOrWhiteSpace(Error));
+    }
 
-        public string this[string columnName]
-        {
+    public Task Close(string? value)
+    {
+        CloseRequested?.Invoke(this, value);
+        return Task.CompletedTask;
+    }
 
-            get
-            {
-                return InputValidation<ModalViewModel>.Validate(this, columnName);
-            }
-        }
-
-        [RelayCommand()]
-        public async Task Validate()
-        {
-            if (await CanClose())
-                await Close(Message!);
-            else
-                await dialogService.ShowOkAsync(Error, "Error");
-        }
-
-        [RelayCommand]
-        public Task Cancel()
-        {
-            return Close(null);
-        }
-
-        protected Task<bool> CanClose()
-        {
-            return Task.FromResult(string.IsNullOrWhiteSpace(Error));
-        }
-
-        public Task Close(string? value)
-        {
-            CloseRequested?.Invoke(this, value);
-            return Task.CompletedTask;
-        }
-
-        public void RaiseErrorChanged()
-        {
-            this.OnPropertyChanged("Item");
-        }
+    public void RaiseErrorChanged()
+    {
+        this.OnPropertyChanged("Item");
     }
 }

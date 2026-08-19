@@ -1,4 +1,4 @@
-﻿using Avae.Abstractions;
+﻿using Avae.ViewModels;
 using Avae.Services;
 using Avalonia.Controls;
 using Avalonia.Platform;
@@ -9,126 +9,125 @@ using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
 
-namespace Avae.Avalonia
+namespace Avae.Avalonia;
+
+public class DialogService(IServiceProvider serviceProvider, string iconUrl) : IDialogService
 {
-    public class DialogService(IServiceProvider serviceProvider, string iconUrl) : IDialogService
+    public string IconUrl { get; private set; } = iconUrl;
+
+    public async Task<int> ShowMessage(string message, string title, string buttonText)
     {
-        public string IconUrl { get; private set; } = iconUrl;
+        var buttons = buttonText.ToEnum<ButtonEnum>();
+        var splits = buttonText.SplitOnCapitals();
+        var @params = GetParams(title, message, buttons);
+        var result = await ShowMessage(@params);
+        var possibilities = splits.Select(s => s.ToEnum<ButtonResult>()).ToList();
+        var index = possibilities.IndexOf(result);
+        return index;
+    }
 
-        public async Task<int> ShowMessage(string message, string title, string buttonText)
+    private static Task<ButtonResult> ShowMessage(MessageBoxStandardParams @params)
+    {
+        return Dispatcher.UIThread.Invoke(async () =>
         {
-            var buttons = buttonText.ToEnum<ButtonEnum>();
-            var splits = buttonText.SplitOnCapitals();
-            var @params = GetParams(title, message, buttons);
-            var result = await ShowMessage(@params);
-            var possibilities = splits.Select(s => s.ToEnum<ButtonResult>()).ToList();
-            var index = possibilities.IndexOf(result);
-            return index;
-        }
-
-        private static Task<ButtonResult> ShowMessage(MessageBoxStandardParams @params)
-        {
-            return Dispatcher.UIThread.Invoke(async () =>
+            var box = MessageBoxManager.GetMessageBoxStandard(@params);
+            if (TopLevelStateManager.Default.GetActive() is Window owner)
             {
-                var box = MessageBoxManager.GetMessageBoxStandard(@params);
-                if (TopLevelStateManager.Default.GetActive() is Window owner)
-                {
-                    return await box.ShowWindowDialogAsync(owner);
-                }
-
-                //var top = CurrentDialogHost;
-                //var result = top != null ? await box.ShowAsPopupAsync(top) : await box.ShowAsync();
-                var result = await box.ShowAsync();
-                return result;
-            });
-        }
-
-        public static ContentControl? CurrentDialogHost
-        {
-            get
-            {
-                TopLevel? topLevel = TopLevelStateManager.Default.GetActive();
-                var dialogHost = topLevel?.GetVisualDescendants().OfType<DialogHostAvalonia.DialogHost>().LastOrDefault();
-                if (dialogHost != null) return dialogHost;
-                var fluent = topLevel?.GetVisualDescendants().OfType<FluentAvalonia.UI.Controls.FADialogHost>().LastOrDefault();
-                if (fluent != null) return fluent;
-                return null;
+                return await box.ShowWindowDialogAsync(owner);
             }
-        }
 
-        private MessageBoxStandardParams GetParams(string title, string message, ButtonEnum buttonEnum)
+            //var top = CurrentDialogHost;
+            //var result = top != null ? await box.ShowAsPopupAsync(top) : await box.ShowAsync();
+            var result = await box.ShowAsync();
+            return result;
+        });
+    }
+
+    public static ContentControl? CurrentDialogHost
+    {
+        get
         {
-            var @params = new MessageBoxStandardParams
-            {
-                Topmost = true,
-                ButtonDefinitions = buttonEnum,
-                ContentTitle = title,
-                ContentMessage = message,
-                MinWidth = 300,
-                ShowInCenter = true,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-
-            };
-            if (!string.IsNullOrWhiteSpace(IconUrl))
-                @params.WindowIcon = GetIcon(IconUrl)!;
-            return @params;
+            TopLevel? topLevel = TopLevelStateManager.Default.GetActive();
+            var dialogHost = topLevel?.GetVisualDescendants().OfType<DialogHostAvalonia.DialogHost>().LastOrDefault();
+            if (dialogHost != null) return dialogHost;
+            var fluent = topLevel?.GetVisualDescendants().OfType<FluentAvalonia.UI.Controls.FADialogHost>().LastOrDefault();
+            if (fluent != null) return fluent;
+            return null;
         }
+    }
 
-        public static WindowIcon? GetIcon(string url)
+    private MessageBoxStandardParams GetParams(string title, string message, ButtonEnum buttonEnum)
+    {
+        var @params = new MessageBoxStandardParams
         {
-            try
-            {
-                return new WindowIcon(AssetLoader.Open(new Uri(url)));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return null;
-            }
-        }
+            Topmost = true,
+            ButtonDefinitions = buttonEnum,
+            ContentTitle = title,
+            ContentMessage = message,
+            MinWidth = 300,
+            ShowInCenter = true,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
 
-        public Task ShowErrorAsync(Exception ex, string title = "Error")
-        {
-            return ShowMessage(ex.Message, title, "Ok");
-        }
+        };
+        if (!string.IsNullOrWhiteSpace(IconUrl))
+            @params.WindowIcon = GetIcon(IconUrl)!;
+        return @params;
+    }
 
-        public Task ShowOkAsync(string message, string title = "Title")
+    public static WindowIcon? GetIcon(string url)
+    {
+        try
         {
-            return ShowMessage(message, title, "Ok");
+            return new WindowIcon(AssetLoader.Open(new Uri(url)));
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
+    }
 
-        public async Task<bool> ShowYesNoAsync(string message, string title = "Title")
-        {
-            return await ShowMessage(message, title, "YesNo") == 0;
-        }
+    public Task ShowErrorAsync(Exception ex, string title = "Error")
+    {
+        return ShowMessage(ex.Message, title, "Ok");
+    }
 
-        public async Task<bool> ShowOkCancelAsync(string message, string title = "Title")
-        {
-            return await ShowMessage(message, title, "OkCancel") == 0;
-        }
+    public Task ShowOkAsync(string message, string title = "Title")
+    {
+        return ShowMessage(message, title, "Ok");
+    }
 
-        public async Task<bool> ShowOkAbortAsync(string message, string title = "Title")
-        {
-            return await ShowMessage(message, title, "OkAbort") == 0;
-        }
+    public async Task<bool> ShowYesNoAsync(string message, string title = "Title")
+    {
+        return await ShowMessage(message, title, "YesNo") == 0;
+    }
 
-        public Task<int> ShowYesNoCancelAsync(string message, string title = "Title")
-        {
-            return ShowMessage(message, title, "YesNoCancel");
-        }
+    public async Task<bool> ShowOkCancelAsync(string message, string title = "Title")
+    {
+        return await ShowMessage(message, title, "OkCancel") == 0;
+    }
 
-        public Task<int> ShowYesNoAbortAsync(string message, string title = "Title")
-        {
-            return ShowMessage(message, title, "YesNoAbort");
-        }
+    public async Task<bool> ShowOkAbortAsync(string message, string title = "Title")
+    {
+        return await ShowMessage(message, title, "OkAbort") == 0;
+    }
 
-        Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigationContext? context) where TResult : default
-        {
-            var viewModel = serviceProvider.GetViewModel<TViewModel>(context);
-            var container = serviceProvider.GetRequiredService<IIocConfiguration>();
-            var view = container.GetModalFor<TViewModel, TResult>(context ?? new NavigationContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
-            view.Context = viewModel;
-            return view.ShowModalAsync();
-        }
+    public Task<int> ShowYesNoCancelAsync(string message, string title = "Title")
+    {
+        return ShowMessage(message, title, "YesNoCancel");
+    }
+
+    public Task<int> ShowYesNoAbortAsync(string message, string title = "Title")
+    {
+        return ShowMessage(message, title, "YesNoAbort");
+    }
+
+    Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigationContext? context) where TResult : default
+    {
+        var viewModel = serviceProvider.GetViewModel<TViewModel>(context);
+        var container = serviceProvider.GetRequiredService<IIocConfiguration>();
+        var view = container.GetModalFor<TViewModel, TResult>(context ?? new NavigationContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
+        view.Context = viewModel;
+        return view.ShowModalAsync();
     }
 }

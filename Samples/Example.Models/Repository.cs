@@ -1,4 +1,4 @@
-﻿using Avae.Abstractions;
+﻿using Avae.Core;
 using Avae.DAL;
 using Microsoft.Extensions.DependencyInjection;
 

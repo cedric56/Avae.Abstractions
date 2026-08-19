@@ -1,4 +1,5 @@
-﻿using Avae.Abstractions;
+﻿using Avae.ViewModels;
+using Avae.Core;
 using Example.ViewModels;
 
 namespace Example.Maui
@@ -9,7 +10,7 @@ namespace Example.Maui
         {
             InitializeComponent();
             
-            var vm = new MainViewModel(new Avae.Abstractions.Router(ServiceLocator.Default));
+            var vm = new MainViewModel(new Avae.ViewModels.Router(ServiceLocator.Default));
 
             BindingContext = vm;
 

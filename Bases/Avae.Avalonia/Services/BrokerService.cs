@@ -1,31 +1,30 @@
-﻿using Avae.Abstractions;
+﻿using Avae.Services;
 
-namespace Avae.Avalonia
+namespace Avae.Avalonia;
+
+public class BrokerService : IBrokerService
 {
-    public class BrokerService : IBrokerService
+    private readonly Dictionary<string, List<Action<Message>>> _subscriptions = [];
+
+    public void Publish(Message message)
     {
-        private readonly Dictionary<string, List<Action<Message>>> _subscriptions = [];
-
-        public void Publish(Message message)
+        if (_subscriptions.TryGetValue(message.Topic, out var callbacks))
         {
-            if (_subscriptions.TryGetValue(message.Topic, out var callbacks))
+            foreach (var callback in callbacks)
             {
-                foreach (var callback in callbacks)
-                {
-                    callback(message);
-                }
+                callback(message);
             }
         }
+    }
 
-        public void Subscribe(string topic, Action<Message> callback)
+    public void Subscribe(string topic, Action<Message> callback)
+    {
+        if (!_subscriptions.TryGetValue(topic, out var value))
         {
-            if (!_subscriptions.TryGetValue(topic, out var value))
-            {
-                value = [];
-                _subscriptions.Add(topic, value);
-            }
-
-            value.Add(callback);
+            value = [];
+            _subscriptions.Add(topic, value);
         }
+
+        value.Add(callback);
     }
 }

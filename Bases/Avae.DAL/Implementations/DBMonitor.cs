@@ -1,33 +1,32 @@
-﻿namespace Avae.DAL
+﻿namespace Avae.DAL;
+
+public abstract class DBMonitor : IDBMonitor
 {
-    public abstract class DBMonitor : IDBMonitor
+    public bool IsRunning { get; set; }
+
+    public abstract void OnChanged(ChangeType type, string database, string table, long rowid, string? connectionId);
+
+    public Func<Task> Restart { get; set; } = new Func<Task>(() => Task.CompletedTask);
+}
+
+public class DBMonitor<TObject> :
+    DBMonitor,
+    IDBMonitor<TObject>
+    where TObject : class, new()
+{
+    public event EventHandler<Record<TObject>>? OnRecordChanged;
+
+    public void OnChanged(Record<TObject> record)
     {
-        public bool IsRunning { get; set; }
-
-        public abstract void OnChanged(ChangeType type, string database, string table, long rowid, string? connectionId);
-
-        public Func<Task> Restart { get; set; } = new Func<Task>(() => Task.CompletedTask);
+        OnRecordChanged?.Invoke(this, record);
     }
 
-    public class DBMonitor<TObject> :
-        DBMonitor,
-        IDBMonitor<TObject>
-        where TObject : class, new()
+    public override void OnChanged(ChangeType type, string database, string table, long rowid, string? connectionId)
     {
-        public event EventHandler<Record<TObject>>? OnRecordChanged;
-
-        public void OnChanged(Record<TObject> record)
+        if (table == typeof(TObject).Name)
         {
-            OnRecordChanged?.Invoke(this, record);
-        }
-
-        public override void OnChanged(ChangeType type, string database, string table, long rowid, string? connectionId)
-        {
-            if (table == typeof(TObject).Name)
-            {
-                var record = new Record<TObject>(rowid, type, !string.IsNullOrWhiteSpace(connectionId) ? [connectionId] : []);
-                OnChanged(record);
-            }
+            var record = new Record<TObject>(rowid, type, !string.IsNullOrWhiteSpace(connectionId) ? [connectionId] : []);
+            OnChanged(record);
         }
     }
 }

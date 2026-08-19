@@ -1,4 +1,4 @@
-﻿using Avae.Abstractions;
+﻿using Avae.ViewModels;
 using Example.ViewModels;
 
 namespace Example.Maui

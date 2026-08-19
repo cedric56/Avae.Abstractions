@@ -1,4 +1,4 @@
-using Avae.Abstractions;
+using Avae.ViewModels;
 using System.Collections.ObjectModel;
 using UXDivers.Popups;
 using UXDivers.Popups.Maui;

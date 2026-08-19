@@ -1,11 +1,10 @@
 ﻿using System.Data.Common;
 
-namespace Avae.DAL
-{
-    public interface IDBFactory
-    {
-        public static List<IDBMonitor> Monitors { get; } = [];
+namespace Avae.DAL;
 
-        DbConnection? CreateConnection();
-    }
+public interface IDBFactory
+{
+    public static List<IDBMonitor> Monitors { get; } = [];
+
+    DbConnection? CreateConnection();
 }

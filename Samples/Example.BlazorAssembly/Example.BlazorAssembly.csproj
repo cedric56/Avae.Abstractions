@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.Abstractions.Core\Avae.Abstractions.Core.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.Avalonia.Browser\Avae.Avalonia.Browser.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.Essentials.Avalonia\Avae.Essentials.Avalonia.csproj" />
     <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />

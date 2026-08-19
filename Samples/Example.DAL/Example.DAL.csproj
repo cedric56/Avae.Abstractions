@@ -8,12 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Bases\Avae.DAL.gRPC.Client\Avae.DAL.gRPC.Client.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.DAL.gRPC\Avae.DAL.gRPC.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.DAL.PostgreSQL\Avae.DAL.PostgreSQL.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.DAL.SignalR\Avae.DAL.SignalR.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.DAL.Sqlite\Avae.DAL.Sqlite.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.DAL.SqlTableDependency\Avae.DAL.SqlTableDependency.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.DAL\Avae.DAL.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.MagicClient\Avae.MagicClient.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.MagicLayer\Avae.MagicLayer.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.PostgreSQL\Avae.PostgreSQL.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.SignalR\Avae.SignalR.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.Sqlite\Avae.Sqlite.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,4 @@
-﻿using Avae.Abstractions;
+﻿using Avae.Core;
 using Avae.DAL;
 using Dapper.Contrib.Extensions;
 using MessagePack;
@@ -141,7 +141,7 @@ namespace Example.Models
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    message = ex.ToFullBlownString();// string.Join("\n", ex.Message, ex.InnerException?.Message);
+                    message = string.Join("\n", ex.Message, ex.InnerException?.Message);
                 }
             }
 
