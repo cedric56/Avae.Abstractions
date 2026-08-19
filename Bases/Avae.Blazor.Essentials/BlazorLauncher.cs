@@ -1,11 +1,5 @@
 ﻿using Microsoft.JSInterop;
 using Microsoft.Maui.ApplicationModel;
-using System;
-using System.Buffers.Text;
-using System.Collections.Generic;
-using System.Net.Mime;
-using System.Text;
-using System.Xml.Linq;
 
 namespace Avae.Blazor.Essentials;
 

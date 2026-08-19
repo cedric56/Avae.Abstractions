@@ -18,8 +18,8 @@ class Program
         return AppBuilder.Configure<App>()
             .WithAppNotifications(new AppNotificationOptions()
             {
-                AppIcon = "C:\\Users\\cedri\\source\\repos\\AvaloniaSample\\AvaloniaSample\\Assets\\avalonia-logo.ico",
-                AppName = "AvaloniaSample",
+                AppIcon = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Assets/avalonia-logo.ico"),
+                AppName = "Example",
             })
             .UseHarfBuzz()
             .UseWin32()

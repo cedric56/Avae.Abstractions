@@ -35,6 +35,17 @@
     </div>
     <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register(
+                "_content/Avae.Blazor.Notifications/service-worker.js",
+                { scope: "/" }
+            );
+        }
+    </script>
+    <!--<script src="_content/Avae.Blazor.Notifications/notifications.js"></script>
+    <script src="_content/Avae.Blazor.Notifications/js/service-worker.js"></script>
+    <script src="_content/Avae.Blazor.Notifications/js/service-worker-registration.js"></script>-->
 </body>
 
 </html>

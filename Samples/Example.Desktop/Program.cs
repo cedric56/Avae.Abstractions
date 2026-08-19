@@ -18,8 +18,8 @@ class Program
         => AppBuilder.Configure<App>()
             .WithAppNotifications(new AppNotificationOptions()
             {
-                AppIcon = "C:\\Users\\cedri\\source\\repos\\AvaloniaSample\\AvaloniaSample\\Assets\\avalonia-logo.ico",
-                AppName = "AvaloniaSample",
+                AppIcon = "C:\\Users\\cedri\\source\\repos\\Avae.Abstractions\\Samples\\Example\\Assets\\avalonia-logo.ico",
+                AppName = "Example",
             })
             .UsePlatformDetect()
             //.UseReactiveUI()
