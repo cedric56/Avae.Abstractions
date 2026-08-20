@@ -1,10 +1,8 @@
 ﻿using Avae.Services;
 using Microsoft.JSInterop;
-using System.Collections;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Avae.Blazor.Notifications;
 
@@ -127,15 +125,7 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         {
             var item = new BlazorNotification(async (id, reply) =>
             {
-                IList? replies = null;
-                if (!string.IsNullOrWhiteSpace(reply))
-                {
-                    replies = new[] { new { action = "reply", title = "Reply", type = "text", placeholder= "Type text here" } }.ToList();
-                }
-                else
-                {
-                    replies = actions.Select(a => new { Action = a.tag, Icon = a.Icon, Title = a.caption }).ToList();
-                }
+                var hasInput = actions.Any(a => a.tag == reply);
 
                 var options = new
                 {
@@ -143,12 +133,12 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
                     {
                         id = id,
                         action = action,
-                        replyActionTag = !string.IsNullOrWhiteSpace(reply) ? "reply" : null,
+                        replyActionTag = reply,
                     },
                     action = action,
                     id = id,
                     body = message,
-                    actions = replies,                    
+                    actions = actions.Select(a => new { Action = a.tag, Icon = a.Icon, Title = a.caption, type = hasInput ? "text" : string.Empty }),
                 };
                 await module.InvokeAsync<object>("create", title, options);
             });
