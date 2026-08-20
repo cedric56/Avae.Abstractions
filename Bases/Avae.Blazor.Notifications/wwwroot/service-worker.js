@@ -9,6 +9,7 @@ self.addEventListener('activate', function (event) {
 });
 
 self.addEventListener('notificationclose', function (event) {
+    console.log('Close');
     const notification = event.notification;
     const data = notification.data || {};
     event.waitUntil(
@@ -18,7 +19,6 @@ self.addEventListener('notificationclose', function (event) {
                 data: data,
                 type: 'HandleNotificationClose'
             });
-            focus();
         })()
     );
 });
@@ -44,7 +44,6 @@ self.addEventListener('notificationclick', function (event) {
                 data: data,
                 type: 'HandleNotificationClick'
             });
-            focus();
         })()
     );
 });
@@ -64,7 +63,6 @@ self.addEventListener('notificationreply', function (event) {
                 type: 'HandleNotificationReply',
                 reply: reply
             });
-            focus();
         })()
     );
 });
@@ -86,18 +84,5 @@ async function sendToBlazor(message) {
         }
     } catch (error) {
         console.error('Error sending to Blazor:', error);
-    }
-}
-
-function focus() {
-    const allClients = await clients.matchAll({
-        type: 'window',
-        includeUncontrolled: true
-    });
-
-    for (const client of allClients) {
-        if (client.url.includes('/') && 'focus' in client) {
-            return client.focus();
-        }
     }
 }

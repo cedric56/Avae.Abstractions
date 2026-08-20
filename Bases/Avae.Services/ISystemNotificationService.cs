@@ -25,5 +25,5 @@ public interface ISystemNotification
 
 public interface ISystemNotificationService
 {
-    Task<ISystemNotification?> CreateNotification(string action, string title, string message, SystemNotificationAction[] actions);
+    Task<ISystemNotification?> CreateNotification(string action, string title, string message, params SystemNotificationAction[] actions);
 }
