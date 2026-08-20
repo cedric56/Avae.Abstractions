@@ -13,6 +13,8 @@ public class SystemNotificationService : ISystemNotificationService
 
     public class AvaloniaNotification(INativeNotification native) : ISystemNotification
     {
+        public string? ReplyActionTag { get => native.ReplyActionTag; set => native.ReplyActionTag = value; }
+
         public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
 
         public void Close()

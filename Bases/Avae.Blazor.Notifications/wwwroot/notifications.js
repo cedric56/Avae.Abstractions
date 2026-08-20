@@ -17,8 +17,10 @@ export async function create(title, options) {
         id: options.id || {},
         data: options.data || {},
         actions: options.actions || [],
+        replyActionTag: options.replyActionTag,
         tag: options.tag || `notification-${Date.now()}`
     };
+
     // Show notification through service worker
     const registration = await navigator.serviceWorker.ready;
     await registration.showNotification(title, notificationOptions);
@@ -50,7 +52,7 @@ export const registrations = {
     // Handle notification input reply
     handleNotificationReply: function (event) {
         console.log('HandleNotificationReply:', event);
-        registrations.dotNetHelper.invokeMethodAsync('HandleNotificationReply', event.data, event.action, event.replyText);
+        registrations.dotNetHelper.invokeMethodAsync('HandleNotificationReply', event.data, event.data.reply);
     },
     handleClose: function (event) {
         registrations.dotNetHelper.invokeMethodAsync('HandleNotificationClose', event.data);

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Avae.Blazor.Notifications;
 
@@ -68,8 +69,7 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
     [JSInvokable]
     public async Task HandleNotificationClick(object data)
     {
-        var jsonString = JsonSerializer.Serialize(data);
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
+        using var stream = GetMemoryStream(data);
         var obj = await JsonSerializer.DeserializeAsync<NotificationData>(stream, jsonSerializerOptionsForPropertyModel);
         if (obj != null && obj.data?.id is uint id && dic.TryGetValue(id, out var item))
         {
@@ -84,21 +84,27 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         }
     }
 
-    [JSInvokable]
-    public async Task HandleNotificationReply(object data)
+    private MemoryStream GetMemoryStream(object obj)
     {
-        var jsonString = JsonSerializer.Serialize(data);
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
-        var obj = await JsonSerializer.DeserializeAsync<NotificationReplyData>(stream, jsonSerializerOptionsForPropertyModel);
+        var jsonString = JsonSerializer.Serialize(obj);
+        return new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
+    }
+
+    [JSInvokable]
+    public async Task HandleNotificationReply(object data, object user_data)
+    {
+        using var data_stream = GetMemoryStream(data);
+        var obj = await JsonSerializer.DeserializeAsync<NotificationReplyData>(data_stream, jsonSerializerOptionsForPropertyModel);
         if (obj != null && obj.data?.id is uint id && dic.TryGetValue(id, out var item))
         {
+            using var user_data_stream = GetMemoryStream(user_data);
             item.RaiseCompleted(new SystemNotificationEventArgs()
             {
                 ActionTag = obj.Reply,
-                IsActivated = string.IsNullOrWhiteSpace(obj.action),
+                IsActivated = false,
                 IsCancelled = false,
                 NotificationId = id,
-                UserData = null
+                UserData = await JsonSerializer.DeserializeAsync<string>(user_data_stream, jsonSerializerOptionsForPropertyModel)
             });
             dic.Remove(id);
         }
@@ -124,7 +130,7 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
                 IList? replies = null;
                 if (!string.IsNullOrWhiteSpace(reply))
                 {
-                    replies = new[] { new { action = "reply-action", title = "Reply", type = "text" } }.ToList();
+                    replies = new[] { new { action = "reply", title = "Reply", type = "text", placeholder= "Type text here" } }.ToList();
                 }
                 else
                 {
@@ -137,11 +143,12 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
                     {
                         id = id,
                         action = action,
+                        replyActionTag = !string.IsNullOrWhiteSpace(reply) ? "reply" : null,
                     },
                     action = action,
                     id = id,
                     body = message,
-                    actions = replies
+                    actions = replies,                    
                 };
                 await module.InvokeAsync<object>("create", title, options);
             });

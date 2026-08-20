@@ -9,7 +9,7 @@ self.addEventListener('activate', function (event) {
 });
 
 self.addEventListener('notificationclose', function (event) {
-    console.log('Close');
+    console.log("close");
     const notification = event.notification;
     const data = notification.data || {};
     event.waitUntil(
@@ -24,44 +24,31 @@ self.addEventListener('notificationclose', function (event) {
 });
 
 self.addEventListener('notificationclick', function (event) {
+    console.log("hit");
     const notification = event.notification;
     const action = event.action;
     const data = notification.data || {};
+    const reply = event.reply; // populated only if this was a text-action reply
     notification.close();
 
     event.waitUntil(
         (async function () {
-            // Handle action with input (reply)
+            console.log(data.replyActionTag);
+            console.log(action);
+            console.log(reply);
             if (action && data.replyActionTag === action) {
-                // The reply will be handled via notificationreply event
+                await sendToBlazor({
+                    data: data,
+                    type: 'HandleNotificationReply',
+                    reply: reply
+                });
                 return;
             }
 
-            // Send click to Blazor
             await sendToBlazor({
-                //notification: event.notification,
-                action: event.action,
+                action: action,
                 data: data,
                 type: 'HandleNotificationClick'
-            });
-        })()
-    );
-});
-
-// Handle notification reply (input)
-self.addEventListener('notificationreply', function (event) {
-    const notification = event.notification;
-    const action = event.action;
-    const reply = event.reply;
-    const data = notification.data || {};
-
-    notification.close();
-    event.waitUntil(
-        (async function () {
-            await sendToBlazor({
-                data: data,
-                type: 'HandleNotificationReply',
-                reply: reply
             });
         })()
     );
