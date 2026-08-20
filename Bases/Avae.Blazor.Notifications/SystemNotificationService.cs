@@ -1,5 +1,6 @@
 ﻿using Avae.Services;
 using Microsoft.JSInterop;
+using System.Collections;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
@@ -118,8 +119,18 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         }
         if (PermissionType.Granted == permissionType)
         {
-            var item = new BlazorNotification(async (id) =>
+            var item = new BlazorNotification(async (id, reply) =>
             {
+                IList? replies = null;
+                if (!string.IsNullOrWhiteSpace(reply))
+                {
+                    replies = new[] { new { action = "reply-action", title = "Reply", type = "text" } }.ToList();
+                }
+                else
+                {
+                    replies = actions.Select(a => new { Action = a.tag, Icon = a.Icon, Title = a.caption }).ToList();
+                }
+
                 var options = new
                 {
                     data = new
@@ -130,7 +141,7 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
                     action = action,
                     id = id,
                     body = message,
-                    actions = actions.Select(a => new { Action = a.tag, Icon = a.Icon, Title = a.caption })
+                    actions = replies
                 };
                 await module.InvokeAsync<object>("create", title, options);
             });

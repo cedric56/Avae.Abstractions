@@ -1,16 +1,13 @@
 ﻿using Avae.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Avae.Blazor.Notifications;
 
 class BlazorNotification : ISystemNotification
 {
     private static uint s_currentId = 0;
-    Func<uint, Task> show;
+    Func<uint, string?, Task> show;
 
-    public BlazorNotification(Func<uint, Task> show)
+    public BlazorNotification(Func<uint, string?, Task> show)
     {
         this.show = show;
 
@@ -18,6 +15,8 @@ class BlazorNotification : ISystemNotification
     }
 
     public uint Id { get; }
+    public string? ReplyActionTag {  get; set; }
+
     public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
 
     public void Close()
@@ -27,7 +26,7 @@ class BlazorNotification : ISystemNotification
 
     public async void Show()
     {
-        await show(Id);
+        await show(Id, ReplyActionTag);
     }
 
     public void RaiseCompleted(SystemNotificationEventArgs e)

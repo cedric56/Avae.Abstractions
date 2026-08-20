@@ -21,6 +21,8 @@ public interface ISystemNotification
     event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
     void Close();
     void Show();
+
+    string? ReplyActionTag { get; set; }
 }
 
 public interface ISystemNotificationService

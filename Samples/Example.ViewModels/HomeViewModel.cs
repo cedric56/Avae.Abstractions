@@ -91,12 +91,14 @@ public partial class HomeViewModel(
             var notification = await systemNotificationService.CreateNotification(
                 "action",
                 "Hello",
-                "World",
+                "World"
+                ,
                 [new SystemNotificationAction("caption", "tag"), new SystemNotificationAction("Test", "test"),]
                 );
 
             if (notification != null)
             {
+                notification.ReplyActionTag = "r";
                 notification.NotificationCompleted += OnNotificationCompleted;
                 notification.Show();
             }
