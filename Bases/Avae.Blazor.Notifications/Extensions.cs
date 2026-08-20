@@ -1,5 +1,4 @@
-﻿using Append.Blazor.Notifications;
-using Avae.Services;
+﻿using Avae.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,7 +8,6 @@ public static class Extensions
 {
     public static void UseBlazorNotifications(this IServiceCollection services)
     {
-        services.AddNotifications();
         services.AddScoped<ISystemNotificationService, SystemNotificationService>();
     }
 

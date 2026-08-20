@@ -1,56 +1,162 @@
-﻿using Append.Blazor.Notifications;
-using Avae.Services;
+﻿using Avae.Services;
 using Microsoft.JSInterop;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace Avae.Blazor.Notifications;
 
-internal class SystemNotificationService(IJSRuntime jSRuntime, Append.Blazor.Notifications.INotificationService service) : ISystemNotificationService
+internal class SystemNotificationService : ISystemNotificationService, IAsyncDisposable
 {
+    Dictionary<uint, BlazorNotification> dic = new();
+
+    public enum PermissionType
+    {
+        Default = 0,
+        Granted,
+        Denied
+    }
+
+    private static readonly JsonSerializerOptions jsonSerializerOptionsForPropertyModel = new()
+    {
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver()
+    };
+
+    IJSRuntime jSRuntime;
+
+    public SystemNotificationService(IJSRuntime jSRuntime)
+    {
+        this.jSRuntime = jSRuntime;
+
+        _selfRef = DotNetObjectReference.Create(this);
+    }
+
+    
+    private DotNetObjectReference<SystemNotificationService>? _selfRef;
+
     private IJSObjectReference? _module;
     private PermissionType? permissionType;
 
     private async ValueTask<IJSObjectReference> GetModuleAsync()
     {
-        return _module ??= await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Avae.Blazor.Notifications/notifications.js");
+        if (_module == null)
+        {
+            _module = await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Avae.Blazor.Notifications/notifications.js");
+            await _module.InvokeVoidAsync("registrations.registerDotnet", _selfRef);
+        }
+        return _module;
     }
 
-    public class NotificationAction
+    [JSInvokable]
+    public async Task HandleNotificationClose(object data)
     {
-        public string? Action { get; set; }
-        public string? Title { get; set; }
-        public string? Icon { get; set; }
+        var jsonString = JsonSerializer.Serialize(data);
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
+        var obj = await JsonSerializer.DeserializeAsync<NotificationData>(stream, jsonSerializerOptionsForPropertyModel);
+        if (obj != null && obj.data?.id is uint id && dic.TryGetValue(id, out var item))
+        {
+            item.RaiseCompleted(new SystemNotificationEventArgs()
+            {
+                IsCancelled = true,
+                NotificationId = id
+            });
+            dic.Remove(id);
+        }
     }
 
-    public class NotificationActionsOptions : Append.Blazor.Notifications.NotificationOptions
+    [JSInvokable]
+    public async Task HandleNotificationClick(object data)
     {
-        public List<Action> Actions { get; set; } = [];
+        var jsonString = JsonSerializer.Serialize(data);
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
+        var obj = await JsonSerializer.DeserializeAsync<NotificationData>(stream, jsonSerializerOptionsForPropertyModel);
+        if (obj != null && obj.data?.id is uint id && dic.TryGetValue(id, out var item))
+        {
+            item.RaiseCompleted(new SystemNotificationEventArgs()
+            {
+                ActionTag = obj.action,
+                IsActivated = string.IsNullOrWhiteSpace(obj.action),
+                IsCancelled = false,
+                NotificationId = id
+            });
+            dic.Remove(id);
+        }
+    }
+
+    [JSInvokable]
+    public async Task HandleNotificationReply(object data)
+    {
+        var jsonString = JsonSerializer.Serialize(data);
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
+        var obj = await JsonSerializer.DeserializeAsync<NotificationReplyData>(stream, jsonSerializerOptionsForPropertyModel);
+        if (obj != null && obj.data?.id is uint id && dic.TryGetValue(id, out var item))
+        {
+            item.RaiseCompleted(new SystemNotificationEventArgs()
+            {
+                ActionTag = obj.Reply,
+                IsActivated = string.IsNullOrWhiteSpace(obj.action),
+                IsCancelled = false,
+                NotificationId = id,
+                UserData = null
+            });
+            dic.Remove(id);
+        }
     }
 
     public async Task<ISystemNotification?> CreateNotification(string action, string title, string message, SystemNotificationAction[] actions)
     {
-        if (false == await service.IsSupportedByBrowserAsync())
+        var module = await GetModuleAsync();
+        if (module == null)
             return null;
 
-        if (PermissionType.Granted == (permissionType ??= await service.RequestPermissionAsync()))
+        if (false == await module.InvokeAsync<bool>("isSupported"))
+            return null;
+
+        if (PermissionType.Granted != permissionType)
         {
-            if (actions.Length > 0)
+            permissionType = await RequestPermission(module);
+        }
+        if (PermissionType.Granted == permissionType)
+        {
+            var item = new BlazorNotification(async (id) =>
             {
-                var module = await GetModuleAsync();
                 var options = new
                 {
-                    // Put other options here.
-                    actions = new List<NotificationAction>(actions.Select(a => new NotificationAction() { Action = a.tag, Icon = a.Icon, Title = a.caption }))
+                    data = new
+                    {
+                        id = id,
+                        action = action,
+                    },
+                    action = action,
+                    id = id,
+                    body = message,
+                    actions = actions.Select(a => new { Action = a.tag, Icon = a.Icon, Title = a.caption })
                 };
-                await module.InvokeVoidAsync("create", title, options);
-            }
-            else
-            {
-                await service.CreateAsync(title, new Append.Blazor.Notifications.NotificationOptions()
-                {
-                    Body = message
-                });
-            }
+                await module.InvokeAsync<object>("create", title, options);
+            });
+            dic.Add(item.Id, item);
+            return item;
         }
         return null!;
     }
+
+    private async ValueTask<PermissionType> RequestPermission(IJSObjectReference module)
+    {
+        string permission = await module.InvokeAsync<string>("requestPermission");
+
+        if (permission.Equals("granted", StringComparison.InvariantCultureIgnoreCase))
+            return PermissionType.Granted;
+
+        if (permission.Equals("denied", StringComparison.InvariantCultureIgnoreCase))
+            return PermissionType.Denied;
+
+        return PermissionType.Default;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _selfRef?.Dispose();
+    }
+
+   
 }

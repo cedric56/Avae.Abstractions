@@ -92,7 +92,7 @@ public partial class HomeViewModel(
                 "action",
                 "Hello",
                 "World",
-                [new SystemNotificationAction("caption", "tag")]);
+                [new SystemNotificationAction("caption", "tag"), new SystemNotificationAction("Test", "test"),]);
 
             if (notification != null)
             {

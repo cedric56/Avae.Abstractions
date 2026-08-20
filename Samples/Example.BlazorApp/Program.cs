@@ -14,10 +14,14 @@ builder.Services.AddScoped(sp => new HttpClient {
 builder.Services.RegisterBlazorEssentials();
 builder.Services.UseBlazorNotifications();
 builder.Services.UseSharedLibrary(true);
-builder.Services.AddSingleton<IVideoCaptureHandles, VideoCapture>();
+ builder.Services.AddSingleton<IVideoCaptureHandles, VideoCapture>();
 builder.Services
     .AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents()
+    .AddCircuitOptions(options =>
+    {
+        options.DetailedErrors = true;
+    });
 
 var app = builder.Build();
 
