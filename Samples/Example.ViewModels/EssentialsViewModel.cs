@@ -178,42 +178,7 @@ namespace Example.ViewModels
         {
             try
             {
-                //OAuth 2.0 endpoints for Google
-                var redirectUrl = OperatingSystem.IsBrowser() ? "https://localhost:7169" : "http://172.0.0.1:8080/";  // Replace with your registered redirect URI
-
-                // OAuth query parameters
-                var clientId = OperatingSystem.IsBrowser() ? "611239407364-imuh62kfannm83fn07u4ptp91pngd06i.apps.googleusercontent.com" : "611239407364-erab4rc17erlttpim5fp8r3v7h3582jr.apps.googleusercontent.com";  // Replace with your Google OAuth Client ID
-                var responseType = "code";  // Authorization Code Grant flow
-                string[] scopes =
-                {
-                    "profile",
-                    "https://www.googleapis.com/auth/contacts",
-                    "https://www.googleapis.com/auth/contacts.readonly",
-                    "https://www.googleapis.com/auth/contacts.other.readonly",
-                    "https://mail.google.com/",
-                    "https://www.googleapis.com/auth/gmail.send"
-                };
-
-                string scope = string.Join(" ", scopes);
-
-                var result = await webAuthenticator.AuthenticateAsync(new WebAuthenticatorOptions()
-                {
-                    CallbackUrl = new Uri(redirectUrl),
-                    Url = new Uri($"https://accounts.google.com/o/oauth2/auth?response_type={responseType}&redirect_uri={redirectUrl}&client_id={clientId}&scope={scope}&access_type=offline&prompt=consent"),
-                    ResponseDecoder = new ResponderDecoder(
-                        "https://oauth2.googleapis.com/token",
-                        "code",
-                        new Dictionary<string, string>
-                        {
-                                { "client_id", clientId },
-                                { "client_secret", OperatingSystem.IsBrowser() ? "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" : "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" },
-                                { "redirect_uri", redirectUrl },
-                                { "grant_type", "authorization_code" }
-                        })
-                });
-
-                AuthToken = string.Empty;
-                AuthToken += result?.AccessToken;
+                
             }
             catch (TimeoutException)
             {
