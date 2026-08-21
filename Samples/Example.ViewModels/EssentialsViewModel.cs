@@ -51,8 +51,10 @@ namespace Example.ViewModels
         IShare share,
         ISms sms,
         ITextToSpeech textToSpeech,
-        IVibration vibration,
-        IWebAuthenticator webAuthenticator) : IViewModelBase
+        IVibration vibration
+        //,
+        //IWebAuthenticator webAuthenticator
+        ) : IViewModelBase
     {
         async Task<bool> CheckPermission(Permissions.BasePermission permission)
         {
