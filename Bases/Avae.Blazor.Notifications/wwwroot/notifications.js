@@ -5,8 +5,8 @@
     );
 }
 
-export function requestPermission() {
-    return Notification.requestPermission();
+export async function requestPermission() {
+    return await Notification.requestPermission();
 }
 
 export function isSupported() {
@@ -47,6 +47,22 @@ export async function getNotifications() {
 }
 
 export async function create(title, options) {
+    if (!isSupported()) {
+        console.warn("This browser does not support notifications.");
+        return;
+    }
+
+    let permission = Notification.permission;
+
+    if (permission === "default") {
+        permission = await Notification.requestPermission();
+    }
+
+    if (permission !== "granted") {
+        console.warn("Notification permission not granted.");
+        return; // or throw a custom, catchable error
+    }
+
     const registration = await navigator.serviceWorker.ready;
     await registration.showNotification(title, options);
 }
