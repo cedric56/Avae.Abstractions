@@ -91,9 +91,13 @@ public partial class HomeViewModel(
             var notification = await systemNotificationService.CreateNotification(null);
             if (notification != null)
             {
+                var test = await systemNotificationService.ActiveNotifications();
+
                 systemNotificationService.NotificationCompleted += OnNotificationCompleted;
+                notification.Vibrate = [200,100,200,100];
                 notification.Title = "Hello";
                 notification.Message = "World";
+                notification.Expiration = TimeSpan.FromSeconds(1);
                 notification.SetActions([new SystemNotificationAction("caption", "reply"), new SystemNotificationAction("Test", "test"),]);
                 notification.ReplyActionTag = "reply";//must match action tag for an input
                 notification.Show();
@@ -101,6 +105,7 @@ public partial class HomeViewModel(
             void OnNotificationCompleted(object? sender, SystemNotificationEventArgs e)
             {
                 systemNotificationService.NotificationCompleted -= OnNotificationCompleted;
+                notification.Close();
             }
         }
         catch (Exception ex)

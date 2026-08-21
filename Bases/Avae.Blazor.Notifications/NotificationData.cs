@@ -2,6 +2,11 @@
 
 namespace Avae.Blazor.Notifications;
 
+class WebNotification
+{
+    public uint id { get; set; }
+}
+
 class NotificationData
 {
     public string? action { get; set; }
@@ -18,6 +23,7 @@ class NotificationReplyData : NotificationData
     public string? Reply { get; set; }
 }
 
+[JsonSerializable(typeof(WebNotification))]
 [JsonSerializable(typeof(InnerData))]
 [JsonSerializable(typeof(NotificationData))]
 [JsonSerializable(typeof(NotificationReplyData))]

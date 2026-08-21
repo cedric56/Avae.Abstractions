@@ -13,6 +13,11 @@ export function isSupported() {
     return 'Notification' in window;
 }
 
+export async function getNotifications() {
+    const registration = await navigator.serviceWorker.ready;
+    return await registration.getNotifications();
+}
+
 export async function create(title, options) {
     const registration = await navigator.serviceWorker.ready;
     await registration.showNotification(title, options);

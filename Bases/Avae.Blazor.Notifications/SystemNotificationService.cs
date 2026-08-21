@@ -39,7 +39,20 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
 
     public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
 
-    public IReadOnlyDictionary<uint, ISystemNotification> ActiveNotifications => throw new NotImplementedException();
+    public async Task<IReadOnlyDictionary<uint, ISystemNotification>> ActiveNotifications()
+    {
+        var module = await GetModuleAsync();
+        if (module != null)
+        {
+            var obj = await module.InvokeAsync<object>("getNotifications");
+            using var stream = GetMemoryStream(obj);
+            var notifications = await JsonSerializer.DeserializeAsync<WebNotification[]>(stream, jsonSerializerOptionsForPropertyModel);
+            return notifications?
+                .ToDictionary(notification => notification.id, notification => new BlazorNotification(notification.id))
+                .ToDictionary(kvp => kvp.Key, kvp => (ISystemNotification)kvp.Value) ?? [];
+        }
+        return new Dictionary<uint, ISystemNotification>();
+    }
 
     private async ValueTask<IJSObjectReference> GetModuleAsync()
     {
@@ -132,13 +145,17 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
             {
                 var options = new
                 {
+                    actions = notification.Actions?.Select(a => new { action = a.tag, icon = a.Icon, title = a.caption, type = a.tag == notification.ReplyActionTag ? "text" : "button" }),
+                    body = notification.Message,
                     data = new
                     {
                         id = notification.Id,
                         replyActionTag = notification.ReplyActionTag,
                     },
-                    body = notification.Message,
-                    actions = notification.Actions?.Select(a => new { action = a.tag, icon = a.Icon, title = a.caption, type = a.tag == notification.ReplyActionTag ? "text" : "button" }),
+                    icon = notification.Icon,
+                    tag = notification.Tag,
+                    expiration = notification.Expiration.HasValue ? (double?)notification.Expiration.Value.TotalMilliseconds : null,
+                    vibrate = notification.Vibrate
                 };
                 await module.InvokeAsync<object>("create", notification.Title, options);
             });

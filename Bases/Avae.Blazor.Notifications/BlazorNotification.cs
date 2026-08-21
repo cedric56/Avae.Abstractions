@@ -1,8 +1,9 @@
 ﻿using Avae.Services;
+using System.Formats.Asn1;
 
 namespace Avae.Blazor.Notifications;
 
-class BlazorNotification :  ISystemNotification
+class BlazorNotification : ISystemNotification
 {
     private static uint s_currentId = 0;
     Func<BlazorNotification, Task> show;
@@ -14,6 +15,12 @@ class BlazorNotification :  ISystemNotification
         this.show = show;
 
         Id = GetNextId();
+    }
+
+    internal BlazorNotification(uint id)
+    {
+        Id = id;
+        show = _ => Task.CompletedTask;
     }
 
     public uint Id { get; }
@@ -28,10 +35,11 @@ class BlazorNotification :  ISystemNotification
     public string? Icon { get; set; }
 
     public IReadOnlyList<SystemNotificationAction>? Actions { get; private set; }
+    public IEnumerable<int>? Vibrate { get; set; }
 
     public void Close()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     public async void Show()

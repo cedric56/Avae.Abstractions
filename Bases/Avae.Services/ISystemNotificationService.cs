@@ -28,6 +28,11 @@ public interface ISystemNotification
     string? Message { get; set; }
     TimeSpan? Expiration { get; set; }
 
+    /// <summary>
+    /// Only supports on web
+    /// </summary>
+    IEnumerable<int>? Vibrate { get; set; }
+
     string? Icon { get; set; }
 
     // if set, enables text input in the notification and sets the specified action as the reply action
@@ -48,7 +53,7 @@ public interface ISystemNotification
 
 public interface ISystemNotificationService
 {
-    IReadOnlyDictionary<uint, ISystemNotification> ActiveNotifications { get; }
+    Task<IReadOnlyDictionary<uint, ISystemNotification>> ActiveNotifications();
 
     // if null, implementation will set a default category, otherwise category must be defined at launch
     Task<ISystemNotification?> CreateNotification(string? category);

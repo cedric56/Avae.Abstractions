@@ -1,6 +1,5 @@
 ﻿using Avae.Services;
 using Avalonia.Labs.Notifications;
-using System.Collections.ObjectModel;
 using Bitmap = Avalonia.Media.Imaging.Bitmap;
 
 namespace Avae.Avalonia.Notifications;
@@ -15,7 +14,12 @@ public class SystemNotificationService : ISystemNotificationService
 
     public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
 
-    public IReadOnlyDictionary<uint, ISystemNotification> ActiveNotifications => throw new NotImplementedException();
+    public Task<IReadOnlyDictionary<uint, ISystemNotification>> ActiveNotifications()
+    {
+        return Task.FromResult<IReadOnlyDictionary<uint, ISystemNotification>>(manager?.ActiveNotifications
+           .ToDictionary(kvp => kvp.Key, kvp => new AvaloniaNotification(kvp.Value))
+           .ToDictionary(kvp => kvp.Key, kvp => (ISystemNotification)kvp.Value) ?? []);
+    }
 
     public class AvaloniaNotification(INativeNotification native) : ISystemNotification
     {
@@ -32,6 +36,7 @@ public class SystemNotificationService : ISystemNotificationService
 
         private IReadOnlyList<SystemNotificationAction>? actions;
         public IReadOnlyList<SystemNotificationAction>? Actions { get => actions; private set => SetActions(value); }
+        public IEnumerable<int>? Vibrate { get; set; }
 
         public void Close()
         {
