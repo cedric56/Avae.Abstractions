@@ -60,7 +60,8 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="12.1.1" />
-    <PackageReference Include="Avalonia.Controls.Maui.Essentials" Version="11.0.0-preview.6.26198.1455" />
+    <PackageReference Include="Avalonia.Controls.Maui.Essentials" Version="11.0.0-preview.7.26224.328" />
+    <PackageReference Include="System.Text.Json" Version="11.0.0-preview.7.26381.103" />
   </ItemGroup>
 
   <ItemGroup>
