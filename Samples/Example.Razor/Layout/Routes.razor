@@ -2,10 +2,8 @@
 @using Example.DAL
 @using Example.Models
 @using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.Maui.Storage
 @inject IServiceProvider provider;
 @inject IDBMonitor<Person> monitor;
-@* @inject IVideoCaptureHandles handles *@
 @implements IAsyncDisposable
 
 <Router AppAssembly="typeof(Example.Razor.Components.Home).Assembly"
@@ -16,47 +14,18 @@
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
 </Router>
-@if (isVisible)
-{
-    @* @handles?.VideoFragment; *@
-}
 
 @code
 {
     Func<Task>? unsuscribe;
-    bool isVisible = false;
 
     protected override async Task OnInitializedAsync()
     {
-        // if (handles != null)
-        //     handles.RequestCapture += OnRequestCapture;
         if (OperatingSystem.IsBrowser())
             unsuscribe = await provider.AddStreamingHub(monitor);
         //unsuscribe = await provider.AddSignalR(monitor);
 
         await base.OnInitializedAsync();
-    }
-    
-    TaskCompletionSource<FileResult?>? _tcs;    
-    private async Task OnRequestCapture(TaskCompletionSource<FileResult?> tcs)
-    {
-        _tcs = tcs;
-        await InvokeAsync(async () =>
-        {
-            isVisible = true;
-            StateHasChanged();
-        });
-    }
-
-    private async void HandleCompleted(FileResult? result)
-    {
-        await InvokeAsync(() =>
-        {
-            isVisible = true;
-            _tcs?.TrySetResult(result);
-            _tcs = null;
-            StateHasChanged();
-        });
     }
 
     public async ValueTask DisposeAsync()

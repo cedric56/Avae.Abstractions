@@ -105,6 +105,7 @@ public static class Extensions
         services.TryAddSingleton(DeviceInfo.Current);
         services.TryAddSingleton(Email.Default);
         services.TryAddSingleton(FilePicker.Default);
+        services.TryAddSingleton(FileSystem.Current);
         services.TryAddSingleton(Flashlight.Default);
         services.TryAddSingleton(Geocoding.Default);
         services.TryAddSingleton(Geolocation.Default);
@@ -116,6 +117,8 @@ public static class Extensions
         services.TryAddSingleton(MediaPicker.Default);
         services.TryAddSingleton(OrientationSensor.Default);
         services.TryAddSingleton(PhoneDialer.Default);
+        services.TryAddSingleton(Preferences.Default);
+        services.TryAddSingleton(Screenshot.Default);
         services.TryAddSingleton(SecureStorage.Default);
         services.TryAddSingleton(SemanticScreenReader.Default);
         services.TryAddSingleton(Share.Default);

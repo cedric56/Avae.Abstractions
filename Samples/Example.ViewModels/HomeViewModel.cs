@@ -1,11 +1,7 @@
-﻿using Avae.Essentials;
-using Avae.Services;
+﻿using Avae.Services;
 using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.ApplicationModel.DataTransfer;
-using Microsoft.Maui.Media;
-using Microsoft.Maui.Storage;
 using System.Diagnostics;
 
 namespace Example.ViewModels;
@@ -15,13 +11,9 @@ public partial class HomeViewModel(
     IContentDialogService contentDialogService,
     ITaskDialogService taskDialogService,
     IIocConfiguration iocConfiguration,
-    INotificationService notificationManager,
+    INotificationService notificationService,
     ISystemNotificationService systemNotificationService,
-    IRequestedThemeService requestedTheme,
-    ITextToSpeech textToSpeech,
-    IShare share,
-    IFilePicker filePicker,
-    IMediaPicker mediaPicker) : ObservableObject, IViewModelBase
+    IRequestedThemeService requestedTheme) : ObservableObject, IViewModelBase
 {
     public static string Title => "Welcome to home";
 
@@ -76,7 +68,7 @@ public partial class HomeViewModel(
     [RelayCommand]
     public async Task ShowNotification()
     {
-        notificationManager.Show(
+        notificationService.Show(
             "Hello",
             "World",
             NotificationType.Success,
@@ -103,6 +95,11 @@ public partial class HomeViewModel(
             void OnNotificationCompleted(object? sender, SystemNotificationEventArgs e)
             {
                 systemNotificationService.NotificationCompleted -= OnNotificationCompleted;
+
+                notificationService.Show(
+                    $"Notification {e.NotificationId?.ToString() ?? string.Empty}",
+                    $"Cancelled:{e.IsCancelled} Activated:{e.IsActivated} ActionTag:{e.ActionTag} UserData:{e.UserData}");
+
                 notification.Close();
             }
         }
@@ -125,24 +122,5 @@ public partial class HomeViewModel(
         };
         actual = theme;
         requestedTheme.Request(actual.Value);
-    }
-
-    [RelayCommand]
-    public Task Speak()
-    {
-        return textToSpeech.SpeakAsync("Done");
-    }
-
-    [RelayCommand]
-    public async Task ShowShare()
-    {
-        var files = await filePicker.PickMultipleAsync();
-        await share.RequestAsync("hello", files ?? []);
-    }
-
-    [RelayCommand]
-    public async Task CaptureVideo()
-    {
-        await mediaPicker.CaptureVideoAsync();
     }
 }

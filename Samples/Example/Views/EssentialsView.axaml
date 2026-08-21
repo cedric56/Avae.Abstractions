@@ -1,0 +1,87 @@
+<UserControl 
+x:Class="Example.EssentialsView"
+xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:Example.ViewModels"
+             x:DataType="{x:Type vm:EssentialsViewModel}">
+   <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
+
+
+    <Expander Header="Dialogs" Grid.Row="2">
+      <WrapPanel>
+        <Button Content="Pick a Photo" Grid.Row="6" Command="{Binding PickPhotoCmdCommand}"/>
+        <Button Content="Pick a Video" Grid.Row="6" Command="{Binding PickVideoCmdCommand}"/>
+        <Button Content="File" Command="{Binding PickFileCmdCommand}"/>
+        <Button Content="Image" Command="{Binding PickImageCmdCommand}"/>
+        <Button Content="Pdf" Command="{Binding PickPdfCmdCommand}"/>
+        <Button Content="Custom" Command="{Binding PickCustomTypeCmdCommand}"/>
+        <Button Content="Multiple" Command="{Binding PickMultipleFilesCmdCommand}"/>
+      </WrapPanel>
+    </Expander>
+
+    <Expander Header="Medias" Grid.Row="3">
+      <WrapPanel>
+        <Button Content="Dial" Grid.Row="7" Command="{Binding DialCmdCommand}"/>
+        <Button Content="Sms" Command="{Binding SmsCmdCommand}" />
+        <Button Content="Contacts" Command="{Binding ContactsCmdCommand}"/>
+        <Button Content="Email" Command="{Binding EmailCmdCommand}"/>
+        <Button Content="Share" Grid.Row="6" Command="{Binding ShareCmdCommand}"/>
+        <Button Content="CapturePhoto" Grid.Row="6" Command="{Binding CapturePhotoCmdCommand}"/>
+        <Button Content="CaptureVideo" Grid.Row="6" Command="{Binding CaptureVideoCmdCommand}"/>
+        <Button Content="Screenshot" Grid.Row="6" Command="{Binding ScreenshotCmdCommand}"/>
+        <Button Content="Browser" Command="{Binding BrowserCmdCommand}" />
+        <Button Content="Map" Command="{Binding MapCmdCommand}" />
+        <Button Content="LaunchMail" Command="{Binding LaunchMailCmdCommand}"/>
+        <Button Content="LaunchBrowser" Command="{Binding LaunchBrowserCmdCommand}"/>
+        <Button Content="AppInfo" Command="{Binding AppInfoCmdCommand}" />
+        <Button Content="DeviceInfo" Command="{Binding DeviceInfoCmdCommand}" />
+      </WrapPanel>
+    </Expander>
+
+    <Expander Header="Sensors" Grid.Row="4">
+      <WrapPanel>
+        <Button Content="Accelerometer" Command="{Binding AccelerometerCmdCommand}" />
+        <Button Content="Magnetometer" Command="{Binding MagnetometerCmdCommand}" />
+        <Button Content="Barometer" Command="{Binding BarometerCmdCommand}" />
+        <Button Content="OrientationSensor" Command="{Binding OrientationSensorCmdCommand}" />
+        <Button Content="Vibration" Command="{Binding VibrationCmdCommand}" />
+        <Button Content="Compass" Command="{Binding CompassCmdCommand}" />
+        <Button Content="Gyroscope" Command="{Binding GyroscopeCmdCommand}" />
+        <Button Content="Flash On" Grid.Row="4" Command="{Binding FlashOnCmdCommand}"/>
+        <Button Content="Flash Off" Grid.Row="5" Command="{Binding FlashOffCmdCommand}"/>
+      </WrapPanel>
+    </Expander>
+
+    <Expander Header="Others" Grid.Row="5">
+      <WrapPanel>
+        <Button Content="Connectivity" Grid.Row="9" Command="{Binding ConnectivityCmdCommand}"/>
+        <Button Content="Version" Grid.Row="9" Command="{Binding VersionCmdCommand}"/>
+        <Button Content="Speech" Command="{Binding SpeechCmdCommand}" />
+        <Button Content="Battery" Command="{Binding BatteryCmdCommand}" />
+        <Button Content="DeviceDisplay" Command="{Binding DeviceDisplayCmdCommand}" />
+        <Button Content="SecureStorage" Grid.Row="6" Command="{Binding SecureStorageCmdCommand}"/>
+        <Button Content="FileSystem" Grid.Row="6" Command="{Binding FileSystemCmdCommand}"/>
+        <Button Content="Haptic" Grid.Row="6" Command="{Binding HapticCmdCommand}"/>
+        <Button Content="Semantic" Grid.Row="6" Command="{Binding SemanticCmdCommand}"/>
+      </WrapPanel>
+    </Expander>
+
+    <Expander Header="Geolocations" Grid.Row="6">
+      <WrapPanel>
+        <Button Content="Geocode" Command="{Binding GeocodeCmdCommand}"/>
+        <Button Content="Geolocation" Command="{Binding GeolocationCmdCommand}"/>
+      </WrapPanel>
+    </Expander>
+
+    <Expander Header="Authentification" Grid.Row="7">
+      <WrapPanel>
+        <Button Content="Google" Command="{Binding GoogleCmdCommand}"/>
+        <TextBlock Text="Auth Token:" Margin="12,12,12,0" />
+        <TextBlock Text="{Binding AuthToken}" />
+      </WrapPanel>
+    </Expander>
+  </Grid>
+</UserControl>

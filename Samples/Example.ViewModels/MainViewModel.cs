@@ -36,7 +36,8 @@ public partial class MainViewModel(Router router) : RoutesViewModelImplementatio
                         viewModel.Persons = new(Repository.Instance.Persons);
                         return Task.CompletedTask;
                     }
-                }
+                },
+                new ViewDescriptor<EssentialsViewModel>("Essentials", "fa-solid fa-gear")
         ];
     }
 }

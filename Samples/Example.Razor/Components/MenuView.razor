@@ -7,7 +7,6 @@
 @inherits ComponentPage
 @page "/menu"
 @inject MenuViewModel ViewModel
-
 @if (CurrentView != null)
 {
     <DynamicComponent Type="@CurrentView.Type" Parameters="@CurrentView.Parameters"/>

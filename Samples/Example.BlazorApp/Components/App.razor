@@ -4,12 +4,10 @@
 @using Example.Razor.Layout
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.JSInterop
-@using Microsoft.Maui.Storage
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @inject IDBMonitor<Person> monitor;
 @inject IJSRuntime runtime;
 @inject IServiceProvider provider;
-@* @inject VideoCaptureCoordinator Coordinator *@
 @implements IAsyncDisposable
 <!DOCTYPE html>
 <html lang="en">
@@ -29,61 +27,26 @@
 </head>
 
 <body>
-    @if (_visible)
-    { 
-        @* <VideoCaptureDialog OnCompleted="HandleCompleted" /> *@
-    }
     <Routes @rendermode="InteractiveServer" />
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="_framework/blazor.web.js"></script>
+    <script src="_content/Avae.Blazor.Essentials/avae_camera.js"></script>
 </body>
 </html>
 
 @code
-{    
+{
     Func<Task>? unsuscribe;
 
     protected override async Task OnInitializedAsync()
     {
         unsuscribe = await provider.AddStreamingHub(monitor);        
-        //Coordinator.RequestCapture += OnRequestCapture;
         await base.OnInitializedAsync();
     }
 
-    private bool _visible;
-    private TaskCompletionSource<FileResult?>? _tcs;
-
-    private async Task OnRequestCapture(TaskCompletionSource<FileResult?> tcs)
+    public ValueTask DisposeAsync()
     {
-        _tcs = tcs;
-        await InvokeAsync(async () =>
-        {
-            _visible = true;
-            StateHasChanged();
-            await Task.Yield();
-        });
-        await Task.Yield();
-    }
-
-    protected override bool ShouldRender()
-    {
-        return base.ShouldRender();
-    }
-
-    private async void HandleCompleted(FileResult? result)
-    {
-        await InvokeAsync(() =>
-        {
-            _visible = false;
-            _tcs?.TrySetResult(result);
-            _tcs = null;
-            StateHasChanged();
-        });
-    }
-
-    ValueTask IAsyncDisposable.DisposeAsync()
-    {
-        //Coordinator.RequestCapture -= OnRequestCapture;
         return ValueTask.CompletedTask;
+        //throw new NotImplementedException();
     }
 }

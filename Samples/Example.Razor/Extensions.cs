@@ -11,6 +11,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using NavigationContext = Avae.ViewModels.NavigationContext;
+using Microsoft.AspNetCore.Components;
 
 namespace Example.Razor;
 
@@ -30,6 +31,7 @@ public static class Extensions
         });
 
         container.Register<CenteredComponentView<ModalView, ModalViewModel>>();
+        container.Register<CenteredComponentView<EssentialsView, EssentialsViewModel>>();
         container.Register(typeof(FormViewModel).Name, (sp, parameters) =>
         {
             if (parameters.FirstOrDefault() is NavigationContext context)
@@ -62,20 +64,23 @@ public static class Extensions
     public static void UseSharedLibrary(this IServiceCollection services,
         bool useScoped = false,
         NotificationPosition position = NotificationPosition.BottomLeft,
-        int maxDispayments = 5)
+        int maxDispayments = 5,
+        RenderFragment? extras = null)
     {
         var navMenu = new ComponentView<NavMenu>();
 
-        services.ConfigureBase(navMenu, position, maxDispayments, RegisterViews);
+        services.ConfigureBase(navMenu, position, maxDispayments, RegisterViews, extras);
         if (useScoped)
         {
             services.AddScoped<HomeViewModel>();
             services.AddScoped<MenuViewModel>();
+            services.AddScoped<EssentialsViewModel>();
         }
         else
         {
             services.AddSingleton<HomeViewModel>();
             services.AddSingleton<MenuViewModel>();
+            services.AddSingleton<EssentialsViewModel>();
         }
         services.AddTransient<ModalViewModel>();
         services.AddTransient<FormPage2ViewModel>();

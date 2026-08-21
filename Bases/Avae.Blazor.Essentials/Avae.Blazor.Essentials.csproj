@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Append.Blazor.WebShare" Version="7.0.0" />
+    <PackageReference Include="BlazorNative.Device" Version="0.11.0" />
     <PackageReference Include="BlazorSensors" Version="1.0.1" />
     <PackageReference Include="KristofferStrube.Blazor.FileSystemAccess" Version="4.0.0" />
     <PackageReference Include="KristofferStrube.Blazor.MediaCaptureStreams" Version="0.4.1" />
@@ -19,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Avae.Core\Avae.Core.csproj" />
     <ProjectReference Include="..\Avae.Essentials\Avae.Essentials.csproj" />
   </ItemGroup>
   

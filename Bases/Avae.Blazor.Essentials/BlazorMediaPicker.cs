@@ -1,6 +1,4 @@
-﻿using KristofferStrube.Blazor.FileSystemAccess;
-using KristofferStrube.Blazor.MediaCaptureStreams;
-using Microsoft.Maui.Devices;
+﻿using Microsoft.Maui.Devices;
 using Microsoft.Maui.Media;
 using Microsoft.Maui.Storage;
 
@@ -18,13 +16,17 @@ public sealed class VideoCaptureCoordinator
     }
 }
 
-internal class BlazorMediaPicker(IFilePicker picker, VideoCaptureCoordinator coordinator) : IMediaPicker
+internal class BlazorMediaPicker(IFilePicker picker, VideoCaptureCoordinator coordinator, BlazorNative.Device.ICamera camera) : IMediaPicker
 {
     public bool IsCaptureSupported => true;
 
-    public Task<FileResult?> CapturePhotoAsync(MediaPickerOptions? options = null)
+    public async Task<FileResult?> CapturePhotoAsync(MediaPickerOptions? options = null)
     {
-        throw new NotImplementedException();
+        var result = await camera.CapturePhotoAsync();
+        if (result.Status == BlazorNative.Core.CameraStatus.Captured
+            && !string.IsNullOrWhiteSpace(result.Path))
+            return new FileResult(result.Path);
+        return null;
     }
 
     public Task<FileResult?> CaptureVideoAsync(MediaPickerOptions? options = null)

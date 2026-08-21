@@ -85,7 +85,7 @@ public static class Extensions
             fileSystem,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new FlashlightImplementation() : null!,
 #if WINDOWS
-            Geocoding.Default,
+            OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) ? Geocoding.Default : null!,
 #else
             new Avae.Avalonia.Essentials.AvaeGeocoding(),
 #endif

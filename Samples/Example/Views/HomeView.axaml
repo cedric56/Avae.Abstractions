@@ -14,10 +14,7 @@
             <Button Content="ContentDialog" Command="{Binding ShowContentDialog}" />		
             <Button Content="Notification" Command="{Binding ShowNotification}" />		
             <Button Content="System" Command="{Binding ShowSystemNotification}" />		
-            <Button Content="Theme" Command="{Binding ShowRequestedTheme}" />		
-            <Button Content="Speak" Command="{Binding Speak}" />		
-            <Button Content="Share" Command="{Binding ShowShare}" />		
-            <Button Content="Capture" Command="{Binding CaptureVideo}" />		
+            <Button Content="Theme" Command="{Binding ShowRequestedTheme}" />	
         </StackPanel>
         
     </Grid>

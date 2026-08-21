@@ -1,18 +1,23 @@
-﻿using Avae.ViewModels;
-using Avae.Razor.Components;
+﻿using Avae.Razor.Components;
 using Avae.Services;
+using Avae.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using NavigationContext = Avae.ViewModels.NavigationContext;
 
 namespace Avae.Razor;
 
-public class IocConfiguration(IServiceProvider serviceProvider, Action<IIocContainer>? configure = null) :
+public class IocConfiguration(
+        IServiceProvider serviceProvider,         
+        Action<IIocContainer>? configure = null,
+        RenderFragment? extras = null) :
         IIocConfiguration, ITaskDialogService, IContentDialogService, 
         IDialogService,
         INotificationService,
         IRequestedThemeService
 {
+    public RenderFragment? Extras => extras;
+
     public EventHandler<RequestedTheme>? RequestedThemeChanged;
 
     public bool IsDarkMode { get; set; } = true;

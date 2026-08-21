@@ -46,6 +46,7 @@ public partial class App : AvaeApplication, IIocConfiguration
         });
         container.Register<HomeView>();
         container.Register<MenuView>();
+        container.Register<EssentialsView>();
         container.Register<FormViewModel>((sp, context) =>
         {
             if (context.FactoryParameters.OfType<string>().Any(p => p == FormViewModel.KEY))
@@ -67,6 +68,7 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<Router>();
         services.AddSingleton<HomeViewModel>();
         services.AddSingleton<MenuViewModel>();
+        services.AddSingleton<EssentialsViewModel>();
         services.AddTransient<ViewModelFactory<FormViewModel>>();
         services.AddTransient<FormPage2ViewModel>();
         services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();

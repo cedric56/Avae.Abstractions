@@ -1,27 +1,22 @@
-﻿using Append.Blazor.Notifications;
-using Avae.Razor.Components;
+﻿using Avae.Razor.Components;
 using Avae.Services;
 using Avae.ViewModels;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
 using MudBlazor;
 using MudBlazor.Services;
-using System.Runtime.CompilerServices;
 
 namespace Avae.Razor;
 
 public static class Extensions
 {
-    [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
-    [return: UnsafeAccessorType("Append.Blazor.Notifications.NotificationService, Append.Blazor.Notifications")]
-    internal extern static object CreateService(IJSRuntime jSRuntime);
-
     public static void ConfigureBase(this IServiceCollection services,
         ComponentView navMenu,
         NotificationPosition position = NotificationPosition.BottomLeft,
         int maxDispayments = 5,            
-        Action<IIocContainer>? configure = null)
+        Action<IIocContainer>? configure = null,
+        RenderFragment? extras = null)
     {
         services.AddSingleton<ComponentView>(navMenu);
         services.AddMudServices(config =>
@@ -41,22 +36,22 @@ public static class Extensions
                 MaxDisplayedSnackbars = maxDispayments
             };
         });
-        services.ConfigureIocContainer(configure);
+        services.ConfigureIocContainer(configure, extras: extras);
     }
 
     private static void ConfigureIocContainer(this IServiceCollection services,
         Action<IIocContainer>? configure = null,
-        Action<ILoggingBuilder>? build = null)
+        Action<ILoggingBuilder>? build = null,
+        RenderFragment? extras = null)
     {
         services.AddSingleton<IIocContainer>(sp => new IocContainer(GetConfiguration(sp), false));
-        services.AddSingleton<IIocConfiguration>(sp => new IocConfiguration(sp, configure));
+        services.AddSingleton<IIocConfiguration>(sp => new IocConfiguration(sp, configure, extras));
         services.AddTransient<Router>(sp => new Router(sp));
         services.AddSingleton<Services.IDialogService>(GetConfiguration);
         services.AddSingleton<IContentDialogService>(GetConfiguration);
         services.AddSingleton<ITaskDialogService>(GetConfiguration);
         services.AddSingleton<Services.INotificationService>(GetConfiguration);
         services.AddSingleton<IRequestedThemeService>(GetConfiguration);
-        services.AddNotifications();
         IocConfiguration GetConfiguration(IServiceProvider provider)
         {
             return (IocConfiguration)provider.GetRequiredService<IIocConfiguration>();

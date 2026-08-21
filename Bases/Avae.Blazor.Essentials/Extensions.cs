@@ -15,6 +15,8 @@ using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
 using PatrickJahr.Blazor.AsyncClipboard;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
+using BlazorNative.Device;
+using BlazorNative.Core;
 
 namespace Avae.Blazor.Essentials;
 
@@ -26,12 +28,16 @@ public static class Extensions
         services.AddWebShare();
         services.AddAsyncClipboardService();
         services.AddMediaDevicesService();
-        services.AddSpeechSynthesis();        
+        services.AddSpeechSynthesis();
+        services.AddSingleton<IMobileBridge, DevHostBridge>();
+        services.AddBlazorNativeDevice();
         services.AddSingleton<VideoCaptureCoordinator>();
         services.TryAddScoped<BlazorSensors.Accelerometer>();
         services.TryAddScoped<BlazorSensors.Gyroscope>();
         services.TryAddScoped<BlazorSensors.Magnetometer>();
         services.TryAddScoped<BlazorSensors.AbsoluteOrientationSensor>();
+
+
 
 
         services.TryAddScoped<IAccelerometer, BlazorAccelerometer>();
@@ -48,9 +54,10 @@ public static class Extensions
         services.TryAddScoped<IDeviceInfo>(_ => DeviceInfo.Current);
         services.TryAddScoped<IEmail>(_ => Email.Default);
         services.TryAddScoped<IFilePicker, BlazorFilePicker>();
+        services.TryAddScoped<IFileSystem>(_ => FileSystem.Current);
         services.TryAddScoped<IFlashlight>(_ => Flashlight.Default);
-        services.TryAddScoped<IGeocoding>(_ => Geocoding.Default);
-        services.TryAddScoped<IGeolocation>(_ => Geolocation.Default);
+        services.TryAddScoped<IGeocoding, BlazorGeocoding>();
+        services.TryAddScoped<Microsoft.Maui.Devices.Sensors.IGeolocation, BlazorGeolocation>();
         services.TryAddScoped<IGyroscope, BlazorGyroscope>();
         services.TryAddScoped<IHapticFeedback>(_ => HapticFeedback.Default);
         services.TryAddScoped<ILauncher, BlazorLauncher>();
@@ -59,7 +66,9 @@ public static class Extensions
         services.TryAddScoped<IMediaPicker, BlazorMediaPicker>();
         services.TryAddScoped<IOrientationSensor, BlazorOrientationSensor>();
         services.TryAddScoped<IPhoneDialer, BlazorPhoneDialer>();
-        services.TryAddScoped<ISecureStorage>(_ => SecureStorage.Default);
+        services.TryAddScoped<IPreferences>(_ => Preferences.Default);
+        services.TryAddScoped<IScreenshot>(_ => Screenshot.Default);
+        services.TryAddScoped<Microsoft.Maui.Storage.ISecureStorage, BlazorSecureStorage>();
         services.TryAddScoped<ISemanticScreenReader>(_ => SemanticScreenReader.Default);
         services.TryAddScoped<IShare, BlazorShare>();
         services.TryAddScoped<ISms, BlazorSms>();
