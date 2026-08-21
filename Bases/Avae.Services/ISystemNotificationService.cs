@@ -26,6 +26,10 @@ public interface ISystemNotification
 
     string? Tag { get; set; }
     string? Message { get; set; }
+
+    /// <summary>
+    /// Not supported on web
+    /// </summary>
     TimeSpan? Expiration { get; set; }
 
     /// <summary>

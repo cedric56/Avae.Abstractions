@@ -91,8 +91,6 @@ public partial class HomeViewModel(
             var notification = await systemNotificationService.CreateNotification(null);
             if (notification != null)
             {
-                var test = await systemNotificationService.ActiveNotifications();
-
                 systemNotificationService.NotificationCompleted += OnNotificationCompleted;
                 notification.Vibrate = [200,100,200,100];
                 notification.Title = "Hello";

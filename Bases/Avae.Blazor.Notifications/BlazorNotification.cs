@@ -1,5 +1,4 @@
 ﻿using Avae.Services;
-using System.Formats.Asn1;
 
 namespace Avae.Blazor.Notifications;
 
@@ -29,7 +28,15 @@ class BlazorNotification : ISystemNotification
     public string? Category => category;
 
     public string? Title { get; set; }
-    public string? Tag { get; set; }
+    private string? tag;
+    public string? Tag { get => tag; set
+        {
+            if (uint.TryParse(value, out var id))
+                tag = id.ToString();
+            else
+                throw new InvalidOperationException("Tag is reserved to identify notification");
+        }
+    }
     public string? Message { get; set; }
     public TimeSpan? Expiration { get; set; }
     public string? Icon { get; set; }
@@ -39,7 +46,7 @@ class BlazorNotification : ISystemNotification
 
     public void Close()
     {
-        //throw new NotImplementedException();
+
     }
 
     public async void Show()

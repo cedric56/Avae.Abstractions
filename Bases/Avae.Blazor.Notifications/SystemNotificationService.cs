@@ -42,16 +42,25 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
     public async Task<IReadOnlyDictionary<uint, ISystemNotification>> ActiveNotifications()
     {
         var module = await GetModuleAsync();
-        if (module != null)
+        if (module == null)
+            return new Dictionary<uint, ISystemNotification>();
+
+        var webNotifications = await module.InvokeAsync<WebNotification[]>("getNotifications");
+        if (webNotifications == null || webNotifications.Length == 0)
+            return new Dictionary<uint, ISystemNotification>();
+
+        var result = new Dictionary<uint, ISystemNotification>();
+
+        foreach (var web in webNotifications)
         {
-            var obj = await module.InvokeAsync<object>("getNotifications");
-            using var stream = GetMemoryStream(obj);
-            var notifications = await JsonSerializer.DeserializeAsync<WebNotification[]>(stream, jsonSerializerOptionsForPropertyModel);
-            return notifications?
-                .ToDictionary(notification => notification.id, notification => new BlazorNotification(notification.id))
-                .ToDictionary(kvp => kvp.Key, kvp => (ISystemNotification)kvp.Value) ?? [];
+            if(uint.TryParse(web.Tag, out var id))
+            {
+                if(dic.TryGetValue(id, out var notification))
+                    result.Add(id, notification);
+            }
         }
-        return new Dictionary<uint, ISystemNotification>();
+
+        return result;
     }
 
     private async ValueTask<IJSObjectReference> GetModuleAsync()
@@ -153,8 +162,7 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
                         replyActionTag = notification.ReplyActionTag,
                     },
                     icon = notification.Icon,
-                    tag = notification.Tag,
-                    expiration = notification.Expiration.HasValue ? (double?)notification.Expiration.Value.TotalMilliseconds : null,
+                    tag = notification.Id.ToString(),
                     vibrate = notification.Vibrate
                 };
                 await module.InvokeAsync<object>("create", notification.Title, options);
@@ -183,8 +191,10 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         _selfRef?.Dispose();
     }
 
-    public void CloseAll()
+    public async void CloseAll()
     {
-        throw new NotImplementedException();
+        var module = await GetModuleAsync();
+        if (module != null)
+            await module.InvokeAsync<object>("closeAllNotifications");
     }
 }

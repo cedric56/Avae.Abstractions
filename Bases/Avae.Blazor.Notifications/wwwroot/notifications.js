@@ -13,9 +13,37 @@ export function isSupported() {
     return 'Notification' in window;
 }
 
+export async function closeAllNotifications() {
+    const registration = await navigator.serviceWorker.ready;
+    const notifications = await registration.getNotifications();
+    notifications.forEach(n => n.close());
+    return notifications.length;
+}
+
 export async function getNotifications() {
     const registration = await navigator.serviceWorker.ready;
-    return await registration.getNotifications();
+    const notifications = await registration.getNotifications();
+    return notifications.map(n => ({
+        title: n.title,
+        body: n.body,
+        tag: n.tag,
+        icon: n.icon,
+        badge: n.badge,
+        image: n.image,
+        lang: n.lang,
+        dir: n.dir,
+        requireInteraction: n.requireInteraction,
+        silent: n.silent,
+        timestamp: n.timestamp,          // number (ms since epoch)
+        data: n.data,                    // any JSON-serializable value you previously set
+        // actions are also available in modern browsers:
+        actions: n.actions ? n.actions.map(a => ({
+            action: a.action,
+            title: a.title,
+            icon: a.icon,
+            type: a.type
+        })) : []
+    }));
 }
 
 export async function create(title, options) {
