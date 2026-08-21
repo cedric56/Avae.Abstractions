@@ -29,9 +29,7 @@ else
 }
 
 @code {
-
-    static bool isDone { get; set; } = false;
-
+    
     private bool IsEnabled => ViewModel.SelectedPerson == null;
 
     private ComponentView? CurrentView => ViewModel.CurrentView as ComponentView;
@@ -41,9 +39,8 @@ else
     {
         await base.OnAfterRenderAsync(firstRender);
 
-        if (!isDone)
+        if (firstRender)
         {
-            isDone = true;
             ViewModel.PropertyChanged -= PropertyChanged;
             ViewModel.PropertyChanged += PropertyChanged;
             ViewModel.Persons = new(await DBBase.Instance.GetAllAsync<Person>());

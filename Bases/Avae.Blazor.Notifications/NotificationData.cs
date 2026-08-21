@@ -2,7 +2,7 @@
 
 namespace Avae.Blazor.Notifications;
 
-public class WebNotification
+class WebNotification
 {
     public string? Title { get; set; }
     public string? Body { get; set; }
@@ -19,7 +19,7 @@ public class WebNotification
     public WebNotificationAction[]? Actions { get; set; }
 }
 
-public class WebNotificationAction
+class WebNotificationAction
 {
     public string? Action { get; set; }
     public string? Title { get; set; }

@@ -3,48 +3,43 @@ using Grpc.Net.Client;
 using GrpcWebSocketBridge.Client;
 using MagicOnion;
 using MagicOnion.Client;
-using System.Diagnostics;
 
 namespace Avae.DAL.gRPC.Client;
 
 public static class Extensions
 {
+    private static Func<Task>? _dispose;
+
     public static async Task<Func<Task>> AddStreamingHub<TObject>(this IDBMonitor<TObject> monitor, GrpcChannel channel)
         where TObject : class, new()
     {
-        try
-        {
-            var receiver = new RecordHubReceiver<TObject>(monitor);
-            var hub = await StreamingHubClient.ConnectAsync<IRecordHub<TObject>, IRecordHubReceiver<TObject>>(channel, receiver);//, cancellationToken: cts.Token);
-            var guid = await hub.AddReceiverAsync();
-            IDBLayer.Sessions.Add(typeof(TObject), guid.ToString());
-            monitor.OnRecordChanged += OnRecordChanged;
-            return async () =>
-            {
-                try
-                {
-                    await hub.RemoveAsync();
-                    await hub.WaitForDisconnectAsync();
-                    await hub.DisposeAsync();
-                }
-                finally
-                {
-                    monitor.OnRecordChanged -= OnRecordChanged;
-                }
-            };
+        if (IDBLayer.Sessions.TryGetValue(typeof(TObject), out _))
+            return _dispose ?? (() => Task.CompletedTask);
 
-            void OnRecordChanged(object? sender, Record<TObject> e)
-            {
-                IDBLayer.Sessions.TryGetValue(typeof(TObject), out var sessionId);
-                e.Add(sessionId);
-                hub.OnRecordChanged(e);
-            }
-        }
-        catch (Exception ex)
+        var receiver = new RecordHubReceiver<TObject>(monitor);
+        var hub = await StreamingHubClient.ConnectAsync<IRecordHub<TObject>, IRecordHubReceiver<TObject>>(channel, receiver);//, cancellationToken: cts.Token);
+        var guid = await hub.AddReceiverAsync();
+        IDBLayer.Sessions.Add(typeof(TObject), guid.ToString());
+        monitor.OnRecordChanged += OnRecordChanged;
+        return _dispose = async () =>
         {
-            Debug.WriteLine(ex);
-            Console.WriteLine(ex);
-            return () => Task.CompletedTask;
+            try
+            {
+                await hub.RemoveAsync();
+                await hub.WaitForDisconnectAsync();
+                await hub.DisposeAsync();
+            }
+            finally
+            {
+                monitor.OnRecordChanged -= OnRecordChanged;
+            }
+        };
+
+        void OnRecordChanged(object? sender, Record<TObject> e)
+        {
+            IDBLayer.Sessions.TryGetValue(typeof(TObject), out var sessionId);
+            e.Add(sessionId);
+            hub.OnRecordChanged(e);
         }
     }
 
