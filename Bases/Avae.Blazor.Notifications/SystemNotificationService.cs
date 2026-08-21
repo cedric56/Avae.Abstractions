@@ -37,12 +37,17 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
     private IJSObjectReference? _module;
     private PermissionType? permissionType;
 
+    public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
+
+    public IReadOnlyDictionary<uint, ISystemNotification> ActiveNotifications => throw new NotImplementedException();
+
     private async ValueTask<IJSObjectReference> GetModuleAsync()
     {
         if (_module == null)
         {
             _module = await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Avae.Blazor.Notifications/notifications.js");
-            await _module.InvokeVoidAsync("registrations.registerDotnet", _selfRef);
+            await _module.InvokeVoidAsync("registerServiceWorker");
+            await _module.InvokeVoidAsync("registrations.registerDotnet", _selfRef);            
         }
         return _module;
     }
@@ -55,7 +60,7 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         var obj = await JsonSerializer.DeserializeAsync<NotificationData>(stream, jsonSerializerOptionsForPropertyModel);
         if (obj != null && obj.data?.id is uint id && dic.TryGetValue(id, out var item))
         {
-            item.RaiseCompleted(new SystemNotificationEventArgs()
+            NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs()
             {
                 IsCancelled = true,
                 NotificationId = id
@@ -71,7 +76,7 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         var obj = await JsonSerializer.DeserializeAsync<NotificationData>(stream, jsonSerializerOptionsForPropertyModel);
         if (obj != null && obj.data?.id is uint id && dic.TryGetValue(id, out var item))
         {
-            item.RaiseCompleted(new SystemNotificationEventArgs()
+            NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs()
             {
                 ActionTag = obj.action,
                 IsActivated = string.IsNullOrWhiteSpace(obj.action),
@@ -96,9 +101,9 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         if (obj != null && obj.data?.id is uint id && dic.TryGetValue(id, out var item))
         {
             using var user_data_stream = GetMemoryStream(user_data);
-            item.RaiseCompleted(new SystemNotificationEventArgs()
+            NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs()
             {
-                ActionTag = obj.Reply,
+                ActionTag = obj.action,
                 IsActivated = false,
                 IsCancelled = false,
                 NotificationId = id,
@@ -108,7 +113,7 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         }
     }
 
-    public async Task<ISystemNotification?> CreateNotification(string action, string title, string message, SystemNotificationAction[] actions)
+    public async Task<ISystemNotification?> CreateNotification(string? category)
     {
         var module = await GetModuleAsync();
         if (module == null)
@@ -123,24 +128,19 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         }
         if (PermissionType.Granted == permissionType)
         {
-            var item = new BlazorNotification(async (id, reply) =>
+            var item = new BlazorNotification(category, async (notification) =>
             {
-                var hasInput = actions.Any(a => a.tag == reply);
-
                 var options = new
                 {
                     data = new
                     {
-                        id = id,
-                        action = action,
-                        replyActionTag = reply,
+                        id = notification.Id,
+                        replyActionTag = notification.ReplyActionTag,
                     },
-                    action = action,
-                    id = id,
-                    body = message,
-                    actions = actions.Select(a => new { Action = a.tag, Icon = a.Icon, Title = a.caption, type = hasInput ? "text" : string.Empty }),
+                    body = notification.Message,
+                    actions = notification.Actions?.Select(a => new { action = a.tag, icon = a.Icon, title = a.caption, type = a.tag == notification.ReplyActionTag ? "text" : "button" }),
                 };
-                await module.InvokeAsync<object>("create", title, options);
+                await module.InvokeAsync<object>("create", notification.Title, options);
             });
             dic.Add(item.Id, item);
             return item;
@@ -166,5 +166,8 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         _selfRef?.Dispose();
     }
 
-   
+    public void CloseAll()
+    {
+        throw new NotImplementedException();
+    }
 }

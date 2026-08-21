@@ -24,7 +24,6 @@ self.addEventListener('notificationclose', function (event) {
 });
 
 self.addEventListener('notificationclick', function (event) {
-    console.log("hit");
     const notification = event.notification;
     const action = event.action;
     const data = notification.data || {};
@@ -33,11 +32,9 @@ self.addEventListener('notificationclick', function (event) {
 
     event.waitUntil(
         (async function () {
-            console.log(data.replyActionTag);
-            console.log(action);
-            console.log(reply);
             if (action && data.replyActionTag === action) {
                 await sendToBlazor({
+                    action: action,
                     data: data,
                     type: 'HandleNotificationReply',
                     reply: reply

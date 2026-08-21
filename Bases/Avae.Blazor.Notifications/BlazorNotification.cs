@@ -2,13 +2,15 @@
 
 namespace Avae.Blazor.Notifications;
 
-class BlazorNotification : ISystemNotification
+class BlazorNotification :  ISystemNotification
 {
     private static uint s_currentId = 0;
-    Func<uint, string?, Task> show;
+    Func<BlazorNotification, Task> show;
+    string? category;
 
-    public BlazorNotification(Func<uint, string?, Task> show)
+    public BlazorNotification(string? category, Func<BlazorNotification, Task> show)
     {
+        this.category = category;
         this.show = show;
 
         Id = GetNextId();
@@ -17,7 +19,15 @@ class BlazorNotification : ISystemNotification
     public uint Id { get; }
     public string? ReplyActionTag {  get; set; }
 
-    public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
+    public string? Category => category;
+
+    public string? Title { get; set; }
+    public string? Tag { get; set; }
+    public string? Message { get; set; }
+    public TimeSpan? Expiration { get; set; }
+    public string? Icon { get; set; }
+
+    public IReadOnlyList<SystemNotificationAction>? Actions { get; private set; }
 
     public void Close()
     {
@@ -26,16 +36,16 @@ class BlazorNotification : ISystemNotification
 
     public async void Show()
     {
-        await show(Id, ReplyActionTag);
-    }
-
-    public void RaiseCompleted(SystemNotificationEventArgs e)
-    {
-        NotificationCompleted?.Invoke(this, e);
+        await show(this);
     }
 
     private static uint GetNextId()
     {
         return Interlocked.Increment(ref s_currentId);
+    }
+
+    public void SetActions(IReadOnlyList<SystemNotificationAction>? actions)
+    {
+        Actions = actions;
     }
 }

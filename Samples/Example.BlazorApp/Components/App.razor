@@ -36,17 +36,6 @@
     <Routes @rendermode="InteractiveServer" />
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="_framework/blazor.web.js"></script>
-    @* <script src="_content/Avae.BlazorEssentials/js/interop.js"></script> *@
-    @* <script src="_content/Avae.Browser/avae_browser.js"></script> *@
-    <script>
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register(
-                    "_content/Avae.Blazor.Notifications/service-worker.js"
-                    ,
-                    { scope: "/" }
-                );
-            }
-    </script>
 </body>
 </html>
 

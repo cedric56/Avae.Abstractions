@@ -1,4 +1,11 @@
-﻿export function requestPermission() {
+﻿export async function registerServiceWorker() {
+    await navigator.serviceWorker.register(
+        "_content/Avae.Blazor.Notifications/service-worker.js",
+        { scope: "/" }
+    );
+}
+
+export function requestPermission() {
     return Notification.requestPermission();
 }
 
@@ -7,23 +14,8 @@ export function isSupported() {
 }
 
 export async function create(title, options) {
-    // Convert options for service worker
-    const notificationOptions = {
-        body: options.body || '',
-        // icon: options.icon || '/icon-192x192.png',
-        // badge: '/badge-72x72.png',
-        // vibrate: [200, 100, 200],
-        action: options.action || {},
-        id: options.id || {},
-        data: options.data || {},
-        actions: options.actions || [],
-        replyActionTag: options.replyActionTag,
-        tag: options.tag || `notification-${Date.now()}`
-    };
-
-    // Show notification through service worker
     const registration = await navigator.serviceWorker.ready;
-    await registration.showNotification(title, notificationOptions);
+    await registration.showNotification(title, options);
 }
 
 export const registrations = {
@@ -31,9 +23,7 @@ export const registrations = {
     registerDotnet: function (helper)
     {
         registrations.dotNetHelper = helper;
-        navigator.serviceWorker.addEventListener('message', function (event) {
-            console.log('Page received message from service worker:', event.data);
-
+        navigator.serviceWorker.addEventListener('message', function (event) {            
             if (event.data && event.data.type === 'HandleNotificationClose') {
                 registrations.handleClose(event);
             }
@@ -48,10 +38,7 @@ export const registrations = {
     handleNotificationClick: function (event) {
         registrations.dotNetHelper.invokeMethodAsync('HandleNotificationClick', event.data);
     },
-
-    // Handle notification input reply
     handleNotificationReply: function (event) {
-        console.log('HandleNotificationReply:', event);
         registrations.dotNetHelper.invokeMethodAsync('HandleNotificationReply', event.data, event.data.reply);
     },
     handleClose: function (event) {

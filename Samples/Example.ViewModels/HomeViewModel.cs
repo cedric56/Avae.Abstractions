@@ -88,24 +88,19 @@ public partial class HomeViewModel(
     {
         try
         {
-            var notification = await systemNotificationService.CreateNotification(
-                "action",
-                "Hello",
-                "World",
-                [new SystemNotificationAction("caption", "reply")]
-                //,
-                //[new SystemNotificationAction("caption", "tag"), new SystemNotificationAction("Test", "test"),]
-                );
-
+            var notification = await systemNotificationService.CreateNotification(null);
             if (notification != null)
             {
+                systemNotificationService.NotificationCompleted += OnNotificationCompleted;
+                notification.Title = "Hello";
+                notification.Message = "World";
+                notification.SetActions([new SystemNotificationAction("caption", "reply"), new SystemNotificationAction("Test", "test"),]);
                 notification.ReplyActionTag = "reply";//must match action tag for an input
-                notification.NotificationCompleted += OnNotificationCompleted;
                 notification.Show();
             }
             void OnNotificationCompleted(object? sender, SystemNotificationEventArgs e)
             {
-                notification.NotificationCompleted -= OnNotificationCompleted;
+                systemNotificationService.NotificationCompleted -= OnNotificationCompleted;
             }
         }
         catch (Exception ex)

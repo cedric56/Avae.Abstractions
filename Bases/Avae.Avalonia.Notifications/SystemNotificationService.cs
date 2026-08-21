@@ -1,5 +1,7 @@
 ﻿using Avae.Services;
 using Avalonia.Labs.Notifications;
+using System.Collections.ObjectModel;
+using Bitmap = Avalonia.Media.Imaging.Bitmap;
 
 namespace Avae.Avalonia.Notifications;
 
@@ -11,29 +13,44 @@ public class SystemNotificationService : ISystemNotificationService
 
     INativeNotificationManager? manager;
 
+    public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
+
+    public IReadOnlyDictionary<uint, ISystemNotification> ActiveNotifications => throw new NotImplementedException();
+
     public class AvaloniaNotification(INativeNotification native) : ISystemNotification
     {
+        public uint Id => native.Id;
+
+        public string? Category => native.Category;
+
+        public string? Title { get => native.Title; set => native.Title = value; }
+        public string? Tag { get => native.Tag; set => native.Tag = value; }
+        public string? Message { get => native.Message; set => native.Message = value; }
+        public TimeSpan? Expiration { get => native.Expiration; set => native.Expiration = value; }
+        public string? Icon { get => native.Icon?.ToString(); set => throw new NotImplementedException(); }
         public string? ReplyActionTag { get => native.ReplyActionTag; set => native.ReplyActionTag = value; }
 
-        public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
+        private IReadOnlyList<SystemNotificationAction>? actions;
+        public IReadOnlyList<SystemNotificationAction>? Actions { get => actions; private set => SetActions(value); }
 
         public void Close()
         {
             native.Close();
         }
 
+        public void SetActions(IReadOnlyList<SystemNotificationAction>? actions)
+        {
+            this.actions = actions;
+            native.SetActions([.. actions?.Select(a => new NativeNotificationAction(a.caption, a.tag) { Icon = a.Icon == null ? null : new Bitmap(a.Icon) }) ?? []]);
+        }
+
         public void Show()
         {
             native.Show();
         }
-
-        public void OnNativeCompleted(SystemNotificationEventArgs args)
-        {
-            NotificationCompleted?.Invoke(this, args);
-        }
     }
 
-    public Task<ISystemNotification?> CreateNotification(string action, string title, string message, SystemNotificationAction[] actions)
+    public Task<ISystemNotification?> CreateNotification(string? category)
     {
         if (manager == null)
         {
@@ -45,18 +62,15 @@ public class SystemNotificationService : ISystemNotificationService
 
         if (manager != null)
         {
-            var _currentNotification = manager.CreateNotification(action);
+            var _currentNotification = manager.CreateNotification(category);
             if (_currentNotification is not null)
             {
                 var current = new AvaloniaNotification(_currentNotification);
-                _currentNotification.Title = title;
-                _currentNotification.Message = message;
-                _currentNotification.SetActions(actions.Select(a => new NativeNotificationAction(a.caption, a.tag)).ToList());
                 manager.NotificationCompleted += OnNotificationCompleted;
                 void OnNotificationCompleted(object? sender, NativeNotificationCompletedEventArgs args)
                 {
                     manager.NotificationCompleted -= OnNotificationCompleted;
-                    current.OnNativeCompleted(new SystemNotificationEventArgs()
+                    NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs()
                     {
                         ActionTag = args.ActionTag,
                         IsActivated = args.IsActivated,
@@ -70,5 +84,10 @@ public class SystemNotificationService : ISystemNotificationService
         }
 
         throw new InvalidOperationException("Notification is not defined");
+    }
+
+    public void CloseAll()
+    {
+        throw new NotImplementedException();
     }
 }
