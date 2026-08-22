@@ -1,6 +1,26 @@
 ﻿@page "/essentials"
-<h3>EssentialsView</h3>
+@using MudBlazor
+@inject Example.ViewModels.EssentialsViewModel viewModel
 
+<MudExpansionPanels MultiExpansion="true">
+    <MudExpansionPanel Text="Dialogs">
+        <MudButton OnClick="() => viewModel.PickPhotoCmd()">Pick a Photo</MudButton>
+        <MudButton OnClick="() => viewModel.PickVideoCmd()">Pick a Video</MudButton>
+        <MudButton OnClick="() => viewModel.PickFileCmd()">File</MudButton>
+        <MudButton OnClick="() => viewModel.PickImageCmd()">Image</MudButton>
+        <MudButton OnClick="() => viewModel.PickPdfCmd()">Pdf</MudButton>
+        <MudButton OnClick="() => viewModel.PickCustomTypeCmd()">Custom</MudButton>
+        <MudButton OnClick="() => viewModel.PickMultipleFilesCmd()">Multiple</MudButton>
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="Panel Two">
+        Panel Two Content
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="Panel Three">
+        Panel Three Content
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="Panel Four">
+        Panel Four Content
+    </MudExpansionPanel>
+</MudExpansionPanels>
 @code {
-
 }

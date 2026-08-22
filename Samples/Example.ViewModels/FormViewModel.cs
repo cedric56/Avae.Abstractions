@@ -7,16 +7,16 @@ using Example.Models;
 using Example.ViewModels.Defaults;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-
+using Person = Example.Models.Person;
 namespace Example.ViewModels;
 
-[ObservableObject]
+[INotifyPropertyChanged]
 public partial class FormViewModel(IDialogService dialogService, Router router, Person person) : FormViewModelImplementation<Person>(router), IDataErrorInfo
 {
     public const string KEY = "Page";
 
     [ObservableProperty]
-    private bool _isBusy = false;
+    public partial bool IsBusy { get; set; }
 
     public Person Person { get; private set; } = person;
 

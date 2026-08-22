@@ -3,14 +3,14 @@ using Avae.DAL;
 using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Example.Models;
 using Example.ViewModels.Defaults;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
+using Person = Example.Models.Person;
 
 namespace Example.ViewModels;
 
-[ObservableObject]
+[INotifyPropertyChanged]
 public partial class MenuViewModel : RoutesViewModelImplementation, IDisposable
 {
     IServiceProvider provider;
@@ -35,10 +35,10 @@ public partial class MenuViewModel : RoutesViewModelImplementation, IDisposable
     public string Title { get; set; } = "Persons";
 
     [ObservableProperty]
-    private ObservableCollection<Person> _persons = [];
+    public partial ObservableCollection<Person> Persons { get; set; } = new();
 
     [ObservableProperty]
-    private Person? _selectedPerson = null;
+    public partial Person? SelectedPerson { get; set; }
 
     partial void OnSelectedPersonChanged(Person? value)
     {
@@ -98,7 +98,7 @@ public partial class MenuViewModel : RoutesViewModelImplementation, IDisposable
     {
         var viewModel = new FormViewModel(dialogService, provider.GetRequiredService<Router>(), person);
 
-        EventHandler<Person>? closeRequested = null!;
+        EventHandler<Person?>? closeRequested = null!;
         viewModel.CloseRequested += closeRequested = (sender, e) =>
         {
             viewModel.CloseRequested -= closeRequested;

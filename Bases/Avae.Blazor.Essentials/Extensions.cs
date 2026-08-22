@@ -1,8 +1,12 @@
 ﻿using Append.Blazor.WebShare;
+using Avae.Essentials;
+using BlazorNative.Core;
+using BlazorNative.Device;
 using KristofferStrube.Blazor.FileSystemAccess;
 using KristofferStrube.Blazor.MediaCaptureStreams;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.JSInterop;
 using Microsoft.Maui.Accessibility;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.Communication;
@@ -15,8 +19,6 @@ using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
 using PatrickJahr.Blazor.AsyncClipboard;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
-using BlazorNative.Device;
-using BlazorNative.Core;
 
 namespace Avae.Blazor.Essentials;
 
@@ -37,8 +39,42 @@ public static class Extensions
         services.TryAddScoped<BlazorSensors.Magnetometer>();
         services.TryAddScoped<BlazorSensors.AbsoluteOrientationSensor>();
 
-
-
+        //services.SetDefaults(
+        //   new BlazorAccelerometer(new BlazorSensors.Accelerometer(jSRuntime)),
+        //   AppActions.Current,
+        //   AppInfo.Current,
+        //   Barometer.Default,
+        //   Battery.Default,
+        //   BlazorBrowser > (),
+        //   BlazorClipboard > (),
+        //   Compass.Default,
+        //   Connectivity.Current,
+        //   Contacts.Default,
+        //   DeviceDisplay.Current,
+        //   DeviceInfo.Current,
+        //   Email.Default,
+        //   BlazorFilePicker,
+        //   FileSystem.Current,
+        //   Flashlight.Default,
+        //   BlazorGeocoding > (),
+        //   BlazorGeolocation > (),
+        //   BlazorGyroscope > (),
+        //   HapticFeedback.Default,
+        //   BlazorLauncher > (),
+        //   BlazorMagnetometer > (),
+        //   Map.Default,
+        //   BlazorMediaPicker > (),
+        //   BlazorOrientationSensor > (),
+        //   BlazorPhoneDialer > (),
+        //   Preferences.Default,
+        //   Screenshot.Default,
+        //   BlazorSecureStorage > (),
+        //   SemanticScreenReader.Default,
+        //   BlazorShare > (),
+        //   BlazorSms > (),
+        //   BlazorTextToSpeech > (),
+        //   Vibration.Default,
+        //   WebAuthenticator.Default);
 
         services.TryAddScoped<IAccelerometer, BlazorAccelerometer>();
         services.TryAddScoped<IAppActions>(_ => AppActions.Current);
@@ -74,6 +110,7 @@ public static class Extensions
         services.TryAddScoped<ISms, BlazorSms>();
         services.TryAddScoped<ITextToSpeech, BlazorTextToSpeech>();
         services.TryAddScoped<IVibration>(_ => Vibration.Default);
+        services.TryAddScoped<IVersionTracking>(_ => VersionTracking.Default);
         services.TryAddScoped<IWebAuthenticator>(_ => WebAuthenticator.Default);
     }
 }

@@ -20,7 +20,7 @@ public partial class ModalViewModel(IDialogService dialogService) : ObservableVa
 
     [ObservableProperty]
     [Required(ErrorMessage = "You have to enter a value.")]
-    private string? _message;        
+    public partial string? Message {  get; set; }
 
     public event EventHandler<string?>? CloseRequested;
 

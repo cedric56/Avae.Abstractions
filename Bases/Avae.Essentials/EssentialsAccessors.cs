@@ -93,6 +93,11 @@ public static class EssentialsAccessors
     [UnsafeAccessorType("Microsoft.Maui.Devices.Flashlight, Microsoft.Maui.Essentials")] object? facade,
     IFlashlight? implementation);
 
+    [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SetDefault")]
+    public static extern void SetVersionTracking(
+    [UnsafeAccessorType("Microsoft.Maui.ApplicationModel.VersionTracking, Microsoft.Maui.Essentials")] object? facade,
+    IVersionTracking? implementation);
+
     [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SetCurrent")]
     public static extern void SetGeocoding(
         [UnsafeAccessorType("Microsoft.Maui.Devices.Sensors.Geocoding, Microsoft.Maui.Essentials")] object? facade,

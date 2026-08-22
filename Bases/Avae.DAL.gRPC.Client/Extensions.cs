@@ -13,33 +13,40 @@ public static class Extensions
     public static async Task<Func<Task>> AddStreamingHub<TObject>(this IDBMonitor<TObject> monitor, GrpcChannel channel)
         where TObject : class, new()
     {
-        if (IDBLayer.Sessions.TryGetValue(typeof(TObject), out _))
-            return _dispose ?? (() => Task.CompletedTask);
-
-        var receiver = new RecordHubReceiver<TObject>(monitor);
-        var hub = await StreamingHubClient.ConnectAsync<IRecordHub<TObject>, IRecordHubReceiver<TObject>>(channel, receiver);//, cancellationToken: cts.Token);
-        var guid = await hub.AddReceiverAsync();
-        IDBLayer.Sessions.Add(typeof(TObject), guid.ToString());
-        monitor.OnRecordChanged += OnRecordChanged;
-        return _dispose = async () =>
+        try
         {
-            try
-            {
-                await hub.RemoveAsync();
-                await hub.WaitForDisconnectAsync();
-                await hub.DisposeAsync();
-            }
-            finally
-            {
-                monitor.OnRecordChanged -= OnRecordChanged;
-            }
-        };
+            if (IDBLayer.Sessions.TryGetValue(typeof(TObject), out _))
+                return _dispose ?? (() => Task.CompletedTask);
 
-        void OnRecordChanged(object? sender, Record<TObject> e)
+            var receiver = new RecordHubReceiver<TObject>(monitor);
+            var hub = await StreamingHubClient.ConnectAsync<IRecordHub<TObject>, IRecordHubReceiver<TObject>>(channel, receiver);//, cancellationToken: cts.Token);
+            var guid = await hub.AddReceiverAsync();
+            IDBLayer.Sessions.Add(typeof(TObject), guid.ToString());
+            monitor.OnRecordChanged += OnRecordChanged;
+            return _dispose = async () =>
+            {
+                try
+                {
+                    await hub.RemoveAsync();
+                    await hub.WaitForDisconnectAsync();
+                    await hub.DisposeAsync();
+                }
+                finally
+                {
+                    monitor.OnRecordChanged -= OnRecordChanged;
+                }
+            };
+
+            void OnRecordChanged(object? sender, Record<TObject> e)
+            {
+                IDBLayer.Sessions.TryGetValue(typeof(TObject), out var sessionId);
+                e.Add(sessionId);
+                hub.OnRecordChanged(e);
+            }
+        }
+        catch
         {
-            IDBLayer.Sessions.TryGetValue(typeof(TObject), out var sessionId);
-            e.Add(sessionId);
-            hub.OnRecordChanged(e);
+            return () => Task.CompletedTask;
         }
     }
 

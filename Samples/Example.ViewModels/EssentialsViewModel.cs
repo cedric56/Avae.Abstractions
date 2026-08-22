@@ -51,11 +51,21 @@ namespace Example.ViewModels
         IShare share,
         ISms sms,
         ITextToSpeech textToSpeech,
-        IVibration vibration
+        IVibration vibration,
+        IVersionTracking versionTracking
         //,
         //IWebAuthenticator webAuthenticator
         ) : IViewModelBase
     {
+        bool IsSupportedInMauiPlatform()
+        {
+#if WINDOWS || ANDROID || MACCATALYST || IOS
+            return true;
+#else
+            return false;
+#endif
+        }
+
         async Task<bool> CheckPermission(Permissions.BasePermission permission)
         {
             if (OperatingSystem.IsAndroid() || OperatingSystem.IsIOS())
@@ -105,7 +115,8 @@ namespace Example.ViewModels
                 service.Show(results.FileName, "");
             }
         }
-        [RelayCommand]
+
+        [RelayCommand(CanExecute = nameof(IsSupportedInMauiPlatform))]
         public async Task PickImageCmd()
         {
             var options = new PickOptions()
@@ -120,7 +131,7 @@ namespace Example.ViewModels
             }
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(IsSupportedInMauiPlatform))]
         public async Task PickPdfCmd()
         {
             var results = await filePicker.PickAsync(new PickOptions()
@@ -212,25 +223,25 @@ namespace Example.ViewModels
             set { accessToken = value; }
         }
 
-        private class ResponderDecoder(string urlToken, string oauthCode, Dictionary<string, string> dico) : IWebAuthenticatorResponseDecoder
-        {
-            readonly string oauthCode = oauthCode;
-            readonly string urlToken = urlToken;
-            readonly Dictionary<string, string> dico = dico;
+        //private class ResponderDecoder(string urlToken, string oauthCode, Dictionary<string, string> dico) : IWebAuthenticatorResponseDecoder
+        //{
+        //    readonly string oauthCode = oauthCode;
+        //    readonly string urlToken = urlToken;
+        //    readonly Dictionary<string, string> dico = dico;
 
-            public IDictionary<string, string>? DecodeResponse(Uri uri)
-            {
-                var values = HttpUtility.ParseQueryString(uri.Query)[oauthCode];
-                if (values != null)
-                    dico.Add(oauthCode, values);
-                var tokenRequestBody = new FormUrlEncodedContent(dico);
-                using var httpClient = new HttpClient();
-                var tokenResponse = httpClient.PostAsync(urlToken, tokenRequestBody).Result;
-                var tokenContent = tokenResponse.Content.ReadAsStringAsync().Result;
-                var dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(tokenContent);
-                return dict?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString() ?? string.Empty);
-            }
-        }
+        //    public IDictionary<string, string>? DecodeResponse(Uri uri)
+        //    {
+        //        var values = HttpUtility.ParseQueryString(uri.Query)[oauthCode];
+        //        if (values != null)
+        //            dico.Add(oauthCode, values);
+        //        var tokenRequestBody = new FormUrlEncodedContent(dico);
+        //        using var httpClient = new HttpClient();
+        //        var tokenResponse = httpClient.PostAsync(urlToken, tokenRequestBody).Result;
+        //        var tokenContent = tokenResponse.Content.ReadAsStringAsync().Result;
+        //        var dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(tokenContent);
+        //        return dict?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString() ?? string.Empty);
+        //    }
+        //}
 
 
 
@@ -453,7 +464,7 @@ namespace Example.ViewModels
                 return;
 
             var s = await mediaPicker.PickPhotosAsync();
-            if (s != null)
+            if (s.Count>0)
             {
                 service.Show(s[0].FileName, "");
             }
@@ -472,7 +483,7 @@ namespace Example.ViewModels
                 return;
 
             var s = await mediaPicker.PickVideosAsync();
-            if (s != null)
+            if (s.Count>0)
             {
                 service.Show(s[0].FileName, "");
             }
@@ -663,10 +674,8 @@ namespace Example.ViewModels
         [RelayCommand]
         public void VersionCmd()
         {
-            //var service = this.GetService<IVersionTracking>();
-            VersionTracking.Track();
-            service.Show(VersionTracking.CurrentVersion, "");
-
+            versionTracking.Track();
+            service.Show(versionTracking.CurrentVersion, "");
         }
 
         [RelayCommand]

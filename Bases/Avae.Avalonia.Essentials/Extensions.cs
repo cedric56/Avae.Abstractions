@@ -26,7 +26,7 @@ public static class Extensions
         var preferences = new AvaloniaPreferences();
         var fileSystem = new AvaloniaFileSystem();
         var webAuthenticator = (IWebAuthenticator)AvaloniaDefaults.CreateAvaloniaWebAuthenticator(platformProvider);
-
+        
 #if MACOS
         services.SetDefaults(
             null!,
@@ -63,7 +63,8 @@ public static class Extensions
             (ISms)MacosDefaults.CreateSms(),
             (ITextToSpeech)MacosDefaults.CreateTextToSpeech(),
             (IVibration)MacosDefaults.CreateVibration(),
-            webAuthenticator);
+            webAuthenticator,
+            VersionTracking.Default);
 
 #elif WINDOWS_OS && !IOS && !ANDROID && !BROWSER
 
@@ -106,7 +107,8 @@ public static class Extensions
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new SmsImplementation() : null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new TextToSpeechImplementation() : null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new VibrationImplementation() : null!,
-            webAuthenticator);
+            webAuthenticator,
+            VersionTracking.Default);
 #elif BROWSER
         services.SetDefaults(
             null!,
@@ -143,7 +145,8 @@ public static class Extensions
             null!,
             null!,
             null!,
-            webAuthenticator);
+            webAuthenticator,
+            VersionTracking.Default);
 #endif
 
         services.RegisterEssentials();

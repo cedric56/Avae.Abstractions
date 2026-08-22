@@ -4,14 +4,16 @@ using CommunityToolkit.Mvvm.Input;
 using Example.Models;
 using Example.ViewModels.Defaults;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Example.ViewModels;
 
-[ObservableObject]
-public partial class MainViewModel(Router router) : RoutesViewModelImplementation(router)
+[INotifyPropertyChanged]
+public partial class MainViewModel(Router router) : 
+    RoutesViewModelImplementation(router)
 {
     [ObservableProperty]
-    private bool _isMenuPaneOpen;
+    public partial bool IsMenuPaneOpen { get; set; }
 
     [RelayCommand]
     private void TriggerMenuPane()

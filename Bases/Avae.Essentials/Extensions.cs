@@ -50,7 +50,8 @@ public static class Extensions
         ISms sms,
         ITextToSpeech textToSpeech,
         IVibration vibration,
-        IWebAuthenticator webAuthenticator)
+        IWebAuthenticator webAuthenticator,
+        IVersionTracking versionTracking)
     {
         EssentialsAccessors.SetScreenshot(null, screenshot);
         EssentialsAccessors.SetFilePicker(null, filepicker);
@@ -87,45 +88,47 @@ public static class Extensions
         EssentialsAccessors.SetSms(null, sms);
         EssentialsAccessors.SetTextToSpeech(null, textToSpeech);
         EssentialsAccessors.SetVibration(null, vibration);
+        EssentialsAccessors.SetVersionTracking(null, versionTracking);
     }
 
-    public static void RegisterEssentials(this IServiceCollection services)
+    public static void RegisterEssentials(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Singleton)
     {
-        services.TryAddSingleton(Accelerometer.Default);
-        services.TryAddSingleton(AppActions.Current);
-        services.TryAddSingleton(AppInfo.Current);
-        services.TryAddSingleton(Barometer.Default);
-        services.TryAddSingleton(Battery.Default);
-        services.TryAddSingleton(Browser.Default);
-        services.TryAddSingleton(Clipboard.Default);
-        services.TryAddSingleton(Compass.Default);
-        services.TryAddSingleton(Connectivity.Current);
-        services.TryAddSingleton(Contacts.Default);
-        services.TryAddSingleton(DeviceDisplay.Current);
-        services.TryAddSingleton(DeviceInfo.Current);
-        services.TryAddSingleton(Email.Default);
-        services.TryAddSingleton(FilePicker.Default);
-        services.TryAddSingleton(FileSystem.Current);
-        services.TryAddSingleton(Flashlight.Default);
-        services.TryAddSingleton(Geocoding.Default);
-        services.TryAddSingleton(Geolocation.Default);
-        services.TryAddSingleton(Gyroscope.Default);
-        services.TryAddSingleton(HapticFeedback.Default);
-        services.TryAddSingleton(Launcher.Default);
-        services.TryAddSingleton(Magnetometer.Default);
-        services.TryAddSingleton(Map.Default);
-        services.TryAddSingleton(MediaPicker.Default);
-        services.TryAddSingleton(OrientationSensor.Default);
-        services.TryAddSingleton(PhoneDialer.Default);
-        services.TryAddSingleton(Preferences.Default);
-        services.TryAddSingleton(Screenshot.Default);
-        services.TryAddSingleton(SecureStorage.Default);
-        services.TryAddSingleton(SemanticScreenReader.Default);
-        services.TryAddSingleton(Share.Default);
-        services.TryAddSingleton(Sms.Default);
-        services.TryAddSingleton(TextToSpeech.Default);
-        services.TryAddSingleton(Vibration.Default);
-        services.TryAddSingleton(WebAuthenticator.Default);
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IAccelerometer), _ => Accelerometer.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IAppActions), _ => AppActions.Current, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IAppInfo), _ => AppInfo.Current, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IBarometer), _ => Barometer.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IBattery), _ => Battery.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IBrowser), _ => Browser.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IClipboard), _ => Clipboard.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(ICompass), _ => Compass.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IConnectivity), _ => Connectivity.Current, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IContacts), _ => Contacts.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IDeviceDisplay), _ => DeviceDisplay.Current, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IDeviceInfo), _ => DeviceInfo.Current, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IEmail), _ => Email.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IFilePicker), _ => FilePicker.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IFileSystem), _ => FileSystem.Current, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IFlashlight), _ => Flashlight.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IGeocoding), _ => Geocoding.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IGeolocation), _ => Geolocation.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IGyroscope), _ => Gyroscope.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IHapticFeedback), _ => HapticFeedback.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(ILauncher), _ => Launcher.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IMagnetometer), _ => Magnetometer.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IMap), _ => Map.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IMediaPicker), _ => MediaPicker.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IOrientationSensor), _ => OrientationSensor.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IPhoneDialer), _ => PhoneDialer.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IPreferences), _ => Preferences.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IScreenshot), _ => Screenshot.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(ISecureStorage), _ => SecureStorage.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(ISemanticScreenReader), _ => SemanticScreenReader.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IShare), _ => Share.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(ISms), _ => Sms.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(ITextToSpeech), _ => TextToSpeech.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IVibration), _ => Vibration.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IVersionTracking), _ => VersionTracking.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IWebAuthenticator), _ => WebAuthenticator.Default, lifetime));
     }
 
     public static Task ComposeAsync(this IEmail email, IEnumerable<FileBase> files, EmailMessage message)
