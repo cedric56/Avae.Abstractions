@@ -13,6 +13,21 @@ public static class ServiceLocator
         provider = serviceProvider;
     }
 
+    public static IServiceScope GetScoped()
+    {
+
+        if (provider == null)
+            throw new InvalidOperationException("ServiceLocator.SetDefault is not been called.");
+        return provider.CreateScope();
+    }
+
+    public static T GetRequiredService<T>(IServiceScope scope) where T : notnull
+    {
+        if (scope == null)
+            throw new InvalidOperationException("Scope is null.");
+        return scope.ServiceProvider.GetRequiredService<T>();
+    }
+
     public static T GetRequiredService<T>() where T : notnull
     {
         if (provider == null)

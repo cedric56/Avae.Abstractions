@@ -7,8 +7,8 @@
         <MudButton OnClick="() => viewModel.PickPhotoCmd()">Pick a Photo</MudButton>
         <MudButton OnClick="() => viewModel.PickVideoCmd()">Pick a Video</MudButton>
         <MudButton OnClick="() => viewModel.PickFileCmd()">File</MudButton>
-        <MudButton OnClick="() => viewModel.PickImageCmd()">Image</MudButton>
-        <MudButton OnClick="() => viewModel.PickPdfCmd()">Pdf</MudButton>
+        <MudButton Disabled="@viewModel.IsSupportedInMauiPlatformInverted()" OnClick="() => viewModel.PickImageCmd()">Image</MudButton>
+        <MudButton Disabled="@viewModel.IsSupportedInMauiPlatformInverted()" OnClick="() => viewModel.PickPdfCmd()">Pdf</MudButton>
         <MudButton OnClick="() => viewModel.PickCustomTypeCmd()">Custom</MudButton>
         <MudButton OnClick="() => viewModel.PickMultipleFilesCmd()">Multiple</MudButton>
     </MudExpansionPanel>

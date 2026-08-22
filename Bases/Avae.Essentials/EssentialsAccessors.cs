@@ -21,7 +21,7 @@ public static class EssentialsAccessors
 {
     [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
     [return: UnsafeAccessorType("Microsoft.Maui.Media.Locale, Microsoft.Maui.Essentials")]
-    public extern static Locale CreateLocale(string language, string country, string name, string id);
+    public extern static object CreateLocale(string language, string country, string name, string id);
 
     [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SetDefault")]
     public static extern void SetAccelerometer(

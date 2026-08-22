@@ -64,7 +64,11 @@ namespace Avae.Avalonia.Essentials
     partial class TextToSpeechImplementation : ITextToSpeech
     {
         Task<IEnumerable<Locale>> PlatformGetLocalesAsync() =>
-            Task.FromResult(SpeechSynthesizer.AllVoices.Select(v => EssentialsAccessors.CreateLocale(v.Language, string.Empty, v.DisplayName, v.Id)));
+            Task.FromResult(SpeechSynthesizer.AllVoices.Select(v =>
+            {
+                var country = Avae.Essentials.Extensions.GetCountry(v.Language);
+                return (Locale)EssentialsAccessors.CreateLocale(v.Language, country ?? string.Empty, v.DisplayName, v.Id);
+            }));
 
         async Task PlatformSpeakAsync(string text, SpeechOptions? options, CancellationToken cancelToken = default)
         {

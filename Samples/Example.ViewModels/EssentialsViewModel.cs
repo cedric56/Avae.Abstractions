@@ -6,13 +6,11 @@ using Microsoft.Maui.Accessibility;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
-using Microsoft.Maui.Authentication;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices.Sensors;
 using Microsoft.Maui.Media;
 using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
-using System.Web;
 
 namespace Example.ViewModels
 {
@@ -51,19 +49,25 @@ namespace Example.ViewModels
         IShare share,
         ISms sms,
         ITextToSpeech textToSpeech,
-        IVibration vibration,
-        IVersionTracking versionTracking
+        IVibration vibration
+        //,
+        //IVersionTracking versionTracking
         //,
         //IWebAuthenticator webAuthenticator
         ) : IViewModelBase
     {
-        bool IsSupportedInMauiPlatform()
+        public bool IsSupportedInMauiPlatform()
         {
 #if WINDOWS || ANDROID || MACCATALYST || IOS
             return true;
 #else
             return false;
 #endif
+        }
+
+        public bool IsSupportedInMauiPlatformInverted()
+        {
+            return !IsSupportedInMauiPlatform();
         }
 
         async Task<bool> CheckPermission(Permissions.BasePermission permission)
@@ -674,8 +678,8 @@ namespace Example.ViewModels
         [RelayCommand]
         public void VersionCmd()
         {
-            versionTracking.Track();
-            service.Show(versionTracking.CurrentVersion, "");
+            //versionTracking.Track();
+            //service.Show(versionTracking.CurrentVersion, "");
         }
 
         [RelayCommand]

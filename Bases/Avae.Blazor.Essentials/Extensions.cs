@@ -1,12 +1,10 @@
 ﻿using Append.Blazor.WebShare;
-using Avae.Essentials;
 using BlazorNative.Core;
 using BlazorNative.Device;
 using KristofferStrube.Blazor.FileSystemAccess;
 using KristofferStrube.Blazor.MediaCaptureStreams;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.JSInterop;
 using Microsoft.Maui.Accessibility;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.Communication;
@@ -40,41 +38,46 @@ public static class Extensions
         services.TryAddScoped<BlazorSensors.AbsoluteOrientationSensor>();
 
         //services.SetDefaults(
-        //   new BlazorAccelerometer(new BlazorSensors.Accelerometer(jSRuntime)),
-        //   AppActions.Current,
-        //   AppInfo.Current,
-        //   Barometer.Default,
-        //   Battery.Default,
-        //   BlazorBrowser > (),
-        //   BlazorClipboard > (),
-        //   Compass.Default,
-        //   Connectivity.Current,
-        //   Contacts.Default,
-        //   DeviceDisplay.Current,
-        //   DeviceInfo.Current,
-        //   Email.Default,
-        //   BlazorFilePicker,
-        //   FileSystem.Current,
-        //   Flashlight.Default,
-        //   BlazorGeocoding > (),
-        //   BlazorGeolocation > (),
-        //   BlazorGyroscope > (),
-        //   HapticFeedback.Default,
-        //   BlazorLauncher > (),
-        //   BlazorMagnetometer > (),
-        //   Map.Default,
-        //   BlazorMediaPicker > (),
-        //   BlazorOrientationSensor > (),
-        //   BlazorPhoneDialer > (),
-        //   Preferences.Default,
-        //   Screenshot.Default,
-        //   BlazorSecureStorage > (),
-        //   SemanticScreenReader.Default,
-        //   BlazorShare > (),
-        //   BlazorSms > (),
-        //   BlazorTextToSpeech > (),
-        //   Vibration.Default,
-        //   WebAuthenticator.Default);
+        //  new BlazorAccelerometer(),
+        //  AppActions.Current,
+        //  AppInfo.Current,
+        //  Barometer.Default,
+        //  Battery.Default,
+        //  new BlazorBrowser(),
+        //  new BlazorClipboard(),
+        //  Compass.Default,
+        //  Connectivity.Current,
+        //  Contacts.Default,
+        //  DeviceDisplay.Current,
+        //  DeviceInfo.Current,
+        //  Email.Default,
+        //  new BlazorFilePicker(),
+        //  FileSystem.Current,
+        //  Flashlight.Default,
+        //  new BlazorGeocoding(),
+        //  new BlazorGeolocation(),
+        //  new BlazorGyroscope(),
+        //  HapticFeedback.Default,
+        //  new BlazorLauncher(),
+        //  new BlazorMagnetometer(),
+        //  Map.Default,
+        //  new BlazorMediaPicker(),
+        //  new BlazorOrientationSensor(),
+        //  new BlazorPhoneDialer(),
+        //  Preferences.Default,
+        //  Screenshot.Default,
+        //  () => new BlazorSecureStorage(),
+        //  SemanticScreenReader.Default,
+        //  new BlazorShare(),
+        //  new BlazorSms(),
+        //  new BlazorTextToSpeech(),
+        //  Vibration.Default,
+        //  WebAuthenticator.Default,
+        //  null!
+        //  //VersionTracking.Default
+        //  );
+
+        //services.RegisterEssentials(ServiceLifetime.Scoped);
 
         services.TryAddScoped<IAccelerometer, BlazorAccelerometer>();
         services.TryAddScoped<IAppActions>(_ => AppActions.Current);
