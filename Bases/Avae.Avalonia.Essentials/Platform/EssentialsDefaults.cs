@@ -303,8 +303,8 @@ namespace Avae.Avalonia.Essentials
         [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaWebAuthenticator, Avalonia.Controls.Maui.Essentials")]
         internal extern static object CreateAvaloniaWebAuthenticator(IAvaloniaEssentialsPlatformProvider provider);
 
-        [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "ResolveContentType")]
-        [return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaFileResult, Avalonia.Controls.Maui.Essentials")]
-        internal extern static object ResolveContentType(string filename);
+        //[UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "ResolveContentType")]
+        //[return: UnsafeAccessorType("Avalonia.Controls.Maui.Essentials.AvaloniaFileResult, Avalonia.Controls.Maui.Essentials")]
+        //internal extern static object ResolveContentType(string filename);
     }
 }

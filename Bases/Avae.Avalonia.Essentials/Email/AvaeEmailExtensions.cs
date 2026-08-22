@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.ApplicationModel.Communication;
+﻿using Avae.Essentials;
+using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.Storage;
 using System.Security.Cryptography;
 using System.Text;
@@ -144,7 +145,7 @@ public static class AvaeEmailExtensions
                 {
                     using var stream = new FileStream(attachment.FullPath, FileMode.Open, FileAccess.Read);
                     //await AppendAttachement(AvaloniaFileResult.ResolveContentType(attachment.FileName), stream);
-                    await AppendAttachement((string)AvaloniaDefaults.ResolveContentType(attachment.FileName), stream);
+                    await AppendAttachement(EssentialsAccessors.ResolveContentType(attachment.FileName), stream);
                 }
                 else
                 {

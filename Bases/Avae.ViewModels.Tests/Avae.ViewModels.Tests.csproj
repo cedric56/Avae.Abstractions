@@ -16,7 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Avae.Messenger\Avae.Messenger.csproj" />
     <ProjectReference Include="..\Avae.Core\Avae.Core.csproj" />
+    <ProjectReference Include="..\Avae.Messenger\Avae.Messenger.csproj" />
     <ProjectReference Include="..\Avae.ViewModels\Avae.ViewModels.csproj" />
   </ItemGroup>
   <ItemGroup>

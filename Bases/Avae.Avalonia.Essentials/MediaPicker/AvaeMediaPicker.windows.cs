@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls.Maui.Essentials;
+﻿using Avae.Essentials;
+using Avalonia.Controls.Maui.Essentials;
 using Microsoft.Maui.Media;
 using Microsoft.Maui.Storage;
 using System.Runtime.InteropServices;
@@ -14,6 +15,15 @@ namespace Avae.Avalonia.Essentials
     [SupportedOSPlatform("windows10.0.10240")]
     public class AvaeMediaPicker(AvaloniaMediaPicker picker) : IMediaPicker
     {
+        public class AvaeFileResult(string fullPath, string contentType) : FileResult(fullPath, contentType), IAvaeFileResult
+        {
+            public async Task<Stream> OpenFileStreamAsync()
+            {
+                var file = await StorageFile.GetFileFromPathAsync(FullPath);
+                return await file.OpenStreamForReadAsync();
+            }
+        }
+
         [ComImport]
         [Guid("3E68D4BD-7135-4D10-8018-9FB6D9F33FA1")]
         [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)] // WinRT interfaces are IInspectable-based
@@ -31,8 +41,11 @@ namespace Avae.Avalonia.Essentials
             var file = await captureUi.CaptureFileAsync(CameraCaptureUIMode.Photo);
 
             if (file is not null)
+#if WINDOWS
                 return new FileResult(file.Path);
-
+#else
+                return new AvaeFileResult(file.Path, EssentialsAccessors.ResolveContentType(file.Path));
+#endif
             return null;
         }
 
@@ -42,7 +55,11 @@ namespace Avae.Avalonia.Essentials
             captureUi.VideoSettings.Format = CameraCaptureUIVideoFormat.Mp4;
             var file = await captureUi.CaptureFileAsync(CameraCaptureUIMode.Video);
             if (file is not null)
+#if WINDOWS
                 return new FileResult(file.Path);
+#else
+                return new AvaeFileResult(file.Path, EssentialsAccessors.ResolveContentType(file.Path));
+#endif
             return null;
         }
 

@@ -294,6 +294,14 @@ public static class Extensions
         services.TryAdd(ServiceDescriptor.Describe(typeof(IWebAuthenticator), _ => WebAuthenticator.Default, lifetime));
     }
 
+    public static Task<Stream> OpenReadAsync(this FileBase file, bool overridesMauiPlatform = true)
+    {
+        if (file == null) throw new ArgumentNullException(nameof(file));
+        if (file is IAvaeFileResult avaeFileResult)
+            return avaeFileResult.OpenFileStreamAsync();
+        return file.OpenReadAsync();
+    }
+
     public static Task ComposeAsync(this IEmail email, IEnumerable<FileBase> files, EmailMessage message)
     {
         if (email is IAvaeEmail avae)

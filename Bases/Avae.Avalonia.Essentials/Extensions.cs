@@ -26,7 +26,7 @@ public static class Extensions
         var preferences = new AvaloniaPreferences();
         var fileSystem = new AvaloniaFileSystem();
         var webAuthenticator = (IWebAuthenticator)AvaloniaDefaults.CreateAvaloniaWebAuthenticator(platformProvider);
-        
+
 #if MACOS
         services.SetDefaults(
             null!,
@@ -108,7 +108,8 @@ public static class Extensions
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new TextToSpeechImplementation() : null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new VibrationImplementation() : null!,
             webAuthenticator,
-            VersionTracking.Default);
+            null!);
+            //VersionTracking.Default);
 #elif BROWSER
         services.SetDefaults(
             null!,

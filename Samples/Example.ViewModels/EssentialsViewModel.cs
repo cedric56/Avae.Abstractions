@@ -423,10 +423,7 @@ namespace Example.ViewModels
                 if (s != null)
                 {
                     service.Show(s.FullPath, "File");
-
-
-                    using var stream = await s.OpenReadAsync();
-
+                    using var stream = await s.OpenReadAsync(true);
                 }
             }
         }

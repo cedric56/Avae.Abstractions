@@ -33,7 +33,7 @@
 
   <!-- Windows -->
   <ItemGroup Condition="'$(IsWindowsOS)' == 'true' AND '$(IsBrowserTFM)' != 'true' AND '$(IsMacTFM)' != 'true' AND '$(IsAndroidTFM)' != 'true' AND '$(IsIosTFM)' != 'true' AND '$(IsLinuxOS)' != 'true' AND '$(IsWindowsTFM)' != 'true'">
-    <PackageReference Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" />
+    <PackageReference Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" PrivateAssets="compile"/>
     <Compile Include="**\*.windows.cs" />
     <Compile Include="**\*.desktop.cs" />
   </ItemGroup>
