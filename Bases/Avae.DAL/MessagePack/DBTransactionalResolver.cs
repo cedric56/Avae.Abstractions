@@ -4,32 +4,28 @@ using MessagePack.Resolvers;
 
 namespace Avae.DAL;
 
-public sealed class UnionResolver : IFormatterResolver
+public sealed class DBTransactionalResolver : IFormatterResolver
 {
     List<IMessagePackFormatter> _formatters = [new DBTransactionalFormatter()];
 
-    public void RegisterTransactional<T>(IDBTransactionalFormatter formatter) where T : DBTransactional?
+    public void Register<T>(IDBTransactionalFormatter formatter) where T : DBTransactional?
     {
         _formatters.Add(formatter);
         DBTransactionalFormatter.Register<T>(formatter);
     }
 
-    private static UnionResolver GetInstance()
+    private static DBTransactionalResolver GetInstance()
     {
-        var resolver = new UnionResolver();
-        //MessagePackSerializer.DefaultOptions = 
+        var resolver = new DBTransactionalResolver();
         MessagePackSerializer.DefaultOptions.WithResolver(CompositeResolver.Create(
-
-            //StandardResolver.Instance,       // For primitive types
-            //BuiltinResolver.Instance,         // For built-in types
             resolver
         ));
         return resolver;
     }
 
-    public static UnionResolver Instance = GetInstance();
+    public static DBTransactionalResolver Instance = GetInstance();
 
-    private UnionResolver()
+    private DBTransactionalResolver()
     {
 
     }
@@ -50,7 +46,7 @@ public sealed class UnionResolver : IFormatterResolver
     }
 }
 
-public class UnionMessagePackSerializerOptions(UnionResolver resolver) : MessagePackSerializerOptions(resolver)
+public class DBTransactionalSerializerOptions(DBTransactionalResolver resolver) : MessagePackSerializerOptions(resolver)
 {
 
 }

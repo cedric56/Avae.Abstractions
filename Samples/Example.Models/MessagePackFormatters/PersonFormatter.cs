@@ -15,7 +15,7 @@ public class PersonFormatter : IMessagePackFormatter<Person?>, IDBTransactionalF
             return;
         }
 
-        if (options is UnionMessagePackSerializerOptions)
+        if (options is DBTransactionalSerializerOptions)
         {
             //Client input => When we call server it sends only without contacts
             SetPersonFields(ref writer, 3);

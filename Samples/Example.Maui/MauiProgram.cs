@@ -39,6 +39,7 @@ public static class MauiProgram
                 container.Register<HomeView>();
                 container.Register<MenuView>();
                 container.Register<ModalView>();
+                //container.Register<EssentialsView>();
                 //container.Register<FormView>();
                 container.Register<FormViewModel>((sp, context) =>
                 {
@@ -54,7 +55,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<HomeViewModel>();
         builder.Services.AddSingleton<MenuViewModel>();
-        builder.Services.AddTransient<ModalViewModel>();
+        builder.Services.AddTransient<EssentialsViewModel>();
+        builder.Services.AddTransient<ModalViewModel>();        
         builder.Services.AddTransient<FormViewModel>();
         builder.Services.UseDBSqlLayer<SqliteConnection>();
 #if DEBUG

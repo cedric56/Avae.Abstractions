@@ -6,15 +6,15 @@ using Example.Models;
 
 namespace Example.Server;
 
-public class OnionService : MagicOnionService
+public class ExampleLayerService : MagicOnionService
 {
-    static UnionMessagePackSerializerOptions options;
+    static DBTransactionalSerializerOptions options;
 
-    static OnionService()
+    static ExampleLayerService()
     {
         var layer = ServiceLocator.GetRequiredService<IDBLayer>();
 
-        options = new UnionMessagePackSerializerOptions(UnionResolver.Instance);
+        options = new DBTransactionalSerializerOptions(DBTransactionalResolver.Instance);
 
         EntityHandler.Handlers = new Dictionary<string, EntityHandler>()
         {
@@ -23,7 +23,7 @@ public class OnionService : MagicOnionService
         };
     }
 
-    protected override UnionMessagePackSerializerOptions? GetOptions(string type)
+    protected override DBTransactionalSerializerOptions? GetOptions(string type)
     {
         if (type == typeof(Person).Name)
             return options;

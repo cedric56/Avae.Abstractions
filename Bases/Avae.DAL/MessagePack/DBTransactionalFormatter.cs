@@ -71,6 +71,6 @@ internal class DBTransactionalFormatter : IMessagePackFormatter<DBTransactional?
         if (_formatters.TryGetValue(targetType, out var formatter))
             return formatter.Deserialize(ref reader, options) as DBTransactional;
 
-        throw new NotImplementedException($"Must Register type : {targetType} on {nameof(UnionResolver)}");
+        throw new NotImplementedException($"Must Register type : {targetType} on {nameof(DBTransactionalResolver)}");
     }
 }

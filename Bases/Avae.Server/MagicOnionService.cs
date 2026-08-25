@@ -9,7 +9,7 @@ namespace Avae.Server;
 
 public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicOnionLayer
 {
-    private async UnaryResult<DBResult> Request(string type, Func<EntityHandler, UnionMessagePackSerializerOptions?, Task<byte[]>> serialize)
+    private async UnaryResult<DBResult> Request(string type, Func<EntityHandler, DBTransactionalSerializerOptions?, Task<byte[]>> serialize)
     {            
         if (string.IsNullOrWhiteSpace(type))
         {
@@ -68,7 +68,7 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
         return Request(type, async (entity, options) => MessagePackSerializer.Serialize(entity.Enumerable, await entity.WhereAsync(filters, commandTimeout), options));
     }
 
-    protected virtual UnionMessagePackSerializerOptions? GetOptions(string type)
+    protected virtual DBTransactionalSerializerOptions? GetOptions(string type)
     {
         return null;
     }
