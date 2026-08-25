@@ -16,11 +16,11 @@ class Program
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
-            .WithAppNotifications(new AppNotificationOptions()
-            {
-                AppIcon = "C:\\Users\\cedri\\source\\repos\\Avae.Abstractions\\Samples\\Example\\Assets\\avalonia-logo.ico",
-                AppName = "Example",
-            })
+            //.WithAppNotifications(new AppNotificationOptions()
+            //{
+            //    AppIcon = "C:\\Users\\cedri\\source\\repos\\Avae.Abstractions\\Samples\\Example\\Assets\\avalonia-logo.ico",
+            //    AppName = "Example",
+            //})
             .UsePlatformDetect()
             //.UseReactiveUI()
             .WithInterFont()

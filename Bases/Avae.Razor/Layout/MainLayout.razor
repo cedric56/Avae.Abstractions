@@ -1,10 +1,13 @@
-﻿@using Avae.ViewModels
+﻿@using Avae.Core
 @using Avae.Razor.Components
 @using Avae.Services
+@using Avae.ViewModels
 @using MudBlazor
 @inherits LayoutComponentBase
 @* @implements IDisposable *@
 @inject IIocConfiguration Configuration
+@inject CircuitServiceAccessor circuit
+@inject IServiceProvider ServiceProvider
 @inject ComponentView NavMenu
 
 @IocConfiguration.Extras
@@ -46,6 +49,8 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+
+        circuit.Services = ServiceProvider;
 
         IocConfiguration.RequestedThemeChanged += ThemeChanged;
     }

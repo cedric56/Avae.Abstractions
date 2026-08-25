@@ -4,6 +4,7 @@ using Microsoft.Maui.Devices.Sensors;
 using System.Numerics;
 using System.Runtime.Versioning;
 using Windows.Devices.Sensors;
+using Dispatcher = Avalonia.Threading.Dispatcher;
 using WindowsAccelerometer = Windows.Devices.Sensors.Accelerometer;
 
 namespace Avae.Avalonia.Essentials

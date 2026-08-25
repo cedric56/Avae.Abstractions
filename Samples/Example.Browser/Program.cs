@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Browser;
+using Avalonia.Labs.Notifications;
 using Example;
 using Example.DAL;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,8 @@ internal sealed partial class Program
                 .StartBrowserAppAsync("out");
 
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<BrowserApp>();
+        => AppBuilder.Configure<BrowserApp>()
+                        .WithAppNotifications();
 
     public class BrowserApp : App
     {

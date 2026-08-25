@@ -49,9 +49,8 @@ namespace Example.ViewModels
         IShare share,
         ISms sms,
         ITextToSpeech textToSpeech,
-        IVibration vibration
-        //,
-        //IVersionTracking versionTracking
+        IVibration vibration,
+        IVersionTracking versionTracking
         //,
         //IWebAuthenticator webAuthenticator
         ) : IViewModelBase
@@ -675,8 +674,8 @@ namespace Example.ViewModels
         [RelayCommand]
         public void VersionCmd()
         {
-            //versionTracking.Track();
-            //service.Show(versionTracking.CurrentVersion, "");
+            versionTracking.Track();
+            service.Show(versionTracking.CurrentVersion, "");
         }
 
         [RelayCommand]

@@ -1,15 +1,17 @@
-﻿using Avae.Essentials;
+﻿using Avae.Core;
+using Avae.Essentials;
 using Microsoft.Maui.Media;
 using Toolbelt.Blazor.SpeechSynthesis;
 
 namespace Avae.Blazor.Essentials;
 
-internal class BlazorTextToSpeech(SpeechSynthesis speechSynthesis) : ITextToSpeech
-{   
-    Dictionary<Locale, SpeechSynthesisVoice> dic = new();
+internal class BlazorTextToSpeech : ITextToSpeech
+{
+    Dictionary <Locale, SpeechSynthesisVoice> dic = new();
 
     public async Task<IEnumerable<Locale>> GetLocalesAsync()
     {
+        var speechSynthesis = ServiceLocator.GetScopedRequiredService<SpeechSynthesis>();
         return (await speechSynthesis.GetVoicesAsync()).Select(v =>
         {
             var country = Avae.Essentials.Extensions.GetCountry(v.Lang);
@@ -21,6 +23,7 @@ internal class BlazorTextToSpeech(SpeechSynthesis speechSynthesis) : ITextToSpee
 
     public async Task SpeakAsync(string text, SpeechOptions? options = null, CancellationToken cancelToken = default)
     {
+        var speechSynthesis = ServiceLocator.GetScopedRequiredService<SpeechSynthesis>();
         var utterance = new SpeechSynthesisUtterance()
         {
             Text = text

@@ -1,16 +1,7 @@
 ﻿using Avae.Essentials;
 using Avalonia.Controls.Maui.Essentials;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui.Accessibility;
 using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.ApplicationModel.Communication;
-using Microsoft.Maui.ApplicationModel.DataTransfer;
-using Microsoft.Maui.Authentication;
-using Microsoft.Maui.Devices;
-using Microsoft.Maui.Devices.Sensors;
-using Microsoft.Maui.Media;
-using Microsoft.Maui.Networking;
-using Microsoft.Maui.Storage;
 
 namespace Avae.Avalonia.Essentials;
 
@@ -20,58 +11,98 @@ public static class Extensions
     {
         var platformProvider = new AvaeTopLevelStateManager();
         var screenshot = new AvaloniaScreenshot(platformProvider);
-        var filepicker = (IFilePicker)AvaloniaDefaults.CreateAvaloniaFilePicker(platformProvider);
-        var mediapicker = (IMediaPicker)AvaloniaDefaults.CreateAvaloniaMediaPicker(platformProvider);
+        var filepicker = (Microsoft.Maui.Storage.IFilePicker)AvaloniaDefaults.CreateAvaloniaFilePicker(platformProvider);
+        var mediapicker = (Microsoft.Maui.Media.IMediaPicker)AvaloniaDefaults.CreateAvaloniaMediaPicker(platformProvider);
         var hapticFeedback = new AvaloniaHapticFeedback();
         var preferences = new AvaloniaPreferences();
         var fileSystem = new AvaloniaFileSystem();
-        var webAuthenticator = (IWebAuthenticator)AvaloniaDefaults.CreateAvaloniaWebAuthenticator(platformProvider);
-
-#if MACOS
+        var webAuthenticator = (Microsoft.Maui.Authentication.IWebAuthenticator)AvaloniaDefaults.CreateAvaloniaWebAuthenticator(platformProvider);
+#if LINUX_OS
+        if (OperatingSystem.IsLinux())
+        {
+            services.SetDefaults(
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Sensors.LinuxAccelerometer(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.AppModel.LinuxAppActions(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.AppModel.LinuxAppInfo(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Sensors.LinuxBarometer(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Devices.LinuxBattery(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.AppModel.LinuxBrowser(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.DataTransfer.LinuxClipboard(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Sensors.LinuxCompass(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Networking.LinuxConnectivity(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Communication.LinuxContacts(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Devices.LinuxDeviceDisplay(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Devices.LinuxDeviceInfo(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Communication.LinuxEmail(),
+                filepicker,
+                fileSystem,
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Devices.LinuxFlashlight(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Sensors.LinuxGeocoding(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Sensors.LinuxGeolocation(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Sensors.LinuxGyroscope(),
+                hapticFeedback,
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.AppModel.LinuxLauncher(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Sensors.LinuxMagnetometer(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.AppModel.LinuxMap(),
+                mediapicker,
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Sensors.LinuxOrientationSensor(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Communication.LinuxPhoneDialer(),
+                preferences,
+                screenshot,
+                () => OperatingSystem.IsLinux() ? new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Storage.LinuxSecureStorage() : null!,
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Accessibility.LinuxSemanticScreenReader(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.DataTransfer.LinuxShare(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Communication.LinuxSms(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Media.LinuxTextToSpeech(),
+                new Microsoft.Maui.Platforms.Linux.Gtk4.Essentials.Devices.LinuxVibration(),
+                webAuthenticator,
+                () => VersionTracking.Default);
+        }
+        return;
+#elif MACOS
         services.SetDefaults(
             null!,
             null!,
-            (IAppInfo)MacosDefaults.CreateAppInfo(),
+            (Microsoft.Maui.ApplicationModel.IAppInfo)MacosDefaults.CreateAppInfo(),
             null!,
-            (IBattery)MacosDefaults.CreateBattery(),
-            (IBrowser)MacosDefaults.CreateBrowser(),
-            (IClipboard)MacosDefaults.CreateClipboard(),
+            (Microsoft.Maui.Devices.IBattery)MacosDefaults.CreateBattery(),
+            (Microsoft.Maui.ApplicationModel.IBrowser)MacosDefaults.CreateBrowser(),
+            (Microsoft.Maui.ApplicationModel.DataTransfer.IClipboard)MacosDefaults.CreateClipboard(),
             null!,
-            (IConnectivity)MacosDefaults.CreateConnectivity(),
+            (Microsoft.Maui.Networking.IConnectivity)MacosDefaults.CreateConnectivity(),
             null!,
-            (IDeviceDisplay)MacosDefaults.CreateDeviceDisplay(),
-            (IDeviceInfo)MacosDefaults.CreateDeviceInfo(),
-            (IEmail)MacosDefaults.CreateEmail(),
+            (Microsoft.Maui.Devices.IDeviceDisplay)MacosDefaults.CreateDeviceDisplay(),
+            (Microsoft.Maui.Devices.IDeviceInfo)MacosDefaults.CreateDeviceInfo(),
+            (Microsoft.Maui.ApplicationModel.Communication.IEmail)MacosDefaults.CreateEmail(),
             filepicker,
             fileSystem,
-            (IFlashlight)MacosDefaults.CreateFlashlight(),
+            (Microsoft.Maui.Devices.IFlashlight)MacosDefaults.CreateFlashlight(),
             null!,
-            (IGeolocation)MacosDefaults.CreateGeolocation(),
+            (Microsoft.Maui.Devices.Sensors.IGeolocation)MacosDefaults.CreateGeolocation(),
             null!,
             hapticFeedback,
-            (ILauncher)MacosDefaults.CreateLauncher(),
+            (Microsoft.Maui.ApplicationModel.ILauncher)MacosDefaults.CreateLauncher(),
             null!,
-            (IMap)MacosDefaults.CreateMap(),
+            (Microsoft.Maui.ApplicationModel.IMap)MacosDefaults.CreateMap(),
             mediapicker,
             null!,
-            (IPhoneDialer)MacosDefaults.CreatePhoneDialer(),
+            (Microsoft.Maui.ApplicationModel.Communication.IPhoneDialer)MacosDefaults.CreatePhoneDialer(),
             preferences,
             screenshot,
-            () => (ISecureStorage)MacosDefaults.CreateSecureStorage(),
-            (ISemanticScreenReader)MacosDefaults.CreateSemanticScreenReader(),
-            (IShare)MacosDefaults.CreateShare(),
-            (ISms)MacosDefaults.CreateSms(),
-            (ITextToSpeech)MacosDefaults.CreateTextToSpeech(),
-            (IVibration)MacosDefaults.CreateVibration(),
+            () => (Microsoft.Maui.Storage.ISecureStorage)MacosDefaults.CreateSecureStorage(),
+            (Microsoft.Maui.Accessibility.ISemanticScreenReader)MacosDefaults.CreateSemanticScreenReader(),
+            (Microsoft.Maui.ApplicationModel.DataTransfer.IShare)MacosDefaults.CreateShare(),
+            (Microsoft.Maui.ApplicationModel.Communication.ISms)MacosDefaults.CreateSms(),
+            (Microsoft.Maui.Media.ITextToSpeech)MacosDefaults.CreateTextToSpeech(),
+            (Microsoft.Maui.Devices.IVibration)MacosDefaults.CreateVibration(),
             webAuthenticator,
-            VersionTracking.Default);
+            () => Microsoft.Maui.ApplicationModel.VersionTracking.Default);
 
 #elif WINDOWS_OS && !IOS && !ANDROID && !BROWSER
-
         services.SetDefaults(
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new AccelerometerImplementation() : null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10586, 0) ? new AppActionsImplementation() : null!,
-            OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new AvaeAppInfo() : null!,
+            OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new AvaeAppInfo() : new AppInfoDefault(),
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new BarometerImplementation() : null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new BatteryImplementation() : null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new BrowserImplementation() : null!,
@@ -86,9 +117,9 @@ public static class Extensions
             fileSystem,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new FlashlightImplementation() : null!,
 #if WINDOWS
-            OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) ? Geocoding.Default : null!,
+            OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) ? Microsoft.Maui.Devices.Sensors.Geocoding.Default : null!,
 #else
-            new Avae.Avalonia.Essentials.AvaeGeocoding(),
+            new AvaeGeocoding(),
 #endif
             null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new GyroscopeImplementation() : null!,
@@ -98,7 +129,7 @@ public static class Extensions
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new MapImplementation() : null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new AvaeMediaPicker((AvaloniaMediaPicker)mediapicker) : null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new OrientationSensorImplementation() : null!,
-            new Avae.Avalonia.Essentials.AvaePhoneDialer(),
+            new AvaePhoneDialer(),
             preferences,
             screenshot,
             () => OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new SecureStorageImplementation() : null!,
@@ -108,8 +139,7 @@ public static class Extensions
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new TextToSpeechImplementation() : null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new VibrationImplementation() : null!,
             webAuthenticator,
-            null!);
-            //VersionTracking.Default);
+            () => Microsoft.Maui.ApplicationModel.VersionTracking.Default);
 #elif BROWSER
         services.SetDefaults(
             null!,
@@ -147,9 +177,7 @@ public static class Extensions
             null!,
             null!,
             webAuthenticator,
-            VersionTracking.Default);
+            () => Microsoft.Maui.ApplicationModel.VersionTracking.Default);
 #endif
-
-        services.RegisterEssentials();
     }
 }

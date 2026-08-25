@@ -1,5 +1,7 @@
-﻿using Avae.Essentials;
+﻿using Avae.Core;
+using Avae.Essentials;
 using KristofferStrube.Blazor.FileSystemAccess;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Microsoft.Maui.Storage;
 
@@ -37,7 +39,7 @@ class BlazorFileResult : FileResult
    
 }
 
-class BlazorFilePicker(IFileSystemAccessService fileSystemAccessService) : IFilePicker
+class BlazorFilePicker : IFilePicker
 {
     public async Task<FileResult?> PickAsync(PickOptions? options = null)
     {
@@ -47,6 +49,8 @@ class BlazorFilePicker(IFileSystemAccessService fileSystemAccessService) : IFile
             {
                 Multiple = false,
             };
+
+            var fileSystemAccessService = ServiceLocator.GetScopedRequiredService<IFileSystemAccessService>();
             var fileHandles = await fileSystemAccessService.ShowOpenFilePickerAsync(opt);
             var task = fileHandles.Select(f => f.GetFileAsync()).Single();
             var file = await task;
@@ -67,6 +71,7 @@ class BlazorFilePicker(IFileSystemAccessService fileSystemAccessService) : IFile
             {
                 Multiple = true,
             };
+            var fileSystemAccessService = ServiceLocator.GetScopedRequiredService<IFileSystemAccessService>();
             var fileHandles = await fileSystemAccessService.ShowOpenFilePickerAsync(opt);
             var tasks = fileHandles.Select(f => f.GetFileAsync());
             var files = new List<KristofferStrube.Blazor.FileAPI.File>(await Task.WhenAll(tasks));

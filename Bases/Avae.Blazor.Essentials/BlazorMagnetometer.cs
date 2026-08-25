@@ -1,39 +1,41 @@
-﻿using Microsoft.Maui.Devices.Sensors;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Avae.Core;
+using BlazorSensors;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Devices.Sensors;
 
 namespace Avae.Blazor.Essentials;
 
 internal class BlazorMagnetometer : IMagnetometer
 {
-    BlazorSensors.Magnetometer magnetometer;
-    public BlazorMagnetometer(BlazorSensors.Magnetometer magnetometer)
-    {
-        this.magnetometer = magnetometer;
-        this.magnetometer.OnReading += Accelerometer_OnReading;
-    }
+    BlazorSensors.Magnetometer? magnetometer;
 
     private void Accelerometer_OnReading(object? sender, EventArgs e)
     {
-        ReadingChanged?.Invoke(sender, new MagnetometerChangedEventArgs(
-            new MagnetometerData(magnetometer.X, magnetometer.Y, magnetometer.Z)));
+        if (magnetometer != null)
+            ReadingChanged?.Invoke(sender, new MagnetometerChangedEventArgs(
+                new MagnetometerData(magnetometer.X, magnetometer.Y, magnetometer.Z)));
     }
 
     public bool IsSupported => true;
 
-    public bool IsMonitoring => magnetometer.Activated;
+    public bool IsMonitoring => magnetometer?.Activated ?? false;
 
     public event EventHandler<MagnetometerChangedEventArgs>? ReadingChanged;
 
     public void Start(SensorSpeed sensorSpeed)
     {
+        if (magnetometer == null)
+        {
+            magnetometer = ServiceLocator.GetScopedRequiredService<BlazorSensors.Magnetometer>();
+            magnetometer.OnReading += Accelerometer_OnReading;
+        }
+
         magnetometer.Frequency = sensorSpeed.ToPlatform();
         magnetometer.Start();
     }
 
     public void Stop()
     {
-        magnetometer.Stop();
+        magnetometer?.Stop();
     }
 }

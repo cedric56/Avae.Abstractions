@@ -6,7 +6,8 @@ xmlns="https://github.com/avaloniaui"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:vm="using:Example.ViewModels"
-             x:DataType="{x:Type vm:EssentialsViewModel}">
+             x:DataType="{x:Type vm:EssentialsViewModel}"
+             Margin="0,50,0,0">
    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
 
 

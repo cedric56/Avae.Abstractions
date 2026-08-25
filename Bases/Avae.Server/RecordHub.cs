@@ -4,13 +4,13 @@ using MagicOnion.Server.Hubs;
 
 namespace Avae.Server;
 
-public class MagicRecordHub<TObject> :
+public class RecordHub<TObject> :
  StreamingHubBase<IRecordHub<TObject>, IRecordHubReceiver<TObject>>,
  IRecordHub<TObject>, IDisposable where TObject : class, new()
 {
     readonly RecordHubRepository<TObject> repository;
 
-    public MagicRecordHub(RecordHubRepository<TObject> repository)
+    public RecordHub(RecordHubRepository<TObject> repository)
     {
         this.repository = repository; // no monitor subscription here anymore
     }

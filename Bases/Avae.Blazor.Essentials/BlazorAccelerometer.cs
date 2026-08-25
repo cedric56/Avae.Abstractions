@@ -1,4 +1,6 @@
-﻿using Microsoft.Maui.Devices.Sensors;
+﻿using Avae.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Devices.Sensors;
 
 namespace Avae.Blazor.Essentials;
 
@@ -31,22 +33,18 @@ internal static partial class SensorSpeedExtensions
 
 internal class BlazorAccelerometer : IAccelerometer
 {
-    BlazorSensors.Accelerometer accelerometer;
-    public BlazorAccelerometer(BlazorSensors.Accelerometer accelerometer)
-    {
-        this.accelerometer = accelerometer;
-        this.accelerometer.OnReading += Accelerometer_OnReading;
-    }
+    BlazorSensors.Accelerometer? accelerometer;
 
     private void Accelerometer_OnReading(object? sender, EventArgs e)
     {
-        ReadingChanged?.Invoke(sender, new AccelerometerChangedEventArgs(
-            new AccelerometerData(accelerometer.X, accelerometer.Y, accelerometer.Z)));
+        if (accelerometer != null)
+            ReadingChanged?.Invoke(sender, new AccelerometerChangedEventArgs(
+                new AccelerometerData(accelerometer.X, accelerometer.Y, accelerometer.Z)));
     }
 
     public bool IsSupported => true;
 
-    public bool IsMonitoring => accelerometer.Activated;
+    public bool IsMonitoring => accelerometer?.Activated ?? false;
 
     public event EventHandler<AccelerometerChangedEventArgs>? ReadingChanged;
 
@@ -54,12 +52,18 @@ internal class BlazorAccelerometer : IAccelerometer
 
     public void Start(SensorSpeed sensorSpeed)
     {
+        if(accelerometer == null)
+        {
+            accelerometer = ServiceLocator.GetScopedRequiredService<BlazorSensors.Accelerometer>();
+            accelerometer.OnReading += Accelerometer_OnReading;
+        }
+
         accelerometer.Frequency = sensorSpeed.ToPlatform();
         accelerometer.Start();
     }
 
     public void Stop()
     {
-        accelerometer.Stop();
+        accelerometer?.Stop();
     }
 }

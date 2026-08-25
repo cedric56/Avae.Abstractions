@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Application = Avalonia.Application;
 using Window = Avalonia.Controls.Window;
 
 namespace Avae.Avalonia.Essentials

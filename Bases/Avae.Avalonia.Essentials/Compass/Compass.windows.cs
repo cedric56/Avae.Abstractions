@@ -3,7 +3,7 @@ using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Devices.Sensors;
 using System.Runtime.Versioning;
 using Windows.Devices.Sensors;
-
+using Dispatcher = Avalonia.Threading.Dispatcher;
 using WindowsCompass = Windows.Devices.Sensors.Compass;
 
 namespace Avae.Avalonia.Essentials

@@ -1,4 +1,7 @@
-﻿using Microsoft.Maui.Devices.Sensors;
+﻿using Avae.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Devices.Sensors;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,10 +15,11 @@ namespace Avae.Blazor.Essentials
 
     }
 
-    internal class BlazorGeocoding(HttpClient? httpClient = null) : IGeocoding
+    internal class BlazorGeocoding : IGeocoding
     {
         public async  Task<IEnumerable<Location>> GetLocationsAsync(string address)
         {
+            var httpClient = ServiceLocator.GetScopedService<HttpClient>();
             using var client = httpClient ?? new HttpClient();
             string url = $"https://nominatim.openstreetmap.org/search?format=json&q={Uri.EscapeDataString(address)}";
             var response = await client.GetStringAsync(url);
@@ -37,6 +41,7 @@ namespace Avae.Blazor.Essentials
 
         public async Task<IEnumerable<Placemark>> GetPlacemarksAsync(double latitude, double longitude)
         {
+            var httpClient = ServiceLocator.GetScopedService<HttpClient>();
             using var client = httpClient ?? new HttpClient();
             // Nominatim reverse geocoding URL
             string url = $"https://nominatim.openstreetmap.org/reverse?format=json&lat={latitude}&lon={longitude}&addressdetails=1";

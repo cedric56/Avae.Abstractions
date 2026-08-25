@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 using System.Runtime.Versioning;
 using Windows.Networking.Connectivity;
 using ConnectionProfile = Microsoft.Maui.Networking.ConnectionProfile;
+using Dispatcher = Avalonia.Threading.Dispatcher;
 
 namespace Avae.Avalonia.Essentials
 {

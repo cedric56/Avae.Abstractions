@@ -1,8 +1,8 @@
-using Avalonia.Threading;
-using Microsoft.Maui.Devices;
 using System.Runtime.Versioning;
 using Windows.System.Power;
 using EnergySaverStatus = Microsoft.Maui.Devices.EnergySaverStatus;
+using Dispatcher = Avalonia.Threading.Dispatcher;
+using Microsoft.Maui.Devices;
 
 namespace Avae.Avalonia.Essentials
 {

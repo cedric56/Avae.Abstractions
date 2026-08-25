@@ -1,4 +1,5 @@
-﻿using Avae.Razor.Components;
+﻿using Avae.Core;
+using Avae.Razor.Components;
 using Avae.Services;
 using Avae.ViewModels;
 using Microsoft.AspNetCore.Components;
@@ -44,6 +45,7 @@ public static class Extensions
         Action<ILoggingBuilder>? build = null,
         RenderFragment? extras = null)
     {
+        services.AddSingleton<CircuitServiceAccessor>();
         services.AddSingleton<IIocContainer>(sp => new IocContainer(GetConfiguration(sp), false));
         services.AddSingleton<IIocConfiguration>(sp => new IocConfiguration(sp, configure, extras));
         services.AddTransient<Router>(sp => new Router(sp));

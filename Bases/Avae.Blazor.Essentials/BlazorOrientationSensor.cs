@@ -1,36 +1,42 @@
-﻿using Microsoft.Maui.Devices.Sensors;
+﻿using Avae.Core;
+using BlazorSensors;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Devices.Sensors;
 
 namespace Avae.Blazor.Essentials;
 
 internal class BlazorOrientationSensor : IOrientationSensor
 {
-    BlazorSensors.AbsoluteOrientationSensor sensor;
-    public BlazorOrientationSensor(BlazorSensors.AbsoluteOrientationSensor sensor)
-    {
-        this.sensor = sensor;
-        this.sensor.OnReading += Accelerometer_OnReading;
-    }
+    BlazorSensors.AbsoluteOrientationSensor? sensor;
 
     private void Accelerometer_OnReading(object? sender, EventArgs e)
     {
-        ReadingChanged?.Invoke(sender, new OrientationSensorChangedEventArgs(
-            new OrientationSensorData(sensor.X, sensor.Y, sensor.Z, sensor.W)));
+        if (sensor != null)
+
+            ReadingChanged?.Invoke(sender, new OrientationSensorChangedEventArgs(
+                new OrientationSensorData(sensor.X, sensor.Y, sensor.Z, sensor.W)));
     }
 
     public bool IsSupported => true;
 
-    public bool IsMonitoring => sensor.Activated;
+    public bool IsMonitoring => sensor?.Activated ?? false;
 
     public event EventHandler<OrientationSensorChangedEventArgs>? ReadingChanged;
 
     public void Start(SensorSpeed sensorSpeed)
     {
+        if (sensor == null)
+        {
+            sensor = ServiceLocator.GetScopedRequiredService<BlazorSensors.AbsoluteOrientationSensor>();
+            sensor.OnReading += Accelerometer_OnReading;
+        }
+
         sensor.Frequency = sensorSpeed.ToPlatform();
         sensor.Start();
     }
 
     public void Stop()
     {
-        sensor.Stop();
+        sensor?.Stop();
     }
 }

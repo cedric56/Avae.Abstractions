@@ -214,7 +214,8 @@ public static class Extensions
         ITextToSpeech textToSpeech,
         IVibration vibration,
         IWebAuthenticator webAuthenticator,
-        IVersionTracking versionTracking)
+        Func<IVersionTracking> versionTracking, 
+        ServiceLifetime lifetime = ServiceLifetime.Singleton)
     {
         EssentialsAccessors.SetScreenshot(null, screenshot);
         EssentialsAccessors.SetFilePicker(null, filepicker);
@@ -251,10 +252,12 @@ public static class Extensions
         EssentialsAccessors.SetSms(null, sms);
         EssentialsAccessors.SetTextToSpeech(null, textToSpeech);
         EssentialsAccessors.SetVibration(null, vibration);
-        EssentialsAccessors.SetVersionTracking(null, versionTracking);
+        EssentialsAccessors.SetVersionTracking(null, versionTracking?.Invoke());
+
+        services.RegisterEssentials(lifetime);
     }
 
-    public static void RegisterEssentials(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+    private static void RegisterEssentials(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Singleton)
     {
         services.TryAdd(ServiceDescriptor.Describe(typeof(IAccelerometer), _ => Accelerometer.Default, lifetime));
         services.TryAdd(ServiceDescriptor.Describe(typeof(IAppActions), _ => AppActions.Current, lifetime));

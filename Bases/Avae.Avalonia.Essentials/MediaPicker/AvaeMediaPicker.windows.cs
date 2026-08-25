@@ -9,6 +9,7 @@ using Windows.Media.Capture;
 using Windows.Storage;
 using Windows.System;
 using WinRT;
+using Launcher = Windows.System.Launcher;
 
 namespace Avae.Avalonia.Essentials
 {

@@ -93,6 +93,6 @@ public class SystemNotificationService : ISystemNotificationService
 
     public void CloseAll()
     {
-        throw new NotImplementedException();
+        manager?.CloseAll();
     }
 }

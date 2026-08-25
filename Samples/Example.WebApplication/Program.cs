@@ -5,19 +5,22 @@ using Example.Razor;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Environment.WebRootPath) });
-builder.Services.RegisterBlazorEssentials();
+builder.Services.UseBlazorEssentials();
 builder.Services.UseBlazorNotifications();
 builder.Services.UseSharedLibrary(true);
 builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
 
 var app = builder.Build();
 
 ServiceLocator.SetDefault(app.Services);
 
-app.UseBlazorFrameworkFiles();
+// IMPORTANT: Static files must be served first
+app.UseStaticFiles(); // This serves wwwroot files
+app.UseBlazorFrameworkFiles(); // This serves Blazor _framework files
 app.UseRouting();
 app.UseAntiforgery();
-app.MapStaticAssets();
+//app.MapStaticAssets();
 app.MapRazorPages();
 //app.UseEndpoints(endpoints =>
 //{

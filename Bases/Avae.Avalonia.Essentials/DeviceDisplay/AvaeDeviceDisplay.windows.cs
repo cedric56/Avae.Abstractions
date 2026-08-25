@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Windows.Graphics.Display;
 using Windows.System.Display;
+using Dispatcher = Avalonia.Threading.Dispatcher;
 
 namespace Avae.Avalonia.Essentials
 {

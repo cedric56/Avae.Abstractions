@@ -1,9 +1,10 @@
-﻿using Microsoft.Maui.ApplicationModel;
+﻿using Avae.Core;
+using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.Communication;
 
 namespace Avae.Blazor.Essentials;
 
-internal class BlazorSms(ILauncher launcher) : ISms
+internal class BlazorSms : ISms
 {
     public bool IsComposeSupported => true;
 
@@ -14,6 +15,7 @@ internal class BlazorSms(ILauncher launcher) : ISms
         if (!string.IsNullOrEmpty(message?.Body))
             uri += "?&body=" + Uri.EscapeDataString(message.Body);
 
+        var launcher = ServiceLocator.GetScopedRequiredService<ILauncher>();
         return launcher.OpenAsync(new Uri(uri));
     }
 }

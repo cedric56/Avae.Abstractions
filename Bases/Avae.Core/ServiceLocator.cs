@@ -2,6 +2,11 @@
 
 namespace Avae.Core;
 
+public class CircuitServiceAccessor
+{
+    public required IServiceProvider Services { get; set; }
+}
+
 public static class ServiceLocator
 {
     static IServiceProvider? provider;
@@ -13,19 +18,23 @@ public static class ServiceLocator
         provider = serviceProvider;
     }
 
-    public static IServiceScope GetScoped()
+    public static T GetScopedRequiredService<T>() where T : notnull
     {
-
-        if (provider == null)
-            throw new InvalidOperationException("ServiceLocator.SetDefault is not been called.");
-        return provider.CreateScope();
+        var circuit = GetRequiredService<CircuitServiceAccessor>();
+        return circuit.Services.GetRequiredService<T>();
     }
 
-    public static T GetRequiredService<T>(IServiceScope scope) where T : notnull
+    public static T? GetScopedService<T>() where T : notnull
     {
-        if (scope == null)
-            throw new InvalidOperationException("Scope is null.");
-        return scope.ServiceProvider.GetRequiredService<T>();
+        var circuit = GetRequiredService<CircuitServiceAccessor>();
+        return circuit.Services.GetService<T>();
+    }
+
+    public static IServiceScope CreateScope()
+    {
+        if (provider == null)
+            throw new InvalidOperationException("ServiceLocator.SetDefault is not been called.");
+        return provider.GetRequiredService<IServiceScopeFactory>().CreateScope();
     }
 
     public static T GetRequiredService<T>() where T : notnull

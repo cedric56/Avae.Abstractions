@@ -1,8 +1,9 @@
-﻿using Avae.ViewModels;
-using Avae.Services;
+﻿using Avae.Services;
+using Avae.ViewModels;
+using Avalonia.Labs.Controls;
 using Avalonia.Threading;
-using FluentAvalonia.Core;
-using FluentAvalonia.UI.Controls;
+//using FluentAvalonia.Core;
+//using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using ContentDialogResult = Avae.Services.ContentDialogResult;
 
@@ -23,18 +24,18 @@ public class ContentDialogService(IServiceProvider serviceProvider) : IContentDi
         });
     }
 
-    private static FAContentDialog GetContentDialog(ContentDialogParams @params)
+    private static ContentDialog GetContentDialog(ContentDialogParams @params)
     {
-        var dialog = new FAContentDialog();
+        var dialog = new ContentDialog();
         if (@params != null)
         {
-            TypedEventHandler<FAContentDialog, FAContentDialogClosingEventArgs>? closing = null;
-            TypedEventHandler<FAContentDialog, EventArgs>? opening = null;
-            TypedEventHandler<FAContentDialog, EventArgs>? opened = null;
-            TypedEventHandler<FAContentDialog, FAContentDialogClosedEventArgs>? closed = null;
-            TypedEventHandler<FAContentDialog, FAContentDialogButtonClickEventArgs>? primaryButtonClick = null;
-            TypedEventHandler<FAContentDialog, FAContentDialogButtonClickEventArgs>? secondaryButtonClick = null;
-            TypedEventHandler<FAContentDialog, FAContentDialogButtonClickEventArgs>? closeButtonClick = null;
+            EventHandler<ContentDialogClosingEventArgs>? closing = null;
+            EventHandler<EventArgs>? opening = null;
+            EventHandler<EventArgs>? opened = null;
+            EventHandler<ContentDialogClosedEventArgs>? closed = null;
+            EventHandler<ContentDialogButtonClickEventArgs>? primaryButtonClick = null;
+            EventHandler<ContentDialogButtonClickEventArgs>? secondaryButtonClick = null;
+            EventHandler<ContentDialogButtonClickEventArgs>? closeButtonClick = null;
 
             dialog.Content = @params.Content;
             //IsPrimaryButtonEnabled = @params.IsPrimaryButtonEnabled,

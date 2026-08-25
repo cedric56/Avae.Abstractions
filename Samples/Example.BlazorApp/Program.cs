@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(sp => new HttpClient { 
     BaseAddress = new Uri(builder.Environment.WebRootPath)
 });
-builder.Services.RegisterBlazorEssentials();
+builder.Services.UseBlazorEssentials();
 builder.Services.UseBlazorNotifications();
 builder.Services.UseSharedLibrary(true, extras: builder =>
 {

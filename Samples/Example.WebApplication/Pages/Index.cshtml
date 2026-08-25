@@ -1,4 +1,4 @@
-﻿@page
+﻿@* @page
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,8 +15,7 @@
 <body>
     <!-- Required container for Blazor WebAssembly -->
     <div id="app">
-        @* @RenderBody() *@
-        @(await Html.RenderComponentAsync<Example.Razor.Layout.Routes>(RenderMode.WebAssembly))
+        @(await Html.RenderComponentAsync<Example.Razor.Layout.Routes>(RenderMode.WebAssemblyPrerendered))
         <!-- Use Static render mode for the root component -->
     </div>
 
@@ -29,4 +28,11 @@
 
     <script src="~/_content/MudBlazor/MudBlazor.min.js"></script>
 </body>
-</html>
+</html> *@
+@* @page "/"
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Pages/Shared/_Host.cshtml";
+}
+<component type="typeof(Example.Razor.Layout.Routes)" render-mode="ServerPrerendered" />
+ *@

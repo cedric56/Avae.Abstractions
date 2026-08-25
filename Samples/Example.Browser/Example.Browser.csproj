@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Avalonia.Browser" Version="12.1.1" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\Example\Example.csproj" />
   </ItemGroup>

@@ -3,6 +3,7 @@ using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Devices.Sensors;
 using System.Runtime.Versioning;
 using Windows.Devices.Sensors;
+using Dispatcher = Avalonia.Threading.Dispatcher;
 using WindowsMagnetometer = Windows.Devices.Sensors.Magnetometer;
 
 namespace Avae.Avalonia.Essentials
