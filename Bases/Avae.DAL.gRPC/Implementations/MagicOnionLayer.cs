@@ -205,7 +205,11 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         {
             if (OperatingSystem.IsBrowser())
             {
-                throw new NotImplementedException();
+                var request = provider.GetRequiredService<IXmlHttpRequest>();
+                var result = request.Send(nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }));
+                if (result == Array.Empty<byte>()) return [];
+                var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
+                return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
             }
             return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
         }
@@ -227,7 +231,11 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         {
             if (OperatingSystem.IsBrowser())
             {
-                throw new NotImplementedException();
+                var request = provider.GetRequiredService<IXmlHttpRequest>();
+                var result = request.Send(nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }));
+                if (result == Array.Empty<byte>()) return [];
+                var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
+                return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
             }
             return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
         }
@@ -244,7 +252,11 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         {
             if (OperatingSystem.IsBrowser())
             {
-                throw new NotImplementedException();
+                var request = provider.GetRequiredService<IXmlHttpRequest>();
+                var result = request.Send(nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }));
+                if (result == Array.Empty<byte>()) return [];
+                var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
+                return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
             }
             return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
         }
@@ -261,7 +273,11 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         {
             if (OperatingSystem.IsBrowser())
             {
-                throw new NotImplementedException();
+                var request = provider.GetRequiredService<IXmlHttpRequest>();
+                var result = request.Send(nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }));
+                if (result == Array.Empty<byte>()) return [];
+                var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
+                return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
             }
             return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
         }
@@ -278,7 +294,11 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         {
             if (OperatingSystem.IsBrowser())
             {
-                throw new NotImplementedException();
+                var request = provider.GetRequiredService<IXmlHttpRequest>();
+                var result = request.Send(nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }));
+                if (result == Array.Empty<byte>()) return [];
+                var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
+                return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
             }
             return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
         }
@@ -295,7 +315,11 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         {
             if (OperatingSystem.IsBrowser())
             {
-                throw new NotImplementedException();
+                var request = provider.GetRequiredService<IXmlHttpRequest>();
+                var result = request.Send(nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }));
+                if (result == Array.Empty<byte>()) return [];
+                var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
+                return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
             }
             return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
         }
@@ -311,7 +335,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         try
         {
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.QueryAsync(sql, param, commandTimeout);
+            var result = await service.QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return [];
             var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
@@ -322,20 +346,124 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
             Debug.WriteLine(ex);
             return Enumerable.Empty<TReturn>();
         }
+    }
 
-        TReturn MapRow(IDictionary<string, object> row, Func<TFirst, TSecond, TReturn> map, string splitOn, IEnumerable<DBAlias>? aliases)
+    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        try
         {
-            var groups = SplitRow(row, splitOn, 2, aliases);
-
-            var first = MapToObject<TFirst>(groups[0]);
-            var second = MapToObject<TSecond>(groups[1]);
-
-            return map(first, second);
+            var service = provider.GetRequiredService<IMagicOnionLayer>();
+            var result = await service.QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text);
+            if (!result.Successful) throw new Exception(result.Exception);
+            if (result.Data == Array.Empty<byte>()) return [];
+            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
+            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            return Enumerable.Empty<TReturn>();
         }
     }
 
-    private static List<Dictionary<string, object>> SplitRow(
-    IDictionary<string, object> row, string splitOn, int groupCount, IEnumerable<DBAlias>? aliases)
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    {
+        return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
+    }
+
+    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        try
+        {
+            var service = provider.GetRequiredService<IMagicOnionLayer>();
+            var result = await service.QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text);
+            if (!result.Successful) throw new Exception(result.Exception);
+            if (result.Data == Array.Empty<byte>()) return [];
+            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
+            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            return Enumerable.Empty<TReturn>();
+        }
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    {
+        return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
+    }
+
+    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        try
+        {
+            var service = provider.GetRequiredService<IMagicOnionLayer>();
+            var result = await service.QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text);
+            if (!result.Successful) throw new Exception(result.Exception);
+            if (result.Data == Array.Empty<byte>()) return [];
+            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
+            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            return Enumerable.Empty<TReturn>();
+        }
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    {
+        return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
+    }
+
+    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        try
+        {
+            var service = provider.GetRequiredService<IMagicOnionLayer>();
+            var result = await service.QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text);
+            if (!result.Successful) throw new Exception(result.Exception);
+            if (result.Data == Array.Empty<byte>()) return [];
+            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
+            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            return Enumerable.Empty<TReturn>();
+        }
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    {
+        return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
+    }
+
+    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        try
+        {
+            var service = provider.GetRequiredService<IMagicOnionLayer>();
+            var result = await service.QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text);
+            if (!result.Successful) throw new Exception(result.Exception);
+            if (result.Data == Array.Empty<byte>()) return [];
+            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
+            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            return Enumerable.Empty<TReturn>();
+        }
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    {
+        return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
+    }
+
+    private static List<Dictionary<string, object>> SplitRow(IDictionary<string, object> row, string splitOn, int groupCount, IEnumerable<DBAlias>? aliases)
     {
         var splitOns = splitOn.Split(',', StringSplitOptions.TrimEntries);
         var keys = row.Keys.ToList();
@@ -384,8 +512,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
     }
 
-    private static T MapToObject<
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(IDictionary<string, object> dict)
+    private static T MapToObject<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(IDictionary<string, object> dict)
     {
         var obj = Activator.CreateInstance<T>();
         var props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -414,183 +541,78 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         return obj;
     }
 
-    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    private static TReturn MapRow<TFirst, TSecond, TReturn>(IDictionary<string, object> row, Func<TFirst, TSecond, TReturn> map, string splitOn, IEnumerable<DBAlias>? aliases)
     {
-        try
-        {
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.QueryAsync(sql, param, commandTimeout);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
-            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex);
-            return Enumerable.Empty<TReturn>();
-        }
+        var groups = SplitRow(row, splitOn, 2, aliases);
 
-        TReturn MapRow(IDictionary<string, object> row, Func<TFirst, TSecond, TThird, TReturn> map, string splitOn, IEnumerable<DBAlias>? aliases)
-        {
-            var groups = SplitRow(row, splitOn, 3, aliases);
+        var first = MapToObject<TFirst>(groups[0]);
+        var second = MapToObject<TSecond>(groups[1]);
 
-            var first = MapToObject<TFirst>(groups[0]);
-            var second = MapToObject<TSecond>(groups[1]);
-            var third = MapToObject<TThird>(groups[2]);
-
-            return map(first, second, third);
-        }
+        return map(first, second);
     }
 
-    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    private static TReturn MapRow<TFirst, TSecond, TThird, TReturn>(IDictionary<string, object> row, Func<TFirst, TSecond, TThird, TReturn> map, string splitOn, IEnumerable<DBAlias>? aliases)
     {
-        return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
+        var groups = SplitRow(row, splitOn, 3, aliases);
+
+        var first = MapToObject<TFirst>(groups[0]);
+        var second = MapToObject<TSecond>(groups[1]);
+        var third = MapToObject<TThird>(groups[2]);
+
+        return map(first, second, third);
     }
 
-    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    private static TReturn MapRow<TFirst, TSecond, TThird, TFourth, TReturn>(IDictionary<string, object> row, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, string splitOn, IEnumerable<DBAlias>? aliases)
     {
-        try
-        {
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.QueryAsync(sql, param, commandTimeout);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
-            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex);
-            return Enumerable.Empty<TReturn>();
-        }
+        var groups = SplitRow(row, splitOn, 4, aliases);
 
-        TReturn MapRow(IDictionary<string, object> row, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, string splitOn, IEnumerable<DBAlias>? aliases)
-        {
-            var groups = SplitRow(row, splitOn, 4, aliases);
+        var first = MapToObject<TFirst>(groups[0]);
+        var second = MapToObject<TSecond>(groups[1]);
+        var third = MapToObject<TThird>(groups[2]);
+        var fourth = MapToObject<TFourth>(groups[3]);
 
-            var first = MapToObject<TFirst>(groups[0]);
-            var second = MapToObject<TSecond>(groups[1]);
-            var third = MapToObject<TThird>(groups[2]);
-            var fourth = MapToObject<TFourth>(groups[3]);
-
-            return map(first, second, third, fourth);
-        }
+        return map(first, second, third, fourth);
     }
 
-    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    private static TReturn MapRow<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(IDictionary<string, object> row, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, string splitOn, IEnumerable<DBAlias>? aliases)
     {
-        return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
+        var groups = SplitRow(row, splitOn, 5, aliases);
+
+        var first = MapToObject<TFirst>(groups[0]);
+        var second = MapToObject<TSecond>(groups[1]);
+        var third = MapToObject<TThird>(groups[2]);
+        var fourth = MapToObject<TFourth>(groups[3]);
+        var fifth = MapToObject<TFifth>(groups[4]);
+
+        return map(first, second, third, fourth, fifth);
     }
 
-    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    private static TReturn MapRow<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(IDictionary<string, object> row, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, string splitOn, IEnumerable<DBAlias>? aliases)
     {
-        try
-        {
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.QueryAsync(sql, param, commandTimeout);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
-            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex);
-            return Enumerable.Empty<TReturn>();
-        }
+        var groups = SplitRow(row, splitOn, 6, aliases);
 
-        TReturn MapRow(IDictionary<string, object> row, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, string splitOn, IEnumerable<DBAlias>? aliases)
-        {
-            var groups = SplitRow(row, splitOn, 5, aliases);
+        var first = MapToObject<TFirst>(groups[0]);
+        var second = MapToObject<TSecond>(groups[1]);
+        var third = MapToObject<TThird>(groups[2]);
+        var fourth = MapToObject<TFourth>(groups[3]);
+        var fifth = MapToObject<TFifth>(groups[4]);
+        var sixth = MapToObject<TSixth>(groups[5]);
 
-            var first = MapToObject<TFirst>(groups[0]);
-            var second = MapToObject<TSecond>(groups[1]);
-            var third = MapToObject<TThird>(groups[2]);
-            var fourth = MapToObject<TFourth>(groups[3]);
-            var fifth = MapToObject<TFifth>(groups[4]);
-
-            return map(first, second, third, fourth, fifth);
-        }
+        return map(first, second, third, fourth, fifth, sixth);
     }
 
-    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    private static TReturn MapRow<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(IDictionary<string, object> row, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, string splitOn, IEnumerable<DBAlias>? aliases)
     {
-        return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
-    }
+        var groups = SplitRow(row, splitOn, 7, aliases);
 
-    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
-    {
-        try
-        {
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.QueryAsync(sql, param, commandTimeout);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
-            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex);
-            return Enumerable.Empty<TReturn>();
-        }
+        var first = MapToObject<TFirst>(groups[0]);
+        var second = MapToObject<TSecond>(groups[1]);
+        var third = MapToObject<TThird>(groups[2]);
+        var fourth = MapToObject<TFourth>(groups[3]);
+        var fifth = MapToObject<TFifth>(groups[4]);
+        var sixth = MapToObject<TSixth>(groups[5]);
+        var seventh = MapToObject<TSeventh>(groups[6]);
 
-        TReturn MapRow(IDictionary<string, object> row, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, string splitOn, IEnumerable<DBAlias>? aliases)
-        {
-            var groups = SplitRow(row, splitOn, 6, aliases);
-
-            var first = MapToObject<TFirst>(groups[0]);
-            var second = MapToObject<TSecond>(groups[1]);
-            var third = MapToObject<TThird>(groups[2]);
-            var fourth = MapToObject<TFourth>(groups[3]);
-            var fifth = MapToObject<TFifth>(groups[4]);
-            var sixth = MapToObject<TSixth>(groups[5]);
-
-            return map(first, second, third, fourth, fifth, sixth);
-        }
-    }
-
-    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
-    {
-        return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
-    }
-
-    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
-    {
-        try
-        {
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.QueryAsync(sql, param, commandTimeout);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
-            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex);
-            return Enumerable.Empty<TReturn>();
-        }
-
-        TReturn MapRow(IDictionary<string, object> row, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, string splitOn, IEnumerable<DBAlias>? aliases)
-        {
-            var groups = SplitRow(row, splitOn, 7, aliases);
-
-            var first = MapToObject<TFirst>(groups[0]);
-            var second = MapToObject<TSecond>(groups[1]);
-            var third = MapToObject<TThird>(groups[2]);
-            var fourth = MapToObject<TFourth>(groups[3]);
-            var fifth = MapToObject<TFifth>(groups[4]);
-            var sixth = MapToObject<TSixth>(groups[5]);
-            var seventh = MapToObject<TSeventh>(groups[6]);
-
-            return map(first, second, third, fourth, fifth, sixth, seventh);
-        }
-    }
-
-    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
-    {
-        return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
+        return map(first, second, third, fourth, fifth, sixth, seventh);
     }
 }

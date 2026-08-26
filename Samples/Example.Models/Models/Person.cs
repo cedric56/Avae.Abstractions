@@ -53,18 +53,6 @@ namespace Example.Models
                         _contacts = [];
                     else
                     {
-                        var c = DBBase.Instance.Query<Contact, Person, Contact>(
-                            "SELECT C.Id as ContactId, C.IdPerson, C.IdContact, P.Id, p.FirstName, p.LastName FROM CONTACT C INNER JOIN PERSON P ON C.IdContact = P.Id WHERE C.IdContact = @ID",
-                            (c, p) =>
-                            {
-                                return c;
-                            },
-                            new
-                            {
-                                ID = Id
-                            },
-                            aliases: [new DBAlias("ContactId", "Id")]);
-
                         var contacts = DBBase.Instance.FindByAny<Contact>((nameof(Contact.IdContact), Id));
                         AvoidReadings(contacts);
                         _contacts = [.. contacts];
@@ -98,8 +86,7 @@ namespace Example.Models
             if (_contacts != null || Id == 0)
                 return;
 
-            var contacts = await DBBase.Instance
-                .FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
+            var contacts = await DBBase.Instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
 
             AvoidReadings(contacts);
 

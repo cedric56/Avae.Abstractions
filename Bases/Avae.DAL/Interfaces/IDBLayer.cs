@@ -45,6 +45,32 @@ public interface IDBLayer
         return Where<T>(filters.ToDictionary(x => x.key, y => y.value));
     }
 
+    /// <summary>
+    /// DBBase.Instance.Query<Contact, Person, Contact>(
+    /// "SELECT C.Id as ContactId, C.IdPerson, C.IdContact, P.Id, p.FirstName, p.LastName FROM CONTACT C INNER JOIN PERSON P ON C.IdContact = P.Id WHERE C.IdContact = @ID",
+    /// (c, p) =>
+    /// {
+    ///     c.Person = p;
+    ///     c.PersonContact = this;
+    ///     return c;
+    /// },
+    /// new {   ID = Id  },
+    /// aliases: [new DBAlias("ContactId", "Id")]
+    /// );
+    /// </summary>
+    /// <typeparam name="TFirst"></typeparam>
+    /// <typeparam name="TSecond"></typeparam>
+    /// <typeparam name="TReturn"></typeparam>
+    /// <param name="sql"></param>
+    /// <param name="map"></param>
+    /// <param name="param"></param>
+    /// <param name="transaction"></param>
+    /// <param name="buffered"></param>
+    /// <param name="splitOn"></param>
+    /// <param name="commandTimeout"></param>
+    /// <param name="commandType"></param>
+    /// <param name="aliases"></param>
+    /// <returns></returns>
     IEnumerable<TReturn> Query<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null);
     IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null);
     IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null);

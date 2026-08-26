@@ -144,7 +144,7 @@ public static class Extensions
         services.SetDefaults(
             null!,
             null!,
-            null!,
+            new AppInfoDefault(),
             null!,
             null!,
             null!,
@@ -179,5 +179,29 @@ public static class Extensions
             webAuthenticator,
             () => Microsoft.Maui.ApplicationModel.VersionTracking.Default);
 #endif
+    }
+}
+
+class AppInfoDefault : IAppInfo
+{
+    public string PackageName => string.Empty;
+
+    public string Name => string.Empty;
+
+    public string VersionString => string.Empty;
+
+    public Version Version => null!;
+
+    public string BuildString => string.Empty;
+
+    public AppTheme RequestedTheme => AppTheme.Unspecified;
+
+    public AppPackagingModel PackagingModel => AppPackagingModel.Unpackaged;
+
+    public LayoutDirection RequestedLayoutDirection => LayoutDirection.Unknown;
+
+    public void ShowSettingsUI()
+    {
+        throw new NotImplementedException();
     }
 }

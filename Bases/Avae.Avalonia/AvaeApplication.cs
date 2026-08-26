@@ -3,6 +3,7 @@ using Avae.Services;
 using Avae.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Interactivity;
 using Avalonia.Labs.Controls;
 using Avalonia.Styling;
 using FluentAvalonia.Styling;
@@ -119,7 +120,6 @@ public abstract class AvaeApplication : Application, IIocConfiguration, IDisposa
             var window = GetMainWindow();
             window.Content = mainView;
             desktop.MainWindow = window;
-            desktop.Exit += OnDesktopExit;
         }
         else if (ApplicationLifetime is IActivityApplicationLifetime activityLifetime)
         {
@@ -128,16 +128,27 @@ public abstract class AvaeApplication : Application, IIocConfiguration, IDisposa
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
         {
             singleView.MainView = mainView;
+            
         }
 
         base.OnFrameworkInitializationCompleted();
 
         _ = Task.Run(AfterCompletedAsync);
 
-        void OnDesktopExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+        mainView.Loaded += OnLoaded;
+
+        void OnLoaded(object? sender, RoutedEventArgs e)
         {
-            desktop?.Exit -= OnDesktopExit;
-            Dispose();
+            mainView.Loaded -= OnLoaded;
+
+            var topLevel = TopLevel.GetTopLevel(mainView);
+            topLevel?.Closed += OnClosed;
+
+            void OnClosed(object? sender, EventArgs e)
+            {
+                topLevel?.Closed -= OnClosed;
+                Dispose();
+            }
         }
     }
 
@@ -160,7 +171,7 @@ public abstract class AvaeApplication : Application, IIocConfiguration, IDisposa
 
     public void Request(RequestedTheme theme)
     {
-        Application.Current?.RequestedThemeVariant = theme switch
+        RequestedThemeVariant = theme switch
         {
             RequestedTheme.Light => ThemeVariant.Light,
             RequestedTheme.Dark => ThemeVariant.Dark,

@@ -81,7 +81,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
                      },
                      Launched = async (viewModel) =>
                      {
-                        //await Person.LoadContactsAsync();
+                        await Person.LoadContactsAsync();
                         SelectedItems = [.. Person.Contacts.Select(c => c.Person)];
                      }
                 },

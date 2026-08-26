@@ -2,11 +2,11 @@
 
 public abstract class DBMonitor : IDBMonitor
 {
-    public bool IsRunning { get; set; }
+    //public bool IsRunning { get; set; }
 
     public abstract void OnChanged(ChangeType type, string database, string table, long rowid, string? connectionId);
 
-    public Func<Task> Restart { get; set; } = new Func<Task>(() => Task.CompletedTask);
+    //public Func<Task> Restart { get; set; } = new Func<Task>(() => Task.CompletedTask);
 }
 
 public class DBMonitor<TObject> :

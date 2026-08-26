@@ -6,6 +6,7 @@ using MagicOnion;
 using MagicOnion.Server;
 using MessagePack;
 using System.Collections;
+using System.Data;
 
 namespace Avae.Server;
 
@@ -103,34 +104,13 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
         }
     }
 
-    public async UnaryResult<DBResult> QueryAsync(string sql, object? param = null, int? commandTimeout = null)
-    {
-        
+    public async UnaryResult<DBResult> QueryAsync(string sql, object? param = null, int? commandTimeout = null, CommandType commandType = CommandType.Text)
+    {        
         try
         {
-            if(param is IEnumerable ie)
-            {
-                var dp = new DynamicParameters();
-                foreach (var item in ie)
-                {
-                    var type = item.GetType();
-                    var keyProp = type.GetProperty("Key");
-                    var valueProp = type.GetProperty("Value");
-
-                    if (keyProp != null && valueProp != null)
-                    {
-                        var key = keyProp.GetValue(item)?.ToString();
-                        var value = valueProp.GetValue(item);
-                        if (key != null)
-                            dp.Add(key, value);
-                    }
-                }
-                param = dp;
-            }
-
             var layer = ServiceLocator.GetRequiredService<IDBLayer>();
             using var db = new DBLogConnection(ServiceLocator.Default);
-            var results = await db.QueryAsync(sql, param, commandTimeout: commandTimeout);
+            var results = await db.QueryAsync(sql, GetParam(param), commandTimeout: commandTimeout, commandType: commandType);
             return new DBResult()
             {
                 Successful = true,
@@ -145,5 +125,30 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
                 Exception = ex.Message
             };
         }
+    }
+
+    private static object? GetParam(object? param)
+    {
+        if (param is IEnumerable ie)
+        {
+            var dp = new DynamicParameters();
+            foreach (var item in ie)
+            {
+                var type = item.GetType();
+                var keyProp = type.GetProperty("Key");
+                var valueProp = type.GetProperty("Value");
+
+                if (keyProp != null && valueProp != null)
+                {
+                    var key = keyProp.GetValue(item)?.ToString();
+                    var value = valueProp.GetValue(item);
+                    if (key != null)
+                        dp.Add(key, value);
+                }
+            }
+            return dp;
+        }
+
+        return param;
     }
 }

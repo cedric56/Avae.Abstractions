@@ -14,7 +14,7 @@ public static class Extensions
         var sqlDependency = new SqlTableDependencyCore<TObject>(connectionString);
         sqlDependency.OnChanged += OnChanged;
         sqlDependency.Start();
-        monitor.IsRunning = true;
+        //monitor.IsRunning = true;
         unsuscribe = () =>
         {
             sqlDependency.OnChanged -= OnChanged;
