@@ -1,9 +1,11 @@
 ﻿using Avae.Core;
 using Avae.DAL;
 using Avae.DAL.gRPC;
+using Dapper;
 using MagicOnion;
 using MagicOnion.Server;
 using MessagePack;
+using System.Collections;
 
 namespace Avae.Server;
 
@@ -98,6 +100,50 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
         finally
         {
             DBContext.CurrentConnectionId.Value = null;
+        }
+    }
+
+    public async UnaryResult<DBResult> QueryAsync(string sql, object? param = null, int? commandTimeout = null)
+    {
+        
+        try
+        {
+            if(param is IEnumerable ie)
+            {
+                var dp = new DynamicParameters();
+                foreach (var item in ie)
+                {
+                    var type = item.GetType();
+                    var keyProp = type.GetProperty("Key");
+                    var valueProp = type.GetProperty("Value");
+
+                    if (keyProp != null && valueProp != null)
+                    {
+                        var key = keyProp.GetValue(item)?.ToString();
+                        var value = valueProp.GetValue(item);
+                        if (key != null)
+                            dp.Add(key, value);
+                    }
+                }
+                param = dp;
+            }
+
+            var layer = ServiceLocator.GetRequiredService<IDBLayer>();
+            using var db = new DBLogConnection(ServiceLocator.Default);
+            var results = await db.QueryAsync(sql, param, commandTimeout: commandTimeout);
+            return new DBResult()
+            {
+                Successful = true,
+                Data = MessagePackSerializer.Serialize(results.Select(row => (IDictionary<string, object>)row))
+            };
+        }
+        catch (Exception ex)
+        {
+            return new DBResult()
+            {
+                Successful = false,
+                Exception = ex.Message
+            };
         }
     }
 }

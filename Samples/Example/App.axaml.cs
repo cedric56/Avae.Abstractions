@@ -77,8 +77,8 @@ public partial class App : AvaeApplication, IIocConfiguration
         
         if (!OperatingSystem.IsBrowser())
         {
-            services.UseDBSqlLayer<SqliteConnection>();
-            //services.UseDBOnionLayer();
+            //services.UseDBSqlLayer<SqliteConnection>();
+            services.UseDBOnionLayer();
         }
 
         if(OperatingSystem.IsWindows())
@@ -127,7 +127,8 @@ public partial class App : AvaeApplication, IIocConfiguration
         //}
         //else
         //{
-        unsuscribe = await Container.Provider.AddStreamingHub(monitor);
+        unsuscribe = await Container.Provider.AddSignalR(monitor);
+        //unsuscribe = await Container.Provider.AddStreamingHub(monitor);
         //}
     }
 

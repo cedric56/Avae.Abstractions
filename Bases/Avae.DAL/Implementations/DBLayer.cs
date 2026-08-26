@@ -1,6 +1,10 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
+using MessagePack;
+using System.Collections.Concurrent;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace Avae.DAL;
 
@@ -40,6 +44,26 @@ public class DBLayer(IServiceProvider provider) : IDBLayer
         return await db.GetAsync<T>(id, transaction, commandTimeout);
     }
 
+    private static readonly ConcurrentDictionary<Type, string> _columnCache = new();
+
+
+    private static List<PropertyInfo> GetMappedProperties<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>()
+    {
+        return typeof(T)
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Where(p => p.CanRead && p.CanWrite)
+            .Where(p => p.GetCustomAttribute<ComputedAttribute>() == null)
+            .Where(p => p.GetCustomAttribute<IgnoreMemberAttribute>() == null)
+            .ToList();
+    }
+
+    private static string GetColumns<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>()
+    {
+        return _columnCache.GetOrAdd(typeof(T), _ =>
+            string.Join(", ", GetMappedProperties<T>().Select(p => p.Name)));
+    }
+
     private static string Create<T>(Dictionary<string, object> filters, string condition, out DynamicParameters parameters)
     {
         var conditions = new List<string>();
@@ -47,19 +71,14 @@ public class DBLayer(IServiceProvider provider) : IDBLayer
 
         foreach (var pair in filters)
         {
-            // Always add parameter
             parameters.Add(pair.Key, pair.Value);
-
-            // Build: (@Param IS NOT NULL AND Column = @Param)
-            conditions.Add(
-                $"(@{pair.Key} IS NOT NULL AND {pair.Key} = @{pair.Key})"
-            );
+            conditions.Add($"(@{pair.Key} IS NOT NULL AND {pair.Key} = @{pair.Key})");
         }
 
-        // Join all parts
         string where = string.Join(condition, conditions);
+        string columns = GetColumns<T>();
 
-        return $"SELECT * FROM {typeof(T).Name} WHERE {where}";
+        return $"SELECT {columns} FROM {typeof(T).Name} WHERE {where}";
     }
 
     public Task<IEnumerable<T>> FindByAnyAsync<T>(Dictionary<string, object> filters) where T : class, new()
@@ -88,5 +107,119 @@ public class DBLayer(IServiceProvider provider) : IDBLayer
         var sql = Create<T>(filters, " AND ", out var parameters);
         using var db = new DBLogConnection(provider);
         return db.Query<T>(sql, parameters);
+    }
+
+    public IEnumerable<TReturn> Query<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.Query(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType);
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TReturn> map, string splitOn = "Id")
+    {
+        using var db = new DBLogConnection(provider);
+        return db.QueryAsync(command, map, splitOn);
+    }
+
+    public IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.Query(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType);
+    }
+
+    public IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.Query(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType);
+    }
+
+    public IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.Query(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType);
+    }
+
+    public IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.Query(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType);
+    }
+
+    public IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.Query(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType);
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType);
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType);
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.QueryAsync(command, map, splitOn);
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType);
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.QueryAsync(command, map, splitOn);
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType);
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.QueryAsync(command, map, splitOn);
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType);
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.QueryAsync(command, map, splitOn);
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType);
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.QueryAsync(command, map, splitOn);
+    }
+
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null)
+    {
+        using var db = new DBLogConnection(provider);
+        return db.QueryAsync(command, map, splitOn);
     }
 }
