@@ -30,13 +30,6 @@ public static class ServiceLocator
         return circuit.Services.GetService<T>();
     }
 
-    public static IServiceScope CreateScope()
-    {
-        if (provider == null)
-            throw new InvalidOperationException("ServiceLocator.SetDefault is not been called.");
-        return provider.GetRequiredService<IServiceScopeFactory>().CreateScope();
-    }
-
     public static T GetRequiredService<T>() where T : notnull
     {
         if (provider == null)

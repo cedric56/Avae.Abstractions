@@ -1,5 +1,4 @@
-﻿using Avae.DAL.gRPC.Services;
-using Grpc.Net.Client;
+﻿using Grpc.Net.Client;
 using GrpcWebSocketBridge.Client;
 using MagicOnion;
 using MagicOnion.Client;
@@ -52,24 +51,9 @@ public static class Extensions
 
     public static IMagicService Create<IMagicService>(this IServiceProvider provider, string url) where IMagicService : IService<IMagicService>
     {
-        //var channel = OperatingSystem.IsBrowser() ? provider.GetGrpcWebChannel(url) : provider.GetGrpcSocketChannel(url);
         var channel = provider.GetGrpcSocketChannel(url);
         return MagicOnionClient.Create<IMagicService>(channel);
     }
-
-    //private static GrpcChannel GetGrpcWebChannel(this IServiceProvider provider, string url)
-    //{
-    //    var client = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()))
-    //    {
-    //        DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact,
-    //        DefaultRequestVersion = HttpVersion.Version20,
-    //        Timeout = TimeSpan.FromSeconds(5)
-    //    };
-    //    return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
-    //    {
-    //        HttpClient = client
-    //    });
-    //}
 
     public static GrpcChannel GetGrpcSocketChannel(this IServiceProvider provider, string url)
     {

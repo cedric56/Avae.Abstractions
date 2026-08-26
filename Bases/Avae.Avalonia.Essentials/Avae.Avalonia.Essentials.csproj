@@ -34,13 +34,13 @@
 
   <!-- Windows -->
   <ItemGroup Condition="'$(IsWindowsOS)' == 'true' AND '$(IsBrowserTFM)' != 'true' AND '$(IsMacTFM)' != 'true' AND '$(IsAndroidTFM)' != 'true' AND '$(IsIosTFM)' != 'true' AND '$(IsLinuxOS)' != 'true' AND '$(IsWindowsTFM)' != 'true'">
-    <PackageReference Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" PrivateAssets="compile" />
+    <PackageReference Include="WindowsContracts.Net.Foundation.UniversalApiContract" PrivateAssets="compile" />
     <Compile Include="**\*.windows.cs" />
     <Compile Include="**\*.desktop.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(IsWindowsTFM)' == 'true'">
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.251106002" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
     <Compile Include="**\*.windows.cs" />
     <Compile Include="**\*.desktop.cs" />
   </ItemGroup>
@@ -56,17 +56,17 @@
 
   <!-- macOS -->
   <ItemGroup Condition="'$(IsMacTFM)' == 'true'">
-    <PackageReference Include="Microsoft.Maui.Platforms.MacOS.Essentials" Version="0.1.0-preview.12.26368.2" />
+    <PackageReference Include="Microsoft.Maui.Platforms.MacOS.Essentials" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(IsLinuxOS)' == 'true'">
-    <PackageReference Include="Microsoft.Maui.Platforms.Linux.Gtk4.Essentials" Version="0.1.0-preview.12.26421.1" />
+    <PackageReference Include="Microsoft.Maui.Platforms.Linux.Gtk4.Essentials" />
   </ItemGroup>  
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="12.1.1" />
-    <PackageReference Include="Avalonia.Controls.Maui.Essentials" Version="11.0.0-preview.5.26161.128" />    
-    <PackageReference Include="System.Text.Json" Version="11.0.0-preview.7.26381.103" />
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Controls.Maui.Essentials" />    
+    <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
   <ItemGroup>

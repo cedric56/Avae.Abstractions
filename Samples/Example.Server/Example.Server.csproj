@@ -8,11 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GrpcWebSocketBridge.AspNetCore" Version="1.4.1" />    
+    <PackageReference Include="GrpcWebSocketBridge.AspNetCore" />    
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.DAL.gRPC.Services\Avae.DAL.gRPC.Services.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.DAL.SignalR\Avae.DAL.SignalR.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.DAL\Avae.DAL.csproj" />

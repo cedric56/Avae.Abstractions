@@ -1,7 +1,7 @@
 ﻿using Avae.Avalonia;
-using Avae.DAL;
 using Avae.Avalonia.Essentials;
 using Avae.Avalonia.Notifications;
+using Avae.DAL;
 using Avae.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -17,7 +17,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Ursa.Themes.Semi;
 
 namespace Example;
 
@@ -77,16 +76,13 @@ public partial class App : AvaeApplication, IIocConfiguration
         
         if (!OperatingSystem.IsBrowser())
         {
-            //services.UseDBSqlLayer<SqliteConnection>();
-            services.UseDBOnionLayer();
+            services.UseDBSqlLayer<SqliteConnection>();
+            //services.UseDBOnionLayer();
         }
 
         if(OperatingSystem.IsWindows())
         {
-            services.AddSingleton<ILogger>(LoggerFactory.Create(b =>
-            {
-
-            }).CreateLogger<App>());
+            services.AddSingleton<ILogger>(LoggerFactory.Create(b => b.AddDebug()).CreateLogger<App>());
         }
     }
 
@@ -98,8 +94,6 @@ public partial class App : AvaeApplication, IIocConfiguration
     public override void OnFrameworkInitializationCompleted()
     {
         base.OnFrameworkInitializationCompleted();
-
-        Styles.Add(new UrsaSemiTheme());
     }
 
     protected override Window GetMainWindow()

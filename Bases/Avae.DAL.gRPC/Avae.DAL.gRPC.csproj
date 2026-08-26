@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MagicOnion.Abstractions" Version="7.10.2" />
+    <PackageReference Include="MagicOnion.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>

@@ -12,17 +12,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Append.Blazor.WebShare" Version="7.0.0" />
-    <PackageReference Include="BlazorNative.Device" Version="0.11.0" />
-    <PackageReference Include="BlazorSensors" Version="1.0.1" />
-    <PackageReference Include="KristofferStrube.Blazor.FileSystemAccess" Version="4.0.0" />
-    <PackageReference Include="KristofferStrube.Blazor.MediaCaptureStreams" Version="0.4.1" />
-    <PackageReference Include="KristofferStrube.Blazor.MediaStreamRecording" Version="0.1.0-alpha.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.3.12" />
-    <PackageReference Include="Microsoft.JSInterop" Version="10.0.11" />
-    <PackageReference Include="Microsoft.Maui.Essentials" Version="11.0.0-preview.6.26360.8" />
-    <PackageReference Include="PatrickJahr.Blazor.AsyncClipboard" Version="1.0.0" />
-    <PackageReference Include="Toolbelt.Blazor.SpeechSynthesis" Version="11.0.0" />
+    <PackageReference Include="Append.Blazor.WebShare" />
+    <PackageReference Include="BlazorNative.Device" />
+    <PackageReference Include="BlazorSensors" />
+    <PackageReference Include="KristofferStrube.Blazor.FileSystemAccess" />
+    <PackageReference Include="KristofferStrube.Blazor.MediaCaptureStreams" />
+    <PackageReference Include="KristofferStrube.Blazor.MediaStreamRecording" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" />
+    <PackageReference Include="Microsoft.JSInterop" />
+    <PackageReference Include="Microsoft.Maui.Essentials" />
+    <PackageReference Include="PatrickJahr.Blazor.AsyncClipboard" />
+    <PackageReference Include="Toolbelt.Blazor.SpeechSynthesis" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,11 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
+    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>NU1510</WarningsNotAsErrors>-->
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="11.0.0-preview.6.26359.118" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
   </ItemGroup>
 
   <ItemGroup>

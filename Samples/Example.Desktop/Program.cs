@@ -22,8 +22,6 @@ class Program
                 AppName = "Example",
             })
             .UsePlatformDetect()
-            //.UseReactiveUI()
-            .WithInterFont()
             .LogToTrace();
 
 }

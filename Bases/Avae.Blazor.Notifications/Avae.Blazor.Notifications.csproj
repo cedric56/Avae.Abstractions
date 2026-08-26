@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.11" />
-    <PackageReference Include="Microsoft.JSInterop" Version="10.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
+    <PackageReference Include="Microsoft.JSInterop" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,7 +4,6 @@ using Avae.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
-using Avalonia.Labs.Controls;
 using Avalonia.Styling;
 using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
@@ -110,7 +109,6 @@ public abstract class AvaeApplication : Application, IIocConfiguration, IDisposa
         });
         //Styles.Add(new FluentTheme());
         Styles.Add(new FluentAvaloniaTheme());
-        Styles.Add(new ControlThemes());
 
         TopLevelStateManager.Initialize();
 

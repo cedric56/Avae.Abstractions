@@ -9,9 +9,9 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia.HarfBuzz" Version="12.1.1" />
-    <PackageReference Include="Avalonia.Skia" Version="12.1.1" />
-    <PackageReference Include="Avalonia.Win32" Version="12.1.1" />
+    <PackageReference Include="Avalonia.HarfBuzz" />
+    <PackageReference Include="Avalonia.Skia" />
+    <PackageReference Include="Avalonia.Win32" />
   </ItemGroup>
 
   <ItemGroup>

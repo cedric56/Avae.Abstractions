@@ -17,6 +17,5 @@ class Program
             .UseHarfBuzz()
             .UseAvaloniaNative()
             .UseSkia()
-            .WithInterFont()
             .LogToTrace();
 }

@@ -1,9 +1,8 @@
-﻿using Avae.Services;
-using Avae.ViewModels;
-using Avalonia.Labs.Controls;
+﻿using Avae.ViewModels;
+using Avae.Services;
 using Avalonia.Threading;
-//using FluentAvalonia.Core;
-//using FluentAvalonia.UI.Controls;
+using FluentAvalonia.Core;
+using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using ContentDialogResult = Avae.Services.ContentDialogResult;
 
@@ -12,7 +11,7 @@ namespace Avae.Avalonia;
 public class ContentDialogService(IServiceProvider serviceProvider) : IContentDialogService, IDialogService
 {
     public async Task<ContentDialogResult> ShowAsync(ContentDialogParams @params)
-    {   
+    {
         return await Dispatcher.UIThread.Invoke(async () =>
         {
             var topLevel = TopLevelStateManager.Default.GetActive(throwOnNull: true);
@@ -24,18 +23,18 @@ public class ContentDialogService(IServiceProvider serviceProvider) : IContentDi
         });
     }
 
-    private static ContentDialog GetContentDialog(ContentDialogParams @params)
+    private static FAContentDialog GetContentDialog(ContentDialogParams @params)
     {
-        var dialog = new ContentDialog();
+        var dialog = new FAContentDialog();
         if (@params != null)
         {
-            EventHandler<ContentDialogClosingEventArgs>? closing = null;
-            EventHandler<EventArgs>? opening = null;
-            EventHandler<EventArgs>? opened = null;
-            EventHandler<ContentDialogClosedEventArgs>? closed = null;
-            EventHandler<ContentDialogButtonClickEventArgs>? primaryButtonClick = null;
-            EventHandler<ContentDialogButtonClickEventArgs>? secondaryButtonClick = null;
-            EventHandler<ContentDialogButtonClickEventArgs>? closeButtonClick = null;
+            TypedEventHandler<FAContentDialog, FAContentDialogClosingEventArgs>? closing = null;
+            TypedEventHandler<FAContentDialog, EventArgs>? opening = null;
+            TypedEventHandler<FAContentDialog, EventArgs>? opened = null;
+            TypedEventHandler<FAContentDialog, FAContentDialogClosedEventArgs>? closed = null;
+            TypedEventHandler<FAContentDialog, FAContentDialogButtonClickEventArgs>? primaryButtonClick = null;
+            TypedEventHandler<FAContentDialog, FAContentDialogButtonClickEventArgs>? secondaryButtonClick = null;
+            TypedEventHandler<FAContentDialog, FAContentDialogButtonClickEventArgs>? closeButtonClick = null;
 
             dialog.Content = @params.Content;
             //IsPrimaryButtonEnabled = @params.IsPrimaryButtonEnabled,

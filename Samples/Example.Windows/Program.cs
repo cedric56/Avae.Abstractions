@@ -23,8 +23,7 @@ class Program
             })
             .UseHarfBuzz()
             .UseWin32()
-            .UseSkia()            
-            .WithInterFont()
+            .UseSkia()      
             .LogToTrace();
     }
 }

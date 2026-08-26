@@ -5,6 +5,7 @@ using Android.Runtime;
 using Avae.Avalonia.Notifications;
 using Avalonia;
 using Avalonia.Android;
+using Avalonia.Controls;
 using Avalonia.Labs.Notifications;
 
 namespace Example.Android;
@@ -44,7 +45,6 @@ public class MainApplication : AvaloniaAndroidApplication<App>
         Microsoft.Maui.ApplicationModel.Platform.Init(this);
         return base.CustomizeAppBuilder(builder)
            .WithAppNotifications(ApplicationContext!)
-           .UseAndroid()
-           .WithInterFont();
+           .UseAndroid();
     }
 }

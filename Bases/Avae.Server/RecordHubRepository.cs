@@ -1,5 +1,5 @@
 ﻿using Avae.DAL;
-using Avae.DAL.gRPC.Services;
+using Avae.DAL.gRPC;
 using MagicOnion.Server.Hubs;
 
 namespace Avae.Server;

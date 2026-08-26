@@ -1,6 +1,4 @@
-﻿using Avae.DAL.gRPC.Services;
-
-namespace Avae.DAL.gRPC.Client;
+﻿namespace Avae.DAL.gRPC.Client;
 
 public partial class RecordHubReceiver<TObject>(IDBMonitor<TObject> monitor) : IRecordHubReceiver<TObject> where TObject : class, new()
 {
