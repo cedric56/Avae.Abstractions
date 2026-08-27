@@ -33,7 +33,6 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
 
     private IJSObjectReference? _module;
     private IJSObjectReference? _innerModule;
-
     public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
 
     public IReadOnlyDictionary<uint, ISystemNotification> ActiveNotifications() => currents;
@@ -50,6 +49,7 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         return _module;
     }
     private DotNetObjectReference<SystemNotificationService>? _dotNetRef;
+
     public async ValueTask DisposeAsync()
     {
         _dotNetRef?.Dispose();
@@ -122,7 +122,7 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         var channels = GetChannels(ChannelManager!);
         if(!channels.TryGetValue(category ?? DefaultChannel, out var channel))
         {
-            channels.Add(DefaultChannel, new NotificationChannel(DefaultChannel, DefaultChannelLabel));
+            channels.Add(DefaultChannel, channel = new NotificationChannel(DefaultChannel, DefaultChannelLabel));
         }
         if (channel == null)
             return null;

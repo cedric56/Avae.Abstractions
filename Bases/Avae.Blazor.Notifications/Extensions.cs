@@ -1,6 +1,5 @@
 ﻿using Avae.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.JSInterop;
 
 namespace Avae.Blazor.Notifications;
 

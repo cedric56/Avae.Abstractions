@@ -80,10 +80,12 @@ public partial class HomeViewModel(
     {
         try
         {
+            systemNotificationService.NotificationCompleted -= OnNotificationCompleted;
+            systemNotificationService.NotificationCompleted += OnNotificationCompleted;
+
             var notification = await systemNotificationService.CreateNotification(null);
             if (notification != null)
             {
-                systemNotificationService.NotificationCompleted += OnNotificationCompleted;
                 //notification.Vibrate = [200,100,200,100];
                 notification.Title = "Hello";
                 notification.Message = "World";
@@ -94,13 +96,15 @@ public partial class HomeViewModel(
             }
             void OnNotificationCompleted(object? sender, SystemNotificationEventArgs e)
             {
-                systemNotificationService.NotificationCompleted -= OnNotificationCompleted;
+                
+                var actives = systemNotificationService.ActiveNotifications();
+                var current = actives.FirstOrDefault(a => a.Key == e.NotificationId);
 
                 notificationService.Show(
-                    $"Notification {e.NotificationId?.ToString() ?? string.Empty}",
+                    $"Notification {e.NotificationId.ToString() ?? string.Empty}",
                     $"Cancelled:{e.IsCancelled} Activated:{e.IsActivated} ActionTag:{e.ActionTag} UserData:{e.UserData}");
 
-                notification.Close();
+                current.Value?.Close();
             }
         }
         catch (Exception ex)
