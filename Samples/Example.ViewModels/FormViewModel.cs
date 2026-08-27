@@ -105,8 +105,6 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
 
     public string Error => Person.Error;
 
-    
-
     public string this[string columnName] => Person[columnName];
 
     public override Task<bool> CanClose()
@@ -118,6 +116,4 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
     {
         OnPropertyChanged(propertyName);
     }
-
-    
 }

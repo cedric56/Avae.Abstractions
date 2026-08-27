@@ -9,6 +9,7 @@ using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 using Application = Avalonia.Application;
 using StyleInclude = Avalonia.Markup.Xaml.Styling.StyleInclude;
+using DataAnnotationsValidationPlugin = Avalonia.Data.Core.Plugins.DataAnnotationsValidationPlugin;
 
 namespace Avae.Avalonia;
 
@@ -109,6 +110,7 @@ public abstract class AvaeApplication : Application, IIocConfiguration, IDisposa
         });
         //Styles.Add(new FluentTheme());
         Styles.Add(new FluentAvaloniaTheme());
+        Styles.Add(new ErrorStyle());
 
         TopLevelStateManager.Initialize();
 

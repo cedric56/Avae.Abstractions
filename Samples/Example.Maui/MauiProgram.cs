@@ -2,6 +2,7 @@
 using Avae.Essentials;
 using Avae.Maui;
 using Avae.Maui.Notifications;
+using Avalonia.Labs.Notifications;
 using Example.DAL;
 using Example.Maui.Views;
 using Example.ViewModels;
@@ -16,7 +17,13 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-            .WithAppNotifications()
+            .WithAppNotifications(new AppNotificationOptions()
+            {
+#if WINDOWS
+                AppIcon = "C:\\Users\\cedri\\source\\repos\\Avae.Abstractions\\Samples\\Example.Maui\\Resources\\Images\\dotnet_bot.png",
+                AppName = "Maui example"
+#endif
+            })
             .UseMauiApp<App>()
             .ConfigureFonts(fonts =>
             {
@@ -30,7 +37,7 @@ public static class MauiProgram
                     return parameters[0] switch
                     {
                         "Footer" => new Label() { Text = "This is a footer" },
-                        "IconSource" => ImageSource.FromUri(new Uri("C:\\Users\\cedri\\source\\repos\\Avae.Abstractions\\Example.Maui\\Resources\\AppIcon\\appicon.svg")),
+                        "IconSource" => ImageSource.FromFile("dotnet_bot.png"),
                         "Content" => new Label() { Text = "Here is content", FontSize = 27 },
                         _ => throw new NotImplementedException()
                     };
@@ -39,7 +46,7 @@ public static class MauiProgram
                 container.Register<HomeView>();
                 container.Register<MenuView>();
                 container.Register<ModalView>();
-                //container.Register<EssentialsView>();
+                container.Register<EssentialsView>();
                 //container.Register<FormView>();
                 container.Register<FormViewModel>((sp, context) =>
                 {

@@ -18,7 +18,6 @@
     <PackageReference Include="KristofferStrube.Blazor.FileSystemAccess" />
     <PackageReference Include="KristofferStrube.Blazor.MediaCaptureStreams" />
     <PackageReference Include="KristofferStrube.Blazor.MediaStreamRecording" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" />
     <PackageReference Include="Microsoft.JSInterop" />
     <PackageReference Include="Microsoft.Maui.Essentials" />
     <PackageReference Include="PatrickJahr.Blazor.AsyncClipboard" />

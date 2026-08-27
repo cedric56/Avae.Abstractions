@@ -5,12 +5,11 @@ using UXDivers.Popups.Maui.Controls;
 using UXDivers.Popups.Services;
 
 namespace Avae.Maui;
-
 internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContainer> getContainer, Action<IIocContainer>? configure = null) :
         IIocConfiguration, 
         ITaskDialogService, 
         IContentDialogService, 
-        Services.IDialogService,
+        IDialogService,
         INotificationService,
         IRequestedThemeService
 {
@@ -462,8 +461,8 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
         _isLoad = true;
         colors.Add("TextColor", Colors.Black);
         colors.Add("PopupBackdropColor", Color.FromArgb("#80B2B2B2"));
-        Application.Current?.Resources.MergedDictionaries.Add(new PopupStyles());
-        Application.Current?.Resources.MergedDictionaries.Add(new DarkTheme());            
+        //Application.Current?.Resources.MergedDictionaries.Add(new PopupStyles());
+        //Application.Current?.Resources.MergedDictionaries.Add(new DarkTheme());            
         Application.Current?.RequestedThemeChanged += ThemeChanged;
         ThemeChanged(this, new AppThemeChangedEventArgs(Application.Current!.RequestedTheme));
     }

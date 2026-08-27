@@ -72,4 +72,10 @@
 	  <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiXaml Update="Views\EssentialsView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>
