@@ -83,8 +83,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.ViewModels.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Avalonia.Notifications", "Bases\Avae.Avalonia.Notifications\Avae.Avalonia.Notifications.csproj", "{15214E8F-E8A8-4738-824E-345C046AEB73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWebAssemblyExtension", "Bases\BlazorWebAssemblyExtension\BlazorWebAssemblyExtension.csproj", "{41AB0C9F-7F7E-F8D5-4F91-CF30E283856B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Messenger", "Bases\Avae.Messenger\Avae.Messenger.csproj", "{2959132F-DDD7-46B5-A421-FB20D017185A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Loggers", "Avae.Loggers\Avae.Loggers.csproj", "{2CBB1278-DDF1-4308-AE39-94326A356F8F}"
@@ -261,10 +259,6 @@ Global
 		{15214E8F-E8A8-4738-824E-345C046AEB73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15214E8F-E8A8-4738-824E-345C046AEB73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15214E8F-E8A8-4738-824E-345C046AEB73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{41AB0C9F-7F7E-F8D5-4F91-CF30E283856B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{41AB0C9F-7F7E-F8D5-4F91-CF30E283856B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{41AB0C9F-7F7E-F8D5-4F91-CF30E283856B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{41AB0C9F-7F7E-F8D5-4F91-CF30E283856B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2959132F-DDD7-46B5-A421-FB20D017185A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2959132F-DDD7-46B5-A421-FB20D017185A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2959132F-DDD7-46B5-A421-FB20D017185A}.Release|Any CPU.ActiveCfg = Release|Any CPU

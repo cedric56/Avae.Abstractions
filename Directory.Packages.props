@@ -5,7 +5,6 @@
     <BaseVersion>10.0.3</BaseVersion>
   </PropertyGroup>
   <ItemGroup>
-    
     <!-- AVALONIA -->
     <PackageVersion Include="Avalonia" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Android" Version="$(AvaloniaVersion)" />
@@ -20,38 +19,31 @@
     <PackageVersion Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3" />
     <PackageVersion Include="Avalonia.Labs.Notifications" Version="12.0.999" />
     <PackageVersion Include="Avalonia.Controls.Maui.Essentials" Version="11.0.0-preview.5.26161.128" />
-
     <PackageVersion Include="MessageBox.Avalonia" Version="12.0.0" />
-    <PackageVersion Include="FluentAvaloniaUI" Version="3.0.2" />
-
+    <PackageVersion Include="FluentAvaloniaUI" Version="3.1.0" />
     <!-- DEPENDENCY INJECTION -->
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Gateway" Version="11.0.0-preview.5.26302.115" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.11" />
-    
-    
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0-preview.6.26359.118" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
-    
-    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.11" />
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageVersion Include="System.Text.Json" Version="11.0.0-preview.7.26381.103" />
-
     <!-- MAUI -->
     <PackageVersion Include="UXDivers.Popups.Maui" Version="0.9.4" />
     <PackageVersion Include="Microsoft.Maui.Controls" Version="11.0.0-preview.6.26360.8" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="10.0.90" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="10.0.100" />
     <!-- ESSENTIALS -->
     <PackageVersion Include="Microsoft.Maui.Essentials" Version="11.0.0-preview.6.26360.8" />
     <PackageVersion Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" PrivateAssets="compile" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="1.8.251106002" />
     <PackageVersion Include="Microsoft.Maui.Platforms.MacOS.Essentials" Version="0.1.0-preview.12.26368.2" />
-    <PackageVersion Include="Microsoft.Maui.Platforms.Linux.Gtk4.Essentials" Version="0.1.0-preview.12.26421.1" />    
-    
+    <PackageVersion Include="Microsoft.Maui.Platforms.Linux.Gtk4.Essentials" Version="0.1.0-preview.12.26421.1" />
     <!-- BLAZOR -->
-    <PackageVersion Include="MudBlazor" Version="9.7.0" />
+    <PackageVersion Include="MudBlazor" Version="9.9.0" />
     <!-- BLAZOR ESSENTIALS -->
     <PackageVersion Include="Append.Blazor.WebShare" Version="7.0.0" />
-    <PackageVersion Include="BlazorNative.Device" Version="0.11.0" />
+    <PackageVersion Include="BlazorNative.Device" Version="0.12.0" />
     <PackageVersion Include="BlazorSensors" Version="1.0.1" />
     <PackageVersion Include="KristofferStrube.Blazor.FileSystemAccess" Version="4.0.0" />
     <PackageVersion Include="KristofferStrube.Blazor.MediaCaptureStreams" Version="0.4.1" />
@@ -60,52 +52,39 @@
     <PackageVersion Include="Microsoft.JSInterop" Version="10.0.11" />
     <PackageVersion Include="PatrickJahr.Blazor.AsyncClipboard" Version="1.0.0" />
     <PackageVersion Include="Toolbelt.Blazor.SpeechSynthesis" Version="11.0.0" />
-    <PackageVersion Include="Toolbelt.Blazor.WebAssembly.ExtensibleDevServer" Version="10.0.3" />
-
-
-    <PackageVersion Include="BlazorWebAssemblyExtension" Version="10.0.3"/>
-    <PackageVersion Include="Microsoft.AspNetCore.Hosting" Version="2.3.9" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="$(BaseVersion)" />
-
-    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="11.0.0-preview.6.26359.118" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="11.0.0-preview.6.26359.118" />
-    <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.11" />
-    
-    
-
+    <!-- WASM -->
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" />
     <!-- Grpc -->
-    <PackageVersion Include="MessagePack" Version="3.1.7" />
-    <PackageVersion Include="MagicOnion.Serialization.MessagePack" Version="7.10.2" />    
+    <PackageVersion Include="MessagePack" Version="3.1.8" />
+    <PackageVersion Include="MagicOnion.Serialization.MessagePack" Version="7.10.2" />
     <PackageVersion Include="MagicOnion.Abstractions" Version="7.10.2" />
     <PackageVersion Include="MagicOnion.Client" Version="7.10.2" />
     <PackageVersion Include="MagicOnion.Server" Version="7.10.2" />
-    <PackageVersion Include="Grpc.AspNetCore.Web" Version="2.71.0" />
-    <PackageVersion Include="Grpc.AspNetCore" Version="2.71.0" />    
-    <PackageVersion Include="GrpcWebSocketBridge.Client" Version="1.4.1" />    
+    <PackageVersion Include="Grpc.AspNetCore.Web" Version="2.83.0" />
+    <PackageVersion Include="Grpc.AspNetCore" Version="2.83.0" />
+    <PackageVersion Include="GrpcWebSocketBridge.Client" Version="1.4.1" />
     <PackageVersion Include="Grpc.Net.Client.Web" Version="2.83.0" />
     <PackageVersion Include="GrpcWebSocketBridge.AspNetCore" Version="1.4.1" />
-
     <!-- SIGNAL R-->
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.11" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.11" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="10.0.11" />
-    
     <!-- LAYERS -->
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageVersion Include="SqlTableDependencyCore" Version="1.0.0" />
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="7.0.2" />
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="11.0.0-preview.6.26359.118" />
     <PackageVersion Include="Dapper.Contrib" Version="2.0.78" />
-    
     <!-- LOGS -->
-    <PackageVersion Include="System.Diagnostics.EventLog" Version="9.0.13" />
-
+    <PackageVersion Include="System.Diagnostics.EventLog" Version="10.0.11" />
     <!-- TESTS -->
-    <PackageVersion Include="coverlet.collector" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-    <PackageVersion Include="NSubstitute" Version="5.3.0" />
-    <PackageVersion Include="xunit.v3" Version="3.2.2" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+    <PackageVersion Include="coverlet.collector" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <PackageVersion Include="NSubstitute" Version="6.2.0" />
+    <PackageVersion Include="xunit.v3" Version="4.0.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.0" />
   </ItemGroup>
 </Project>

@@ -1,26 +1,25 @@
 ﻿using Avae.Services;
+using Avalonia.Labs.Notifications;
 using Microsoft.JSInterop;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
 
 namespace Avae.Blazor.Notifications;
 
 internal class SystemNotificationService : ISystemNotificationService, IAsyncDisposable
 {
-    Dictionary<uint, BlazorNotification> dic = new();
+    [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
+    [return: UnsafeAccessorType("Avalonia.Labs.Notifications.NotificationChannelManager, Avalonia.Labs.Notifications")]
+    public static extern object? CreateChannelManager();
 
-    public enum PermissionType
-    {
-        Default = 0,
-        Granted,
-        Denied
-    }
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_channels")]
+    public static extern ref Dictionary<string, NotificationChannel> GetChannels(
+        [UnsafeAccessorType("Avalonia.Labs.Notifications.NotificationChannelManager, Avalonia.Labs.Notifications")] object instance);
 
-    private static readonly JsonSerializerOptions jsonSerializerOptionsForPropertyModel = new()
-    {
-        TypeInfoResolver = new DefaultJsonTypeInfoResolver()
-    };
+
+    Dictionary<uint, ISystemNotification> currents = new();
+    public object? ChannelManager { get; private set; }
 
     IJSRuntime jSRuntime;
 
@@ -28,75 +27,61 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
     {
         this.jSRuntime = jSRuntime;
 
-        _selfRef = DotNetObjectReference.Create(this);
+        ChannelManager = CreateChannelManager();
+        _dotNetRef = DotNetObjectReference.Create(this);
+
+        //_ = GetModuleAsync();
     }
 
-    
-    private DotNetObjectReference<SystemNotificationService>? _selfRef;
-
     private IJSObjectReference? _module;
-    private PermissionType? permissionType;
+    private IJSObjectReference? _innerModule;
 
     public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
 
-    public async Task<IReadOnlyDictionary<uint, ISystemNotification>> ActiveNotifications()
-    {
-        var module = await GetModuleAsync();
-        if (module == null)
-            return new Dictionary<uint, ISystemNotification>();
-
-        var webNotifications = await module.InvokeAsync<WebNotification[]>("getNotifications");
-        if (webNotifications == null || webNotifications.Length == 0)
-            return new Dictionary<uint, ISystemNotification>();
-
-        var result = new Dictionary<uint, ISystemNotification>();
-
-        foreach (var web in webNotifications)
-        {
-            if(uint.TryParse(web.Tag, out var id))
-            {
-                if(dic.TryGetValue(id, out var notification))
-                    result.Add(id, notification);
-            }
-        }
-
-        return result;
-    }
+    public IReadOnlyDictionary<uint, ISystemNotification> ActiveNotifications() => currents;
 
     private async ValueTask<IJSObjectReference> GetModuleAsync()
     {
         if (_module == null)
         {
-            _module = await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Avae.Blazor.Notifications/notifications.js");
+            _module = await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Avalonia.Labs.Notifications/notifications.js");
+            _innerModule = await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Avae.Blazor.Notifications/notifications.js");
             await _module.InvokeVoidAsync("registerServiceWorker");
-            await _module.InvokeVoidAsync("registrations.registerDotnet", _selfRef);            
+            await _innerModule.InvokeVoidAsync("registrations", _dotNetRef);
         }
         return _module;
     }
+    private DotNetObjectReference<SystemNotificationService>? _dotNetRef;
+    public async ValueTask DisposeAsync()
+    {
+        _dotNetRef?.Dispose();
+        if (_module is not null)
+            await _module.DisposeAsync();
+        if (_innerModule is not null)
+            await _innerModule.DisposeAsync();        
+    }
 
     [JSInvokable]
-    public async Task HandleNotificationClose(object data)
+    public async void OnClose(string data)
     {
-        var jsonString = JsonSerializer.Serialize(data);
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
-        var obj = await JsonSerializer.DeserializeAsync<NotificationData>(stream, jsonSerializerOptionsForPropertyModel);
-        if (obj != null && obj.data?.id is uint id && dic.TryGetValue(id, out var item))
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(data));
+        var obj = await JsonSerializer.DeserializeAsync(stream, NotificationJsonContext.Default.Data);
+        if (obj != null && obj.data?.id is uint id && currents.TryGetValue(id, out var item))
         {
             NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs()
             {
                 IsCancelled = true,
                 NotificationId = id
             });
-            dic.Remove(id);
         }
     }
 
     [JSInvokable]
-    public async Task HandleNotificationClick(object data)
+    public async void OnClick(string data)
     {
-        using var stream = GetMemoryStream(data);
-        var obj = await JsonSerializer.DeserializeAsync<NotificationData>(stream, jsonSerializerOptionsForPropertyModel);
-        if (obj != null && obj.data?.id is uint id && dic.TryGetValue(id, out var item))
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(data));
+        var obj = await JsonSerializer.DeserializeAsync(stream, NotificationJsonContext.Default.Data);
+        if (obj != null && obj.data?.id is uint id && currents.TryGetValue(id, out var item))
         {
             NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs()
             {
@@ -105,36 +90,28 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
                 IsCancelled = false,
                 NotificationId = id
             });
-            dic.Remove(id);
         }
-    }
-
-    private MemoryStream GetMemoryStream(object obj)
-    {
-        var jsonString = JsonSerializer.Serialize(obj);
-        return new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
     }
 
     [JSInvokable]
-    public async Task HandleNotificationReply(object data, object user_data)
+    public async void OnReply(string data, string reply)
     {
-        using var data_stream = GetMemoryStream(data);
-        var obj = await JsonSerializer.DeserializeAsync<NotificationReplyData>(data_stream, jsonSerializerOptionsForPropertyModel);
-        if (obj != null && obj.data?.id is uint id && dic.TryGetValue(id, out var item))
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(data));
+        var obj = await JsonSerializer.DeserializeAsync(stream, NotificationJsonContext.Default.ReplyData);
+        if (obj != null && obj.data?.id is uint id && currents.TryGetValue(id, out var item))
         {
-            using var user_data_stream = GetMemoryStream(user_data);
             NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs()
             {
                 ActionTag = obj.action,
-                IsActivated = false,
+                IsActivated = string.IsNullOrWhiteSpace(obj.action),
                 IsCancelled = false,
                 NotificationId = id,
-                UserData = await JsonSerializer.DeserializeAsync<string>(user_data_stream, jsonSerializerOptionsForPropertyModel)
+                UserData = reply
             });
-            dic.Remove(id);
         }
     }
-
+    public const string DefaultChannel = "default";
+    public const string DefaultChannelLabel = "Notifications";
     public async Task<ISystemNotification?> CreateNotification(string? category)
     {
         var module = await GetModuleAsync();
@@ -144,51 +121,17 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         if (false == await module.InvokeAsync<bool>("isSupported"))
             return null;
 
-        if (PermissionType.Granted != permissionType)
+        var channels = GetChannels(ChannelManager!);
+        if(!channels.TryGetValue(category ?? DefaultChannel, out var channel))
         {
-            permissionType = await RequestPermission(module);
+            channels.Add(DefaultChannel, new NotificationChannel(DefaultChannel, DefaultChannelLabel));
         }
-        if (PermissionType.Granted == permissionType)
-        {
-            var item = new BlazorNotification(category, async (notification) =>
-            {
-                var options = new
-                {
-                    actions = notification.Actions?.Select(a => new { action = a.tag, icon = a.Icon, title = a.caption, type = a.tag == notification.ReplyActionTag ? "text" : "button" }),
-                    body = notification.Message,
-                    data = new
-                    {
-                        id = notification.Id,
-                        replyActionTag = notification.ReplyActionTag,
-                    },
-                    icon = notification.Icon,
-                    tag = notification.Id.ToString(),
-                    vibrate = notification.Vibrate
-                };
-                await module.InvokeAsync<object>("create", notification.Title, options);
-            });
-            dic.Add(item.Id, item);
-            return item;
-        }
-        return null!;
-    }
+        if (channel == null)
+            return null;
 
-    private async ValueTask<PermissionType> RequestPermission(IJSObjectReference module)
-    {
-        string permission = await module.InvokeAsync<string>("requestPermission");
-
-        if (permission.Equals("granted", StringComparison.InvariantCultureIgnoreCase))
-            return PermissionType.Granted;
-
-        if (permission.Equals("denied", StringComparison.InvariantCultureIgnoreCase))
-            return PermissionType.Denied;
-
-        return PermissionType.Default;
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        _selfRef?.Dispose();
+        var item = new BlazorNotification(channel, this);
+        currents.Add(item.Id, item);
+        return item;
     }
 
     public async void CloseAll()
@@ -196,5 +139,20 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         var module = await GetModuleAsync();
         if (module != null)
             await module.InvokeAsync<object>("closeAllNotifications");
+    }
+
+    public async Task Show(BlazorNotification notification, NotificationOptions options)
+    {
+        var module = await GetModuleAsync();
+        if (module != null)
+            await module.InvokeVoidAsync("create", notification.Title, JsonSerializer.Serialize(options, NotificationJsonContext.Default.NotificationOptions));
+    }
+
+    public async Task Close(uint id)
+    {
+        var module = await GetModuleAsync();
+        if (module != null)
+            await module.InvokeVoidAsync("close", id.ToString());
+        currents.Remove(id);
     }
 }

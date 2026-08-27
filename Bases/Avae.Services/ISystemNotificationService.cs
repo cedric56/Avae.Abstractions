@@ -34,8 +34,7 @@ public interface ISystemNotification
 
     /// <summary>
     /// Only supports on web
-    /// </summary>
-    IEnumerable<int>? Vibrate { get; set; }
+    /// </summary>    
 
     string? Icon { get; set; }
 
@@ -57,7 +56,7 @@ public interface ISystemNotification
 
 public interface ISystemNotificationService
 {
-    Task<IReadOnlyDictionary<uint, ISystemNotification>> ActiveNotifications();
+    IReadOnlyDictionary<uint, ISystemNotification> ActiveNotifications();
 
     // if null, implementation will set a default category, otherwise category must be defined at launch
     Task<ISystemNotification?> CreateNotification(string? category);

@@ -84,7 +84,7 @@ public partial class HomeViewModel(
             if (notification != null)
             {
                 systemNotificationService.NotificationCompleted += OnNotificationCompleted;
-                notification.Vibrate = [200,100,200,100];
+                //notification.Vibrate = [200,100,200,100];
                 notification.Title = "Hello";
                 notification.Message = "World";
                 notification.Expiration = TimeSpan.FromSeconds(1);

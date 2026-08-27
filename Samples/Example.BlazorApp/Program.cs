@@ -36,5 +36,4 @@ app.MapRazorComponents<App>()
         typeof(Avae.Razor.Layout.MainLayout).Assembly,
         typeof(Example.Razor.Components.Home).Assembly
     );
-app.UseServiceWorker();
 app.Run();

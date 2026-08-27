@@ -2,32 +2,44 @@
 
 namespace Avae.Blazor.Notifications;
 
-class WebNotification
+[JsonSerializable(typeof(NotificationOptions))]
+[JsonSerializable(typeof(NotificationAction))]
+[JsonSerializable(typeof(NotificationData))]
+[JsonSerializable(typeof(Data))]
+[JsonSerializable(typeof(InnerData))]
+[JsonSerializable(typeof(ReplyData))]
+internal partial class NotificationJsonContext : JsonSerializerContext
 {
-    public string? Title { get; set; }
+}
+
+internal class NotificationOptions
+{
     public string? Body { get; set; }
-    public string? Tag { get; set; }
     public string? Icon { get; set; }
     public string? Badge { get; set; }
-    public string? Image { get; set; }
-    public string? Lang { get; set; }
-    public string? Dir { get; set; }
+    public string? Tag { get; set; }
     public bool RequireInteraction { get; set; }
-    public bool? Silent { get; set; }
-    public long Timestamp { get; set; }          // or DateTimeOffset if you convert
-    public object? Data { get; set; }
-    public WebNotificationAction[]? Actions { get; set; }
+    public NotificationData? Data { get; set; }
+    public int[] Vibrations { get; set; } = [];
+    public NotificationAction[] Actions { get; set; } = [];
 }
 
-class WebNotificationAction
+internal class NotificationAction
 {
-    public string? Action { get; set; }
     public string? Title { get; set; }
+    public string? Type { get; set; }
+    public string? Action { get; set; }
+
     public string? Icon { get; set; }
-    public string? Type { get; set; }   // "button" | "text"
 }
 
-class NotificationData
+internal class NotificationData
+{
+    public required uint Id { get; set; }
+    public string? ReplyActionTag { get; set; }
+}
+
+class Data
 {
     public string? action { get; set; }
     public InnerData? data { get; set; }
@@ -38,16 +50,7 @@ class InnerData
     public uint? id { get; set; }
 }
 
-class NotificationReplyData : NotificationData
+class ReplyData : Data
 {
     public string? Reply { get; set; }
-}
-
-[JsonSerializable(typeof(WebNotification))]
-[JsonSerializable(typeof(WebNotificationAction))]
-[JsonSerializable(typeof(InnerData))]
-[JsonSerializable(typeof(NotificationData))]
-[JsonSerializable(typeof(NotificationReplyData))]
-partial class NotificationJsonContext : JsonSerializerContext
-{
 }

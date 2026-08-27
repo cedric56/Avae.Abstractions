@@ -18,15 +18,10 @@ public static class Extensions
         builder.Services.AddTransient<Router>(sp => new Router(sp));
         builder.Services.AddSingleton<IDialogService>(GetConfiguration);
         builder.Services.AddSingleton<IContentDialogService>(GetConfiguration);
-        builder.Services.AddSingleton<ITaskDialogService>(GetConfiguration);
-        
+        builder.Services.AddSingleton<ITaskDialogService>(GetConfiguration);        
         builder.Services.AddSingleton<INotificationService>(GetConfiguration);
         builder.Services.AddSingleton<IRequestedThemeService>(GetConfiguration);
-        builder.Services.AddSingleton<ILogger>(LoggerFactory.Create(builder =>
-        {
-            build?.Invoke(builder);
-
-        }).CreateLogger<TApp>());
+        builder.Services.AddSingleton<ILogger>(LoggerFactory.Create(builder => build?.Invoke(builder)).CreateLogger<TApp>());
         return builder;
 
         IocConfiguration GetConfiguration(IServiceProvider provider)

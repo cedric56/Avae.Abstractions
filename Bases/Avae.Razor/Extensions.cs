@@ -4,7 +4,6 @@ using Avae.Services;
 using Avae.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using MudBlazor;
 using MudBlazor.Services;
 
@@ -42,7 +41,6 @@ public static class Extensions
 
     private static void ConfigureIocContainer(this IServiceCollection services,
         Action<IIocContainer>? configure = null,
-        Action<ILoggingBuilder>? build = null,
         RenderFragment? extras = null)
     {
         services.AddSingleton<CircuitServiceAccessor>();
