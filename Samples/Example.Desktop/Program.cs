@@ -19,7 +19,7 @@ class Program
             .WithAppNotifications(new AppNotificationOptions()
             {
                 AppIcon = "C:\\Users\\cedri\\source\\repos\\Avae.Abstractions\\Samples\\Example\\Assets\\avalonia-logo.ico",
-                AppName = "Example",
+                AppName = "Example"
             })
             .WithDataAnnotationsValidation()
             .UsePlatformDetect()

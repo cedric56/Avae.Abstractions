@@ -14,10 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.Avalonia.Essentials\Avae.Avalonia.Essentials.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.Blazor.Notifications\Avae.Blazor.Notifications.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.Avalonia.Essentials\Avae.Avalonia.Essentials.csproj" />    
     <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.Avalonia.Browser\Avae.Avalonia.Browser.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.Avalonia.Notifications\Avae.Avalonia.Notifications.csproj" />
+
     <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />
   </ItemGroup>
 

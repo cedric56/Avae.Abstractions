@@ -1,7 +1,8 @@
 using Avae.Avalonia.Essentials;
-using Avae.Blazor.Notifications;
+using Avae.Avalonia.Notifications;
 using Avae.Browser;
 using Avae.Core;
+using Avalonia.Labs.Notifications;
 using Example.Razor;
 using Example.Razor.Layout;
 using Microsoft.AspNetCore.Components.Web;
@@ -16,9 +17,9 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
 });
 builder.Services.UseAvaeEssentials();
-builder.Services.UseBlazorNotifications();
+builder.Services.UseAvaeNotifications();
 builder.Services.UseSharedLibrary(true);
-await builder.Services.UseEmbeddedAvaloniaApp("avalonia");
+await builder.Services.UseEmbeddedAvaloniaApp("avalonia", b => b.WithAppNotifications());
 var app = builder.Build();
 ServiceLocator.SetDefault(app.Services);
 await app.RunAsync();

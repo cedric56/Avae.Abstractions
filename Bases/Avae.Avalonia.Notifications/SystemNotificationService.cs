@@ -63,18 +63,22 @@ public class SystemNotificationService : ISystemNotificationService
 #if ANDROID
             manager?.SetPermissionActivity(Activity ?? throw new InvalidOperationException("Activity must be set on OnCreateBundle"));
 #endif
+            
         }
 
         if (manager != null)
         {
+            
             var _currentNotification = manager.CreateNotification(category);
             if (_currentNotification is not null)
             {
                 var current = new AvaloniaNotification(_currentNotification);
+
+                manager.NotificationCompleted -= OnNotificationCompleted;
                 manager.NotificationCompleted += OnNotificationCompleted;
                 void OnNotificationCompleted(object? sender, NativeNotificationCompletedEventArgs args)
                 {
-                    manager.NotificationCompleted -= OnNotificationCompleted;
+                    
                     NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs()
                     {
                         ActionTag = args.ActionTag,

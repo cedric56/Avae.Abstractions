@@ -9,25 +9,16 @@ namespace Avae.Blazor.Notifications;
 
 internal class SystemNotificationService : ISystemNotificationService, IAsyncDisposable
 {
-    [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
-    [return: UnsafeAccessorType("Avalonia.Labs.Notifications.NotificationChannelManager, Avalonia.Labs.Notifications")]
-    public static extern object? CreateChannelManager();
-
-    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_channels")]
-    public static extern ref Dictionary<string, NotificationChannel> GetChannels(
-        [UnsafeAccessorType("Avalonia.Labs.Notifications.NotificationChannelManager, Avalonia.Labs.Notifications")] object instance);
-
-
     Dictionary<uint, ISystemNotification> currents = new();
-    public object? ChannelManager { get; private set; }
+    
+    Dictionary<string, NotificationChannel>? channels = null;
 
     IJSRuntime jSRuntime;
 
-    public SystemNotificationService(IJSRuntime jSRuntime)
+    public SystemNotificationService(IJSRuntime jSRuntime, IEnumerable<NotificationChannel>? channels = null)
     {
         this.jSRuntime = jSRuntime;
-
-        ChannelManager = CreateChannelManager();
+        this.channels = channels?.ToDictionary(x => x.Id, x => x);
         _dotNetRef = DotNetObjectReference.Create(this);
     }
 
@@ -119,8 +110,8 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         if (false == await module.InvokeAsync<bool>("isSupported"))
             return null;
 
-        var channels = GetChannels(ChannelManager!);
-        if(!channels.TryGetValue(category ?? DefaultChannel, out var channel))
+        channels ??= [];
+        if (!channels.TryGetValue(category ?? DefaultChannel, out var channel))
         {
             channels.Add(DefaultChannel, channel = new NotificationChannel(DefaultChannel, DefaultChannelLabel));
         }

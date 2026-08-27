@@ -5,7 +5,7 @@ namespace Avae.Avalonia.Notifications;
 
 public static class Extensions
 {
-    public static void UseSystemNotificationService(this IServiceCollection services)
+    public static void UseAvaeNotifications(this IServiceCollection services)
     {
         services.AddSingleton<ISystemNotificationService, SystemNotificationService>();
     }

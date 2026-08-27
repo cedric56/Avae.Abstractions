@@ -13,7 +13,7 @@ class BlazorNotification : ISystemNotification
     {
         this.category = channel.Id;
         this.manager = manager;
-        this.Actions = new List<SystemNotificationAction>(channel.Actions.Select(a => new SystemNotificationAction(a.Caption, a.Tag) { }));
+        this.Actions = [.. channel.Actions.Select(a => new SystemNotificationAction(a.Caption, a.Tag) { })];
         //this.ChannelIcon = channel.Icon;
         //this.Vibrations = channel.Vibrations ?? [];
 
@@ -22,7 +22,7 @@ class BlazorNotification : ISystemNotification
 
     public uint Id { get; }
     public string? ReplyActionTag { get; set; }
-    public int[] Vibrations { get; set; }
+    public int[] Vibrations { get; set; } = [];
     public string? Category => category;
     public string? ChannelIcon { get; set; }
     public string? Title { get; set; }

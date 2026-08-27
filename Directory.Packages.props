@@ -2,9 +2,8 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <AvaloniaVersion>12.1.1</AvaloniaVersion>
-    <MauiVersion>11.0.0-preview.6.26360.8</MauiVersion>
-    <ExtensionsVersion>10.0.11</ExtensionsVersion>
-    <AspNetCoreVersion>10.0.11</AspNetCoreVersion>
+    <MauiVersion>11.0.0-preview.6.26360.8</MauiVersion>    
+    <MicrosoftVersion>10.0.11</MicrosoftVersion>
     <MagicOnionVersion>7.10.2</MagicOnionVersion>
     <GrpcVersion>2.83.0</GrpcVersion>
     <GrpcBridgeVersion>1.4.1</GrpcBridgeVersion>
@@ -26,10 +25,18 @@
     <PackageVersion Include="MessageBox.Avalonia" Version="12.0.0" />
     <PackageVersion Include="FluentAvaloniaUI" Version="3.1.0" />
     <!-- DEPENDENCY INJECTION -->
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="$(ExtensionsVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(ExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="$(MicrosoftVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftVersion)" />
+    <PackageVersion Include="Microsoft.JSInterop" Version="$(MicrosoftVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="$(MicrosoftVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(MicrosoftVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(MicrosoftVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(MicrosoftVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="$(MicrosoftVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="$(MicrosoftVersion)" />
+    
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageVersion Include="System.Text.Json" Version="11.0.0-preview.7.26381.103" />
     <!-- MAUI -->
@@ -50,19 +57,13 @@
     <PackageVersion Include="BlazorSensors" Version="1.0.1" />
     <PackageVersion Include="KristofferStrube.Blazor.FileSystemAccess" Version="4.0.0" />
     <PackageVersion Include="KristofferStrube.Blazor.MediaCaptureStreams" Version="0.4.1" />
-    <PackageVersion Include="KristofferStrube.Blazor.MediaStreamRecording" Version="0.1.0-alpha.2" />
-    <PackageVersion Include="Microsoft.JSInterop" Version="10.0.11" />
+    <PackageVersion Include="KristofferStrube.Blazor.MediaStreamRecording" Version="0.1.0-alpha.2" />    
     <PackageVersion Include="PatrickJahr.Blazor.AsyncClipboard" Version="1.0.0" />
     <PackageVersion Include="Toolbelt.Blazor.SpeechSynthesis" Version="11.0.0" />
     <!-- WASM -->
-    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="$(AspNetCoreVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(AspNetCoreVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(AspNetCoreVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(AspNetCoreVersion)" />
+    
     <!-- SIGNAL R-->
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.12" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="$(AspNetCoreVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.12" />    
     <!-- Grpc -->
     <PackageVersion Include="MessagePack" Version="3.1.8" />
     <PackageVersion Include="MagicOnion.Serialization.MessagePack" Version="$(MagicOnionVersion)" />
@@ -81,7 +82,7 @@
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="11.0.0-preview.6.26359.118" />
     <PackageVersion Include="Dapper.Contrib" Version="2.0.78" />
     <!-- LOGS -->
-    <PackageVersion Include="System.Diagnostics.EventLog" Version="10.0.11" />
+    <PackageVersion Include="System.Diagnostics.EventLog" Version="$(MicrosoftVersion)" />
     <!-- TESTS -->
     <PackageVersion Include="coverlet.collector" Version="10.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />

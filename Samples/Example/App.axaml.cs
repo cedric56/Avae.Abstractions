@@ -63,7 +63,7 @@ public partial class App : AvaeApplication, IIocConfiguration
     {
         base.Configure(services);
 
-        services.UseSystemNotificationService();
+        services.UseAvaeNotifications();
         services.AddTransient<Router>();
         services.AddSingleton<HomeViewModel>();
         services.AddSingleton<MenuViewModel>();

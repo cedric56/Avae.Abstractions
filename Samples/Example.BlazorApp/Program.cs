@@ -1,6 +1,7 @@
 using Avae.Blazor.Essentials;
 using Avae.Blazor.Notifications;
 using Avae.Core;
+using Avalonia.Labs.Notifications;
 using Example.BlazorApp;
 using Example.BlazorApp.Components;
 using Example.Razor;
@@ -10,7 +11,17 @@ builder.Services.AddScoped(sp => new HttpClient {
     BaseAddress = new Uri(builder.Environment.WebRootPath)
 });
 builder.Services.UseBlazorEssentials();
-builder.Services.UseBlazorNotifications();
+builder.Services.UseBlazorNotifications(
+    [
+        new NotificationChannel("actions", "Send Notification with Predefined Actions", NotificationPriority.High)
+        {
+            Actions =
+            [
+                new("Hello", "hello"),
+                new("world", "world")
+            ]
+        }]
+    );
 builder.Services.UseSharedLibrary(true, extras: builder =>
 {
     builder.OpenComponent<VideoCapture>(0);
