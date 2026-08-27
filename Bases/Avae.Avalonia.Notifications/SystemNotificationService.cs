@@ -14,11 +14,11 @@ public class SystemNotificationService : ISystemNotificationService
 
     public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
 
-    public Task<IReadOnlyDictionary<uint, ISystemNotification>> ActiveNotifications()
+    public IReadOnlyDictionary<uint, ISystemNotification> ActiveNotifications()
     {
-        return Task.FromResult<IReadOnlyDictionary<uint, ISystemNotification>>(manager?.ActiveNotifications
+        return manager?.ActiveNotifications
            .ToDictionary(kvp => kvp.Key, kvp => new AvaloniaNotification(kvp.Value))
-           .ToDictionary(kvp => kvp.Key, kvp => (ISystemNotification)kvp.Value) ?? []);
+           .ToDictionary(kvp => kvp.Key, kvp => (ISystemNotification)kvp.Value) ?? [];
     }
 
     public class AvaloniaNotification(INativeNotification native) : ISystemNotification

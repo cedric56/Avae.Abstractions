@@ -29,8 +29,6 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
 
         ChannelManager = CreateChannelManager();
         _dotNetRef = DotNetObjectReference.Create(this);
-
-        //_ = GetModuleAsync();
     }
 
     private IJSObjectReference? _module;
@@ -154,5 +152,10 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         if (module != null)
             await module.InvokeVoidAsync("close", id.ToString());
         currents.Remove(id);
+    }
+
+    public async Task InitializeAsync()
+    {
+        _module = await GetModuleAsync();
     }
 }

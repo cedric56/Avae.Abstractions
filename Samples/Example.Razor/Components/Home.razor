@@ -1,7 +1,9 @@
 ﻿@page "/"
 @inherits Avae.Razor.Components.ComponentPage
+@using Avae.Services
 @using Example.ViewModels
 @using Microsoft.AspNetCore.Components.Web
+@inject ISystemNotificationService service;
 @using MudBlazor
 
 @inject HomeViewModel homeViewModel
@@ -14,7 +16,7 @@
     }
 </style>
 
-<PageTitle>homeViewModel.Title</PageTitle>
+<PageTitle>Home</PageTitle>
 
 <div class="rows center">
     <MudButton OnClick="() => homeViewModel.ShowModal()">Show Modal</MudButton>
@@ -24,3 +26,13 @@
     <MudButton OnClick="() => homeViewModel.ShowRequestedTheme()">Theme</MudButton>
     <MudButton OnClick="() => homeViewModel.ShowSystemNotification()">Notification</MudButton>
 </div>
+
+@code
+{
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await service.InitializeAsync();
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

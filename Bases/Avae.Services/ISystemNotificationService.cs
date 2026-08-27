@@ -63,4 +63,9 @@ public interface ISystemNotificationService
     void CloseAll();
 
     event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
+
+    Task InitializeAsync()
+    {
+        return Task.CompletedTask;
+    }
 }

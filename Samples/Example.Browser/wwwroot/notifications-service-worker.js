@@ -14,8 +14,7 @@ self.addEventListener('notificationclose', function (event) {
     const data = notification.data || {};
     event.waitUntil(
         (async function () {
-            // Send click to Blazor
-            await sendToBlazor({
+            await notifyHandlers({
                 data: data,
                 type: 'HandleNotificationClose'
             });
@@ -28,12 +27,12 @@ self.addEventListener('notificationclick', function (event) {
     const action = event.action;
     const data = notification.data || {};
     const reply = event.reply; // populated only if this was a text-action reply
-    notification.close();
+    //notification.close();
 
     event.waitUntil(
         (async function () {
             if (action && data.replyActionTag === action) {
-                await sendToBlazor({
+                await notifyHandlers({
                     action: action,
                     data: data,
                     type: 'HandleNotificationReply',
@@ -42,7 +41,7 @@ self.addEventListener('notificationclick', function (event) {
                 return;
             }
 
-            await sendToBlazor({
+            await notifyHandlers({
                 action: action,
                 data: data,
                 type: 'HandleNotificationClick'
@@ -52,7 +51,7 @@ self.addEventListener('notificationclick', function (event) {
 });
 
 // Helper to send data to Blazor
-async function sendToBlazor(message) {
+async function notifyHandlers(message) {
     try {
         const allClients = await clients.matchAll({
             type: 'window',

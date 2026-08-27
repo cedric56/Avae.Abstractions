@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 internal sealed partial class Program
 {
-    private static Task Main(string[] args)=>BuildAvaloniaApp()
-                .StartBrowserAppAsync("out");
+    private static Task Main(string[] args) => BuildAvaloniaApp().StartBrowserAppAsync("out");
 
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<BrowserApp>()
-                        .WithAppNotifications();
+                        .WithAppNotifications()
+                        .WithInterFont();
 
     public class BrowserApp : App
     {
