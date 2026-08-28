@@ -76,8 +76,8 @@ public partial class App : AvaeApplication, IIocConfiguration
         
         if (!OperatingSystem.IsBrowser())
         {
-            services.UseDBSqlLayer<SqliteConnection>();
-            //services.UseDBOnionLayer();
+            //services.UseDBSqlLayer<SqliteConnection>();
+            services.UseDBOnionLayer();
         }
 
         if(OperatingSystem.IsWindows())

@@ -5,6 +5,7 @@ using Dapper;
 using MagicOnion;
 using MagicOnion.Server;
 using MessagePack;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
 using System.Data;
 
@@ -76,13 +77,13 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
         return null;
     }
 
-    public async UnaryResult<DBResult> Remove(DBTransactional transactional, string connectionId)
+    public async UnaryResult<DBResult> Remove(DBTransactional transactional, string connectionId, int? commandTimeout = null)
     {
         var layer = ServiceLocator.GetRequiredService<IDBLayer>();
         DBContext.CurrentConnectionId.Value = connectionId;
         try
         {
-            return await transactional.Remove(layer);
+            return await transactional.Remove(layer, commandTimeout);
         }
         finally
         {
@@ -90,13 +91,13 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
         }            
     }
 
-    public async UnaryResult<DBResult> Save(DBTransactional transactional, string connectionId)
+    public async UnaryResult<DBResult> Save(DBTransactional transactional, string connectionId, int? commandTimeout = null)
     {
         var layer = ServiceLocator.GetRequiredService<IDBLayer>();
         DBContext.CurrentConnectionId.Value = connectionId;
         try
         {
-            return await transactional.Save(layer);
+            return await transactional.Save(layer, commandTimeout);
         }
         finally
         {
@@ -109,7 +110,7 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
         try
         {
             var layer = ServiceLocator.GetRequiredService<IDBLayer>();
-            using var db = new DBLogConnection(ServiceLocator.Default);
+            using var db = ServiceLocator.Default.GetRequiredService<IDbConnection>();
             var results = await db.QueryAsync(sql, GetParam(param), commandTimeout: commandTimeout, commandType: commandType);
             return new DBResult()
             {

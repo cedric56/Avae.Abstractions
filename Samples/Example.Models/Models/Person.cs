@@ -95,7 +95,7 @@ namespace Example.Models
             Contacts = [.. contacts];
         }
 
-        public override async Task<DBResult> Save(IDBLayer instance)
+        public override async Task<DBResult> Save(IDBLayer instance, int? commandTimeout = null)
         {
             bool isSuccessful = false;
             string message = string.Empty;
@@ -152,7 +152,7 @@ namespace Example.Models
             };
         }
 
-        public override async Task<DBResult> Remove(IDBLayer instance)
+        public override async Task<DBResult> Remove(IDBLayer instance, int? commandTimeout = null)
         {
             string message = string.Empty;
 
