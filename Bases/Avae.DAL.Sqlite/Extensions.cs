@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Avae.Core;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using SQLitePCL;
 using System.Data;
@@ -81,7 +82,7 @@ public static class Extensions
                     }
             }
 
-            return connection;
+            return new DBLogConnection(ServiceLocator.Default, connection);
         }
     }
 

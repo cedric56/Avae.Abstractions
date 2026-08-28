@@ -7,6 +7,7 @@ using Example.ViewModels.Defaults;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using Person = Example.Models.Person;
+using Example.Models;
 
 namespace Example.ViewModels;
 
@@ -14,22 +15,20 @@ namespace Example.ViewModels;
 public partial class MenuViewModel : RoutesViewModelImplementation, IDisposable
 {
     IServiceProvider provider;
-    IDBMonitor<Person> monitor;
-
     IDialogService dialogService;
-    public MenuViewModel(IServiceProvider provider, IDBMonitor<Person> monitor, IDialogService dialogService, Router router)
+
+    public MenuViewModel(IServiceProvider provider, IDialogService dialogService, Router router)
         :base(router,false)
     {
         this.provider = provider;
-        this.monitor = monitor;
         this.dialogService = dialogService;
 
-        this.monitor.OnRecordChanged += Monitor_OnChanged;
+        Repository.Instance.PersonsChanged += OnPersonsChanged;
     }
 
-    private void Monitor_OnChanged(object? sender, Record<Person> e)
+    private void OnPersonsChanged(object? sender, EventArgs e)
     {
-        Persons = new(DBBase.Instance.GetAll<Person>());
+        Persons = new(Repository.Instance.Persons);
     }
 
     public string Title { get; set; } = "Persons";
@@ -120,6 +119,6 @@ public partial class MenuViewModel : RoutesViewModelImplementation, IDisposable
 
     public void Dispose()
     {
-        this.monitor.OnRecordChanged -= Monitor_OnChanged;
+        Repository.Instance.PersonsChanged -= OnPersonsChanged;
     }
 }

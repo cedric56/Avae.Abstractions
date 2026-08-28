@@ -2,6 +2,7 @@
 using Dapper;
 using MessagePack;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -10,21 +11,19 @@ using System.Reflection;
 
 namespace Avae.DAL.gRPC;
 
-
-
-//TODO CommandTimeout on WHERE AND FINDBYANY
-public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
+public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger = null) : IDBLayer
 {
-    public async Task<DBResult> Remove(DBTransactional transactional)
+    public async Task<DBResult> Remove(DBTransactional transactional, int? commandTimeout = null)
     {
         try
         {
             IDBLayer.Sessions.TryGetValue(transactional.GetType(), out var connectionId);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            return await service.Remove(transactional, connectionId ?? string.Empty);
+            return await service.Remove(transactional, connectionId ?? string.Empty, commandTimeout);
         }
         catch (Exception ex)
         {
+            logger?.LogError(ex.Message);
             return new DBResult()
             {
                 Successful = false,
@@ -33,16 +32,17 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
     }
 
-    public async Task<DBResult> Save(DBTransactional transactional)
+    public async Task<DBResult> Save(DBTransactional transactional, int? commandTimeout = null)
     {
         try
         {
             IDBLayer.Sessions.TryGetValue(transactional.GetType(), out var connectionId);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            return await service.Save(transactional, connectionId ?? string.Empty);
+            return await service.Save(transactional, connectionId ?? string.Empty, commandTimeout);
         }
         catch (Exception ex)
         {
+            logger?.LogError(ex.Message);
             return new DBResult()
             {
                 Successful = false,
@@ -51,39 +51,39 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
     }
 
-    public IEnumerable<T> FindByAny<T>(Dictionary<string, object> filters) where T : class, new()
+    public IEnumerable<T> FindByAny<T>(Dictionary<string, object> filters, int? commandTimeout = null) where T : class, new()
     {
         try
         {
             if (OperatingSystem.IsBrowser())
             {
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(nameof(FindByAnyAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters }));
+                var result = request.Send(nameof(FindByAnyAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters, commandTimeout?? int.MaxValue }));
                 if (result == Array.Empty<byte>()) return [];
                 return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
             }
-            return AsyncHelper.RunSync(() => FindByAnyAsync<T>(filters));
+            return AsyncHelper.RunSync(() => FindByAnyAsync<T>(filters, commandTimeout));
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return [];
         }
     }
 
-    public async Task<IEnumerable<T>> FindByAnyAsync<T>(Dictionary<string, object> filters) where T : class, new()
+    public async Task<IEnumerable<T>> FindByAnyAsync<T>(Dictionary<string, object> filters, int? commandTimeout = null) where T : class, new()
     {
         try
         {
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.FindByAnyAsync(typeof(T).Name, filters);
+            var result = await service.FindByAnyAsync(typeof(T).Name, filters, commandTimeout);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return [];
             return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data);
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return [];
         }
     }
@@ -103,7 +103,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return null;
         }
     }
@@ -123,7 +123,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return [];
         }
     }
@@ -133,14 +133,14 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         try
         {
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.GetAllAsync(typeof(T).Name);
+            var result = await service.GetAllAsync(typeof(T).Name, commandTimeout);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return [];
             return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return [];
         }
     }
@@ -150,51 +150,51 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         try
         {
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.GetAsync(typeof(T).Name, id);
+            var result = await service.GetAsync(typeof(T).Name, id, commandTimeout);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return null;
             return MessagePackSerializer.Deserialize<T>(result.Data);
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return null;
         }
     }
 
-    public IEnumerable<T> Where<T>(Dictionary<string, object> filters) where T : class, new()
+    public IEnumerable<T> Where<T>(Dictionary<string, object> filters, int? commandTimeout = null) where T : class, new()
     {
         try
         {
             if (OperatingSystem.IsBrowser())
             {
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(nameof(WhereAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters }));
+                var result = request.Send(nameof(WhereAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters, commandTimeout ?? int.MaxValue }));
                 if (result == Array.Empty<byte>()) return [];
                 return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
             }
-            return AsyncHelper.RunSync(() => WhereAsync<T>(filters));
+            return AsyncHelper.RunSync(() => WhereAsync<T>(filters, commandTimeout));
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return [];
         }
     }
 
-    public async Task<IEnumerable<T>> WhereAsync<T>(Dictionary<string, object> filters) where T : class, new()
+    public async Task<IEnumerable<T>> WhereAsync<T>(Dictionary<string, object> filters, int? commandTimeout = null) where T : class, new()
     {
         try
         {
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.WhereAsync(typeof(T).Name, filters);
+            var result = await service.WhereAsync(typeof(T).Name, filters, commandTimeout);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return [];
             return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return [];
         }
     }
@@ -215,7 +215,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return [];
         }
     }
@@ -241,7 +241,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return [];
         }
     }
@@ -262,7 +262,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return [];
         }
     }
@@ -283,7 +283,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return [];
         }
     }
@@ -304,7 +304,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return [];
         }
     }
@@ -325,7 +325,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return [];
         }
     }
@@ -343,7 +343,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return Enumerable.Empty<TReturn>();
         }
     }
@@ -361,7 +361,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return Enumerable.Empty<TReturn>();
         }
     }
@@ -384,7 +384,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return Enumerable.Empty<TReturn>();
         }
     }
@@ -407,7 +407,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return Enumerable.Empty<TReturn>();
         }
     }
@@ -430,7 +430,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return Enumerable.Empty<TReturn>();
         }
     }
@@ -453,7 +453,7 @@ public partial class MagicOnionLayer(IServiceProvider provider) : IDBLayer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
+            logger?.LogError(ex.Message);
             return Enumerable.Empty<TReturn>();
         }
     }

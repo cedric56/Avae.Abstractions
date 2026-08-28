@@ -5,9 +5,9 @@ namespace Avae.DAL.gRPC;
 
 public interface IMagicOnionLayer : IService<IMagicOnionLayer>
 {
-    UnaryResult<DBResult> Remove(DBTransactional transactional, string connectionId);
+    UnaryResult<DBResult> Remove(DBTransactional transactional, string connectionId, int? commandTimeout = null);
 
-    UnaryResult<DBResult> Save(DBTransactional transactional, string connectionId);
+    UnaryResult<DBResult> Save(DBTransactional transactional, string connectionId, int? commandTimeout = null);
 
     UnaryResult<DBResult> FindByAnyAsync(string type, Dictionary<string, object> filters, int? commandTimeout = null);
     

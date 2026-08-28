@@ -37,21 +37,23 @@ namespace Example.Models
             await ClearPersons();
         }
 
-        private List<Person>? _persons;        
+        private IEnumerable<Person>? _persons;        
 
-        public List<Person> Persons
+        public IEnumerable<Person> Persons
         {
             get
             {
-                _persons ??= new(DBBase.Instance.GetAll<Person>());
+                _persons ??= DBBase.Instance.GetAll<Person>();
                 return _persons ?? [];
             }
         }
 
+        public event EventHandler<EventArgs>? PersonsChanged;
 
         public async Task ClearPersons()
         {
-            _persons = new(await DBBase.Instance.GetAllAsync<Person>());
+            _persons = await DBBase.Instance.GetAllAsync<Person>();
+            PersonsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Dispose()

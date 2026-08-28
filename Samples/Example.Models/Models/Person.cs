@@ -2,8 +2,10 @@
 using Avae.DAL;
 using Dapper.Contrib.Extensions;
 using MessagePack;
+using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace Example.Models
 {
@@ -97,8 +99,8 @@ namespace Example.Models
         {
             bool isSuccessful = false;
             string message = string.Empty;
-            using var connection = new DBLogConnection(ServiceLocator.Default);
-            await connection.OpenAsync();
+            using var connection = ServiceLocator.Default.GetRequiredService<IDbConnection>();
+            connection.Open();
             using (var transaction = connection.BeginTransaction())
             {
                 try
@@ -156,9 +158,8 @@ namespace Example.Models
 
             bool isSuccessful = false;
 
-            using var connection = new DBLogConnection(ServiceLocator.Default);
-            await connection.OpenAsync();
-
+            using var connection = ServiceLocator.Default.GetRequiredService<IDbConnection>();
+            connection.Open();
             using (var transaction = connection.BeginTransaction())
             {
                 try
