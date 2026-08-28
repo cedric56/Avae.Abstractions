@@ -100,8 +100,9 @@ namespace Example.ViewModels
                 {
                     service.Show("Shake", "");
                 };
-                accelerometer.ReadingChanged += (sender, args) =>
+                accelerometer.ReadingChanged += async (sender, args) =>
                 {
+                    await Task.Delay(500);
                     service.Show(args.Reading.ToString(), "");
                 };
             }
@@ -324,8 +325,9 @@ namespace Example.ViewModels
 
                 magnetometer.Start(SensorSpeed.Default);
 
-                magnetometer.ReadingChanged += (sender, args) =>
+                magnetometer.ReadingChanged += async (sender, args) =>
                 {
+                    await Task.Delay(500);
                     service.Show(args.Reading.ToString(), "");
                 };
             }
@@ -343,8 +345,9 @@ namespace Example.ViewModels
                 }
 
                 barometer.Start(SensorSpeed.Default);
-                barometer.ReadingChanged += (sender, args) =>
+                barometer.ReadingChanged += async (sender, args) =>
                 {
+                    await Task.Delay(500);
                     service.Show(args.Reading.ToString(), "");
                 };
             }
@@ -363,8 +366,9 @@ namespace Example.ViewModels
                 }
 
                 orientationSensor.Start(SensorSpeed.Default);
-                orientationSensor.ReadingChanged += (sender, args) =>
+                orientationSensor.ReadingChanged += async (sender, args) =>
                 {
+                    await Task.Delay(500);
                     service.Show(args.Reading.ToString(), "");
 
                 };
@@ -552,8 +556,9 @@ namespace Example.ViewModels
 
                 compass.Start(SensorSpeed.Default);
 
-                compass.ReadingChanged += (sender, args) =>
+                compass.ReadingChanged += async (sender, args) =>
                 {
+                    await Task.Delay(500);
                     service.Show(args.Reading.HeadingMagneticNorth.ToString(), "Message");
                 };
             }
@@ -603,19 +608,26 @@ namespace Example.ViewModels
                     service.Show(location.ToString(), "");
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                service.Show(ex.Message, "Error");
             }
         }
 
         [RelayCommand]
         public async Task GeolocationCmd()
         {
-            var result = await geolocation.GetLocationAsync();
-            if (result != null)
+            try
             {
-                service.Show(result.ToString(), "");
+                var result = await geolocation.GetLocationAsync();
+                if (result != null)
+                {
+                    service.Show(result.ToString(), "");
+                }
+            }
+            catch(Exception ex)
+            {
+                service.Show(ex.Message, "Error");
             }
         }
 
@@ -636,9 +648,10 @@ namespace Example.ViewModels
                     return;
                 }
 
-                gyroscope.Start(SensorSpeed.UI);
-                gyroscope.ReadingChanged += (sender, args) =>
+                gyroscope.Start(SensorSpeed.Default);
+                gyroscope.ReadingChanged += async (sender, args) =>
                 {
+                    await Task.Delay(500);
                     service.Show(args.Reading.ToString(), "");
 
                 };

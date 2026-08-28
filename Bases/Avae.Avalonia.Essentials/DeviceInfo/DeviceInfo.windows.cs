@@ -61,7 +61,12 @@ namespace Avae.Avalonia.Essentials
 
 		public Version Version => ParseVersion(VersionString);
 
-		public DevicePlatform Platform => DevicePlatform.WinUI;
+		public DevicePlatform Platform =>
+#if WINDOWS
+			DevicePlatform.WinUI;
+#else
+			DevicePlatform.Create("WINDOWS");
+#endif
 
 		public DeviceIdiom Idiom
 		{

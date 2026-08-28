@@ -20,4 +20,20 @@
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Certificates\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Certificates\server.crt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Certificates\server.key">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Certificates\server.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

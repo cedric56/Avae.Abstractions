@@ -1,7 +1,7 @@
 <ContentView x:Class="Example.Maui.Views.EssentialsView">
     <VerticalStackLayout>
         <Label 
-            Text="Welcome to .NET MAUI!"
+            Text="Welcome to .NET MAUI Essentials !"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
     </VerticalStackLayout>

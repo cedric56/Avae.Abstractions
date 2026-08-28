@@ -9,12 +9,12 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <Grid RowDefinitions="*">
-        <ContentView Content="{Binding ContextFor}"
+        <ContentView Content="{Binding CurrentView}"
                                HorizontalOptions="Fill"
 VerticalOptions="Fill"/>
         <Grid RowDefinitions="Auto,*"
           HorizontalOptions="Fill"
-VerticalOptions="Fill" IsVisible="{Binding ContextFor, Converter={StaticResource IsNullConverter}}">
+VerticalOptions="Fill" IsVisible="{Binding CurrentView, Converter={StaticResource IsNullConverter}}">
             <Grid Grid.Row="0">
                 <Label Text="{Binding Title}" />
                 <Grid ColumnDefinitions="Auto,Auto,Auto" >

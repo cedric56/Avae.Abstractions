@@ -1,7 +1,6 @@
 ﻿using Avae.Services;
 using Avalonia.Labs.Notifications;
 using Microsoft.JSInterop;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 

@@ -107,11 +107,11 @@ namespace Example.Models
                 {
                     if (Id == 0)
                     {
-                        connection.Insert(this, transaction);                        
+                        connection.Insert(this, transaction, commandTimeout);                        
                     }
                     else
                     {
-                        connection.Update(this, transaction);
+                        connection.Update(this, transaction, commandTimeout);
                     }
 
                     var before = await instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
@@ -126,13 +126,13 @@ namespace Example.Models
                         contact.IdContact = Id;
 
                         if (contact.Id == 0)
-                            connection.Insert(contact, transaction);
+                            connection.Insert(contact, transaction, commandTimeout);
                         else
-                            connection.Update(contact, transaction);
+                            connection.Update(contact, transaction, commandTimeout);
                     }
 
                     foreach (var contact in before.Where(c => !Contacts.Any(p => p.IdPerson == c.IdPerson)))
-                        connection.Delete(contact, transaction);
+                        connection.Delete(contact, transaction, commandTimeout);
 
                     transaction.Commit();
 
@@ -171,9 +171,9 @@ namespace Example.Models
                     }
                     foreach (var contact in Contacts)
                     {
-                        connection.Delete(contact, transaction);
+                        connection.Delete(contact, transaction, commandTimeout);
                     }
-                    connection.Delete(this, transaction);
+                    connection.Delete(this, transaction, commandTimeout);
 
                     transaction.Commit();
 

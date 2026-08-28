@@ -2,6 +2,7 @@
 using Avae.Essentials;
 using Avae.Maui;
 using Avae.Maui.Notifications;
+using Avae.ViewModels;
 using Avalonia.Labs.Notifications;
 using Example.DAL;
 using Example.Maui.Views;
@@ -52,7 +53,7 @@ public static class MauiProgram
                 {
                     if (context.FactoryParameters.OfType<string>().Any(p => p == FormViewModel.KEY))
                     {
-                        return new Label() { Text = "Hello " };
+                        return new DefaultView();
                     }
                     return new FormView();
                 });
@@ -73,5 +74,19 @@ public static class MauiProgram
         var app = builder.Build();
         ServiceLocator.SetDefault(app.Services);
         return app;
+    }
+}
+
+class DefaultView : ContentView, IViewFor<FormViewModel>
+{
+    public object? Context
+    {
+        get => BindingContext; 
+        set
+        {
+            BindingContext = value;
+            if (value is FormViewModel viewModel)
+                this.Content = new Label() { Text = "Form"};
+        }
     }
 }

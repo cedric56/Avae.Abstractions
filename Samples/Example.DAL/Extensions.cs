@@ -1,21 +1,22 @@
 ﻿using Avae.DAL;
-using Avae.DAL.gRPC.Client;
 using Avae.DAL.gRPC;
+using Avae.DAL.gRPC.Client;
 using Avae.DAL.PostgreSQL;
 using Avae.DAL.SignalR;
 using Avae.DAL.Sqlite;
 using Example.Models;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 using System.Data.Common;
 
 namespace Example.DAL;
 public static class Extensions
 {
-    static string ServerUrl = "https://localhost:5001";
+    static string ServerUrl = "https://88.165.230.223:17001";// https://localhost:5001";
 
-    static string MagicHubUrl = $"{ServerUrl}/OnionHub";
+    static string MagicHubUrl = $"{ServerUrl}/RecordHubOfPerson";
     static string SignalHubUrl = $"{ServerUrl}/PersonHub";
     static string OnionUrl = $"{ServerUrl}/{typeof(IMagicOnionLayer).Name}/";
 
@@ -43,7 +44,7 @@ public static class Extensions
         services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
         services.AddSingleton<IXmlHttpRequest>(sp => new XmlHttpRequest(OnionUrl));
         services.AddSingleton(sp => sp.Create<IMagicOnionLayer>(ServerUrl));
-        services.UseLayer(sp => new MagicOnionLayer(sp));        
+        services.UseLayer(sp => new MagicOnionLayer(sp, sp.GetService<ILogger>()));
     }
 
     public static void UseDBSqlLayer<TDBConnection>(this IServiceCollection services)

@@ -43,7 +43,11 @@ builder.WebHost.ConfigureKestrel(options =>
     options.ListenAnyIP(5001, o =>
     {
         o.Protocols = HttpProtocols.Http1AndHttp2;
-        o.UseHttps();
+        var certPath = Path.Combine(AppContext.BaseDirectory, "Certificates", "server.pfx");
+        if (File.Exists(certPath))
+        {
+            o.UseHttps(certPath, "Ex@duS56");
+        }
     });
 });
 
