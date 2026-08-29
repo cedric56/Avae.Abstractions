@@ -12,7 +12,9 @@ public static class Extensions
 
     public static async Task<Func<Task>> AddSignalR<TObject>(
         this IDBMonitor<TObject> monitor, 
-        string url, IRetryPolicy? retryPolicy  =null)
+        string url, 
+        IRetryPolicy? retryPolicy  =null,
+        Func<HttpMessageHandler, HttpMessageHandler>? factory = null)
         where TObject : class, new()
     {
         var hub = new HubConnectionBuilder()
@@ -25,6 +27,12 @@ public static class Extensions
                      options.Transports = HttpTransportType.WebSockets;
                      options.SkipNegotiation = false; // keep negotiate unless you're sure WS-only is safe
                  }
+
+                 // ✅ FIX: Configure HttpClient for Android SSL validation
+                 options.HttpMessageHandlerFactory = factory;
+                 //{
+                 //    return CreateHttpMessageHandler();
+                 //};
              })
             .WithAutomaticReconnect(retryPolicy ?? new FiveSecondsReconnectPolicy())
             .Build();
@@ -86,7 +94,7 @@ public static class Extensions
                 }
                 else
                 {
-                    using var httpClient = new HttpClient();
+                    using var httpClient = factory != null ? new HttpClient(factory.Invoke(null!)) : new HttpClient();
                     response = await httpClient.PostAsync($"{url}/negotiate", null, cts.Token);
                 }
                 if (response.IsSuccessStatusCode)

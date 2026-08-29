@@ -111,6 +111,9 @@ public partial class App : AvaeApplication, IIocConfiguration
 
     protected override async Task AfterCompletedAsync()
     {
+        if (OperatingSystem.IsAndroid())
+            return;
+
         await base.AfterCompletedAsync();
 
         var monitor = Container.Provider.GetRequiredService<IDBMonitor<Person>>();

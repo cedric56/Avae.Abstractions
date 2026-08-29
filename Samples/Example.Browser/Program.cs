@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Browser;
 using Avalonia.Labs.Notifications;
+using Avalonia.Media;
 using Example;
 using Example.DAL;
 using Microsoft.Extensions.DependencyInjection;

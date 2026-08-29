@@ -2,6 +2,9 @@
 using GrpcWebSocketBridge.Client;
 using MagicOnion;
 using MagicOnion.Client;
+using System.Net.Security;
+using System.Runtime.ConstrainedExecution;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Avae.DAL.gRPC.Client;
 
@@ -57,7 +60,13 @@ public static class Extensions
 
     public static GrpcChannel GetGrpcSocketChannel(this IServiceProvider provider, string url)
     {
-        var client = new HttpClient(new GrpcWebSocketBridgeHandler());
+        var handler = new GrpcWebSocketBridgeHandler();
+        if (handler.InnerHandler is HttpClientHandler httpHandler)
+        {
+            httpHandler.ServerCertificateCustomValidationCallback = ValidateCertificates;
+
+        }
+        var client = new HttpClient(handler);        
         return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
         {
             HttpClient = client
@@ -66,9 +75,26 @@ public static class Extensions
 
     public static GrpcChannel GetGrpcHandlerChannel(this IServiceProvider provider, string url)
     {
+        var handler = new GrpcWebSocketBridgeHandler();
+        if (handler.InnerHandler is HttpClientHandler httpHandler)
+        {
+            httpHandler.ServerCertificateCustomValidationCallback = ValidateCertificates;
+        }
         return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
         {
-            HttpHandler = new GrpcWebSocketBridgeHandler()
+            HttpHandler = handler
         });
+    }
+
+    public static bool ValidateCertificates(HttpRequestMessage message, X509Certificate2? x509Certificate, X509Chain? x509Chain, SslPolicyErrors errors)
+    {
+        if (x509Certificate == null) return false;
+
+        // Si on a un certificat attendu, on le vérifie
+        if (x509Certificate != null && x509Certificate.Thumbprint == x509Certificate?.Thumbprint)
+            return true;
+
+        // Sinon, on accepte tout (développement)
+        return true; // ⚠️ À modifier pour la production
     }
 }

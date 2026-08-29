@@ -9,6 +9,16 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AvaloniaResource Remove="Assets\Certificates\server.crt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Certificates\server.crt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
   <ItemGroup>    
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" />

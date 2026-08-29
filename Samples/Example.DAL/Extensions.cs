@@ -5,6 +5,7 @@ using Avae.DAL.PostgreSQL;
 using Avae.DAL.SignalR;
 using Avae.DAL.Sqlite;
 using Example.Models;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -32,11 +33,13 @@ public static class Extensions
 
     public static Task<Func<Task>> AddSignalR<TObject>(
         this IServiceProvider provider,
-        IDBMonitor<TObject> monitor)
+        IDBMonitor<TObject> monitor,
+         IRetryPolicy? retryPolicy = null,
+        Func<HttpMessageHandler, HttpMessageHandler>? factory = null)
         where TObject : class, new()
     {
         IDBFactory.Monitors.Add(monitor);
-        return monitor.AddSignalR(SignalHubUrl);
+        return monitor.AddSignalR(SignalHubUrl, retryPolicy, factory);
     }
 
     public static void UseDBOnionLayer(this IServiceCollection services)
