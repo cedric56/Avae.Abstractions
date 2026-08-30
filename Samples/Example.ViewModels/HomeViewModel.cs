@@ -96,7 +96,6 @@ public partial class HomeViewModel(
             }
             void OnNotificationCompleted(object? sender, SystemNotificationEventArgs e)
             {
-                
                 var actives = systemNotificationService.ActiveNotifications();
                 var current = actives.FirstOrDefault(a => a.Key == e.NotificationId);
 
