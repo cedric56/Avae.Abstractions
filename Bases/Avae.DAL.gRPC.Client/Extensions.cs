@@ -3,14 +3,13 @@ using GrpcWebSocketBridge.Client;
 using MagicOnion;
 using MagicOnion.Client;
 using System.Net.Security;
-using System.Net.WebSockets;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Avae.DAL.gRPC.Client;
 
 public static class Extensions
 {
-    private static Func<Task>? _dispose;
+    private static Func<Task>? _disconnect;
 
     public static async Task<Func<Task>> AddStreamingHub<TObject>(this IDBMonitor<TObject> monitor, GrpcChannel channel)
         where TObject : class, new()
@@ -18,20 +17,21 @@ public static class Extensions
         try
         {
             if (IDBLayer.Sessions.TryGetValue(typeof(TObject), out _))
-                return _dispose ?? (() => Task.CompletedTask);
+                return _disconnect ?? (() => Task.CompletedTask);
 
             var receiver = new RecordHubReceiver<TObject>(monitor);
             var hub = await StreamingHubClient.ConnectAsync<IRecordHub<TObject>, IRecordHubReceiver<TObject>>(channel, receiver);//, cancellationToken: cts.Token);
             var guid = await hub.AddReceiverAsync();
             IDBLayer.Sessions.Add(typeof(TObject), guid.ToString());
             monitor.OnRecordChanged += OnRecordChanged;
-            return _dispose = async () =>
+            return _disconnect = async () =>
             {
                 try
                 {
-                    await hub.RemoveAsync();
-                    await hub.WaitForDisconnectAsync();
-                    await hub.DisposeAsync();
+                    await hub.RemoveAsync();               // 1. Business-logic call: tell server you're leaving
+                    var disconnectTask = hub.WaitForDisconnectAsync(); // 2. Capture the task BEFORE disposing
+                    await hub.DisposeAsync();              // 3. Actually triggers the disconnect
+                    await disconnectTask;                  // 4. Confirm the disconnect
                 }
                 finally
                 {

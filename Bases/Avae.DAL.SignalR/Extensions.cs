@@ -50,6 +50,9 @@ public static class Extensions
         await TryConnect();
         return async () =>
         {
+            hub.Closed -= Closed;
+            hub.Reconnected -= Reconnected;
+
             try
             {
                 await hub.StopAsync();
@@ -58,8 +61,6 @@ public static class Extensions
             finally
             {
                 monitor.OnRecordChanged -= OnRecordChanged;
-                hub.Closed -= Closed;
-                hub.Reconnected -= Reconnected;
             }
         };
 
