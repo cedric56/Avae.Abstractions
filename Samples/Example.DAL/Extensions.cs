@@ -15,19 +15,20 @@ using System.Data.Common;
 namespace Example.DAL;
 public static class Extensions
 {
-    static string ServerUrl = "https://88.165.230.223:17001";// https://localhost:5001";
+    static string ServerUrl = "https://88.165.230.223:17001";
 
-    static string MagicHubUrl = $"{ServerUrl}/RecordHubOfPerson";
+    static string MagicHubUrl = $"{ServerUrl}/recordHubOfPerson";
     static string SignalHubUrl = $"{ServerUrl}/PersonHub";
     static string OnionUrl = $"{ServerUrl}/{typeof(IMagicOnionLayer).Name}/";
 
     public static Task<Func<Task>> AddStreamingHub<TObject>(
         this IServiceProvider provider,
-        IDBMonitor<TObject> monitor)
+        IDBMonitor<TObject> monitor,
+        HttpMessageHandler? httpMessageHandler = null)
         where TObject : class, new()
     {
         IDBFactory.Monitors.Add(monitor);
-        var channel = provider.GetGrpcHandlerChannel(MagicHubUrl);
+        var channel = provider.GetGrpcHandlerChannel(MagicHubUrl, httpMessageHandler);
         return monitor.AddStreamingHub(channel);
     }
 

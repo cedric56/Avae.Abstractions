@@ -29,10 +29,8 @@ public static class Extensions
                  }
 
                  // ✅ FIX: Configure HttpClient for Android SSL validation
-                 options.HttpMessageHandlerFactory = factory;
-                 //{
-                 //    return CreateHttpMessageHandler();
-                 //};
+                 if (factory != null)
+                     options.HttpMessageHandlerFactory = factory;
              })
             .WithAutomaticReconnect(retryPolicy ?? new FiveSecondsReconnectPolicy())
             .Build();
@@ -83,9 +81,7 @@ public static class Extensions
             try
             {
                 using var cts = new CancellationTokenSource(
-                      OperatingSystem.IsBrowser() ?
-                      TimeSpan.FromSeconds(2) :
-                      TimeSpan.FromSeconds(1));
+                      TimeSpan.FromSeconds(2));
 
                 HttpResponseMessage response;
                 if (ServiceLocator.GetService<HttpClient>() is { } client)

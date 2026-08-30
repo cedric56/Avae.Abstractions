@@ -6,7 +6,6 @@ using Avae.Avalonia.Notifications;
 using Avae.DAL;
 using Avalonia;
 using Avalonia.Android;
-using Avalonia.Controls;
 using Avalonia.Labs.Notifications;
 using Example.DAL;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,30 +56,29 @@ public class MainApplication : AvaloniaAndroidApplication<AndroidApp>
 
 public class AndroidApp : App
 {
+    Func<Task>? unsuscribe = null;
+
     protected override async Task AfterCompletedAsync()
     {
-        await base.AfterCompletedAsync();
-
         var monitor = Container.Provider.GetRequiredService<IDBMonitor<Example.Models.Person>>();
-
-        //if (OperatingSystem.IsBrowser())
+        //unsuscribe = await Container.Provider.AddSignalR(monitor, factory: _ => new Xamarin.Android.Net.AndroidMessageHandler
         //{
-        //unsuscribe = await Container.Provider.AddSignalR(monitor);
-        //}
-        //else
-        //{
-        await Container.Provider.AddSignalR(monitor, factory: h => CreateHttpMessageHandler());
+        //    ServerCertificateCustomValidationCallback = Avae.DAL.gRPC.Client.Extensions.ValidateCertificates2,
+        //    AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate,
+        //});
+        unsuscribe = await Container.Provider.AddStreamingHub(monitor, new SocketsHttpHandler()
+        {
+            SslOptions =
+            {
+                RemoteCertificateValidationCallback = Avae.DAL.gRPC.Client.Extensions.ValidateCertificates
+            }
+        });
     }
 
-    private static HttpMessageHandler CreateHttpMessageHandler()
+    public override void Dispose()
     {
-        // Android-specific handler with SSL bypass for development
-        var handler = new Xamarin.Android.Net.AndroidMessageHandler
-        {
-            ServerCertificateCustomValidationCallback = Avae.DAL.gRPC.Client.Extensions.ValidateCertificates,
-            AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate,
-            ReadTimeout = TimeSpan.FromMinutes(2)
-        };
-        return handler;
+        unsuscribe?.Invoke();
+
+        base.Dispose();
     }
 }

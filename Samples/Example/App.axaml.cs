@@ -111,11 +111,6 @@ public partial class App : AvaeApplication, IIocConfiguration
 
     protected override async Task AfterCompletedAsync()
     {
-        if (OperatingSystem.IsAndroid())
-            return;
-
-        await base.AfterCompletedAsync();
-
         var monitor = Container.Provider.GetRequiredService<IDBMonitor<Person>>();
 
         //if (OperatingSystem.IsBrowser())
@@ -124,9 +119,9 @@ public partial class App : AvaeApplication, IIocConfiguration
         //}
         //else
         //{
-        unsuscribe = await Container.Provider.AddSignalR(monitor);
-        //unsuscribe = await Container.Provider.AddStreamingHub(monitor);
-        //}
+        //unsuscribe = await Container.Provider.AddSignalR(monitor);
+        unsuscribe = await Container.Provider.AddStreamingHub(monitor);
+        //}  
     }
 
     public override async void Dispose()

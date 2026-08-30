@@ -3,7 +3,7 @@ using GrpcWebSocketBridge.Client;
 using MagicOnion;
 using MagicOnion.Client;
 using System.Net.Security;
-using System.Runtime.ConstrainedExecution;
+using System.Net.WebSockets;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Avae.DAL.gRPC.Client;
@@ -58,14 +58,16 @@ public static class Extensions
         return MagicOnionClient.Create<IMagicService>(channel);
     }
 
-    public static GrpcChannel GetGrpcSocketChannel(this IServiceProvider provider, string url)
+    public static GrpcChannel GetGrpcSocketChannel(this IServiceProvider provider, string url, HttpMessageHandler? httpMessageHandler = null)
     {
+        if (httpMessageHandler != null)
+            return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
+            {
+                HttpHandler = httpMessageHandler
+            });
         var handler = new GrpcWebSocketBridgeHandler();
         if (handler.InnerHandler is HttpClientHandler httpHandler)
-        {
-            httpHandler.ServerCertificateCustomValidationCallback = ValidateCertificates;
-
-        }
+            httpHandler.ServerCertificateCustomValidationCallback = ValidateCertificates2;
         var client = new HttpClient(handler);        
         return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
         {
@@ -73,20 +75,55 @@ public static class Extensions
         });
     }
 
-    public static GrpcChannel GetGrpcHandlerChannel(this IServiceProvider provider, string url)
+    public static GrpcChannel GetGrpcHandlerChannel(this IServiceProvider provider, string url, HttpMessageHandler? httpMessageHandler = null)
     {
+        if (httpMessageHandler != null)
+            return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
+            {
+                HttpHandler = httpMessageHandler
+            });
+
         var handler = new GrpcWebSocketBridgeHandler();
         if (handler.InnerHandler is HttpClientHandler httpHandler)
-        {
-            httpHandler.ServerCertificateCustomValidationCallback = ValidateCertificates;
-        }
+            httpHandler.ServerCertificateCustomValidationCallback = ValidateCertificates2;        
         return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
         {
             HttpHandler = handler
         });
     }
 
-    public static bool ValidateCertificates(HttpRequestMessage message, X509Certificate2? x509Certificate, X509Chain? x509Chain, SslPolicyErrors errors)
+    public class GrpcWebSocketBridgeHandler2 : HttpMessageHandler
+    {
+        public Action<ClientWebSocketOptions>? ConfigureWebSocketOptions { get; set; }
+
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var ws = new ClientWebSocket();
+            ws.Options.RemoteCertificateValidationCallback = (sender, cert, chain, errors) => true;
+            ws.Options.AddSubProtocol("grpc-websockets");
+            var wsUri = ToWebSocketUri(request.RequestUri!);
+            await ws.ConnectAsync(wsUri, cancellationToken);
+
+            return new HttpResponseMessage(System.Net.HttpStatusCode.OK)
+            {
+                // ... whatever you're wrapping the ws into here
+            };
+        }
+
+        private static Uri ToWebSocketUri(Uri httpUri)
+        {
+            var builder = new UriBuilder(httpUri);
+            builder.Scheme = httpUri.Scheme switch
+            {
+                "https" => "wss",
+                "http" => "ws",
+                _ => httpUri.Scheme // already ws/wss
+            };
+            return builder.Uri;
+        }
+    }
+
+    public static bool ValidateCertificates2(HttpRequestMessage message, X509Certificate2? x509Certificate, X509Chain? x509Chain, SslPolicyErrors errors)
     {
         if (x509Certificate == null) return false;
 
@@ -96,5 +133,11 @@ public static class Extensions
 
         // Sinon, on accepte tout (développement)
         return true; // ⚠️ À modifier pour la production
+    }
+
+    public static bool ValidateCertificates(object sender, X509Certificate? x509Certificate, X509Chain? x509Chain, SslPolicyErrors errors)
+    {
+        if (x509Certificate == null) return false;
+        return true;
     }
 }

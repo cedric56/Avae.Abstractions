@@ -10,6 +10,8 @@
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidEnableProfiledAot>False</AndroidEnableProfiledAot>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <UseNativeHttpHandler>false</UseNativeHttpHandler>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,5 +26,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Example\Example.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AndroidResource Update="Resources\raw\server.cer">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidResource>
   </ItemGroup>
 </Project>
