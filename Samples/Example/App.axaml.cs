@@ -63,6 +63,7 @@ public partial class App : AvaeApplication, IIocConfiguration
     {
         base.Configure(services);
 
+        services.UseAvaeEssentials();
         services.UseAvaeNotifications();
         services.AddTransient<Router>();
         services.AddSingleton<HomeViewModel>();
@@ -72,15 +73,14 @@ public partial class App : AvaeApplication, IIocConfiguration
         services.AddTransient<FormPage2ViewModel>();
         services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
         services.AddTransient<ModalViewModel>();
-        services.UseAvaeEssentials();
-        
+
         if (!OperatingSystem.IsBrowser())
         {
-            //services.UseDBSqlLayer<SqliteConnection>();
-            services.UseDBOnionLayer();
+            services.UseDBSqlLayer<SqliteConnection>();
+            //services.UseDBOnionLayer();
         }
 
-        if(OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindows())
         {
             services.AddSingleton<ILogger>(LoggerFactory.Create(b => b.AddDebug()).CreateLogger<App>());
         }
@@ -112,16 +112,8 @@ public partial class App : AvaeApplication, IIocConfiguration
     protected override async Task AfterCompletedAsync()
     {
         var monitor = Container.Provider.GetRequiredService<IDBMonitor<Person>>();
-
-        //if (OperatingSystem.IsBrowser())
-        //{
-        //unsuscribe = await Container.Provider.AddSignalR(monitor);
-        //}
-        //else
-        //{
         //unsuscribe = await Container.Provider.AddSignalR(monitor);
         unsuscribe = await Container.Provider.AddStreamingHub(monitor);
-        //}  
     }
 
     public override async void Dispose()

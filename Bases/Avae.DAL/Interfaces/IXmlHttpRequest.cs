@@ -2,5 +2,5 @@
 
 public interface IXmlHttpRequest
 {
-    byte[] Send(string urlString, byte[] data);
+    byte[] Send(string url, string parameters, byte[] data, int timeout);
 }

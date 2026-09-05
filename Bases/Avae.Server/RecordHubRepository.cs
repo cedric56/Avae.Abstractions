@@ -1,6 +1,7 @@
 ﻿using Avae.DAL;
 using Avae.DAL.gRPC;
 using MagicOnion.Server.Hubs;
+using Microsoft.Extensions.Logging;
 
 namespace Avae.Server;
 
@@ -8,10 +9,13 @@ public class RecordHubRepository<TObject> where TObject : class, new()
 {
     readonly Dictionary<Guid, byte> customerIds = new(); // just tracking membership, group itself is shared
     IGroup<IRecordHubReceiver<TObject>>? group;
+
+    ILogger? logger;
     readonly object gate = new();
 
-    public RecordHubRepository(IDBMonitor<TObject> monitor)
+    public RecordHubRepository(IDBMonitor<TObject> monitor, ILogger? logger = null)
     {
+        this.logger = logger;
         IDBFactory.Monitors.Add(monitor);
         monitor.OnRecordChanged += (_, e) => Raise(e); // subscribed exactly ONCE, for the app lifetime
     }
@@ -21,7 +25,7 @@ public class RecordHubRepository<TObject> where TObject : class, new()
     {
         lock (gate)
         {
-            Console.WriteLine(contextId);
+            logger?.LogInformation($"Registering : {contextId}");
             group ??= g; // same underlying group object every time, but only need to capture it once
             customerIds[contextId] = 0;
         }
@@ -31,7 +35,7 @@ public class RecordHubRepository<TObject> where TObject : class, new()
     {
         lock (gate)
         {
-            Console.WriteLine(contextId);
+            logger?.LogInformation($"Unregistering : {contextId}");
             customerIds.Remove(contextId);
         }
     }
@@ -47,7 +51,7 @@ public class RecordHubRepository<TObject> where TObject : class, new()
         }
 
         foreach (var id in notified)
-            Console.WriteLine($"Notifying customer: {id}");
+            logger?.LogInformation($"Notifying : {id}");
 
         group?.Except(excludedIds).OnChanged(e);
     }

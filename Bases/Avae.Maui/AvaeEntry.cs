@@ -18,7 +18,12 @@ public class AvaeEntry : ContentView
 
     public static BindableProperty TextProperty = BindableProperty.Create(
             nameof(Text), typeof(string), typeof(AvaeEntry),
-            defaultBindingMode: BindingMode.TwoWay);
+            defaultBindingMode: BindingMode.TwoWay,
+            propertyChanged: (BindableObject sender, object oldValue, object newValue) =>
+            {
+                if (sender.BindingContext is IViewModelErrorInfo viewModel)
+                    viewModel.RaiseColumnErrorChanged();
+            });
     public string Text
     {
         get => (string)GetValue(TextProperty);
@@ -68,20 +73,9 @@ public class AvaeEntry : ContentView
             };
 
             if (!string.IsNullOrWhiteSpace(ColumnName) &&
-                BindingContext is IDataErrorInfo errorInfo)
+                BindingContext is IViewModelErrorInfo viewModel)
             {
-                if(BindingContext is IViewModelErrorInfo viewModel)
-                {
-                    this.PropertyChanged += (s, e) =>
-                    {
-                        if (e.PropertyName == nameof(Text))
-                        {
-                            viewModel.RaiseErrorChanged();
-                        }
-                    };
-                }
-
-                var binding = new Binding($"[{ColumnName}]", source: errorInfo, converter: new NullConverter());
+                var binding = new Binding($"[{ColumnName}]", source: viewModel, converter: new NullConverter());
 
                 border.Triggers.Add(new DataTrigger(typeof(Border))
                 {
@@ -123,7 +117,7 @@ public class AvaeEntry : ContentView
                         new Setter()
                         {
                             Property = ToolTipProperties.TextProperty,
-                            Value = new Binding($"[{ColumnName}]", source: errorInfo)
+                            Value = new Binding($"[{ColumnName}]", source: viewModel)
                         }
                     },
                     Value = false

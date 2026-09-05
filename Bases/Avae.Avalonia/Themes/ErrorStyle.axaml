@@ -4,7 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Avae.Avalonia.ErrorStyle">
-      <Style Selector="DataValidationErrors">
+    <Style Selector="DataValidationErrors">
+        <Setter Property="Theme" Value="{StaticResource TooltipDataValidationErrors}" />
+    </Style>
+
+      <!--<Style Selector="DataValidationErrors">
               <Setter Property="Template">
                 <ControlTemplate>
                   <DockPanel LastChildFill="True">
@@ -43,5 +47,5 @@
                   </Canvas>
                 </DataTemplate>
               </Setter>
-        </Style>	
+        </Style>	-->
 </Styles>

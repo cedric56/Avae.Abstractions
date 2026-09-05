@@ -4,19 +4,21 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 
 namespace Avae.DAL.gRPC;
-
-public partial class XmlHttpRequest(string url) : IXmlHttpRequest
+public partial class XmlHttpRequest : IXmlHttpRequest
 {
     [JSImport("globalThis.eval")]
     public static partial string Fetch(string request);
 
-    public byte[] Send(string urlString, byte[] data)
+    public byte[] Send(string url, string parameters, byte[] data, int timeout)
     {
-        string fullUrl = string.Concat(url, urlString)
+        string? fullUrl = string.Concat(url, parameters)
             .Replace("\\", "\\\\")
             .Replace("'", "\\'");
 
-        var rawResponse = Fetch($@"
+        string? rawResponse = null;
+        var task = new Task(() =>
+        {
+            rawResponse = Fetch($@"
 (function() {{
     var url = '{fullUrl}';
     var payloadB64 = '{Convert.ToBase64String(data)}';
@@ -41,14 +43,13 @@ public partial class XmlHttpRequest(string url) : IXmlHttpRequest
     // Encode the whole frame as base64 (required for text mode)
     var frameB64 = btoa(String.fromCharCode.apply(null, frame));
 
-    var xhr = new XMLHttpRequest();
+    var xhr = new XMLHttpRequest();    
     xhr.open('POST', url, false);                 // still sync
 
     xhr.setRequestHeader('Content-Type', 'application/grpc-web-text');
     xhr.setRequestHeader('Accept', 'application/grpc-web-text');
     xhr.setRequestHeader('X-Grpc-Web', '1');
-    xhr.setRequestHeader('grpc-timeout', '30S');
-
+    xhr.setRequestHeader('grpc-timeout', '1S');
     xhr.send(frameB64);                           // send base64 string
 
     if (xhr.status !== 200) {{
@@ -60,9 +61,11 @@ public partial class XmlHttpRequest(string url) : IXmlHttpRequest
 
 }})();
 ");
+        });
+        task.RunSynchronously();
         if (string.IsNullOrEmpty(rawResponse))
             return Array.Empty<byte>();
-        
+
         var response = ParseGrpcResponse(rawResponse);
         var result = MessagePackSerializer.Deserialize<DBResult>(response);
         if (true == result?.Successful)
@@ -79,8 +82,8 @@ public partial class XmlHttpRequest(string url) : IXmlHttpRequest
         // Which decodes to: grpc-status: 0\r\n
 
         // Method 1: Split by the trailer pattern
-        string trailerPattern = "gAAAABBncnBjLXN0YXR1czogMA0K";
-        string base64Part = rawResponse;
+        string? trailerPattern = "gAAAABBncnBjLXN0YXR1czogMA0K";
+        string? base64Part = rawResponse;
 
         int trailerIndex = rawResponse.IndexOf(trailerPattern);
         if (trailerIndex > 0)
@@ -120,7 +123,7 @@ public partial class XmlHttpRequest(string url) : IXmlHttpRequest
 
         while (offset + 5 <= responseBytes.Length)
         {
-            byte flags = responseBytes[offset];
+            byte? flags = responseBytes[offset];
             int msgLen = (responseBytes[offset + 1] << 24) |
                          (responseBytes[offset + 2] << 16) |
                          (responseBytes[offset + 3] << 8) |
@@ -137,7 +140,7 @@ public partial class XmlHttpRequest(string url) : IXmlHttpRequest
             if ((flags & 0x80) == 0x80)
             {
                 // Trailer frame - check status
-                string trailerText = Encoding.UTF8.GetString(frameData);
+                string? trailerText = Encoding.UTF8.GetString(frameData);
                 if (trailerText.Contains("grpc-status: 0"))
                 {
                     continue; // Success

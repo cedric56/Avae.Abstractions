@@ -77,8 +77,8 @@ public partial class ModalViewModel(IDialogService dialogService) : ObservableVa
         return Task.CompletedTask;
     }
 
-    public void RaiseErrorChanged()
+    public void RaiseColumnErrorChanged(string name = "Item")
     {
-        this.OnPropertyChanged("Item");
+        this.OnPropertyChanged(name);
     }
 }

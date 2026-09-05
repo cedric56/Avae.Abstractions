@@ -21,5 +21,5 @@ public interface ICloseableViewModel<TResult> : IViewModelBase
 
 public interface IViewModelErrorInfo : IDataErrorInfo
 {
-    void RaiseErrorChanged();
+    void RaiseColumnErrorChanged(string name = "Item");
 }

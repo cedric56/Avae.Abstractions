@@ -2,7 +2,6 @@
 using Avalonia;
 using Avalonia.Browser;
 using Avalonia.Labs.Notifications;
-using Avalonia.Media;
 using Example;
 using Example.DAL;
 using Example.Models;
@@ -17,8 +16,7 @@ internal sealed partial class Program
 
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<BrowserApp>()
-                        .WithAppNotifications()
-                        .WithInterFont();
+                        .WithAppNotifications();
 
     public class BrowserApp : App
     {
@@ -28,7 +26,7 @@ internal sealed partial class Program
 
             services.UseDBOnionLayer();
         }
-        Func<Task> unsuscribe = null;
+        Func<Task>? unsuscribe = null;
         protected override async Task AfterCompletedAsync()
         {
             var monitor = Container.Provider.GetRequiredService<IDBMonitor<Person>>();

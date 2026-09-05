@@ -77,7 +77,7 @@ public partial class MenuViewModel : RoutesViewModelImplementation, IDisposable
     public async Task Remove()
     {
         await SelectedPerson!.LoadContactsAsync();
-        var result = await DBBase.Instance.Remove(SelectedPerson);
+        var result = await SelectedPerson.Remove(DBBase.Instance);//.Remove(SelectedPerson);
         if (!result.Successful)
         {
             await dialogService.ShowOkAsync(result.Exception!, "Error");

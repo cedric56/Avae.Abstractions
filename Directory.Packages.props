@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <AvaloniaVersion>12.1.1</AvaloniaVersion>
-    <MauiVersion>11.0.0-preview.6.26360.8</MauiVersion>    
+    <MauiVersion>11.0.0-preview.6.26360.8</MauiVersion>
     <MicrosoftVersion>10.0.11</MicrosoftVersion>
     <MagicOnionVersion>7.10.2</MagicOnionVersion>
     <GrpcVersion>2.83.0</GrpcVersion>
@@ -23,6 +23,7 @@
     <PackageVersion Include="Avalonia.HarfBuzz" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Labs.Notifications" Version="12.0.999" />
     <PackageVersion Include="Avalonia.Controls.Maui.Essentials" Version="11.0.0-preview.5.26161.128" />
+    <PackageVersion Include="HostInitActions" Version="1.3.1" />
     <PackageVersion Include="MessageBox.Avalonia" Version="12.0.0" />
     <PackageVersion Include="FluentAvaloniaUI" Version="3.1.0" />
     <!-- DEPENDENCY INJECTION -->
@@ -37,8 +38,9 @@
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(MicrosoftVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="$(MicrosoftVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="$(MicrosoftVersion)" />
-    
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageVersion Include="Microsoft.VisualStudio.Threading.Only" Version="18.7.23" />
+    <PackageVersion Include="Nito.AsyncEx.Context" Version="5.1.2" />
     <PackageVersion Include="System.Text.Json" Version="11.0.0-preview.7.26381.103" />
     <!-- MAUI -->
     <PackageVersion Include="UXDivers.Popups.Maui" Version="0.9.4" />
@@ -58,13 +60,12 @@
     <PackageVersion Include="BlazorSensors" Version="1.0.1" />
     <PackageVersion Include="KristofferStrube.Blazor.FileSystemAccess" Version="4.0.0" />
     <PackageVersion Include="KristofferStrube.Blazor.MediaCaptureStreams" Version="0.4.1" />
-    <PackageVersion Include="KristofferStrube.Blazor.MediaStreamRecording" Version="0.1.0-alpha.2" />    
+    <PackageVersion Include="KristofferStrube.Blazor.MediaStreamRecording" Version="0.1.0-alpha.2" />
     <PackageVersion Include="PatrickJahr.Blazor.AsyncClipboard" Version="1.0.0" />
     <PackageVersion Include="Toolbelt.Blazor.SpeechSynthesis" Version="11.0.0" />
     <!-- WASM -->
-    
     <!-- SIGNAL R-->
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.12" />    
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.12" />
     <!-- Grpc -->
     <PackageVersion Include="MessagePack" Version="3.1.8" />
     <PackageVersion Include="MagicOnion.Serialization.MessagePack" Version="$(MagicOnionVersion)" />
@@ -72,10 +73,10 @@
     <PackageVersion Include="MagicOnion.Client" Version="$(MagicOnionVersion)" />
     <PackageVersion Include="MagicOnion.Server" Version="$(MagicOnionVersion)" />
     <PackageVersion Include="Grpc.AspNetCore.Web" Version="$(GrpcVersion)" />
-    <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcVersion)" />    
+    <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcVersion)" />
     <PackageVersion Include="Grpc.Net.Client.Web" Version="$(GrpcVersion)" />
     <PackageVersion Include="GrpcWebSocketBridge.Client" Version="$(GrpcBridgeVersion)" />
-    <PackageVersion Include="GrpcWebSocketBridge.AspNetCore" Version="$(GrpcBridgeVersion)" />    
+    <PackageVersion Include="GrpcWebSocketBridge.AspNetCore" Version="$(GrpcBridgeVersion)" />
     <!-- LAYERS -->
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageVersion Include="SqlTableDependencyCore" Version="1.0.0" />

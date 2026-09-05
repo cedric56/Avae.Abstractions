@@ -2,6 +2,7 @@
 using GrpcWebSocketBridge.Client;
 using MagicOnion;
 using MagicOnion.Client;
+using Microsoft.Extensions.Logging;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
@@ -11,7 +12,8 @@ public static class Extensions
 {
     private static Func<Task>? _disconnect;
 
-    public static async Task<Func<Task>> AddStreamingHub<TObject>(this IDBMonitor<TObject> monitor, GrpcChannel channel)
+    public static async Task<Func<Task>> AddStreamingHub<TObject>(
+        this IDBMonitor<TObject> monitor, GrpcChannel channel, ILogger? logger = null)
         where TObject : class, new()
     {
         try
@@ -46,8 +48,9 @@ public static class Extensions
                 hub.OnRecordChanged(e);
             }
         }
-        catch
+        catch(Exception ex)
         {
+            logger?.LogError(ex.Message);
             return () => Task.CompletedTask;
         }
     }
@@ -84,12 +87,14 @@ public static class Extensions
 
     public static bool ValidateCertificates2(HttpRequestMessage message, X509Certificate2? x509Certificate, X509Chain? x509Chain, SslPolicyErrors errors)
     {
+        //TODO
         if (x509Certificate == null) return false;
         return true;
     }
 
     public static bool ValidateCertificates(object sender, X509Certificate? x509Certificate, X509Chain? x509Chain, SslPolicyErrors errors)
     {
+        //TODO
         if (x509Certificate == null) return false;
         return true;
     }

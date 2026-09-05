@@ -1,11 +1,13 @@
 ﻿using Avae.Core;
 using Avae.DAL;
+using Dapper;
 using Dapper.Contrib.Extensions;
 using MessagePack;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Text;
 
 namespace Example.Models
 {
@@ -114,6 +116,7 @@ namespace Example.Models
                         connection.Update(this, transaction, commandTimeout);
                     }
 
+
                     var before = await instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
 
                     if (_contacts == null)
@@ -133,6 +136,56 @@ namespace Example.Models
 
                     foreach (var contact in before.Where(c => !Contacts.Any(p => p.IdPerson == c.IdPerson)))
                         connection.Delete(contact, transaction, commandTimeout);
+
+                    //                    var before = await instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
+
+                    //                    if (_contacts == null)
+                    //                    {
+                    //                        Contacts = [.. before];
+                    //                    }
+
+                    //                    var sql = new StringBuilder();
+                    //                    var parameters = new DynamicParameters();
+                    //                    var paramIndex = 0;
+
+                    //                    foreach (var contact in Contacts)
+                    //                    {
+                    //                        contact.IdContact = Id;
+                    //                        var prefix = $"c{paramIndex++}";
+
+                    //                        if (contact.Id == 0)
+                    //                        {
+                    //                            sql.AppendLine($@"
+                    //INSERT INTO Contact (IdContact, IdPerson)
+                    //VALUES ({contact.IdContact}, {contact.IdPerson});");
+                    //                            //parameters.Add($"IdContact{prefix}", contact.IdContact);
+                    //                            //parameters.Add($"IdPerson{prefix}", contact.IdPerson);
+                    //                        }
+                    //                        else
+                    //                        {
+                    //                            sql.AppendLine($@"
+                    //UPDATE Contact
+                    //SET IdContact = {contact.IdContact}, IdPerson = {contact.IdPerson}
+                    //WHERE Id = {contact.Id};");
+
+                    //                            //parameters.Add($"IdContact{prefix}", contact.IdContact);
+                    //                            //parameters.Add($"IdPerson{prefix}", contact.IdPerson);
+                    //                            //parameters.Add($"Id{prefix}", contact.Id);
+                    //                        }
+                    //                    }
+
+                    //                    var toDelete = before.Where(c => !Contacts.Any(p => p.IdPerson == c.IdPerson)).ToList();
+                    //                    foreach (var contact in toDelete)
+                    //                    {
+                    //                        var prefix = $"d{paramIndex++}";
+                    //                        sql.AppendLine($"DELETE FROM Contact WHERE Id = {contact.Id};");
+                    //                        //parameters.Add($"Id{prefix}", contact.Id);
+                    //                    }
+
+                    //                    if (sql.Length > 0)
+                    //                    {
+                    //                        await connection.ExecuteAsync(sql.ToString(), parameters, transaction, commandTimeout);
+                    //                    }
 
                     transaction.Commit();
 

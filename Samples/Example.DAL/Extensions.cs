@@ -46,9 +46,9 @@ public static class Extensions
     public static void UseDBOnionLayer(this IServiceCollection services)
     {
         services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
-        services.AddSingleton<IXmlHttpRequest>(sp => new XmlHttpRequest(OnionUrl));
+        services.AddSingleton<IXmlHttpRequest, XmlHttpRequest>();
         services.AddSingleton(sp => sp.Create<IMagicOnionLayer>(ServerUrl));
-        services.UseLayer(sp => new MagicOnionLayer(sp, sp.GetService<ILogger>()));
+        services.UseLayer(sp => new MagicOnionLayer(sp, OnionUrl, 1000, sp.GetService<ILogger>()));
     }
 
     public static void UseDBSqlLayer<TDBConnection>(this IServiceCollection services)

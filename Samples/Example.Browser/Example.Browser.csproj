@@ -8,10 +8,15 @@
   
   <ItemGroup>
     <PackageReference Include="Avalonia.Browser" />
-    <PackageReference Include="Avalonia.Fonts.Inter" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Example\Example.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\index.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

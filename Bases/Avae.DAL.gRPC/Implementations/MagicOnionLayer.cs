@@ -4,22 +4,25 @@ using MessagePack;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Data;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 
 namespace Avae.DAL.gRPC;
 
-public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger = null) : IDBLayer
+public partial class MagicOnionLayer(IServiceProvider provider, string url, int globalCommandTimeout, ILogger? logger = null) : IDBLayer
 {
     public async Task<DBResult> Remove(DBTransactional transactional, int? commandTimeout = null)
     {
         try
         {
+            using var tcs = new CancellationTokenSource(globalCommandTimeout);
             IDBLayer.Sessions.TryGetValue(transactional.GetType(), out var connectionId);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            return await service.Remove(transactional, connectionId ?? string.Empty, commandTimeout);
+            return await service
+                .WithCancellationToken(tcs.Token)
+                .Remove(transactional, connectionId ?? string.Empty, commandTimeout)
+                .ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -36,9 +39,13 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
     {
         try
         {
+            using var tcs = new CancellationTokenSource(globalCommandTimeout);
             IDBLayer.Sessions.TryGetValue(transactional.GetType(), out var connectionId);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            return await service.Save(transactional, connectionId ?? string.Empty, commandTimeout);
+            return await service
+                .WithCancellationToken(tcs.Token)
+                .Save(transactional, connectionId ?? string.Empty, commandTimeout)
+                .ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -57,8 +64,9 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
         {
             if (OperatingSystem.IsBrowser())
             {
+                logger?.LogWarning("FindByAny<T> is not recommended for use in WebAssembly due to potential performance issues. Consider using FindByAnyAsync<T> instead.");
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(nameof(FindByAnyAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters, commandTimeout?? int.MaxValue }));
+                var result = request.Send(url, nameof(FindByAnyAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters, commandTimeout ?? int.MaxValue }), globalCommandTimeout);
                 if (result == Array.Empty<byte>()) return [];
                 return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
             }
@@ -75,8 +83,12 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
     {
         try
         {
+            using var tcs = new CancellationTokenSource(globalCommandTimeout);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.FindByAnyAsync(typeof(T).Name, filters, commandTimeout);
+            var result = await service
+                .WithCancellationToken(tcs.Token)
+                .FindByAnyAsync(typeof(T).Name, filters, commandTimeout)
+                .ConfigureAwait(false);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return [];
             return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data);
@@ -94,8 +106,9 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
         {
             if (OperatingSystem.IsBrowser())
             {
+                logger?.LogWarning("Get is not recommended for use in WebAssembly due to potential performance issues. Use GetAsync instead.");
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(nameof(GetAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, id, commandTimeout ?? int.MaxValue }));
+                var result = request.Send(url, nameof(GetAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, id, commandTimeout ?? int.MaxValue }), globalCommandTimeout);
                 if (result == Array.Empty<byte>()) return null;
                 return MessagePackSerializer.Deserialize<T>(result);
             }
@@ -114,8 +127,9 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
         {
             if (OperatingSystem.IsBrowser())
             {
+                logger?.LogWarning("GetAll<T> is not recommended for use in WebAssembly due to potential performance issues. Consider using FindByAny<T> with appropriate filters instead.");
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(nameof(GetAllAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, commandTimeout ?? int.MaxValue }));
+                var result = request.Send(url, nameof(GetAllAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, commandTimeout ?? int.MaxValue }), globalCommandTimeout);
                 if (result == Array.Empty<byte>()) return [];
                 return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
             }
@@ -132,8 +146,12 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
     {
         try
         {
+            using var tcs = new CancellationTokenSource(globalCommandTimeout);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.GetAllAsync(typeof(T).Name, commandTimeout);
+            var result = await service
+                .WithCancellationToken(tcs.Token)
+                .GetAllAsync(typeof(T).Name, commandTimeout)
+                .ConfigureAwait(false);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return [];
             return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
@@ -149,8 +167,12 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
     {
         try
         {
+            using var tcs = new CancellationTokenSource(globalCommandTimeout);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.GetAsync(typeof(T).Name, id, commandTimeout);
+            var result = await service
+                .WithCancellationToken(tcs.Token)
+                .GetAsync(typeof(T).Name, id, commandTimeout)
+                .ConfigureAwait(false);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return null;
             return MessagePackSerializer.Deserialize<T>(result.Data);
@@ -168,8 +190,9 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
         {
             if (OperatingSystem.IsBrowser())
             {
+                logger?.LogWarning("Where<T> is not recommended for use in WebAssembly due to potential performance issues. Consider using WhereAsync<T> instead.");
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(nameof(WhereAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters, commandTimeout ?? int.MaxValue }));
+                var result = request.Send(url, nameof(WhereAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters, commandTimeout ?? int.MaxValue }), globalCommandTimeout);
                 if (result == Array.Empty<byte>()) return [];
                 return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
             }
@@ -186,8 +209,12 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
     {
         try
         {
+            using var tcs = new CancellationTokenSource(globalCommandTimeout);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.WhereAsync(typeof(T).Name, filters, commandTimeout);
+            var result = await service
+                .WithCancellationToken(tcs.Token)
+                .WhereAsync(typeof(T).Name, filters, commandTimeout)
+                .ConfigureAwait(false);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return [];
             return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
@@ -205,8 +232,9 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
         {
             if (OperatingSystem.IsBrowser())
             {
+                logger?.LogWarning("Query<TFirst, TSecond, TReturn> is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TReturn> instead.");
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }));
+                var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
                 if (result == Array.Empty<byte>()) return [];
                 var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
                 return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
@@ -231,8 +259,9 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
         {
             if (OperatingSystem.IsBrowser())
             {
+                logger?.LogWarning("Query<TFirst, TSecond, TThird, TReturn> is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TThird, TReturn> instead.");
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }));
+                var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
                 if (result == Array.Empty<byte>()) return [];
                 var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
                 return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
@@ -252,8 +281,9 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
         {
             if (OperatingSystem.IsBrowser())
             {
+                logger?.LogWarning("Query<TFirst, TSecond, TThird, TFourth, TReturn> is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn> instead.");
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }));
+                var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
                 if (result == Array.Empty<byte>()) return [];
                 var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
                 return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
@@ -273,8 +303,9 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
         {
             if (OperatingSystem.IsBrowser())
             {
+                logger?.LogWarning("Query<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> instead.");
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }));
+                var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
                 if (result == Array.Empty<byte>()) return [];
                 var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
                 return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
@@ -294,8 +325,9 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
         {
             if (OperatingSystem.IsBrowser())
             {
+                logger?.LogWarning("Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> instead.");
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }));
+                var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
                 if (result == Array.Empty<byte>()) return [];
                 var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
                 return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
@@ -315,8 +347,9 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
         {
             if (OperatingSystem.IsBrowser())
             {
+                logger?.LogWarning("Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> instead.");
                 var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }));
+                var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
                 if (result == Array.Empty<byte>()) return [];
                 var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
                 return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
@@ -334,8 +367,12 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
     {
         try
         {
+            using var tcs = new CancellationTokenSource(globalCommandTimeout);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text);
+            var result = await service
+                .WithCancellationToken(tcs.Token)
+                .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+                .ConfigureAwait(false);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return [];
             var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
@@ -352,8 +389,12 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
     {
         try
         {
+            using var tcs = new CancellationTokenSource(globalCommandTimeout);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text);
+            var result = await service
+                .WithCancellationToken(tcs.Token)
+                .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+                .ConfigureAwait(false);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return [];
             var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
@@ -375,8 +416,12 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
     {
         try
         {
+            using var tcs = new CancellationTokenSource(globalCommandTimeout);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text);
+            var result = await service
+                .WithCancellationToken(tcs.Token)
+                .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+                .ConfigureAwait(false);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return [];
             var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
@@ -398,8 +443,12 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
     {
         try
         {
+            using var tcs = new CancellationTokenSource(globalCommandTimeout);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text);
+            var result = await service
+                .WithCancellationToken(tcs.Token)
+                .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+                .ConfigureAwait(false);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return [];
             var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
@@ -421,8 +470,12 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
     {
         try
         {
+            using var tcs = new CancellationTokenSource(globalCommandTimeout);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text);
+            var result = await service
+                .WithCancellationToken(tcs.Token)
+                .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+                .ConfigureAwait(false);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return [];
             var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
@@ -444,8 +497,12 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
     {
         try
         {
+            using var tcs = new CancellationTokenSource(globalCommandTimeout);
             var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service.QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text);
+            var result = await service
+                .WithCancellationToken(tcs.Token)
+                .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+                .ConfigureAwait(false);
             if (!result.Successful) throw new Exception(result.Exception);
             if (result.Data == Array.Empty<byte>()) return [];
             var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
@@ -614,5 +671,15 @@ public partial class MagicOnionLayer(IServiceProvider provider, ILogger? logger 
         var seventh = MapToObject<TSeventh>(groups[6]);
 
         return map(first, second, third, fourth, fifth, sixth, seventh);
+    }
+
+    public int Execute(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<int> ExecuteAsync(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -293,8 +293,59 @@ public static class Extensions
         services.TryAdd(ServiceDescriptor.Describe(typeof(ISms), _ => Sms.Default, lifetime));
         services.TryAdd(ServiceDescriptor.Describe(typeof(ITextToSpeech), _ => TextToSpeech.Default, lifetime));
         services.TryAdd(ServiceDescriptor.Describe(typeof(IVibration), _ => Vibration.Default, lifetime));
-        services.TryAdd(ServiceDescriptor.Describe(typeof(IVersionTracking), _ => VersionTracking.Default, lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(IVersionTracking), _ =>
+        {
+            try
+            {
+                return VersionTracking.Default;
+            }
+            catch
+            {
+                return new VersionTrackingDefault();
+            }
+
+        }, lifetime));
         services.TryAdd(ServiceDescriptor.Describe(typeof(IWebAuthenticator), _ => WebAuthenticator.Default, lifetime));
+    }
+
+    public class VersionTrackingDefault : IVersionTracking
+    {
+        public bool IsFirstLaunchEver => throw new NotImplementedException();
+
+        public bool IsFirstLaunchForCurrentVersion => throw new NotImplementedException();
+
+        public bool IsFirstLaunchForCurrentBuild => throw new NotImplementedException();
+
+        public string CurrentVersion => throw new NotImplementedException();
+
+        public string CurrentBuild => throw new NotImplementedException();
+
+        public string? PreviousVersion => throw new NotImplementedException();
+
+        public string? PreviousBuild => throw new NotImplementedException();
+
+        public string? FirstInstalledVersion => throw new NotImplementedException();
+
+        public string? FirstInstalledBuild => throw new NotImplementedException();
+
+        public IReadOnlyList<string> VersionHistory => throw new NotImplementedException();
+
+        public IReadOnlyList<string> BuildHistory => throw new NotImplementedException();
+
+        public bool IsFirstLaunchForBuild(string build)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsFirstLaunchForVersion(string version)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Track()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public static Task<Stream> OpenReadAsync(this FileBase file, bool overridesMauiPlatform = true)
@@ -331,20 +382,11 @@ public static class Extensions
         }
         else
         {
-            // Convert the enumerable to a list to avoid multiple enumeration and get accurate count
-            var shareFiles = new List<ShareFile>(files.Count());
-
-            foreach (var file in files)
-            {
-                // Use standard MAUI ShareFile for regular files
-                shareFiles.Add(new ShareFile(file));
-            }
-
             // Execute the native share request with the converted files
             return share.RequestAsync(new ShareMultipleFilesRequest()
             {
                 Title = title,
-                Files = shareFiles
+                Files = [.. (files ?? []).Select(f => new ShareFile(f))]
             });
         }
     }

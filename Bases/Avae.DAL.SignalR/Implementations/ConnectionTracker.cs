@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace Avae.DAL.SignalR;
 
@@ -10,8 +11,14 @@ public class ConnectionTracker<TObject> : IDisposable where TObject : class, new
 
     readonly IDBMonitor<TObject> monitor;
 
-    public ConnectionTracker(IHubContext<SignalRHub<TObject>> hubContext, IDBMonitor<TObject> monitor)
+    readonly ILogger? logger;
+
+    public ConnectionTracker(
+        IHubContext<SignalRHub<TObject>> hubContext, 
+        IDBMonitor<TObject> monitor,
+        ILogger? logger = null)
     {
+        this.logger = logger;
         this.monitor = monitor;
         this.hubContext = hubContext;
         IDBFactory.Monitors.Add(monitor);
@@ -39,7 +46,7 @@ public class ConnectionTracker<TObject> : IDisposable where TObject : class, new
         }
 
         foreach (var id in notified)
-            Console.WriteLine($"Notifying customer: {id}");
+            logger?.LogInformation($"Connected : {id}");
 
         await hubContext.Clients.AllExcept(excludedIds).SendAsync(Extensions.DBMessage, e);
     }

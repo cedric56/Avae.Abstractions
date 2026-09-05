@@ -57,7 +57,7 @@
 
     async void ThemeChanged(object? sender, RequestedTheme theme)
     {
-        await InvokeAsync(() => StateHasChanged());
+        await InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()

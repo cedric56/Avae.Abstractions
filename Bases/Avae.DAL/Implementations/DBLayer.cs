@@ -45,43 +45,6 @@ public class DBLayer(IServiceProvider provider) : IDBLayer
         return await db.GetAsync<T>(id, transaction, commandTimeout);
     }
 
-    private static readonly ConcurrentDictionary<Type, string> _columnCache = new();
-
-
-    private static List<PropertyInfo> GetMappedProperties<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>()
-    {
-        return typeof(T)
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(p => p.CanRead && p.CanWrite)
-            .Where(p => p.GetCustomAttribute<ComputedAttribute>() == null)
-            .Where(p => p.GetCustomAttribute<IgnoreMemberAttribute>() == null)
-            .ToList();
-    }
-
-    private static string GetColumns<
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>()
-    {
-        return _columnCache.GetOrAdd(typeof(T), _ =>
-            string.Join(", ", GetMappedProperties<T>().Select(p => p.Name)));
-    }
-
-    private static string Create<T>(Dictionary<string, object> filters, string condition, out DynamicParameters parameters)
-    {
-        var conditions = new List<string>();
-        parameters = new DynamicParameters();
-
-        foreach (var pair in filters)
-        {
-            parameters.Add(pair.Key, pair.Value);
-            conditions.Add($"(@{pair.Key} IS NOT NULL AND {pair.Key} = @{pair.Key})");
-        }
-
-        string where = string.Join(condition, conditions);
-        string columns = GetColumns<T>();
-
-        return $"SELECT {columns} FROM {typeof(T).Name} WHERE {where}";
-    }
-
     public Task<IEnumerable<T>> FindByAnyAsync<T>(Dictionary<string, object> filters, int? commandTimeout = null) where T : class, new()
     {
         var sql = Create<T>(filters, " OR ", out var parameters);
@@ -109,6 +72,19 @@ public class DBLayer(IServiceProvider provider) : IDBLayer
         using var db = provider.GetRequiredService<IDbConnection>();
         return db.Query<T>(sql, parameters);
     }
+
+    public int Execute(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+    {
+        using var db = provider.GetRequiredService<IDbConnection>();
+        return db.Execute(sql, param, transaction, commandTimeout, commandType);
+    }
+
+    public Task<int> ExecuteAsync(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+    {
+        using var db = provider.GetRequiredService<IDbConnection>();
+        return db.ExecuteAsync(sql, param, transaction, commandTimeout, commandType);
+    }
+
 
     public IEnumerable<TReturn> Query<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
     {
@@ -222,5 +198,42 @@ public class DBLayer(IServiceProvider provider) : IDBLayer
     {
         using var db = provider.GetRequiredService<IDbConnection>();
         return db.QueryAsync(command, map, splitOn);
+    }
+
+    private static readonly ConcurrentDictionary<Type, string> _columnCache = new();
+
+
+    private static List<PropertyInfo> GetMappedProperties<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>()
+    {
+        return typeof(T)
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Where(p => p.CanRead && p.CanWrite)
+            .Where(p => p.GetCustomAttribute<ComputedAttribute>() == null)
+            .Where(p => p.GetCustomAttribute<IgnoreMemberAttribute>() == null)
+            .ToList();
+    }
+
+    private static string GetColumns<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>()
+    {
+        return _columnCache.GetOrAdd(typeof(T), _ =>
+            string.Join(", ", GetMappedProperties<T>().Select(p => p.Name)));
+    }
+
+    private static string Create<T>(Dictionary<string, object> filters, string condition, out DynamicParameters parameters)
+    {
+        var conditions = new List<string>();
+        parameters = new DynamicParameters();
+
+        foreach (var pair in filters)
+        {
+            parameters.Add(pair.Key, pair.Value);
+            conditions.Add($"(@{pair.Key} IS NOT NULL AND {pair.Key} = @{pair.Key})");
+        }
+
+        string where = string.Join(condition, conditions);
+        string columns = GetColumns<T>();
+
+        return $"SELECT {columns} FROM {typeof(T).Name} WHERE {where}";
     }
 }

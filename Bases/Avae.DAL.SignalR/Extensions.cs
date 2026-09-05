@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Avae.DAL.SignalR;
 
@@ -14,7 +14,8 @@ public static class Extensions
         this IDBMonitor<TObject> monitor, 
         string url, 
         IRetryPolicy? retryPolicy  =null,
-        Func<HttpMessageHandler, HttpMessageHandler>? factory = null)
+        Func<HttpMessageHandler, HttpMessageHandler>? factory = null,
+        ILogger? logger = null)
         where TObject : class, new()
     {
         var hub = new HubConnectionBuilder()
@@ -81,25 +82,27 @@ public static class Extensions
         {
             try
             {
-                using var cts = new CancellationTokenSource(
-                      TimeSpan.FromSeconds(2));
+                //using var cts = new CancellationTokenSource(
+                //      TimeSpan.FromSeconds(2));
 
-                HttpResponseMessage response;
-                if (ServiceLocator.GetService<HttpClient>() is { } client)
-                {
-                    response = await client.PostAsync($"{url}/negotiate", null, cts.Token);
-                }
-                else
-                {
-                    using var httpClient = factory != null ? new HttpClient(factory.Invoke(null!)) : new HttpClient();
-                    response = await httpClient.PostAsync($"{url}/negotiate", null, cts.Token);
-                }
-                if (response.IsSuccessStatusCode)
-                    await hub.StartAsync();
+                //HttpResponseMessage response;
+                //if (ServiceLocator.GetService<HttpClient>() is { } client)
+                //{
+                //    response = await client.PostAsync($"{url}/negotiate", null, cts.Token);
+                //}
+                //else
+                //{
+                //    using var httpClient = factory != null ? new HttpClient(factory.Invoke(null!)) : new HttpClient();
+                //    response = await httpClient.PostAsync($"{url}/negotiate", null, cts.Token);
+                //}
+                //if (response.IsSuccessStatusCode)
+                //    await hub.StartAsync();
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+                await hub.StartAsync(cts.Token);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                logger?.LogError(ex.Message);
             }
             finally
             {

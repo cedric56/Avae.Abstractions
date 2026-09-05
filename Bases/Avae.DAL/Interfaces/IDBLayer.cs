@@ -45,6 +45,9 @@ public interface IDBLayer
         return Where<T>(filters.ToDictionary(x => x.key, y => y.value));
     }
 
+    int Execute(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null);
+    Task<int> ExecuteAsync(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null);
+
     /// <summary>
     /// DBBase.Instance.Query<Contact, Person, Contact>(
     /// "SELECT C.Id as ContactId, C.IdPerson, C.IdContact, P.Id, p.FirstName, p.LastName FROM CONTACT C INNER JOIN PERSON P ON C.IdContact = P.Id WHERE C.IdContact = @ID",
