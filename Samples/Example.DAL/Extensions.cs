@@ -28,7 +28,7 @@ public static class Extensions
         where TObject : class, new()
     {
         return monitor.AddStreamingHub(MagicHubUrl, httpMessageHandler,
-            ServiceLocator.GetRequiredService<ILogger>());
+            ServiceLocator.GetService<ILogger>());
     }
 
     public static Task<Func<Task>> AddSignalR<TObject>(
@@ -38,7 +38,7 @@ public static class Extensions
         where TObject : class, new()
     {
         return monitor.AddSignalR(SignalHubUrl, retryPolicy, factory,
-            ServiceLocator.GetRequiredService<ILogger>());
+            ServiceLocator.GetService<ILogger>());
     }
 
     public static void UseDBOnionLayer(this IServiceCollection services)

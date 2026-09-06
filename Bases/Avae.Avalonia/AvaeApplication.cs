@@ -3,13 +3,12 @@ using Avae.Services;
 using Avae.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Interactivity;
 using Avalonia.Styling;
 using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 using Application = Avalonia.Application;
+using Dispatcher = Avalonia.Threading.Dispatcher;
 using StyleInclude = Avalonia.Markup.Xaml.Styling.StyleInclude;
-using DataAnnotationsValidationPlugin = Avalonia.Data.Core.Plugins.DataAnnotationsValidationPlugin;
 
 namespace Avae.Avalonia;
 
@@ -74,32 +73,7 @@ public abstract class AvaeApplication : Application, IIocConfiguration, IDisposa
 
     public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : ICloseableViewModel<TResult>
     {
-        var view = Container.GetView(typeof(TViewModel).Name, [context]);
-
-        // Now verify the TResult type matches
-        Type viewType = view.GetType();
-        Type[] interfaces = viewType.GetInterfaces();
-
-        // Find the IModalFor<,> interface implementation
-        var modalInterface = interfaces.FirstOrDefault(i =>
-            i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IModalFor<,>));
-
-        if (modalInterface != null)
-        {
-            Type[] genericArgs = modalInterface.GetGenericArguments();
-            Type viewModelType = genericArgs[0];
-            Type resultType = genericArgs[1];
-
-            // Check if the TResult matches
-            if (resultType != typeof(TResult))
-            {
-                throw new InvalidOperationException(
-                    $"The view associated with view model {typeof(TViewModel).Name} expects result type {resultType.Name}, " +
-                    $"but {typeof(TResult).Name} was requested.");
-            }
-        }
-
-        return view as IModalFor<TViewModel, TResult> ?? throw new InvalidOperationException($"The view associated with the view model {typeof(TViewModel).Name} is not a modal view.");
+        return Container.GetModal<TViewModel, TResult>(context);
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -135,20 +109,11 @@ public abstract class AvaeApplication : Application, IIocConfiguration, IDisposa
 
         _ = Task.Run(AfterCompletedAsync);
 
-        mainView.Loaded += OnLoaded;
-
-        void OnLoaded(object? sender, RoutedEventArgs e)
+        Dispatcher.UIThread.ShutdownStarted += Shutdown;
+        void Shutdown(object? sender, EventArgs e)
         {
-            mainView.Loaded -= OnLoaded;
-
-            var topLevel = TopLevel.GetTopLevel(mainView);
-            topLevel?.Closed += OnClosed;
-
-            void OnClosed(object? sender, EventArgs e)
-            {
-                topLevel?.Closed -= OnClosed;
-                Dispose();
-            }
+            Dispatcher.UIThread.ShutdownStarted -= Shutdown;
+            Dispose();
         }
     }
 

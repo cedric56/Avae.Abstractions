@@ -38,7 +38,7 @@
 
   <ItemGroup>
     <AvaloniaResource Update="Assets\avalonia-logo.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AvaloniaResource>
   </ItemGroup>
 </Project>

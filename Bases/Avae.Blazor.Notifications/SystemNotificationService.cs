@@ -118,7 +118,6 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
             return null;
 
         var item = new BlazorNotification(channel, this);
-        currents.Add(item.Id, item);
         return item;
     }
 
@@ -134,6 +133,8 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         var module = await GetModuleAsync();
         if (module != null)
             await module.InvokeVoidAsync("create", notification.Title, JsonSerializer.Serialize(options, NotificationJsonContext.Default.NotificationOptions));
+
+        currents.Add(notification.Id, notification);
     }
 
     public async Task Close(uint id)

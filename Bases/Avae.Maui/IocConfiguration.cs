@@ -18,10 +18,6 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
 
     public Page Current => Application.Current?.Windows.FirstOrDefault(w => w.IsActivated)?.Page ?? Application.Current?.Windows.FirstOrDefault()?.Page ?? Shell.Current;
 
-    public int MaxItems => 5;
-
-    public NotificationPosition Position => NotificationPosition.TopCenter;
-
     public void Configure(IIocContainer container)
     {
         configure?.Invoke(container);
@@ -45,35 +41,7 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
 
     public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : ICloseableViewModel<TResult>
     {
-        var view = Container.GetView(typeof(TViewModel).Name, [context]);
-
-        // Now verify the TResult type matches
-        Type viewType = view.GetType();
-        Type[] interfaces = viewType.GetInterfaces();
-
-        // Find the IModalFor<,> interface implementation
-        var modalInterface = interfaces.FirstOrDefault(i =>
-            i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IModalFor<,>));
-
-        if (modalInterface != null)
-        {
-            Type[] genericArgs = modalInterface.GetGenericArguments();
-            Type viewModelType = genericArgs[0];
-            Type resultType = genericArgs[1];
-
-            // Check if the TResult matches
-            if (resultType != typeof(TResult))
-            {
-                throw new InvalidOperationException(
-                    $"The view associated with view model {typeof(TViewModel).Name} expects result type {resultType.Name}, " +
-                    $"but {typeof(TResult).Name} was requested.");
-            }
-        }
-
-        if (view is not IModalFor<TViewModel, TResult> modal)
-            throw new InvalidOperationException($"The view associated with the view model {typeof(TViewModel).Name} is not a modal view.");
-
-        return view as IModalFor<TViewModel, TResult>;
+        return Container.GetModal<TViewModel, TResult>(context);
     }
 
     public async Task<TaskDialogStandardResult> ShowAsync(TaskDialogParams @params, params TaskDialogStandardResult[] results)

@@ -40,6 +40,36 @@ public class IocContainer : IIocContainer
         throw new Exception($"No such page registered: {key}");
     }
 
+    public IModalFor<T, TResult> GetModal<T, TResult>(NavigationContext context) where T : ICloseableViewModel<TResult>
+    {
+        var view = GetView(typeof(T).Name, [context]);
+
+        // Now verify the TResult type matches
+        Type viewType = view.GetType();
+        Type[] interfaces = viewType.GetInterfaces();
+
+        // Find the IModalFor<,> interface implementation
+        var modalInterface = interfaces.FirstOrDefault(i =>
+            i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IModalFor<,>));
+
+        if (modalInterface != null)
+        {
+            Type[] genericArgs = modalInterface.GetGenericArguments();
+            Type viewModelType = genericArgs[0];
+            Type resultType = genericArgs[1];
+
+            // Check if the TResult matches
+            if (resultType != typeof(TResult))
+            {
+                throw new InvalidOperationException(
+                    $"The view associated with view model {typeof(T).Name} expects result type {resultType.Name}, " +
+                    $"but {typeof(TResult).Name} was requested.");
+            }
+        }
+
+        return view as IModalFor<T, TResult> ?? throw new InvalidOperationException($"The view associated with the view model {typeof(T).Name} is not a modal view.");
+    }
+
     public void Register(string key, Func<IServiceProvider, object[], object> factory)
     {
         _factories[key] = new ViewFactory(factory);
