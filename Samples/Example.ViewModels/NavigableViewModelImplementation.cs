@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Example.ViewModels;
 
-public abstract partial class NavigableViewModelImplementation(Router router, bool initialize = true) : 
+public abstract partial class NavigableViewModel(Router router, bool initialize = true) : 
     NavigableViewModelBase(router, initialize)
 {
     [RelayCommand]
@@ -25,7 +25,7 @@ public abstract partial class NavigableViewModelImplementation(Router router, bo
     }
 }
 
-public abstract partial class NavigableViewModelImplementation<TResult>(Router router, bool initialize = true) :
+public abstract partial class NavigableViewModel<TResult>(Router router, bool initialize = true) :
     NavigableViewModelBase<TResult>(router, initialize)
 {
     [RelayCommand]

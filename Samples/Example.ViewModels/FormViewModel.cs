@@ -11,7 +11,7 @@ namespace Example.ViewModels;
 
 [INotifyPropertyChanged]
 public partial class FormViewModel(IDialogService dialogService, Router router, Person person) :
-    NavigableViewModelImplementation<Person>(router), IDataErrorInfo
+    NavigableViewModel<Person>(router), IDataErrorInfo
 {
     public const string KEY = "Page";
 
@@ -69,7 +69,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
 
     public override string Title => "Form";
 
-    protected override ObservableCollection<NavigableView> GetViewModels()
+    protected override ObservableCollection<NavigableView> GetNavigables()
     {
         return new ObservableCollection<NavigableView>
             {

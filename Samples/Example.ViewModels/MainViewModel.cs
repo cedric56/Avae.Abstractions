@@ -9,7 +9,7 @@ namespace Example.ViewModels;
 
 [INotifyPropertyChanged]
 public partial class MainViewModel(Router router) : 
-    NavigableViewModelImplementation(router)
+    NavigableViewModel(router)
 {
     [ObservableProperty]
     public partial bool IsMenuPaneOpen { get; set; }
@@ -25,7 +25,7 @@ public partial class MainViewModel(Router router) :
         OnPropertyChanged(propertyName);
     }
 
-    protected override ObservableCollection<NavigableView> GetViewModels()
+    protected override ObservableCollection<NavigableView> GetNavigables()
     {
         return
         [

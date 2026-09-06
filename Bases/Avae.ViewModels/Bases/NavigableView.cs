@@ -7,7 +7,7 @@ namespace Avae.ViewModels;
 /// <param name="viewModelType"></param>
 /// <param name="displayName"></param>
 /// <param name="icon"></param>
-public class NavigableView(Type viewModelType, string displayName, string icon) : IViewModelBase
+public class NavigableView(Type viewModelType, string displayName, string icon)
 {
     public Func<IViewModelBase, Task>? Launched { get; set; }
     public IViewModelBase? ViewModel { get; protected set; }

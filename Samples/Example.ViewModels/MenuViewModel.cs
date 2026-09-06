@@ -11,7 +11,7 @@ using Person = Example.Models.Person;
 namespace Example.ViewModels;
 
 [INotifyPropertyChanged]
-public partial class MenuViewModel : NavigableViewModelImplementation, IDisposable
+public partial class MenuViewModel : NavigableViewModel, IDisposable
 {
     IServiceProvider provider;
     IDialogService dialogService;
@@ -44,7 +44,7 @@ public partial class MenuViewModel : NavigableViewModelImplementation, IDisposab
         RemoveCommand.NotifyCanExecuteChanged();
     }
 
-    protected override ObservableCollection<NavigableView> GetViewModels()
+    protected override ObservableCollection<NavigableView> GetNavigables()
     {
         return
         [

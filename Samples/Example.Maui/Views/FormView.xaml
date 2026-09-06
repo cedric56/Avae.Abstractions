@@ -7,8 +7,8 @@
           VerticalOptions="Fill">
 
         <CollectionView Margin="5"
-				ItemsSource="{Binding ViewModels}"
-				SelectedItem="{Binding SelectedViewModel}"
+				ItemsSource="{Binding Navigables}"
+				SelectedItem="{Binding SelectedNavigable}"
                 >
             <CollectionView.ItemTemplate>
                 <DataTemplate>

@@ -23,8 +23,8 @@
 					   Margin="5" >
 						
 						<ListBox Margin="5"
-							ItemsSource="{Binding ViewModels}"
-							SelectedItem="{Binding SelectedViewModel}"
+							ItemsSource="{Binding Navigables}"
+							SelectedItem="{Binding SelectedNavigable}"
 						>
 							<ListBox.Styles>
 								<Style Selector="ListBoxItem">

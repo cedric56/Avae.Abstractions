@@ -47,12 +47,12 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IVie
     protected override void OnViewModelChanged(IViewModelBase viewModel)
     {
         var type = viewModel.GetType();
-        _selectedViewModel = ViewModels.First(p => p.ViewModelType == type);
-        if (dico.TryGetValue(_selectedViewModel, out var context))
+        _selectedNavigable = Navigables.First(p => p.ViewModelType == type);
+        if (dico.TryGetValue(_selectedNavigable, out var context))
         {
             _currentView = context.Key;
         }
-        NotifyPropertyChanged(nameof(SelectedViewModel));
+        NotifyPropertyChanged(nameof(SelectedNavigable));
         NotifyPropertyChanged(nameof(CurrentView));
         CurrentViewChanged?.Invoke(this, _currentView);
         base.OnViewModelChanged(viewModel);
@@ -84,15 +84,15 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IVie
     /// <summary>
     /// The currently selected page in the menu.
     /// </summary>
-    private NavigableView? _selectedViewModel;
-    public NavigableView? SelectedViewModel
+    private NavigableView? _selectedNavigable;
+    public NavigableView? SelectedNavigable
     {
-        get { return _selectedViewModel; }
+        get { return _selectedNavigable; }
         set
         {
-            _selectedViewModel = value;
-            OnSelectedViewModelChanged(value);
-            NotifyPropertyChanged(nameof(SelectedViewModel));
+            _selectedNavigable = value;
+            OnSelectedNavigableChanged(value);
+            NotifyPropertyChanged(nameof(SelectedNavigable));
         }
     }
 
@@ -101,23 +101,23 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IVie
     {
         if (initialize)
         {
-            SelectedViewModel = ViewModels.FirstOrDefault();
+            SelectedNavigable = Navigables.FirstOrDefault();
         }
     }
 
-    private ObservableCollection<NavigableView>? _viewModels;
+    private ObservableCollection<NavigableView>? _navigables;
     /// <summary>
     /// The list of pages to be displayed in the menu.
     /// </summary>
-    public ObservableCollection<NavigableView> ViewModels { get {return _viewModels ??= GetViewModels(); } }
+    public ObservableCollection<NavigableView> Navigables { get {return _navigables ??= GetNavigables(); } }
 
-    protected abstract ObservableCollection<NavigableView> GetViewModels();
+    protected abstract ObservableCollection<NavigableView> GetNavigables();
 
     /// <summary>
     /// This method is called when the selected page changes.
     /// </summary>
     /// <param name="value"></param>
-    protected async void OnSelectedViewModelChanged(NavigableView? value)
+    protected async void OnSelectedNavigableChanged(NavigableView? value)
     {
         if (value == null)
             return;

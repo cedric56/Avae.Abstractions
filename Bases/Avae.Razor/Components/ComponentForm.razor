@@ -8,8 +8,8 @@
     </MudOverlay>
     <div>
         <MudList T="NavigableView"
-                 @bind-SelectedValue="@ViewModel.SelectedViewModel">
-            @foreach (var page in ViewModel.ViewModels)
+                 @bind-SelectedValue="@ViewModel.SelectedNavigable">
+            @foreach (var page in ViewModel.Navigables)
             {
                 var name = page.DisplayName;
                 <MudListItem Text="@name" Value="page" />
