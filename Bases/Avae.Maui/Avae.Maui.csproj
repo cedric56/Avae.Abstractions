@@ -12,14 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Themes\ErrorStyles.xaml.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <MauiXaml Remove="Themes\ErrorStyles.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="UXDivers.Popups.Maui" />
     <PackageReference Include="Microsoft.Maui.Controls" />
   </ItemGroup>
@@ -33,10 +25,6 @@
     <MauiXaml Update="AvaePopupPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Themes\" />
   </ItemGroup>
 
 </Project>

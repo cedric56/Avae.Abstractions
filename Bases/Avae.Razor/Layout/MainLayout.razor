@@ -50,7 +50,7 @@
     {
         base.OnInitialized();
 
-        circuit.Services = ServiceProvider;
+        circuit.Provider = ServiceProvider;
 
         IocConfiguration.RequestedThemeChanged += ThemeChanged;
     }

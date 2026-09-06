@@ -2,6 +2,7 @@
 using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System.Diagnostics;
 
 namespace Example.ViewModels;
@@ -13,9 +14,17 @@ public partial class HomeViewModel(
     IIocConfiguration iocConfiguration,
     INotificationService notificationService,
     ISystemNotificationService systemNotificationService,
-    IRequestedThemeService requestedTheme) : ObservableObject, IViewModelBase
+    IRequestedThemeService requestedTheme) : 
+    ObservableObject, 
+    IViewModelBase,
+    IEquatable<HomeViewModel>
 {
-    public static string Title => "Welcome to home";
+    [RelayCommand]
+    public void Messenger()
+    {
+        WeakReferenceMessenger.Default.Send("Hello from HomeViewModel", this);
+    }
+
 
     [RelayCommand]
     public async Task ShowModal()
@@ -125,5 +134,10 @@ public partial class HomeViewModel(
         };
         actual = theme;
         requestedTheme.Request(actual.Value);
+    }
+
+    public bool Equals(HomeViewModel? other)
+    {
+        return this == other;
     }
 }

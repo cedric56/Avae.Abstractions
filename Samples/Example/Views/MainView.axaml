@@ -15,51 +15,31 @@
     <vm:MainViewModel />
   </Design.DataContext>
 
-  <Grid RowDefinitions="Auto,*" ColumnDefinitions="Auto, *">
-			
-
-			<SplitView x:Name="sview" DisplayMode="Overlay" IsPaneOpen="{Binding IsMenuPaneOpen, Mode=TwoWay}"
-					Grid.Row="1" Grid.RowSpan="2" OpenPaneLength="200" CompactPaneLength="100"   Grid.ColumnSpan="2">
-				<SplitView.Pane>
-
-					<StackPanel
-					   Spacing="5"
-					   Margin="5">
-						<ListBox
-							x:Name="MenuItemsListBox"
-							ItemsSource="{Binding Navigables}"
-							SelectedItem="{Binding SelectedNavigable}">
-							<ListBox.Styles>
-								<Style Selector="ListBoxItem">
-									<Setter Property="Padding" Value="10" />
-								</Style>
-							</ListBox.Styles>
-							<ListBox.ItemTemplate>
-								<DataTemplate>
-									<StackPanel
-										Spacing="10"
-										Orientation="Horizontal">
-										<!--<i:Icon Value="{Binding Icon}"/>-->
-										<TextBlock Text="{Binding DisplayName}" />
-									</StackPanel>
-								</DataTemplate>
-							</ListBox.ItemTemplate>
-						</ListBox>
-					</StackPanel>
-				</SplitView.Pane>
-				<SplitView.Content>
-					<Grid>
-					<Button	VerticalAlignment="Top"	IsVisible="{Binding !IsMenuPaneOpen}"
-						Command="{Binding TriggerMenuPaneCommand}">
-				<StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="4">
-					<Rectangle Height="2" Width="20" Fill="White"/>
-					<Rectangle Height="2" Width="20" Fill="White"/>
-					<Rectangle Height="2" Width="20" Fill="White"/>
-				</StackPanel>
-			</Button>
-					<TransitioningContentControl Content="{Binding CurrentView}"/>
-						</Grid>
-				</SplitView.Content>
-			</SplitView>
-		</Grid>
+	<DrawerPage Content="{Binding CurrentView}"
+			 Header="Application">
+		 <DrawerPage.Drawer>
+			<StackPanel Spacing="5" Margin="5">
+				<ListBox
+					x:Name="MenuItemsListBox"
+					ItemsSource="{Binding Navigables}"
+					SelectedItem="{Binding SelectedNavigable}">
+					<ListBox.Styles>
+						<Style Selector="ListBoxItem">
+							<Setter Property="Padding" Value="10" />
+						</Style>
+					</ListBox.Styles>
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<StackPanel
+								Spacing="10"
+								Orientation="Horizontal">
+								<!--<i:Icon Value="{Binding Icon}"/>-->
+								<TextBlock Text="{Binding DisplayName}" />
+							</StackPanel>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</StackPanel>
+		</DrawerPage.Drawer>
+	</DrawerPage>
 </UserControl>

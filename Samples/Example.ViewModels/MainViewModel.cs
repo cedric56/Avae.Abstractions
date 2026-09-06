@@ -1,25 +1,14 @@
 ﻿using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Example.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace Example.ViewModels;
 
 [INotifyPropertyChanged]
-public partial class MainViewModel(Router router) : 
+public partial class MainViewModel(Router router) :
     NavigableViewModel(router)
 {
-    [ObservableProperty]
-    public partial bool IsMenuPaneOpen { get; set; }
-
-    [RelayCommand]
-    private void TriggerMenuPane()
-    {
-        IsMenuPaneOpen = !IsMenuPaneOpen;
-    }
-
     protected override void NotifyPropertyChanged(string propertyName)
     {
         OnPropertyChanged(propertyName);
@@ -29,16 +18,9 @@ public partial class MainViewModel(Router router) :
     {
         return
         [
-                new NavigableView<HomeViewModel>("Home", "fa-solid fa-house"),
-                new NavigableView<MenuViewModel>("Menu", "fa-solid fa-gear")
-                {
-                    Launched = (viewModel) =>
-                    {
-                        viewModel.Persons = new(Repository.Instance.Persons);
-                        return Task.CompletedTask;
-                    }
-                },
-                new NavigableView<EssentialsViewModel>("Essentials", "fa-solid fa-gear")
+            new NavigableView<HomeViewModel>("Home", "fa-solid fa-house"),
+            new NavigableView<MenuViewModel>("Menu", "fa-solid fa-gear"),
+            new NavigableView<EssentialsViewModel>("Essentials", "fa-solid fa-gear")
         ];
     }
 }

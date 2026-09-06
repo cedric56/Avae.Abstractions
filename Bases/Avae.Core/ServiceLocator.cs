@@ -4,7 +4,7 @@ namespace Avae.Core;
 
 public class CircuitServiceAccessor
 {
-    public required IServiceProvider Services { get; set; }
+    public required IServiceProvider Provider { get; set; }
 }
 
 public static class ServiceLocator
@@ -21,13 +21,13 @@ public static class ServiceLocator
     public static T GetScopedRequiredService<T>() where T : notnull
     {
         var circuit = GetRequiredService<CircuitServiceAccessor>();
-        return circuit.Services.GetRequiredService<T>();
+        return circuit.Provider.GetRequiredService<T>();
     }
 
     public static T? GetScopedService<T>() where T : notnull
     {
         var circuit = GetRequiredService<CircuitServiceAccessor>();
-        return circuit.Services.GetService<T>();
+        return circuit.Provider.GetService<T>();
     }
 
     public static T GetRequiredService<T>() where T : notnull

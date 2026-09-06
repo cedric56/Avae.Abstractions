@@ -7,7 +7,6 @@
              xmlns:vm="using:Example.ViewModels"
              x:DataType="{x:Type vm:HomeViewModel}">
     <Grid RowDefinitions="Auto,*">
-        <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1">
 		    <Button Content="Modal" Command="{Binding ShowModal}" />		
             <Button Content="TaskDialog" Command="{Binding ShowTaskDialog}" />		
@@ -15,6 +14,7 @@
             <Button Content="Notification" Command="{Binding ShowNotification}" />		
             <Button Content="System" Command="{Binding ShowSystemNotification}" />		
             <Button Content="Theme" Command="{Binding ShowRequestedTheme}" />	
+            <Button Content="Messenger" Command="{Binding MessengerCommand}" />	
         </StackPanel>
         
     </Grid>

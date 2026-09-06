@@ -33,7 +33,7 @@ public partial class MenuViewModel : NavigableViewModel, IDisposable
     public string Title { get; set; } = "Persons";
 
     [ObservableProperty]
-    public partial ObservableCollection<Person> Persons { get; set; } = new();
+    public partial ObservableCollection<Person> Persons { get; set; } = new(Repository.Instance.Persons);
 
     [ObservableProperty]
     public partial Person? SelectedPerson { get; set; }

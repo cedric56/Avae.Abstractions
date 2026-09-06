@@ -50,12 +50,12 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
         var mainGrid = new Grid
         {
             RowDefinitions = new RowDefinitionCollection
-{
-    new RowDefinition { Height = GridLength.Auto },
-    new RowDefinition { Height = GridLength.Auto },
-    new RowDefinition { Height = GridLength.Star },
-    new RowDefinition { Height = GridLength.Auto }
-}
+            {
+                new RowDefinition { Height = GridLength.Auto },
+                new RowDefinition { Height = GridLength.Auto },
+                new RowDefinition { Height = GridLength.Star },
+                new RowDefinition { Height = GridLength.Auto }
+            }
         };
 
         // ============ HEADER HOST ============
