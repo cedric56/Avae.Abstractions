@@ -75,7 +75,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
             {
                 new NavigableView<FormViewModel>(this, "Page One", "fa-solid fa-gear")
                 {
-                     NavigationContext = new NavigableContext
+                     Context = new NavigableContext
                      {
                          FactoryParameters = [KEY]
                      },
@@ -98,7 +98,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
     {
         //Possibility to set parameters on call
         if (value.ViewModelType == typeof(FormPage3ViewModel))
-            value.NavigationContext.ViewParameters = [Person];
+            value.Context.ViewParameters = [Person];
 
         return base.GoTo(value, out viewModel);
     }

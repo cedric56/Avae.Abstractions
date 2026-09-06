@@ -143,11 +143,11 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IVie
         IViewFor viewFor;
         if (value.ViewModel != null)
         {
-            viewFor = _router.GoTo(viewModel = value.ViewModel, value.NavigationContext);
+            viewFor = _router.GoTo(viewModel = value.ViewModel, value.Context);
         }
         else
         {
-            viewFor = _router.GoTo(value.ViewModelType, out viewModel, value.NavigationContext);
+            viewFor = _router.GoTo(value.ViewModelType, out viewModel, value.Context);
         }
 
         return viewFor;
