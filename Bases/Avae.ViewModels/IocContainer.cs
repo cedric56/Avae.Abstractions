@@ -92,26 +92,26 @@ public class IocContainer : IIocContainer
 
     public void Register<TContextFor, TArg1>(Func<IServiceProvider, TArg1, TContextFor> func) where TContextFor : IViewFor
     {
-        Register((sp, args) => func(sp, (TArg1)args.Parameters[0]));
+        Register((sp, args) => func(sp, args.Get<TArg1>(0)));
     }
 
     public void Register<TContextFor, TArg1, TArg2>(Func<IServiceProvider, TArg1, TArg2, TContextFor> func) where TContextFor : IViewFor
     {
-        Register((sp, args) => func(sp, (TArg1)args.Parameters[0], (TArg2)args.Parameters[1]));
+        Register((sp, args) => func(sp, args.Get<TArg1>(0), args.Get<TArg2>(1)));
     }
 
     public void Register<TContextFor, TArg1, TArg2, TArgs3>(Func<IServiceProvider, TArg1, TArg2, TArgs3, TContextFor> func) where TContextFor : IViewFor
     {
-        Register((sp, args) => func(sp, (TArg1)args.Parameters[0], (TArg2)args.Parameters[1], (TArgs3)args.Parameters[2]));
+        Register((sp, args) => func(sp, args.Get<TArg1>(0), args.Get<TArg2>(1), args.Get<TArgs3>(2)));
     }
 
     public void Register<TContextFor, TArg1, TArg2, TArgs3, TArgs4>(Func<IServiceProvider, TArg1, TArg2, TArgs3, TArgs4, TContextFor> func) where TContextFor : IViewFor
     {
-        Register((sp, args) => func(sp, (TArg1)args.Parameters[0], (TArg2)args.Parameters[1], (TArgs3)args.Parameters[2], (TArgs4)args.Parameters[3]));
+        Register((sp, args) => func(sp, args.Get<TArg1>(0), args.Get<TArg2>(1), args.Get<TArgs3>(2), args.Get<TArgs4>(3)));
     }
 
     public void Register<TContextFor, TArg1, TArg2, TArgs3, TArgs4, TArgs5>(Func<IServiceProvider, TArg1, TArg2, TArgs3, TArgs4, TArgs5, TContextFor> func) where TContextFor : IViewFor
     {
-        Register((sp, args) => func(sp, (TArg1)args.Parameters[0], (TArg2)args.Parameters[1], (TArgs3)args.Parameters[2], (TArgs4)args.Parameters[3], (TArgs5)args.Parameters[4]));
+        Register((sp, args) => func(sp, args.Get<TArg1>(0), args.Get<TArg2>(1), args.Get<TArgs3>(2), args.Get<TArgs4>(3), args.Get<TArgs5>(4)));
     }
 }

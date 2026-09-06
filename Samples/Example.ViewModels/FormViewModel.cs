@@ -75,10 +75,11 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
             {
                 new NavigableView<FormViewModel>(this, "Page One", "fa-solid fa-gear")
                 {
-                     Context = new NavigableContext
-                     {
-                         FactoryParameters = [KEY]
-                     },
+                     Context = NavigableContext.Create().WithFactoryParameters(KEY),
+                     //Context = new NavigableContext
+                     //{
+                     //    FactoryParameters = [KEY]
+                     //},
                      Launched = async (viewModel) =>
                      {
                         await Person.LoadContactsAsync();
@@ -98,7 +99,10 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
     {
         //Possibility to set parameters on call
         if (value.ViewModelType == typeof(FormPage3ViewModel))
+        {
+            //value.Context.WithViewParameters(Person);
             value.Context.ViewParameters = [Person];
+        }
 
         return base.GoTo(value, out viewModel);
     }
