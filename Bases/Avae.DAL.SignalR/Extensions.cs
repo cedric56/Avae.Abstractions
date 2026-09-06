@@ -11,13 +11,15 @@ public static class Extensions
     public const string DBMessage = "DBChanged";
 
     public static async Task<Func<Task>> AddSignalR<TObject>(
-        this IDBMonitor<TObject> monitor, 
-        string url, 
-        IRetryPolicy? retryPolicy  =null,
+        this IDBMonitor<TObject> monitor,
+        string url,
+        IRetryPolicy? retryPolicy = null,
         Func<HttpMessageHandler, HttpMessageHandler>? factory = null,
         ILogger? logger = null)
         where TObject : class, new()
     {
+        IDBFactory.Monitors.Add(monitor);
+
         var hub = new HubConnectionBuilder()
             .AddMessagePackProtocol()
              //.WithServerTimeout(TimeSpan.FromSeconds(5))
@@ -36,7 +38,7 @@ public static class Extensions
             .WithAutomaticReconnect(retryPolicy ?? new FiveSecondsReconnectPolicy())
             .Build();
 
-        hub.On<Record<TObject>>(DBMessage, record=>
+        hub.On<Record<TObject>>(DBMessage, record =>
         {
             //we stop propagating to avoid stackoverflow
             if (record.Contains(hub.ConnectionId))

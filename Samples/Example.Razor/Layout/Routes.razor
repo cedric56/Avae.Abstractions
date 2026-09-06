@@ -23,7 +23,7 @@
     {
         if (OperatingSystem.IsBrowser())
         {
-            unsuscribe = await provider.AddStreamingHub(monitor);
+            unsuscribe = await monitor.AddStreamingHub();
             //unsuscribe = await provider.AddSignalR(monitor);
         }
         

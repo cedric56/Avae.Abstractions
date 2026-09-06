@@ -66,7 +66,7 @@ public class AndroidApp : App
         //    ServerCertificateCustomValidationCallback = Avae.DAL.gRPC.Client.Extensions.ValidateCertificates2,
         //    AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate,
         //});
-        unsuscribe = await Container.Provider.AddStreamingHub(monitor, new SocketsHttpHandler()
+        unsuscribe = await monitor.AddStreamingHub(new SocketsHttpHandler()
         {
             SslOptions =
             {

@@ -12,7 +12,19 @@ public static class Extensions
 {
     private static Func<Task>? _disconnect;
 
-    public static async Task<Func<Task>> AddStreamingHub<TObject>(
+    public static Task<Func<Task>> AddStreamingHub<TObject>(
+        this IDBMonitor<TObject> monitor,
+        string url,
+        HttpMessageHandler? httpMessageHandler = null,
+        ILogger? logger = null)
+        where TObject : class, new()
+    {
+        IDBFactory.Monitors.Add(monitor);
+        var channel = GetGrpcHandlerChannel(url, httpMessageHandler);
+        return monitor.AddStreamingHub(channel, logger);
+    }
+
+    private static async Task<Func<Task>> AddStreamingHub<TObject>(
         this IDBMonitor<TObject> monitor, GrpcChannel channel, ILogger? logger = null)
         where TObject : class, new()
     {
@@ -68,7 +80,7 @@ public static class Extensions
         return MagicOnionClient.Create<IMagicService>(channel);
     }
 
-    public static GrpcChannel GetGrpcHandlerChannel(this IServiceProvider provider, string url, HttpMessageHandler? httpMessageHandler = null)
+    private static GrpcChannel GetGrpcHandlerChannel(string url, HttpMessageHandler? httpMessageHandler = null)
     {
         if (httpMessageHandler != null)
             return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
@@ -85,7 +97,7 @@ public static class Extensions
         });
     }
 
-    public static bool ValidateCertificates2(HttpRequestMessage message, X509Certificate2? x509Certificate, X509Chain? x509Chain, SslPolicyErrors errors)
+    private static bool ValidateCertificates2(HttpRequestMessage message, X509Certificate2? x509Certificate, X509Chain? x509Chain, SslPolicyErrors errors)
     {
         //TODO
         if (x509Certificate == null) return false;

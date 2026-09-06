@@ -6,6 +6,7 @@ using Microsoft.Maui.Accessibility;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
+using Microsoft.Maui.Authentication;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices.Sensors;
 using Microsoft.Maui.Media;
@@ -50,9 +51,8 @@ namespace Example.ViewModels
         ISms sms,
         ITextToSpeech textToSpeech,
         IVibration vibration,
-        IVersionTracking versionTracking
-        //,
-        //IWebAuthenticator webAuthenticator
+        IVersionTracking versionTracking,
+        IWebAuthenticator webAuthenticator
         ) : IViewModelBase
     {
         public bool IsSupportedInMauiPlatform()
@@ -195,7 +195,16 @@ namespace Example.ViewModels
         {
             try
             {
-                
+                if(webAuthenticator!= null)
+                {
+                    var authResult = await webAuthenticator.AuthenticateAsync(
+                        new Uri("https://accounts.google.com/o/oauth2/v2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=email%20profile"),
+                        new Uri("YOUR_REDIRECT_URI"));
+                    if (authResult.Properties.TryGetValue("code", out var code))
+                    {
+                        AuthToken = code;
+                    }
+                }
             }
             catch (TimeoutException)
             {

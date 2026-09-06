@@ -1,4 +1,5 @@
-﻿using Avae.DAL;
+﻿using Avae.Core;
+using Avae.DAL;
 using Avae.DAL.gRPC;
 using Avae.DAL.gRPC.Client;
 using Avae.DAL.PostgreSQL;
@@ -22,25 +23,22 @@ public static class Extensions
     static string OnionUrl = $"{ServerUrl}/{typeof(IMagicOnionLayer).Name}/";
 
     public static Task<Func<Task>> AddStreamingHub<TObject>(
-        this IServiceProvider provider,
-        IDBMonitor<TObject> monitor,
+        this IDBMonitor<TObject> monitor,
         HttpMessageHandler? httpMessageHandler = null)
         where TObject : class, new()
     {
-        IDBFactory.Monitors.Add(monitor);
-        var channel = provider.GetGrpcHandlerChannel(MagicHubUrl, httpMessageHandler);
-        return monitor.AddStreamingHub(channel);
+        return monitor.AddStreamingHub(MagicHubUrl, httpMessageHandler,
+            ServiceLocator.GetRequiredService<ILogger>());
     }
 
     public static Task<Func<Task>> AddSignalR<TObject>(
-        this IServiceProvider provider,
-        IDBMonitor<TObject> monitor,
+        this IDBMonitor<TObject> monitor,
          IRetryPolicy? retryPolicy = null,
         Func<HttpMessageHandler, HttpMessageHandler>? factory = null)
         where TObject : class, new()
     {
-        IDBFactory.Monitors.Add(monitor);
-        return monitor.AddSignalR(SignalHubUrl, retryPolicy, factory);
+        return monitor.AddSignalR(SignalHubUrl, retryPolicy, factory,
+            ServiceLocator.GetRequiredService<ILogger>());
     }
 
     public static void UseDBOnionLayer(this IServiceCollection services)

@@ -1,6 +1,5 @@
 ﻿using Avae.ViewModels;
 using Microsoft.Maui.Controls.Shapes;
-using System.ComponentModel;
 
 namespace Avae.Maui;
 

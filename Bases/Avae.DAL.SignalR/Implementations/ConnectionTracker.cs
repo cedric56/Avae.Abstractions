@@ -28,11 +28,13 @@ public class ConnectionTracker<TObject> : IDisposable where TObject : class, new
     public void Add(string connectionId)
     {
         lock (gate) connections.Add(connectionId);
+        logger?.LogInformation($"Customer connected: {connectionId}");
     }
 
     public void Remove(string connectionId)
     {
         lock (gate) connections.Remove(connectionId);
+        logger?.LogInformation($"Customer disconnected: {connectionId}");
     }
 
     public async void OnRecordChanged(object? sender, Record<TObject> e)
