@@ -50,7 +50,7 @@ namespace Avae.Razor.Components
 
         }
 
-        public ComponentView(IServiceProvider sp, NavigationContext? context = null, Dictionary<string, object>? parameters = null)
+        public ComponentView(IServiceProvider sp, NavigableContext? context = null, Dictionary<string, object>? parameters = null)
         {
             var viewModel = sp.GetViewModel<TViewModel>(context);
             Parameters = new Dictionary<string, object>(parameters ?? [])
@@ -82,7 +82,7 @@ namespace Avae.Razor.Components
 
         }
 
-        public CenteredComponentView(IServiceProvider sp, NavigationContext? context = null, Dictionary<string, object>? parameters = null)
+        public CenteredComponentView(IServiceProvider sp, NavigableContext? context = null, Dictionary<string, object>? parameters = null)
             : base(sp, context, parameters)
         {
         }

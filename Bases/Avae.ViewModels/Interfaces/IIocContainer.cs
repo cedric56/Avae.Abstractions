@@ -12,9 +12,9 @@ public interface IIocContainer
 
     void Register<TContextFor>() where TContextFor : IViewFor, new();
 
-    void Register<T>(Func<IServiceProvider, NavigationContext, object> factory);
+    void Register<T>(Func<IServiceProvider, NavigableContext, object> factory);
 
-    void Register<TContextFor>(Func<IServiceProvider, NavigationContext, TContextFor> factory) where TContextFor : IViewFor;
+    void Register<TContextFor>(Func<IServiceProvider, NavigableContext, TContextFor> factory) where TContextFor : IViewFor;
 
     void Register<TContextFor, TArg1>(Func<IServiceProvider, TArg1, TContextFor> func)
         where TContextFor : IViewFor;

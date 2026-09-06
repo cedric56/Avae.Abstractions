@@ -3,7 +3,7 @@ using Avae.Services;
 using Avae.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using NavigationContext = Avae.ViewModels.NavigationContext;
+using NavigableContext = Avae.ViewModels.NavigableContext;
 
 namespace Avae.Razor;
 
@@ -33,17 +33,17 @@ public class IocConfiguration(
         configure?.Invoke(container);
     }
 
-    public IViewFor? GetContextFor(string key, NavigationContext context)
+    public IViewFor? GetContextFor(string key, NavigableContext context)
     {
         return Container.GetView(key, context is null ? [] : [context]) as IViewFor;
     }
 
-    public IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase
+    public IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigableContext context) where TViewModel : IViewModelBase
     {
         return Container.GetView(typeof(TViewModel).Name, context is null ? [] : [context]) as IViewFor<TViewModel>;
     }
 
-    public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : ICloseableViewModel<TResult>
+    public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigableContext context) where TViewModel : ICloseableViewModel<TResult>
     {
         return Container.GetView(typeof(TViewModel).Name, context is null ? [] : [context]) as IModalFor<TViewModel, TResult>;
     }
@@ -182,12 +182,12 @@ public class IocConfiguration(
         };
     }
 
-    async Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigationContext? context)
+    async Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigableContext? context)
         where TResult : default
     {
         var tcs = new TaskCompletionSource<TResult?>();
         var viewModel = serviceProvider.GetViewModel<TViewModel>(context);
-        var contextFor = GetContextFor(typeof(TViewModel).Name, context ?? new NavigationContext());
+        var contextFor = GetContextFor(typeof(TViewModel).Name, context ?? new NavigableContext());
         if (contextFor is ComponentView view)
         {
             var dialog = await MudDialogService.ShowAsync(view.Type, viewModel.Title, new MudBlazor.DialogParameters()

@@ -15,7 +15,7 @@ public class NavigableView(Type viewModelType, string displayName, string icon)
     public string DisplayName { get; } = displayName;
     public string Icon { get; } = icon;
 
-    public NavigationContext NavigationContext { get; set; } = new NavigationContext();
+    public NavigableContext NavigationContext { get; set; } = new NavigableContext();
 
     public virtual Task OnLaunched(IViewModelBase viewModel)
     {

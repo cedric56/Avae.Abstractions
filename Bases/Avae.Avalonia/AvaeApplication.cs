@@ -61,17 +61,17 @@ public abstract class AvaeApplication : Application, IIocConfiguration, IDisposa
         return Container.GetView(key, @params);
     }
 
-    public IViewFor? GetContextFor(string key, NavigationContext context)
+    public IViewFor? GetContextFor(string key, NavigableContext context)
     {
         return Container.GetView(key, [context]) as IViewFor;
     }
 
-    public IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase
+    public IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigableContext context) where TViewModel : IViewModelBase
     {
         return Container.GetView(typeof(TViewModel).Name, [context]) as IViewFor<TViewModel>;
     }
 
-    public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : ICloseableViewModel<TResult>
+    public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigableContext context) where TViewModel : ICloseableViewModel<TResult>
     {
         return Container.GetModal<TViewModel, TResult>(context);
     }

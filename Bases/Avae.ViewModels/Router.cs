@@ -55,7 +55,7 @@ public partial class Router(IServiceProvider provider)
     /// <typeparam name="TBaseType">The base type of the view model.</typeparam>
     /// <param name="viewModelType">The view model type.</param>
     /// <returns>The created view model cast to the <typeparamref name="TBaseType"/>.</returns>        
-    public IViewFor GoTo(Type viewModelType, out IViewModelBase viewModel, NavigationContext? context = null)
+    public IViewFor GoTo(Type viewModelType, out IViewModelBase viewModel, NavigableContext? context = null)
     {
         viewModel = provider.GetViewModel(viewModelType, context);
         AddHistory(viewModel);
@@ -63,12 +63,12 @@ public partial class Router(IServiceProvider provider)
         return GetViewFor(viewModel, context);
     }
 
-    public IViewFor GoTo(Type viewModelType, NavigationContext? context = null)
+    public IViewFor GoTo(Type viewModelType, NavigableContext? context = null)
     {
         return GoTo(viewModelType, out var _, context);
     }
 
-    public IViewFor GoTo<TViewModel>(TViewModel viewModel, NavigationContext? context = null) where TViewModel : IViewModelBase
+    public IViewFor GoTo<TViewModel>(TViewModel viewModel, NavigableContext? context = null) where TViewModel : IViewModelBase
     {
         AddHistory(viewModel);
         CurrentViewModelChanged?.Invoke(viewModel);
@@ -80,7 +80,7 @@ public partial class Router(IServiceProvider provider)
     /// </summary>
     /// <typeparam name="TViewModel">The type of the view model.</typeparam>
     /// <returns>The created view model.</returns>
-    public IViewFor GoTo<TViewModel>(out TViewModel viewModel, NavigationContext? context = null) where TViewModel : class, IViewModelBase
+    public IViewFor GoTo<TViewModel>(out TViewModel viewModel, NavigableContext? context = null) where TViewModel : class, IViewModelBase
     {
         viewModel = provider.GetViewModel<TViewModel>(context);
         AddHistory(viewModel);
@@ -109,10 +109,10 @@ public partial class Router(IServiceProvider provider)
         _currentIndex = _history.Count - 1;
     }
 
-    private IViewFor GetViewFor(IViewModelBase viewModel, NavigationContext? context = null)
+    private IViewFor GetViewFor(IViewModelBase viewModel, NavigableContext? context = null)
     {
         var configuration = provider.GetRequiredService<IIocConfiguration>();
-        var viewFor = configuration.GetContextFor(viewModel.GetType().Name, context ?? new NavigationContext());
+        var viewFor = configuration.GetContextFor(viewModel.GetType().Name, context ?? new NavigableContext());
         //Avoid binding error due to propagating context
         if (viewFor != null)
         {

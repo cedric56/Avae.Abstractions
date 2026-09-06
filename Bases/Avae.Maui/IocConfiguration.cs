@@ -28,18 +28,18 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
         return Container.GetView(key, @params);
     }
 
-    public IViewFor? GetContextFor(string key, NavigationContext context)
+    public IViewFor? GetContextFor(string key, NavigableContext context)
     {
         var view = Container.GetView(key, [context]);
         return view as IViewFor ?? throw new InvalidOperationException($"View must implement {nameof(IViewFor)}");
     }
 
-    public IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase
+    public IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigableContext context) where TViewModel : IViewModelBase
     {
         return Container.GetView(typeof(TViewModel).Name, [context]) as IViewFor<TViewModel>;
     }
 
-    public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : ICloseableViewModel<TResult>
+    public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigableContext context) where TViewModel : ICloseableViewModel<TResult>
     {
         return Container.GetModal<TViewModel, TResult>(context);
     }
@@ -232,13 +232,13 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
         return DisplayThreeButtons(title, message, "Yes", "No", "Abort", 0, 1, 2);
     }
 
-    async Task<TResult?> Services.IDialogService.ShowModalAsync<TViewModel, TResult>(NavigationContext? context)
+    async Task<TResult?> Services.IDialogService.ShowModalAsync<TViewModel, TResult>(NavigableContext? context)
         where TResult : default
     {
         Ensure();
 
         var viewModel = serviceProvider.GetViewModel<TViewModel>(context);
-        var view = GetModalFor<TViewModel, TResult>(context ?? new NavigationContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
+        var view = GetModalFor<TViewModel, TResult>(context ?? new NavigableContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
         view.Context = viewModel;
         var modal = new AvaePopupPage<TResult>(viewModel.Title, viewModel.Commands)
         {

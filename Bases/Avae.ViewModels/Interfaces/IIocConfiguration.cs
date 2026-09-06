@@ -10,9 +10,9 @@ public interface IIocConfiguration : IIoc
 
     object? GetView(string key, params object[] @params);
 
-    IViewFor? GetContextFor(string key, NavigationContext context);
+    IViewFor? GetContextFor(string key, NavigableContext context);
 
-    IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigationContext context) where TViewModel : IViewModelBase;
+    IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigableContext context) where TViewModel : IViewModelBase;
 
-    IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigationContext context) where TViewModel : ICloseableViewModel<TResult>;
+    IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigableContext context) where TViewModel : ICloseableViewModel<TResult>;
 }

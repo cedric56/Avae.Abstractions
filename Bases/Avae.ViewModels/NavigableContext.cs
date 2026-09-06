@@ -1,6 +1,6 @@
 ﻿namespace Avae.ViewModels;
 
-public class NavigationContext
+public class NavigableContext
 {
     public object[] Parameters
     {

@@ -10,7 +10,6 @@ using Example.ViewModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
-using NavigationContext = Avae.ViewModels.NavigationContext;
 using Microsoft.AspNetCore.Components;
 
 namespace Example.Razor;
@@ -34,7 +33,7 @@ public static class Extensions
         container.Register<CenteredComponentView<EssentialsView, EssentialsViewModel>>();
         container.Register(typeof(FormViewModel).Name, (sp, parameters) =>
         {
-            if (parameters.FirstOrDefault() is NavigationContext context)
+            if (parameters.FirstOrDefault() is NavigableContext context)
             {
                 if (context.FactoryParameters.OfType<string>().Any(p => p == FormViewModel.KEY))
                 {
@@ -48,7 +47,7 @@ public static class Extensions
         container.Register<CenteredComponentView<FormPage2, FormPage2ViewModel>>();
         container.Register(typeof(FormPage3ViewModel).Name, (sp, parameters) =>
         {
-            if (parameters.FirstOrDefault() is NavigationContext context)
+            if (parameters.FirstOrDefault() is NavigableContext context)
             {
                 return new CenteredComponentView<FormPage3, FormPage3ViewModel>(sp, context, new Dictionary<string, object>()
                     {

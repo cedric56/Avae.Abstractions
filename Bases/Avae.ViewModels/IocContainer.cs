@@ -40,7 +40,7 @@ public class IocContainer : IIocContainer
         throw new Exception($"No such page registered: {key}");
     }
 
-    public IModalFor<T, TResult> GetModal<T, TResult>(NavigationContext context) where T : ICloseableViewModel<TResult>
+    public IModalFor<T, TResult> GetModal<T, TResult>(NavigableContext context) where T : ICloseableViewModel<TResult>
     {
         var view = GetView(typeof(T).Name, [context]);
 
@@ -75,14 +75,14 @@ public class IocContainer : IIocContainer
         _factories[key] = new ViewFactory(factory);
     }
 
-    public void Register<TContextFor>(Func<IServiceProvider, NavigationContext, TContextFor> factory) where TContextFor : IViewFor
+    public void Register<TContextFor>(Func<IServiceProvider, NavigableContext, TContextFor> factory) where TContextFor : IViewFor
     {
-        _factories[TContextFor.Name] = new ViewFactory((sp, args) => factory.Invoke(sp, (NavigationContext)args[0]));
+        _factories[TContextFor.Name] = new ViewFactory((sp, args) => factory.Invoke(sp, (NavigableContext)args[0]));
     }
 
-    public void Register<T>(Func<IServiceProvider, NavigationContext, object> factory)
+    public void Register<T>(Func<IServiceProvider, NavigableContext, object> factory)
     {
-        _factories[typeof(T).Name] = new ViewFactory((sp, args) => factory.Invoke(sp, (NavigationContext)args[0]));
+        _factories[typeof(T).Name] = new ViewFactory((sp, args) => factory.Invoke(sp, (NavigableContext)args[0]));
     }
 
     public void Register<TContextFor>() where TContextFor : IViewFor, new()

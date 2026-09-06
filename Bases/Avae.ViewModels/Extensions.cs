@@ -2,12 +2,12 @@
 
 public static class Extensions
 {
-    public static T GetViewModel<T>(this IServiceProvider provider, NavigationContext? context = null) where T : class, IViewModelBase
+    public static T GetViewModel<T>(this IServiceProvider provider, NavigableContext? context = null) where T : class, IViewModelBase
     {
         return (T)GetViewModel(provider, typeof(T), context);
     }
 
-    public static IViewModelBase GetViewModel(this IServiceProvider provider, Type viewModelType, NavigationContext? context = null)
+    public static IViewModelBase GetViewModel(this IServiceProvider provider, Type viewModelType, NavigableContext? context = null)
     {
         var type = typeof(ViewModelFactory<>).MakeGenericType(viewModelType);
         if (provider.GetService(type) is IViewModelBaseFactory factory)

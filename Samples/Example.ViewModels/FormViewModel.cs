@@ -75,7 +75,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
             {
                 new NavigableView<FormViewModel>(this, "Page One", "fa-solid fa-gear")
                 {
-                     NavigationContext = new NavigationContext
+                     NavigationContext = new NavigableContext
                      {
                          FactoryParameters = [KEY]
                      },
