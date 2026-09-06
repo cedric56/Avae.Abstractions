@@ -69,11 +69,11 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
 
     public override string Title => "Form";
 
-    protected override ObservableCollection<ViewDescriptor> GetViewModels()
+    protected override ObservableCollection<NavigableView> GetViewModels()
     {
-        return new ObservableCollection<ViewDescriptor>
+        return new ObservableCollection<NavigableView>
             {
-                new ViewDescriptor<FormViewModel>(this, "Page One", "fa-solid fa-gear")
+                new NavigableView<FormViewModel>(this, "Page One", "fa-solid fa-gear")
                 {
                      NavigationContext = new NavigationContext
                      {
@@ -85,8 +85,8 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
                         SelectedItems = [.. Person.Contacts.Select(c => c.Person)];
                      }
                 },
-                new ViewDescriptor<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),
-                new ViewDescriptor<FormPage3ViewModel>("Page Three", "fa-solid fa-gear")
+                new NavigableView<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),
+                new NavigableView<FormPage3ViewModel>("Page Three", "fa-solid fa-gear")
                 {
                     //Possibility to set parameters on ctor
                     //ViewParameters = [Person]
@@ -94,7 +94,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
             };
     }
 
-    protected override IViewFor GoTo(ViewDescriptor value, out IViewModelBase viewModel)
+    protected override IViewFor GoTo(NavigableView value, out IViewModelBase viewModel)
     {
         //Possibility to set parameters on call
         if (value.ViewModelType == typeof(FormPage3ViewModel))

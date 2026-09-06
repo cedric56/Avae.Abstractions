@@ -12,7 +12,7 @@ using Example.Models;
 namespace Example.ViewModels;
 
 [INotifyPropertyChanged]
-public partial class MenuViewModel : RoutesViewModelImplementation, IDisposable
+public partial class MenuViewModel : NavigableViewModelImplementation, IDisposable
 {
     IServiceProvider provider;
     IDialogService dialogService;
@@ -45,11 +45,11 @@ public partial class MenuViewModel : RoutesViewModelImplementation, IDisposable
         RemoveCommand.NotifyCanExecuteChanged();
     }
 
-    protected override ObservableCollection<ViewDescriptor> GetViewModels()
+    protected override ObservableCollection<NavigableView> GetViewModels()
     {
         return
         [
-            new ViewDescriptor<FormViewModel>("Form", "fa-solid fa-gear")
+            new NavigableView<FormViewModel>("Form", "fa-solid fa-gear")
         ];
     }
 

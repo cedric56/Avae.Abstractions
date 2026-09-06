@@ -3,8 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Example.ViewModels.Defaults;
 
-public abstract partial class FormViewModelImplementation<TResult>(Router router, bool initialize = true) : 
-    FormViewModelBase<TResult>(router, initialize)
+public abstract partial class NavigableViewModelImplementation(Router router, bool initialize = true) : 
+    NavigableViewModelBase(router, initialize)
 {
     [RelayCommand]
     public override void GoBack()

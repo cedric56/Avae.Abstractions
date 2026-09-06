@@ -7,7 +7,7 @@ namespace Avae.ViewModels;
 /// <param name="viewModelType"></param>
 /// <param name="displayName"></param>
 /// <param name="icon"></param>
-public class ViewDescriptor(Type viewModelType, string displayName, string icon) : IViewModelBase
+public class NavigableView(Type viewModelType, string displayName, string icon) : IViewModelBase
 {
     public Func<IViewModelBase, Task>? Launched { get; set; }
     public IViewModelBase? ViewModel { get; protected set; }
@@ -26,17 +26,17 @@ public class ViewDescriptor(Type viewModelType, string displayName, string icon)
     }
 }
 
-public class ViewDescriptor<T> : ViewDescriptor where T : IViewModelBase
+public class NavigableView<T> : NavigableView where T : IViewModelBase
 {
     public new Func<T, Task>? Launched { get; set; }
 
-    public ViewDescriptor(string displayName, string icon)
+    public NavigableView(string displayName, string icon)
         : base(typeof(T), displayName, icon)
     {
 
     }
 
-    public ViewDescriptor(T viewModel, string displayName, string icon)
+    public NavigableView(T viewModel, string displayName, string icon)
         : base(typeof(T), displayName, icon)
     {
         ViewModel = viewModel;

@@ -5,7 +5,7 @@ namespace Avae.ViewModels;
 /// <summary>
 /// This class is used to manage the pages in the application.
 /// </summary>
-public abstract partial class RoutesViewModelBase : RouterViewModelBase, IViewModelBase 
+public abstract partial class NavigableViewModelBase : RouterViewModelBase, IViewModelBase 
 {
     public EventHandler<IViewFor>? CurrentViewChanged;
 
@@ -29,7 +29,7 @@ public abstract partial class RoutesViewModelBase : RouterViewModelBase, IViewMo
     /// <summary>
     /// A dictionary to store the context for each page.
     /// </summary>
-    private readonly Dictionary<ViewDescriptor, KeyValuePair<IViewFor, IViewModelBase>> dico = [];
+    private readonly Dictionary<NavigableView, KeyValuePair<IViewFor, IViewModelBase>> dico = [];
 
     /// <summary>
     /// The currently selected page in the menu.
@@ -49,8 +49,8 @@ public abstract partial class RoutesViewModelBase : RouterViewModelBase, IViewMo
     /// <summary>
     /// The currently selected page in the menu.
     /// </summary>
-    private ViewDescriptor? _selectedViewModel;
-    public ViewDescriptor? SelectedViewModel
+    private NavigableView? _selectedViewModel;
+    public NavigableView? SelectedViewModel
     {
         get { return _selectedViewModel; }
         set
@@ -61,7 +61,7 @@ public abstract partial class RoutesViewModelBase : RouterViewModelBase, IViewMo
         }
     }
 
-    public RoutesViewModelBase(Router router, bool initialize = true)
+    public NavigableViewModelBase(Router router, bool initialize = true)
         : base(router)
     {
         if (initialize)
@@ -70,19 +70,19 @@ public abstract partial class RoutesViewModelBase : RouterViewModelBase, IViewMo
         }
     }
 
-    private ObservableCollection<ViewDescriptor>? _viewModels;
+    private ObservableCollection<NavigableView>? _viewModels;
     /// <summary>
     /// The list of pages to be displayed in the menu.
     /// </summary>
-    public ObservableCollection<ViewDescriptor> ViewModels { get {return _viewModels ??= GetViewModels(); } }
+    public ObservableCollection<NavigableView> ViewModels { get {return _viewModels ??= GetViewModels(); } }
 
-    protected abstract ObservableCollection<ViewDescriptor> GetViewModels();
+    protected abstract ObservableCollection<NavigableView> GetViewModels();
 
     /// <summary>
     /// This method is called when the selected page changes.
     /// </summary>
     /// <param name="value"></param>
-    protected async void OnSelectedViewModelChanged(ViewDescriptor? value)
+    protected async void OnSelectedViewModelChanged(NavigableView? value)
     {
         if (value == null)
             return;
@@ -103,7 +103,7 @@ public abstract partial class RoutesViewModelBase : RouterViewModelBase, IViewMo
         RaiseCanExecutesChanged();
     }
 
-    protected virtual IViewFor GoTo(ViewDescriptor value, out IViewModelBase viewModel)
+    protected virtual IViewFor GoTo(NavigableView value, out IViewModelBase viewModel)
     {
         IViewFor viewFor;
         if (value.ViewModel != null)

@@ -10,7 +10,7 @@ namespace Example.ViewModels;
 
 [INotifyPropertyChanged]
 public partial class MainViewModel(Router router) : 
-    RoutesViewModelImplementation(router)
+    NavigableViewModelImplementation(router)
 {
     [ObservableProperty]
     public partial bool IsMenuPaneOpen { get; set; }
@@ -26,12 +26,12 @@ public partial class MainViewModel(Router router) :
         OnPropertyChanged(propertyName);
     }
 
-    protected override ObservableCollection<ViewDescriptor> GetViewModels()
+    protected override ObservableCollection<NavigableView> GetViewModels()
     {
         return
         [
-                new ViewDescriptor<HomeViewModel>("Home", "fa-solid fa-house"),
-                new ViewDescriptor<MenuViewModel>("Menu", "fa-solid fa-gear")
+                new NavigableView<HomeViewModel>("Home", "fa-solid fa-house"),
+                new NavigableView<MenuViewModel>("Menu", "fa-solid fa-gear")
                 {
                     Launched = (viewModel) =>
                     {
@@ -39,7 +39,7 @@ public partial class MainViewModel(Router router) :
                         return Task.CompletedTask;
                     }
                 },
-                new ViewDescriptor<EssentialsViewModel>("Essentials", "fa-solid fa-gear")
+                new NavigableView<EssentialsViewModel>("Essentials", "fa-solid fa-gear")
         ];
     }
 }
