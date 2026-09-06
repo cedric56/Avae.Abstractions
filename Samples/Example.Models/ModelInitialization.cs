@@ -3,17 +3,16 @@ using Avae.DAL;
 using Example.Models.MessagePackFormatters;
 using System.Runtime.CompilerServices;
 
-namespace Example.Models
+namespace Example.Models;
+
+public static class ModelInitialization
 {
-    public static class ModelInitialization
-    {
 #pragma warning disable CA2255 // L’attribut ’ModuleInitializer’ ne doit pas être utilisé dans les bibliothèques
-        [ModuleInitializer]
+    [ModuleInitializer]
 #pragma warning restore CA2255 // L’attribut ’ModuleInitializer’ ne doit pas être utilisé dans les bibliothèques
-        public static void Init()
-        {
-            InputValidation<Person>.Init();
-            DBTransactionalResolver.Instance.Register<Person?>(new PersonFormatter());                       
-        }
+    public static void Init()
+    {
+        InputValidation<Person>.Init();
+        DBTransactionalResolver.Instance.Register<Person?>(new PersonFormatter());                       
     }
 }

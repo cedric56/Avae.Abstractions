@@ -226,6 +226,48 @@ public partial class MagicOnionLayer(IServiceProvider provider, string url, int 
         }
     }
 
+    public int Execute(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+    {
+        try
+        {
+            if (OperatingSystem.IsBrowser())
+            {
+                logger?.LogWarning("Execute is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TReturn> instead.");
+                var request = provider.GetRequiredService<IXmlHttpRequest>();
+                var result = request.Send(url, nameof(ExecuteAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
+                if (result == Array.Empty<byte>()) return 0;
+                return MessagePackSerializer.Deserialize<int>(result);
+            }
+            return AsyncHelper.RunSync(() => ExecuteAsync(sql, param, transaction, commandTimeout, commandType));
+        }
+        catch (Exception ex)
+        {
+            logger?.LogError(ex.Message);
+            return 0;
+        }
+    }
+
+    public async Task<int> ExecuteAsync(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+    {
+        try
+        {
+            using var tcs = new CancellationTokenSource(globalCommandTimeout);
+            var service = provider.GetRequiredService<IMagicOnionLayer>();
+            var result = await service
+                .WithCancellationToken(tcs.Token)
+                .ExecuteAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+                .ConfigureAwait(false);
+            if (!result.Successful) throw new Exception(result.Exception);
+            if (result.Data == Array.Empty<byte>()) return 0;
+            return MessagePackSerializer.Deserialize<int>(result.Data);
+        }
+        catch (Exception ex)
+        {
+            logger?.LogError(ex.Message);
+            return 0;
+        }
+    }
+
     public IEnumerable<TReturn> Query<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null)
     {
         try
@@ -671,15 +713,5 @@ public partial class MagicOnionLayer(IServiceProvider provider, string url, int 
         var seventh = MapToObject<TSeventh>(groups[6]);
 
         return map(first, second, third, fourth, fifth, sixth, seventh);
-    }
-
-    public int Execute(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<int> ExecuteAsync(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
-    {
-        throw new NotImplementedException();
     }
 }

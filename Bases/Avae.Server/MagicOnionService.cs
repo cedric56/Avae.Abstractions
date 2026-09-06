@@ -5,7 +5,6 @@ using Dapper;
 using MagicOnion;
 using MagicOnion.Server;
 using MessagePack;
-using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
 using System.Data;
 
@@ -110,7 +109,7 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
         try
         {
             var layer = ServiceLocator.GetRequiredService<IDBLayer>();
-            using var db = ServiceLocator.Default.GetRequiredService<IDbConnection>();
+            using var db = ServiceLocator.GetRequiredService<IDbConnection>();
             var results = await db.QueryAsync(sql, GetParam(param), commandTimeout: commandTimeout, commandType: commandType);
             return new DBResult()
             {
@@ -128,6 +127,28 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
         }
     }
 
+    public async UnaryResult<DBResult> ExecuteAsync(string sql, object? param = null, int? commandTimeout = null, CommandType commandType = CommandType.Text)
+    {
+        try
+        {
+            var layer = ServiceLocator.GetRequiredService<IDBLayer>();
+            using var db = ServiceLocator.GetRequiredService<IDbConnection>();
+            var results = await db.ExecuteAsync(sql, GetParam(param), commandTimeout: commandTimeout, commandType: commandType);
+            return new DBResult()
+            {
+                Successful = true,
+                Data = MessagePackSerializer.Serialize(results)
+            };
+        }
+        catch (Exception ex)
+        {
+            return new DBResult()
+            {
+                Successful = false,
+                Exception = ex.Message
+            };
+        }
+    }
     private static object? GetParam(object? param)
     {
         if (param is IEnumerable ie)
