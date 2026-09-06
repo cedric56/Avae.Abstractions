@@ -1,13 +1,12 @@
-﻿using Avae.ViewModels;
-using Avae.DAL;
+﻿using Avae.DAL;
 using Avae.Services;
+using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Example.ViewModels.Defaults;
+using Example.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using Person = Example.Models.Person;
-using Example.Models;
 
 namespace Example.ViewModels;
 

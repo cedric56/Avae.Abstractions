@@ -4,14 +4,14 @@ using Avae.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
-using Example.ViewModels.Defaults;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Person = Example.Models.Person;
 namespace Example.ViewModels;
 
 [INotifyPropertyChanged]
-public partial class FormViewModel(IDialogService dialogService, Router router, Person person) : FormViewModelImplementation<Person>(router), IDataErrorInfo
+public partial class FormViewModel(IDialogService dialogService, Router router, Person person) :
+    NavigableViewModelImplementation<Person>(router), IDataErrorInfo
 {
     public const string KEY = "Page";
 

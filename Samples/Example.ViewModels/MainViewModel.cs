@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
-using Example.ViewModels.Defaults;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
