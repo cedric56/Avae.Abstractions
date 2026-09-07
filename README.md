@@ -4,7 +4,7 @@
 
 Avae is a set of small, composable libraries that let you write navigation, view-resolution, and data-access logic **once** and reuse it across every .NET UI stack. Instead of re-implementing routing and DI wiring per platform, you write against Avae's abstractions and plug in the platform-specific adapter.
 
----
+--- 
 
 ## Why Avae?
 
