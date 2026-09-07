@@ -178,6 +178,8 @@ public static class Extensions
             null!,
             webAuthenticator,
             () => Microsoft.Maui.ApplicationModel.VersionTracking.Default);
+#else
+        services.RegisterEssentials();
 #endif
     }
 }

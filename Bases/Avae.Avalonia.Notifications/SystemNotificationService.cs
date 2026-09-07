@@ -4,24 +4,44 @@ using Bitmap = Avalonia.Media.Imaging.Bitmap;
 
 namespace Avae.Avalonia.Notifications;
 
-public class SystemNotificationService : ISystemNotificationService
+public class SystemNotificationService : ISystemNotificationService, IDisposable
 {
+    public SystemNotificationService()
+    {
+        manager = NativeNotificationManager.Current;
+        manager?.NotificationCompleted += OnNotificationCompleted;
+    }
+
 #if ANDROID
     public static Android.App.Activity? Activity { get; set; }
 #endif
 
     INativeNotificationManager? manager;
 
+    bool firstLaunch = true;
+
     public event EventHandler<SystemNotificationEventArgs>? NotificationCompleted;
 
     public IReadOnlyDictionary<uint, ISystemNotification> ActiveNotifications()
     {
         return manager?.ActiveNotifications
-           .ToDictionary(kvp => kvp.Key, kvp => new AvaloniaNotification(kvp.Value))
+           .ToDictionary(kvp => kvp.Key, kvp => new AvaeNotification(kvp.Value))
            .ToDictionary(kvp => kvp.Key, kvp => (ISystemNotification)kvp.Value) ?? [];
     }
 
-    public class AvaloniaNotification(INativeNotification native) : ISystemNotification
+    void OnNotificationCompleted(object? sender, NativeNotificationCompletedEventArgs args)
+    {
+        NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs()
+        {
+            ActionTag = args.ActionTag,
+            IsActivated = args.IsActivated,
+            IsCancelled = args.IsCancelled,
+            NotificationId = args.NotificationId,
+            UserData = args.UserData,
+        });
+    }
+
+    public class AvaeNotification(INativeNotification native) : ISystemNotification
     {
         public uint Id => native.Id;
 
@@ -57,39 +77,18 @@ public class SystemNotificationService : ISystemNotificationService
 
     public Task<ISystemNotification?> CreateNotification(string? category)
     {
-        if (manager == null)
+        if (firstLaunch)
         {
-            manager = NativeNotificationManager.Current;
 #if ANDROID
             manager?.SetPermissionActivity(Activity ?? throw new InvalidOperationException("Activity must be set on OnCreateBundle"));
 #endif
-            
+            firstLaunch = false;
         }
 
-        if (manager != null)
+        var notification = manager?.CreateNotification(category);
+        if (notification is not null)
         {
-            
-            var _currentNotification = manager.CreateNotification(category);
-            if (_currentNotification is not null)
-            {
-                var current = new AvaloniaNotification(_currentNotification);
-
-                manager.NotificationCompleted -= OnNotificationCompleted;
-                manager.NotificationCompleted += OnNotificationCompleted;
-                void OnNotificationCompleted(object? sender, NativeNotificationCompletedEventArgs args)
-                {
-                    
-                    NotificationCompleted?.Invoke(this, new SystemNotificationEventArgs()
-                    {
-                        ActionTag = args.ActionTag,
-                        IsActivated = args.IsActivated,
-                        IsCancelled = args.IsCancelled,
-                        NotificationId = args.NotificationId,
-                        UserData = args.UserData,
-                    });
-                }
-                return Task.FromResult<ISystemNotification?>(current);
-            }
+            return Task.FromResult<ISystemNotification?>(new AvaeNotification(notification));
         }
 
         throw new InvalidOperationException("Notification is not defined");
@@ -98,5 +97,10 @@ public class SystemNotificationService : ISystemNotificationService
     public void CloseAll()
     {
         manager?.CloseAll();
+    }
+
+    public void Dispose()
+    {
+        manager?.NotificationCompleted -= OnNotificationCompleted;
     }
 }

@@ -29,15 +29,8 @@ public class MainActivity : AvaloniaMainActivity
 
         base.OnCreate(savedInstanceState);
     }
-
-    protected override void OnDestroy()
-    {
-        if (Avalonia.Application.Current is AndroidApp app)
-            app.Dispose();
-
-        base.OnDestroy();
-    }
 }
+
 [Application]
 public class MainApplication : AvaloniaAndroidApplication<AndroidApp>
 {

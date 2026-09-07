@@ -533,7 +533,7 @@ public partial class EssentialsViewModel(
     public async Task SpeechCmdAsync()
     {
         var voices = await textToSpeech.GetLocalesAsync();
-        await textToSpeech.SpeakAsync("Bonjour Maya", new SpeechOptions()
+        await textToSpeech.SpeakAsync("Hi", new SpeechOptions()
         {
             Locale = voices.LastOrDefault(),
             Pitch = 1.0f,

@@ -5,19 +5,25 @@ using Microsoft.Extensions.Logging;
 
 namespace Avae.Server;
 
-public class RecordHubRepository<TObject> where TObject : class, new()
+public class RecordHubRepository<TObject> : IDisposable where TObject : class, new()
 {
     readonly Dictionary<Guid, byte> customerIds = new(); // just tracking membership, group itself is shared
     IGroup<IRecordHubReceiver<TObject>>? group;
-
+    IDBMonitor<TObject> monitor;
     ILogger? logger;
     readonly object gate = new();
 
     public RecordHubRepository(IDBMonitor<TObject> monitor, ILogger? logger = null)
     {
         this.logger = logger;
+        this.monitor = monitor;
         IDBFactory.Monitors.Add(monitor);
-        monitor.OnRecordChanged += (_, e) => Raise(e); // subscribed exactly ONCE, for the app lifetime
+        monitor.OnRecordChanged += OnRecordChanged;
+    }
+
+    void OnRecordChanged(object? sender, Record<TObject> e)
+    {
+        Raise(e);
     }
 
     // Called by each connecting hub instance; captures the shared group once.
@@ -54,5 +60,10 @@ public class RecordHubRepository<TObject> where TObject : class, new()
             logger?.LogInformation($"Notifying : {id}");
 
         group?.Except(excludedIds).OnChanged(e);
+    }
+
+    public void Dispose()
+    {
+        monitor.OnRecordChanged -= OnRecordChanged;
     }
 }

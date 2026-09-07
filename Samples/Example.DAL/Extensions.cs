@@ -1,5 +1,4 @@
-﻿using Avae.Core;
-using Avae.DAL;
+﻿using Avae.DAL;
 using Avae.DAL.gRPC;
 using Avae.DAL.gRPC.Client;
 using Avae.DAL.PostgreSQL;
@@ -17,28 +16,27 @@ namespace Example.DAL;
 public static class Extensions
 {
     static string ServerUrl = "https://88.165.230.223:17001";
-
     static string MagicHubUrl = $"{ServerUrl}/recordHubOfPerson";
     static string SignalHubUrl = $"{ServerUrl}/PersonHub";
     static string OnionUrl = $"{ServerUrl}/{typeof(IMagicOnionLayer).Name}/";
 
     public static Task<Func<Task>> AddStreamingHub<TObject>(
         this IDBMonitor<TObject> monitor,
-        HttpMessageHandler? httpMessageHandler = null)
+        HttpMessageHandler? httpMessageHandler = null,
+        ILogger? logger = null)
         where TObject : class, new()
     {
-        return monitor.AddStreamingHub(MagicHubUrl, httpMessageHandler,
-            ServiceLocator.GetService<ILogger>());
+        return monitor.AddStreamingHub(MagicHubUrl, httpMessageHandler, logger);
     }
 
     public static Task<Func<Task>> AddSignalR<TObject>(
         this IDBMonitor<TObject> monitor,
          IRetryPolicy? retryPolicy = null,
-        Func<HttpMessageHandler, HttpMessageHandler>? factory = null)
+        Func<HttpMessageHandler, HttpMessageHandler>? factory = null,
+        ILogger? logger = null)
         where TObject : class, new()
     {
-        return monitor.AddSignalR(SignalHubUrl, retryPolicy, factory,
-            ServiceLocator.GetService<ILogger>());
+        return monitor.AddSignalR(SignalHubUrl, retryPolicy, factory, logger);
     }
 
     public static void UseDBOnionLayer(this IServiceCollection services)

@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <AvaloniaVersion>12.1.1</AvaloniaVersion>
+    <AvaloniaVersion>12.1.2</AvaloniaVersion>
     <MauiVersion>11.0.0-preview.6.26360.8</MauiVersion>
     <MicrosoftVersion>10.0.11</MicrosoftVersion>
     <MagicOnionVersion>7.10.2</MagicOnionVersion>

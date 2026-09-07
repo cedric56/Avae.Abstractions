@@ -3,6 +3,7 @@ using Avae.Services;
 using Avae.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Interactivity;
 using Avalonia.Styling;
 using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
@@ -109,11 +110,19 @@ public abstract class AvaeApplication : Application, IIocConfiguration, IDisposa
 
         _ = Task.Run(AfterCompletedAsync);
 
-        Dispatcher.UIThread.ShutdownStarted += Shutdown;
-        void Shutdown(object? sender, EventArgs e)
+        mainView.Loaded += OnLoaded;
+        void OnLoaded(object? sender, RoutedEventArgs e)
         {
-            Dispatcher.UIThread.ShutdownStarted -= Shutdown;
-            Dispose();
+            mainView.Loaded -= OnLoaded;
+
+            var topLevel = TopLevel.GetTopLevel(mainView);
+            topLevel?.Closed += OnClosed;
+
+            void OnClosed(object? sender, EventArgs e)
+            {
+                topLevel?.Closed -= OnClosed;
+                Dispose();
+            }
         }
     }
 

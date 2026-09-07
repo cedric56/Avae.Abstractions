@@ -6,13 +6,13 @@ namespace Avae.Server;
 
 public class RecordHub<TObject> :
  StreamingHubBase<IRecordHub<TObject>, IRecordHubReceiver<TObject>>,
- IRecordHub<TObject>, IDisposable where TObject : class, new()
+ IRecordHub<TObject> where TObject : class, new()
 {
     readonly RecordHubRepository<TObject> repository;
 
     public RecordHub(RecordHubRepository<TObject> repository)
     {
-        this.repository = repository; // no monitor subscription here anymore
+        this.repository = repository;
     }
 
     public async Task<Guid> AddReceiverAsync()
@@ -26,11 +26,6 @@ public class RecordHub<TObject> :
     {
         repository.Unregister(this.Context.ContextId);
         return Task.CompletedTask;
-    }
-
-    public void Dispose()
-    {
-        // nothing to unsubscribe here anymore — repository owns the monitor subscription for the app's lifetime
     }
 
     public void OnRecordChanged(Record<TObject> e)
