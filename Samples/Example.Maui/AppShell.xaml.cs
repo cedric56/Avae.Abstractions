@@ -1,33 +1,31 @@
-﻿using Avae.ViewModels;
-using Avae.Core;
+﻿using Avae.Core;
 using Example.ViewModels;
 
-namespace Example.Maui
+namespace Example.Maui;
+
+public partial class AppShell : Shell
 {
-    public partial class AppShell : Shell
+    public AppShell()
     {
-        public AppShell()
+        InitializeComponent();
+        
+        var vm = new MainViewModel(new Avae.ViewModels.Router(ServiceLocator.Default));
+
+        BindingContext = vm;
+
+        foreach(var navigable in vm.Navigables)
         {
-            InitializeComponent();
-            
-            var vm = new MainViewModel(new Avae.ViewModels.Router(ServiceLocator.Default));
-
-            BindingContext = vm;
-
-            foreach(var navigable in vm.Navigables)
+            this.Items.Add(
+            new ShellContent()
             {
-                this.Items.Add(
-                new ShellContent()
+                Icon = navigable.Source as ImageSource,
+                Title = navigable.DisplayName,            
+                ContentTemplate = new DataTemplate(() =>
                 {
-                    Icon = (ImageSource) navigable.Icon!,
-                    Title = navigable.DisplayName,                     
-                    ContentTemplate = new DataTemplate(() =>
-                    {
-                        vm.SelectedNavigable = navigable;
-                        return vm.CurrentView;
-                    })
-                });
-            }
+                    vm.SelectedNavigable = navigable;
+                    return vm.CurrentView;
+                })
+            });
         }
     }
 }

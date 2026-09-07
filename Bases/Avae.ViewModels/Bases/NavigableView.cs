@@ -22,11 +22,17 @@ public class NavigableView(Type viewModelType, string displayName, string? path 
         get
         {
             if (string.IsNullOrWhiteSpace(Path)) return null;
-            var icon = IconResolver.GetIcon(Path);
-            return icon;
+            return IconResolver.GetIcon(Path);
         }
     }
-
+    public object? Source
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Path)) return null;
+            return IconResolver.GetSource(Path);
+        }
+    }
     public NavigableContext Context { get; set; } = new NavigableContext();
 
     public virtual Task OnLaunched(IViewModelBase viewModel)

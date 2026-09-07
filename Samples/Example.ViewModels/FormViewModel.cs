@@ -72,27 +72,27 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
     protected override ObservableCollection<NavigableView> GetNavigables()
     {
         return new ObservableCollection<NavigableView>
+        {
+            new NavigableView<FormViewModel>(this, "Page One", "fa-solid fa-gear")
             {
-                new NavigableView<FormViewModel>(this, "Page One", "fa-solid fa-gear")
-                {
-                     Context = NavigableContext.Create().WithFactoryParameters(KEY),
-                     //Context = new NavigableContext
-                     //{
-                     //    FactoryParameters = [KEY]
-                     //},
-                     Launched = async (viewModel) =>
-                     {
-                        await Person.LoadContactsAsync();
-                        SelectedItems = [.. Person.Contacts.Select(c => c.Person)];
-                     }
-                },
-                new NavigableView<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),
-                new NavigableView<FormPage3ViewModel>("Page Three", "fa-solid fa-gear")
-                {
-                    //Possibility to set parameters on ctor
-                    //ViewParameters = [Person]
-                }
-            };
+                    Context = NavigableContext.Create().WithFactoryParameters(KEY),
+                    //Context = new NavigableContext
+                    //{
+                    //    FactoryParameters = [KEY]
+                    //},
+                    Launched = async (viewModel) =>
+                    {
+                    await Person.LoadContactsAsync();
+                    SelectedItems = [.. Person.Contacts.Select(c => c.Person)];
+                    }
+            },
+            new NavigableView<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),
+            new NavigableView<FormPage3ViewModel>("Page Three", "fa-solid fa-gear")
+            {
+                //Possibility to set parameters on ctor
+                //ViewParameters = [Person]
+            }
+        };
     }
 
     protected override IViewFor GoTo(NavigableView value, out IViewModelBase viewModel)

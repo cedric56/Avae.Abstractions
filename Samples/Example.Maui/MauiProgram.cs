@@ -104,6 +104,19 @@ class ExampleIconResolver : IIconResolver
             var name = path["fa-solid fa-".Length..].Replace("-", "");
             if (Enum.TryParse<FontAwesomeSolidIcons>(name, true, out var icon))
             {
+                return new MauiIcon() { Icon = icon };
+            }
+        }
+        return null;
+    }
+
+    public object? GetSource(string key)
+    {
+        if (key.StartsWith("fa-solid fa-"))
+        {
+            var name = key["fa-solid fa-".Length..].Replace("-", "");
+            if (Enum.TryParse<FontAwesomeSolidIcons>(name, true, out var icon))
+            {
                 return icon.ToImageSource();
             }
         }

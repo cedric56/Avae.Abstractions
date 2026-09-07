@@ -35,8 +35,6 @@ public partial class App : AvaeApplication, IIocConfiguration
 
     public override void Configure(IIocContainer container)
     {
-        //container.Register("fa-solid fa-house", (_, _) => new Icon() { Value = "fa-solid fa-house" });
-        //container.Register("fa-solid fa-gear", (_, _) => new Icon() { Value = "fa-solid fa-gear" });
         container.Register(HomeViewModel.TaskDialogKey, (sp, parameters) =>
         {
             return parameters[0] switch
@@ -140,6 +138,11 @@ public partial class App : AvaeApplication, IIocConfiguration
         public object? GetIcon(string key)
         {
             return new Icon() { Value = key };
+        }
+
+        public object? GetSource(string key)
+        {
+            throw new NotImplementedException();
         }
     }
 }
