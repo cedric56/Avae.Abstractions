@@ -6,6 +6,13 @@ using UXDivers.Popups.Services;
 
 namespace Avae.Maui;
 
+/// <summary>
+/// MAUI implementation of view/modal resolution and the various dialog, notification, and theme
+/// services, backed by an <see cref="IocContainer"/> and platform-specific dialog APIs.
+/// </summary>
+/// <param name="serviceProvider">The service provider used to resolve view models.</param>
+/// <param name="getContainer">A factory that lazily supplies the <see cref="IocContainer"/> used for view resolution.</param>
+/// <param name="configure">Optional callback invoked from <see cref="Configure(IIocContainer)"/> to register additional views/components.</param>
 internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContainer> getContainer, Action<IIocContainer>? configure = null) :
         IIocConfiguration,
         ITaskDialogService,
@@ -15,36 +22,81 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
         IRequestedThemeService
 {
     IocContainer? _container = null;
+
+    /// <summary>
+    /// Gets the IoC container used for view resolution, lazily created via <c>getContainer</c> on first access.
+    /// </summary>
     IocContainer Container { get => _container ??= getContainer(); }
 
+    /// <summary>
+    /// Gets the currently active MAUI page: the page of the activated window if one exists,
+    /// otherwise the first available window's page, otherwise <see cref="Shell.Current"/>.
+    /// </summary>
     public Page Current => Application.Current?.Windows.FirstOrDefault(w => w.IsActivated)?.Page ?? Application.Current?.Windows.FirstOrDefault()?.Page ?? Shell.Current;
 
+    /// <summary>
+    /// Invokes the configured <c>configure</c> callback, if any, to register additional views/components with the container.
+    /// </summary>
+    /// <param name="container">The container to configure.</param>
     public void Configure(IIocContainer container)
     {
         configure?.Invoke(container);
     }
 
+    /// <summary>
+    /// Resolves and creates the view registered under the specified key.
+    /// </summary>
+    /// <param name="key">The key the view was registered under.</param>
+    /// <param name="params">Additional arguments passed through to the view's registered factory.</param>
+    /// <returns>The created view instance.</returns>
     public object? GetView(string key, params object[] @params)
     {
         return Container.GetView(key, @params);
     }
 
+    /// <summary>
+    /// Resolves the view registered under the specified key, using the supplied navigation context.
+    /// </summary>
+    /// <param name="key">The key the view was registered under.</param>
+    /// <param name="context">The navigation context to pass to the view's factory.</param>
+    /// <returns>The resolved view as an <see cref="IViewFor"/>.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the resolved view does not implement <see cref="IViewFor"/>.</exception>
     public IViewFor? GetContextFor(string key, NavigableContext context)
     {
         var view = Container.GetView(key, [context]);
         return view as IViewFor ?? throw new InvalidOperationException($"View must implement {nameof(IViewFor)}");
     }
 
+    /// <summary>
+    /// Resolves the strongly typed view for the specified view model type, using the supplied navigation context.
+    /// </summary>
+    /// <typeparam name="TViewModel">The view model type whose view should be resolved.</typeparam>
+    /// <param name="context">The navigation context to pass to the view's factory.</param>
+    /// <returns>The resolved view as an <see cref="IViewFor{TViewModel}"/>, or <see langword="null"/> if resolution fails or the result does not match.</returns>
     public IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigableContext context) where TViewModel : IViewModelBase
     {
         return Container.GetView(typeof(TViewModel).Name, [context]) as IViewFor<TViewModel>;
     }
 
+    /// <summary>
+    /// Resolves the modal view associated with the specified closeable view model type.
+    /// </summary>
+    /// <typeparam name="TViewModel">The closeable view model type whose modal view should be resolved.</typeparam>
+    /// <typeparam name="TResult">The result type produced when the modal is closed.</typeparam>
+    /// <param name="context">The navigation context to pass to the view's factory.</param>
+    /// <returns>The resolved modal view, or <see langword="null"/> if resolution fails.</returns>
     public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigableContext context) where TViewModel : ICloseableViewModel<TResult>
     {
         return Container.GetModal<TViewModel, TResult>(context);
     }
 
+    /// <summary>
+    /// Displays a task dialog assembled from header, subheader, content, progress bar, and footer
+    /// sections, and awaits the user's button selection.
+    /// </summary>
+    /// <param name="params">The task dialog's configuration, including header, content, and footer.</param>
+    /// <param name="results">Up to three result values corresponding to the primary, secondary, and close buttons.</param>
+    /// <returns>The result value associated with the button the user selected.</returns>
     public async Task<TaskDialogStandardResult> ShowAsync(TaskDialogParams @params, params TaskDialogStandardResult[] results)
     {
         // Main Grid
@@ -185,6 +237,11 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
             results.ElementAtOrDefault(2));
     }
 
+    /// <summary>
+    /// Displays a content dialog with up to three buttons (primary, secondary, close) and awaits the user's selection.
+    /// </summary>
+    /// <param name="params">The content dialog's configuration, including title, content, and button text.</param>
+    /// <returns>The <see cref="ContentDialogResult"/> corresponding to the button the user selected.</returns>
     public async Task<ContentDialogResult> ShowAsync(ContentDialogParams @params)
     {
         return await DisplayThreeButtons<ContentDialogResult>(
@@ -198,41 +255,92 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
             ContentDialogResult.None);
     }
 
+    /// <summary>
+    /// Displays an alert showing the specified exception's message.
+    /// </summary>
+    /// <param name="ex">The exception whose message should be displayed.</param>
+    /// <param name="title">The dialog title. Defaults to "Error".</param>
+    /// <returns>A task representing the asynchronous display operation.</returns>
     public Task ShowErrorAsync(Exception ex, string title = "Error")
     {
         return Current.DisplayAlertAsync(title, ex.Message, "Ok");
     }
 
+    /// <summary>
+    /// Displays an alert with a single "Ok" button.
+    /// </summary>
+    /// <param name="message">The message to display.</param>
+    /// <param name="title">The dialog title. Defaults to "Title".</param>
+    /// <returns>A task representing the asynchronous display operation.</returns>
     public Task ShowOkAsync(string message, string title = "Title")
     {
         return Current.DisplayAlertAsync(title, message, "Ok");
     }
 
+    /// <summary>
+    /// Displays an alert with "Yes" and "No" buttons.
+    /// </summary>
+    /// <param name="message">The message to display.</param>
+    /// <param name="title">The dialog title. Defaults to "Title".</param>
+    /// <returns><see langword="true"/> if the user selected "Yes"; otherwise <see langword="false"/>.</returns>
     public Task<bool> ShowYesNoAsync(string message, string title = "Title")
     {
         return Current.DisplayAlertAsync(title, message, "Yes", "No");
     }
 
+    /// <summary>
+    /// Displays an alert with "Ok" and "Cancel" buttons.
+    /// </summary>
+    /// <param name="message">The message to display.</param>
+    /// <param name="title">The dialog title. Defaults to "Title".</param>
+    /// <returns><see langword="true"/> if the user selected "Ok"; otherwise <see langword="false"/>.</returns>
     public Task<bool> ShowOkCancelAsync(string message, string title = "Title")
     {
         return Current.DisplayAlertAsync(title, message, "Ok", "Cancel");
     }
 
+    /// <summary>
+    /// Displays an alert with "Ok" and "Abort" buttons.
+    /// </summary>
+    /// <param name="message">The message to display.</param>
+    /// <param name="title">The dialog title. Defaults to "Title".</param>
+    /// <returns><see langword="true"/> if the user selected "Ok"; otherwise <see langword="false"/>.</returns>
     public Task<bool> ShowOkAbortAsync(string message, string title = "Title")
     {
         return Current.DisplayAlertAsync(title, message, "Ok", "Abort");
     }
 
+    /// <summary>
+    /// Displays an alert with "Yes", "No", and "Cancel" buttons.
+    /// </summary>
+    /// <param name="message">The message to display.</param>
+    /// <param name="title">The dialog title. Defaults to "Title".</param>
+    /// <returns>0 if "Yes" was selected, 1 if "No" was selected, or 2 if "Cancel" was selected.</returns>
     public Task<int> ShowYesNoCancelAsync(string message, string title = "Title")
     {
         return DisplayThreeButtons(title, message, "Yes", "No", "Cancel", 0, 1, 2);
     }
 
+    /// <summary>
+    /// Displays an alert with "Yes", "No", and "Abort" buttons.
+    /// </summary>
+    /// <param name="message">The message to display.</param>
+    /// <param name="title">The dialog title. Defaults to "Title".</param>
+    /// <returns>0 if "Yes" was selected, 1 if "No" was selected, or 2 if "Abort" was selected.</returns>
     public Task<int> ShowYesNoAbortAsync(string message, string title = "Title")
     {
         return DisplayThreeButtons(title, message, "Yes", "No", "Abort", 0, 1, 2);
     }
 
+    /// <summary>
+    /// Resolves the view model of type <typeparamref name="TViewModel"/>, wraps its associated modal
+    /// view in a popup page, and pushes it, resolving the returned task when the view model requests a close.
+    /// </summary>
+    /// <typeparam name="TViewModel">The closeable view model type to show.</typeparam>
+    /// <typeparam name="TResult">The result type produced when the modal is closed.</typeparam>
+    /// <param name="context">Optional navigation context; an empty context is used if not supplied.</param>
+    /// <returns>The result value supplied when the view model requested a close.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if no modal view is registered for <typeparamref name="TViewModel"/>.</exception>
     async Task<TResult?> Services.IDialogService.ShowModalAsync<TViewModel, TResult>(NavigableContext? context)
         where TResult : default
     {
@@ -256,6 +364,22 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
         }
     }
 
+    /// <summary>
+    /// Displays a platform-native dialog with up to three buttons, using the appropriate native API
+    /// for the current platform (Android alert dialog, WinUI content dialog, or an iOS/Mac Catalyst
+    /// alert controller or form-sheet view controller), and awaits the user's selection.
+    /// </summary>
+    /// <typeparam name="T">The result type associated with each button.</typeparam>
+    /// <param name="title">The dialog title.</param>
+    /// <param name="content">The dialog content: a message string, or a view/element to embed.</param>
+    /// <param name="primaryButtonText">The primary button's text, or <see langword="null"/> to omit it.</param>
+    /// <param name="secondaryButtonText">The secondary button's text, or <see langword="null"/> to omit it.</param>
+    /// <param name="closeButtonText">The close button's text, or <see langword="null"/> to omit it.</param>
+    /// <param name="primaryResult">The result returned if the primary button is selected.</param>
+    /// <param name="secondaryResult">The result returned if the secondary button is selected.</param>
+    /// <param name="closeResult">The result returned if the close button is selected.</param>
+    /// <returns>The result associated with the button the user selected.</returns>
+    /// <exception cref="NotImplementedException">Thrown on platforms without a supported native dialog implementation, or for unsupported content types.</exception>
     async Task<T?> DisplayThreeButtons<T>(
          string? title, object? content,
          string? primaryButtonText, string? secondaryButtonText, string? closeButtonText,
@@ -417,8 +541,17 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
 
     bool _isLoad = false;
 
+    /// <summary>
+    /// Resource dictionary holding light-theme overrides (text color, popup backdrop color)
+    /// added to or removed from the application's merged dictionaries based on the current theme.
+    /// </summary>
     ResourceDictionary colors = new ResourceDictionary();
 
+    /// <summary>
+    /// One-time initialization: builds the light-theme color overrides and subscribes to theme
+    /// change notifications so they're applied/removed as the app theme changes. Does nothing if
+    /// called before <see cref="Application.Current"/> is available or after the first successful call.
+    /// </summary>
     private void Ensure()
     {
         if (Application.Current == null)
@@ -436,6 +569,12 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
         ThemeChanged(this, new AppThemeChangedEventArgs(Application.Current!.RequestedTheme));
     }
 
+    /// <summary>
+    /// Adds or removes the light-theme color overrides from the application's merged resource
+    /// dictionaries depending on whether the app's requested theme is light.
+    /// </summary>
+    /// <param name="sender">The event source (unused).</param>
+    /// <param name="e">The theme-changed event arguments.</param>
     void ThemeChanged(object? sender, AppThemeChangedEventArgs e)
     {
         if (Application.Current?.RequestedTheme == AppTheme.Light)
@@ -445,6 +584,16 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
     }
 
 
+    /// <summary>
+    /// Displays a transient popup notification with a type-colored icon, optionally auto-dismissing
+    /// after <paramref name="expiration"/> and invoking callbacks on tap or close.
+    /// </summary>
+    /// <param name="title">The notification title.</param>
+    /// <param name="message">The notification message.</param>
+    /// <param name="type">The notification type, used to color the icon. Defaults to <see cref="NotificationType.Information"/>.</param>
+    /// <param name="expiration">Optional duration after which the notification is automatically dismissed if not already closed.</param>
+    /// <param name="onClick">Optional callback invoked when the notification is tapped.</param>
+    /// <param name="onClose">Optional callback invoked once the notification has been dismissed.</param>
     public async void Show(string title, string message, NotificationType type = NotificationType.Information, TimeSpan? expiration = null, Action? onClick = null, Action? onClose = null)
     {
         Ensure();
@@ -498,6 +647,10 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
         }
     }
 
+    /// <summary>
+    /// Applies the specified theme to the application by setting <see cref="Application.UserAppTheme"/>.
+    /// </summary>
+    /// <param name="theme">The requested theme.</param>
     public void Request(RequestedTheme theme)
     {
         Application.Current?.UserAppTheme
