@@ -13,8 +13,16 @@ using Microsoft.Maui.Storage;
 
 namespace Avae.Essentials;
 
+/// <summary>
+/// Extension methods for registering .NET MAUI Essentials services with dependency injection,
+/// looking up locale-to-country mappings, and bridging Avae-specific file/email/share behavior
+/// with the underlying MAUI Essentials APIs.
+/// </summary>
 public static class Extensions
 {
+    /// <summary>
+    /// Maps BCP-47 locale codes (e.g. "en-US") to their associated country/region display name.
+    /// </summary>
     private static Dictionary<string, string> localeToCountry = new()
     {
         { "af-ZA", "South Africa" },
@@ -172,12 +180,59 @@ public static class Extensions
         { "zu-ZA", "South Africa" }
     };
 
+    /// <summary>
+    /// Looks up the display name of the country/region associated with the specified locale code.
+    /// </summary>
+    /// <param name="language">The BCP-47 locale code (e.g. "en-US"). Defaults to "en" if <see langword="null"/>.</param>
+    /// <returns>The associated country/region name, or <see langword="null"/> if the locale is not recognized.</returns>
     public static string? GetCountry(string? language)
     {
         localeToCountry.TryGetValue(language ?? "en", out var country);
         return country;
     }
 
+    /// <summary>
+    /// Assigns the supplied MAUI Essentials implementations as the current defaults (via
+    /// <see cref="EssentialsAccessors"/>), then registers them with the dependency injection container.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="accelerometer">The accelerometer implementation to use as the default.</param>
+    /// <param name="appActions">The app actions implementation to use as the default.</param>
+    /// <param name="appInfo">The app info implementation to use as the default.</param>
+    /// <param name="barometer">The barometer implementation to use as the default.</param>
+    /// <param name="battery">The battery implementation to use as the default.</param>
+    /// <param name="browser">The browser implementation to use as the default.</param>
+    /// <param name="clipboard">The clipboard implementation to use as the default.</param>
+    /// <param name="compass">The compass implementation to use as the default.</param>
+    /// <param name="connectivity">The connectivity implementation to use as the default.</param>
+    /// <param name="contacts">The contacts implementation to use as the default.</param>
+    /// <param name="deviceDisplay">The device display implementation to use as the default.</param>
+    /// <param name="deviceInfo">The device info implementation to use as the default.</param>
+    /// <param name="email">The email implementation to use as the default.</param>
+    /// <param name="filepicker">The file picker implementation to use as the default.</param>
+    /// <param name="fileSystem">The file system implementation to use as the default.</param>
+    /// <param name="flashlight">The flashlight implementation to use as the default.</param>
+    /// <param name="geocoding">The geocoding implementation to use as the default.</param>
+    /// <param name="geolocation">The geolocation implementation to use as the default.</param>
+    /// <param name="gyroscope">The gyroscope implementation to use as the default.</param>
+    /// <param name="hapticFeedback">The haptic feedback implementation to use as the default.</param>
+    /// <param name="launcher">The launcher implementation to use as the default.</param>
+    /// <param name="magnetometer">The magnetometer implementation to use as the default.</param>
+    /// <param name="map">The map implementation to use as the default.</param>
+    /// <param name="mediaPicker">The media picker implementation to use as the default.</param>
+    /// <param name="orientationSensor">The orientation sensor implementation to use as the default.</param>
+    /// <param name="phoneDialer">The phone dialer implementation to use as the default.</param>
+    /// <param name="preferences">The preferences implementation to use as the default.</param>
+    /// <param name="screenshot">The screenshot implementation to use as the default.</param>
+    /// <param name="secureStorage">A factory returning the secure storage implementation to use as the default.</param>
+    /// <param name="semanticScreenReader">The semantic screen reader implementation to use as the default.</param>
+    /// <param name="share">The share implementation to use as the default.</param>
+    /// <param name="sms">The SMS implementation to use as the default.</param>
+    /// <param name="textToSpeech">The text-to-speech implementation to use as the default.</param>
+    /// <param name="vibration">The vibration implementation to use as the default.</param>
+    /// <param name="webAuthenticator">The web authenticator implementation to use as the default.</param>
+    /// <param name="versionTracking">A factory returning the version tracking implementation to use as the default.</param>
+    /// <param name="lifetime">The service lifetime used when registering these implementations with the container. Defaults to <see cref="ServiceLifetime.Singleton"/>.</param>
     public static void SetDefaults(this IServiceCollection services,
         IAccelerometer accelerometer,
         IAppActions appActions,
@@ -257,6 +312,12 @@ public static class Extensions
         services.RegisterEssentials(lifetime);
     }
 
+    /// <summary>
+    /// Registers the platform-default implementations of all MAUI Essentials service interfaces
+    /// with the dependency injection container, without overwriting any already-registered implementation.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="lifetime">The service lifetime used when registering these implementations. Defaults to <see cref="ServiceLifetime.Singleton"/>.</param>
     public static void RegisterEssentials(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Singleton)
     {
         services.TryAdd(ServiceDescriptor.Describe(typeof(IAccelerometer), _ => Accelerometer.Default, lifetime));
@@ -308,46 +369,75 @@ public static class Extensions
         services.TryAdd(ServiceDescriptor.Describe(typeof(IWebAuthenticator), _ => WebAuthenticator.Default, lifetime));
     }
 
+    /// <summary>
+    /// Fallback <see cref="IVersionTracking"/> implementation used when the platform's default
+    /// version tracking cannot be constructed (e.g. outside a fully initialized MAUI context).
+    /// Every member throws <see cref="NotImplementedException"/>.
+    /// </summary>
     public class VersionTrackingDefault : IVersionTracking
     {
+        /// <inheritdoc/>
         public bool IsFirstLaunchEver => throw new NotImplementedException();
 
+        /// <inheritdoc/>
         public bool IsFirstLaunchForCurrentVersion => throw new NotImplementedException();
 
+        /// <inheritdoc/>
         public bool IsFirstLaunchForCurrentBuild => throw new NotImplementedException();
 
+        /// <inheritdoc/>
         public string CurrentVersion => throw new NotImplementedException();
 
+        /// <inheritdoc/>
         public string CurrentBuild => throw new NotImplementedException();
 
+        /// <inheritdoc/>
         public string? PreviousVersion => throw new NotImplementedException();
 
+        /// <inheritdoc/>
         public string? PreviousBuild => throw new NotImplementedException();
 
+        /// <inheritdoc/>
         public string? FirstInstalledVersion => throw new NotImplementedException();
 
+        /// <inheritdoc/>
         public string? FirstInstalledBuild => throw new NotImplementedException();
 
+        /// <inheritdoc/>
         public IReadOnlyList<string> VersionHistory => throw new NotImplementedException();
 
+        /// <inheritdoc/>
         public IReadOnlyList<string> BuildHistory => throw new NotImplementedException();
 
+        /// <inheritdoc/>
         public bool IsFirstLaunchForBuild(string build)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public bool IsFirstLaunchForVersion(string version)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public void Track()
         {
             throw new NotImplementedException();
         }
     }
 
+    /// <summary>
+    /// Opens a readable stream for the specified file, using the Avae-specific implementation
+    /// when available, or falling back to the standard MAUI Essentials behavior.
+    /// </summary>
+    /// <param name="file">The file to open.</param>
+    /// <param name="overridesMauiPlatform">
+    /// Reserved for future use; does not currently affect behavior beyond selecting the Avae-specific path when available.
+    /// </param>
+    /// <returns>A task that resolves to a readable stream for the file's contents.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="file"/> is <see langword="null"/>.</exception>
     public static Task<Stream> OpenReadAsync(this FileBase file, bool overridesMauiPlatform = true)
     {
         if (file == null) throw new ArgumentNullException(nameof(file));
@@ -356,6 +446,14 @@ public static class Extensions
         return file.OpenReadAsync();
     }
 
+    /// <summary>
+    /// Composes an email with the specified files attached, using the Avae-specific implementation
+    /// when available, or converting the files to standard <see cref="EmailAttachment"/>s otherwise.
+    /// </summary>
+    /// <param name="email">The email service to compose with.</param>
+    /// <param name="files">The files to attach to the email.</param>
+    /// <param name="message">The email message to compose.</param>
+    /// <returns>A task representing the asynchronous compose operation.</returns>
     public static Task ComposeAsync(this IEmail email, IEnumerable<FileBase> files, EmailMessage message)
     {
         if (email is IAvaeEmail avae)
@@ -374,6 +472,14 @@ public static class Extensions
         }
     }
 
+    /// <summary>
+    /// Requests a native share of the specified files, using the Avae-specific implementation
+    /// when available, or converting the files to a standard <see cref="ShareMultipleFilesRequest"/> otherwise.
+    /// </summary>
+    /// <param name="share">The share service to request with.</param>
+    /// <param name="title">The title shown in the share dialog.</param>
+    /// <param name="files">The files to share.</param>
+    /// <returns>A task representing the asynchronous share operation.</returns>
     public static Task RequestAsync(this IShare share, string title, IEnumerable<FileBase> files)
     {
         if (share is IAvaeShare avae)
