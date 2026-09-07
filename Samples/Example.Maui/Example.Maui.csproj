@@ -60,6 +60,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+    <PackageReference Include="AathifMahir.Maui.MauiIcons.FontAwesome.Solid" />
     <PackageReference Include="Microsoft.Maui.Controls" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />		
 	</ItemGroup>

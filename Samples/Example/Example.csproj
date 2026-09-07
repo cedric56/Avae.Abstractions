@@ -23,6 +23,7 @@
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+    <PackageReference Include="Optris.Icons.Avalonia.FontAwesome" />
   </ItemGroup>
 
   <ItemGroup>

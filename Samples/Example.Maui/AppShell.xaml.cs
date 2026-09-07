@@ -14,14 +14,16 @@ namespace Example.Maui
 
             BindingContext = vm;
 
-            foreach(var page in vm.Navigables)
+            foreach(var navigable in vm.Navigables)
             {
-                this.Items.Add(new ShellContent()
+                this.Items.Add(
+                new ShellContent()
                 {
-                    Title = page.DisplayName,
+                    Icon = (ImageSource) navigable.Icon!,
+                    Title = navigable.DisplayName,                     
                     ContentTemplate = new DataTemplate(() =>
                     {
-                        vm.SelectedNavigable = page;
+                        vm.SelectedNavigable = navigable;
                         return vm.CurrentView;
                     })
                 });

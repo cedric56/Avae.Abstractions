@@ -7,6 +7,8 @@ using Avalonia.Labs.Notifications;
 using Example.DAL;
 using Example.Maui.Views;
 using Example.ViewModels;
+using MauiIcons.Core;
+using MauiIcons.FontAwesome.Solid;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 
@@ -26,6 +28,7 @@ public static class MauiProgram
 #endif
             })
             .UseMauiApp<App>()
+            .UseFontAwesomeSolidMauiIcons()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -72,6 +75,7 @@ public static class MauiProgram
 #endif
 
         var app = builder.Build();
+        IconResolver.Register(new ExampleIconResolver());
         ServiceLocator.SetDefault(app.Services);
         return app;
     }
@@ -88,5 +92,21 @@ class DefaultView : ContentView, IViewFor<FormViewModel>
             if (value is FormViewModel viewModel)
                 this.Content = new Label() { Text = "Form"};
         }
+    }
+}
+
+class ExampleIconResolver : IIconResolver
+{
+    public object? GetIcon(string path)
+    {
+        if (path.StartsWith("fa-solid fa-"))
+        {
+            var name = path["fa-solid fa-".Length..].Replace("-", "");
+            if (Enum.TryParse<FontAwesomeSolidIcons>(name, true, out var icon))
+            {
+                return icon.ToImageSource();
+            }
+        }
+        return null;
     }
 }

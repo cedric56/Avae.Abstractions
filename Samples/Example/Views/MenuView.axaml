@@ -14,7 +14,7 @@
     <Grid>
         <ContentControl Content="{Binding CurrentView}"/>    
         <Grid RowDefinitions="Auto, *" 
-              IsVisible="{Binding IsMenu}">
+              IsVisible="{Binding CurrentView, Converter={StaticResource NullConverter}}">
             <Grid>
                 <TextBlock Text="{Binding Title}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 <Grid ColumnDefinitions="Auto,Auto,Auto" HorizontalAlignment="Right" >
@@ -29,7 +29,7 @@
 			  <ListBox.ItemTemplate>
 				  <DataTemplate x:DataType="{x:Type model:Person}">
                       <StackPanel Orientation="Horizontal">
-					    <TextBlock Text="{Binding FirstName}" />
+					      <TextBlock Text="{Binding FirstName}" />
                           <TextBlock Text="{Binding LastName}" Margin="10,0,0,0"/>
                         </StackPanel>
                   </DataTemplate>

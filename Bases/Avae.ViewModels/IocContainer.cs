@@ -37,7 +37,7 @@ public class IocContainer : IIocContainer
             return factory(Provider, context);
         }
 
-        throw new Exception($"No such page registered: {key}");
+        throw new Exception($"No such view registered: {key}");
     }
 
     public IModalFor<T, TResult> GetModal<T, TResult>(NavigableContext context) where T : ICloseableViewModel<TResult>

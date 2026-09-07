@@ -13,6 +13,8 @@ using FluentAvalonia.UI.Controls;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Optris.Icons.Avalonia;
+using Optris.Icons.Avalonia.FontAwesome;
 using System;
 using System.IO;
 using System.Linq;
@@ -33,6 +35,8 @@ public partial class App : AvaeApplication, IIocConfiguration
 
     public override void Configure(IIocContainer container)
     {
+        //container.Register("fa-solid fa-house", (_, _) => new Icon() { Value = "fa-solid fa-house" });
+        //container.Register("fa-solid fa-gear", (_, _) => new Icon() { Value = "fa-solid fa-gear" });
         container.Register(HomeViewModel.TaskDialogKey, (sp, parameters) =>
         {
             return parameters[0] switch
@@ -61,6 +65,8 @@ public partial class App : AvaeApplication, IIocConfiguration
 
     public override void Configure(IServiceCollection services)
     {
+        IconResolver.Register(new ExampleIconResolver());
+
         base.Configure(services);
 
         services.UseAvaeEssentials();
@@ -122,5 +128,18 @@ public partial class App : AvaeApplication, IIocConfiguration
             await unsuscribe();
 
         base.Dispose();
+    }
+
+    class ExampleIconResolver : IIconResolver
+    {
+        static ExampleIconResolver()
+        {
+            IconProvider.Current.Register<FontAwesomeIconProvider>();
+        }
+
+        public object? GetIcon(string key)
+        {
+            return new Icon() { Value = key };
+        }
     }
 }

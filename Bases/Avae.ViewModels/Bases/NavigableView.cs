@@ -1,4 +1,6 @@
 ﻿
+using Avae.Core;
+
 namespace Avae.ViewModels;
 
 /// <summary>
@@ -6,14 +8,24 @@ namespace Avae.ViewModels;
 /// </summary>
 /// <param name="viewModelType"></param>
 /// <param name="displayName"></param>
-/// <param name="icon"></param>
-public class NavigableView(Type viewModelType, string displayName, string? icon = null)
+/// <param name="path"></param>
+public class NavigableView(Type viewModelType, string displayName, string? path = null)
 {
     public Func<IViewModelBase, Task>? Launched { get; set; }
     public IViewModelBase? ViewModel { get; protected set; }
     public Type ViewModelType { get; } = viewModelType;
     public string DisplayName { get; } = displayName;
-    public string? Icon { get; } = icon;
+    public string? Path { get; } = path;
+
+    public object? Icon
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Path)) return null;
+            var icon = IconResolver.GetIcon(Path);
+            return icon;
+        }
+    }
 
     public NavigableContext Context { get; set; } = new NavigableContext();
 

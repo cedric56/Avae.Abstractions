@@ -32,6 +32,7 @@
 							<StackPanel
 								Spacing="10"
 								Orientation="Horizontal">
+								<ContentControl Content="{Binding Icon}"/>
 								<TextBlock Text="{Binding DisplayName}" />
 							</StackPanel>
 						</DataTemplate>

@@ -38,9 +38,6 @@ public partial class MenuViewModel : NavigableViewModel, IDisposable
     [ObservableProperty]
     public partial Person? SelectedPerson { get; set; }
 
-    [ObservableProperty]
-    public partial bool IsMenu { get; set; } = true;
-
     partial void OnSelectedPersonChanged(Person? value)
     {
         UpdateCommand.NotifyCanExecuteChanged();
@@ -108,11 +105,10 @@ public partial class MenuViewModel : NavigableViewModel, IDisposable
                 action(e);                    
             }
 
-            IsMenu = true;
+            CurrentView = null!;
         };
 
         CurrentView = _router.GoTo(viewModel);
-        IsMenu = false;
     }
 
     protected override void NotifyPropertyChanged(string propertyName)

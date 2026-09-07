@@ -111,15 +111,10 @@ public partial class Router(IServiceProvider provider)
 
     private IViewFor GetViewFor(IViewModelBase viewModel, NavigableContext? context = null)
     {
+        var name = viewModel.GetType().Name;
         var configuration = provider.GetRequiredService<IIocConfiguration>();
-        var viewFor = configuration.GetContextFor(viewModel.GetType().Name, context ?? new NavigableContext());
-        //Avoid binding error due to propagating context
-        if (viewFor != null)
-        {
-            //viewFor.Context = null;
-            viewFor.Context = viewModel;
-        }
-
-        return viewFor ?? throw new NotImplementedException($"Unable to find view for {viewModel.GetType().Name}");
+        var viewFor = configuration.GetContextFor(name, context ?? new NavigableContext());
+        viewFor?.Context = viewModel;
+        return viewFor ?? throw new NotImplementedException($"Unable to find view for {name}");
     }
 }

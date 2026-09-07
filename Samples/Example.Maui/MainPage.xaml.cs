@@ -1,5 +1,6 @@
 ﻿using Avae.ViewModels;
 using Example.ViewModels;
+using MauiIcons.Core;
 
 namespace Example.Maui
 {
@@ -8,6 +9,8 @@ namespace Example.Maui
         public MainPage()
         {
             InitializeComponent();
+            // Temporary Workaround for url styled namespace in xaml
+            _ = new MauiIcon();
         }
 
         public object? Context { get => BindingContext; set => BindingContext = value; }
