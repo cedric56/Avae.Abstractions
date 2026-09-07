@@ -1,14 +1,12 @@
 using Avae.ViewModels;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Example.ViewModels;
 
 namespace Example;
 
-public partial class FormPage1View : UserControl, 
+public partial class FormPage1View : View, 
     IViewFor<FormViewModel>
 {
-    public object? Context { get => DataContext; set => DataContext = value; }
     public FormPage1View()
     {
         InitializeComponent();

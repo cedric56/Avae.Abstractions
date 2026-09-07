@@ -116,7 +116,7 @@ public partial class Router(IServiceProvider provider)
         //Avoid binding error due to propagating context
         if (viewFor != null)
         {
-            viewFor.Context = null;
+            //viewFor.Context = null;
             viewFor.Context = viewModel;
         }
 

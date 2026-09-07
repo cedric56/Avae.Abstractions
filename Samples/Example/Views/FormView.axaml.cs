@@ -1,12 +1,10 @@
 using Avae.ViewModels;
-using Avalonia.Controls;
 using Example.ViewModels;
 
 namespace Example;
 
-public partial class FormView : UserControl, IViewFor<FormViewModel>
+public partial class FormView : View, IViewFor<FormViewModel>
 {
-    public object? Context { get => DataContext; set => DataContext = value; }
     public FormView()
     {
         InitializeComponent();

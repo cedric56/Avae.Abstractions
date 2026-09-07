@@ -4,12 +4,10 @@ using Example.ViewModels;
 
 namespace Example;
 
-public partial class EssentialsView : UserControl, IViewFor<EssentialsViewModel>
+public partial class EssentialsView : View, IViewFor<EssentialsViewModel>
 {
     public EssentialsView()
     {
         InitializeComponent();
     }
-
-    public object? Context { get => DataContext; set => DataContext = value; }
 }
