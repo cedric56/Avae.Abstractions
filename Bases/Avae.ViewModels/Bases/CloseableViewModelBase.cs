@@ -17,7 +17,7 @@ public abstract partial class CloseableViewModelBase<TResult> : ICloseableViewMo
         }
     }
 
-    public virtual ObservableCollection<NamedCommand> Commands { get;  } = [];
+    public virtual ObservableCollection<NamedCommand> Commands { get; } = [];
 
     public abstract string Title { get; }
 

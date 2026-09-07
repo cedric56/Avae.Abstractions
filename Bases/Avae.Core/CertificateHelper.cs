@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 namespace Avae.Core;
+
 public static class CertificateHelper
 {
     /// <summary>

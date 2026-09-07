@@ -5,7 +5,7 @@ using MsBox.Avalonia.ViewModels;
 
 namespace Avae.Avalonia;
 
-internal abstract class ModalViewModelBase(ModalParameters parameters) : 
+internal abstract class ModalViewModelBase(ModalParameters parameters) :
     MsBoxCustomViewModel(parameters)
 {
     public IEnumerable<ModalButton> Definitions
@@ -16,11 +16,11 @@ internal abstract class ModalViewModelBase(ModalParameters parameters) :
         }
     }
     protected ModalParameters Parameters { get; } = parameters;
-    public object? ViewModel { get;  }
+    public object? ViewModel { get; }
     public UserControl? Content { get; } = parameters.Content;
 }
 
-internal class ModalViewModel<T, TResult>(ModalParameters<T,TResult> parameters, T viewModel) :
+internal class ModalViewModel<T, TResult>(ModalParameters<T, TResult> parameters, T viewModel) :
     ModalViewModelBase(parameters), ISetFullApi<TResult>
     where T : ICloseableViewModel<TResult>
 {

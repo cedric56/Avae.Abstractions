@@ -73,8 +73,8 @@ namespace Avae.Razor.Components
         }
     }
 
-    public class CenteredComponentView<TView, TViewModel> : 
-        ComponentView<TView, TViewModel> 
+    public class CenteredComponentView<TView, TViewModel> :
+        ComponentView<TView, TViewModel>
         where TViewModel : class, IViewModelBase
     {
         public CenteredComponentView()

@@ -4,6 +4,7 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 
 namespace Avae.DAL.gRPC;
+
 public partial class XmlHttpRequest : IXmlHttpRequest
 {
     [JSImport("globalThis.eval")]

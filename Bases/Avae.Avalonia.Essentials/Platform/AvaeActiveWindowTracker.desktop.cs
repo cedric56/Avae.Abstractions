@@ -1,60 +1,59 @@
 ﻿#nullable enable
 
-using Avalonia.Controls;
 using Window = Avalonia.Controls.Window;
 
 namespace Avae.Avalonia.Essentials
 {
-	class AvaeActiveWindowTracker
-	{
-		readonly IAvaeWindowStateManager _windowStateManager;
+    class AvaeActiveWindowTracker
+    {
+        readonly IAvaeWindowStateManager _windowStateManager;
 
-		AvaeWindowMessageManager? _currentWindowManager;
+        AvaeWindowMessageManager? _currentWindowManager;
 
-		public AvaeActiveWindowTracker(IAvaeWindowStateManager windowStateManager)
-		{
-			_windowStateManager = windowStateManager;
-		}
+        public AvaeActiveWindowTracker(IAvaeWindowStateManager windowStateManager)
+        {
+            _windowStateManager = windowStateManager;
+        }
 
-		public event EventHandler<WindowMessageEventArgs>? WindowMessage;
+        public event EventHandler<WindowMessageEventArgs>? WindowMessage;
 
-		public void Start()
-		{
-			var window = _windowStateManager.GetActiveWindow();
-			OnActiveWindowChanged(window);
+        public void Start()
+        {
+            var window = _windowStateManager.GetActiveWindow();
+            OnActiveWindowChanged(window);
 
-			_windowStateManager.ActiveWindowChanged += OnActiveWindowChanged;
-		}
+            _windowStateManager.ActiveWindowChanged += OnActiveWindowChanged;
+        }
 
-		public void Stop()
-		{
-			OnActiveWindowChanged(null);
+        public void Stop()
+        {
+            OnActiveWindowChanged(null);
 
-			_windowStateManager.ActiveWindowChanged -= OnActiveWindowChanged;
-		}
+            _windowStateManager.ActiveWindowChanged -= OnActiveWindowChanged;
+        }
 
-		void OnActiveWindowChanged(object? sender, EventArgs e)
-		{
-			var window = _windowStateManager?.GetActiveWindow();
-			OnActiveWindowChanged(window);
-		}
+        void OnActiveWindowChanged(object? sender, EventArgs e)
+        {
+            var window = _windowStateManager?.GetActiveWindow();
+            OnActiveWindowChanged(window);
+        }
 
-		void OnActiveWindowChanged(Window? window)
-		{
-			if (_currentWindowManager is not null)
-			{
-				_currentWindowManager.WindowMessage -= OnWindowMessage;
-				_currentWindowManager = null;
-			}
+        void OnActiveWindowChanged(Window? window)
+        {
+            if (_currentWindowManager is not null)
+            {
+                _currentWindowManager.WindowMessage -= OnWindowMessage;
+                _currentWindowManager = null;
+            }
 
-			if (window is not null)
-			{
-				_currentWindowManager = AvaeWindowMessageManager.Get(window);
-				_currentWindowManager.WindowMessage += OnWindowMessage;
-			}
-		}
+            if (window is not null)
+            {
+                _currentWindowManager = AvaeWindowMessageManager.Get(window);
+                _currentWindowManager.WindowMessage += OnWindowMessage;
+            }
+        }
 
-		void OnWindowMessage(object? sender, WindowMessageEventArgs e) =>
-			WindowMessage?.Invoke(sender, e);
-	}
+        void OnWindowMessage(object? sender, WindowMessageEventArgs e) =>
+            WindowMessage?.Invoke(sender, e);
+    }
 }

@@ -1,5 +1,5 @@
-﻿using Avae.ViewModels;
-using Avae.Services;
+﻿using Avae.Services;
+using Avae.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Threading;

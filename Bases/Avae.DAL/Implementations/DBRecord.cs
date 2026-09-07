@@ -14,7 +14,7 @@ public enum ChangeType
 public class Record<T> where T : class, new()
 {
     public Record()
-    {            
+    {
         ChangeType = ChangeType.None;
         //Connections = [];
     }

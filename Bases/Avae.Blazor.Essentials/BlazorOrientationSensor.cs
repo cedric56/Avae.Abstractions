@@ -1,6 +1,4 @@
 ﻿using Avae.Core;
-using BlazorSensors;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Devices.Sensors;
 
 namespace Avae.Blazor.Essentials;

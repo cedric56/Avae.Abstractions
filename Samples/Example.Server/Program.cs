@@ -1,13 +1,13 @@
 ﻿using Avae.Core;
 using Avae.DAL;
-using Avae.Server;
 using Avae.DAL.SignalR;
+using Avae.Server;
 using Example.DAL;
 using Example.Models;
+using Grpc.AspNetCore.Server;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Grpc.AspNetCore.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddLogging(AddLoggers);

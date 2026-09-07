@@ -1,5 +1,4 @@
 ﻿using Avae.Core;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Microsoft.Maui.ApplicationModel;
 

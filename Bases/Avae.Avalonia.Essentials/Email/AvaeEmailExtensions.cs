@@ -11,7 +11,7 @@ namespace Avae.Avalonia.Essentials;
 /// </summary>
 public static class AvaeEmailExtensions
 {
-    
+
     /// <summary>
     /// Converts an <see cref="EmailMessage"/> to a <c>mailto:</c> URI string.
     /// </summary>

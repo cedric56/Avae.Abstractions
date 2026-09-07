@@ -13,6 +13,6 @@ public static class ModelInitialization
     public static void Init()
     {
         InputValidation<Person>.Init();
-        DBTransactionalResolver.Instance.Register<Person?>(new PersonFormatter());                       
+        DBTransactionalResolver.Instance.Register<Person?>(new PersonFormatter());
     }
 }

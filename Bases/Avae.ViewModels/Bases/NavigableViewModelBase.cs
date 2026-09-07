@@ -40,7 +40,7 @@ public abstract partial class NavigableViewModelBase<TResult>(Router router, boo
 /// <summary>
 /// This class is used to manage the pages in the application.
 /// </summary>
-public abstract partial class NavigableViewModelBase : RouterViewModelBase, IViewModelBase 
+public abstract partial class NavigableViewModelBase : RouterViewModelBase, IViewModelBase
 {
     public EventHandler<IViewFor>? CurrentViewChanged;
 
@@ -70,15 +70,15 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IVie
     /// The currently selected page in the menu.
     /// </summary>
     private IViewFor _currentView = null!;
-    public IViewFor CurrentView 
-    { 
-        get { return _currentView; } 
-        set 
-        { 
+    public IViewFor CurrentView
+    {
+        get { return _currentView; }
+        set
+        {
             _currentView = value;
             NotifyPropertyChanged(nameof(CurrentView));
             CurrentViewChanged?.Invoke(this, _currentView);
-        } 
+        }
     }
 
     /// <summary>
@@ -109,7 +109,7 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IVie
     /// <summary>
     /// The list of pages to be displayed in the menu.
     /// </summary>
-    public ObservableCollection<NavigableView> Navigables { get {return _navigables ??= GetNavigables(); } }
+    public ObservableCollection<NavigableView> Navigables { get { return _navigables ??= GetNavigables(); } }
 
     protected abstract ObservableCollection<NavigableView> GetNavigables();
 
@@ -129,7 +129,7 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IVie
         }
         else
         {
-            var viewFor = GoTo(value, out var viewModel);                  
+            var viewFor = GoTo(value, out var viewModel);
             dico.Add(value, new KeyValuePair<IViewFor, IViewModelBase>(viewFor, viewModel));
             await value.OnLaunched(viewModel);
             CurrentView = viewFor;

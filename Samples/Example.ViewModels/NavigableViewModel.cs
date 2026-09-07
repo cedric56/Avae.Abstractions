@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Example.ViewModels;
 
-public abstract partial class NavigableViewModel(Router router, bool initialize = true) : 
+public abstract partial class NavigableViewModel(Router router, bool initialize = true) :
     NavigableViewModelBase(router, initialize)
 {
     [RelayCommand]

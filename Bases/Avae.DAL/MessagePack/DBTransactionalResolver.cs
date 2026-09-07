@@ -35,7 +35,7 @@ public sealed class DBTransactionalResolver : IFormatterResolver
         if (type == null)
             return null;
 
-        var generic =  typeof(IMessagePackFormatter<>).MakeGenericType(type);
+        var generic = typeof(IMessagePackFormatter<>).MakeGenericType(type);
         return _formatters.FirstOrDefault(f => f.GetType() == generic);
     }
 

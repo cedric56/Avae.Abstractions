@@ -13,6 +13,7 @@ using Npgsql;
 using System.Data.Common;
 
 namespace Example.DAL;
+
 public static class Extensions
 {
     static string ServerUrl = "https://88.165.230.223:17001";
@@ -127,7 +128,7 @@ public static class Extensions
                         CONSTRAINT FK_Contact_ContactPerson FOREIGN KEY (IdContact) REFERENCES Person(Id)
                     );";
             }
-            
+
 
             throw new NotImplementedException();
         });

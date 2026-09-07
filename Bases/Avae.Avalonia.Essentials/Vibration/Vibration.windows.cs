@@ -40,20 +40,20 @@ namespace Avae.Avalonia.Essentials
 
     [SupportedOSPlatform("windows10.0.10240")]
     partial class VibrationImplementation : IVibration
-	{
-		public bool IsSupported
-			=> ApiInformation.IsTypePresent("Windows.Phone.Devices.Notification.VibrationDevice") && DefaultDevice != null;
+    {
+        public bool IsSupported
+            => ApiInformation.IsTypePresent("Windows.Phone.Devices.Notification.VibrationDevice") && DefaultDevice != null;
 
-		static VibrationDevice DefaultDevice =>
-			throw new NotImplementedException("WINUI"); //VibrationDevice.GetDefault();
+        static VibrationDevice DefaultDevice =>
+            throw new NotImplementedException("WINUI"); //VibrationDevice.GetDefault();
 
-		void PlatformVibrate()
-			=> throw new NotImplementedException("WINUI");// DefaultDevice.Vibrate(duration);
+        void PlatformVibrate()
+            => throw new NotImplementedException("WINUI");// DefaultDevice.Vibrate(duration);
 
-		void PlatformVibrate(TimeSpan duration) =>
-			throw new NotImplementedException("WINUI");// DefaultDevice.Vibrate(duration);
+        void PlatformVibrate(TimeSpan duration) =>
+            throw new NotImplementedException("WINUI");// DefaultDevice.Vibrate(duration);
 
-		void PlatformCancel() =>
-			throw new NotImplementedException("WINUI");//DefaultDevice.Cancel();
-	}
+        void PlatformCancel() =>
+            throw new NotImplementedException("WINUI");//DefaultDevice.Cancel();
+    }
 }

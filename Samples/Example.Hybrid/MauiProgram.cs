@@ -13,17 +13,17 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .WithAppNotifications()
-            .UseMauiApp<App>()               
+            .UseMauiApp<App>()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             });
         builder.Services.RegisterEssentials();
         builder.Services.UseSharedLibrary();
-        builder.Services.AddMauiBlazorWebView();            
+        builder.Services.AddMauiBlazorWebView();
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
-		builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
         var app = builder.Build();

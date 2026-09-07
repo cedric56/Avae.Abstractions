@@ -14,7 +14,7 @@ public static class Extensions
     public static void ConfigureBase(this IServiceCollection services,
         ComponentView navMenu,
         NotificationPosition position = NotificationPosition.BottomLeft,
-        int maxDispayments = 5,            
+        int maxDispayments = 5,
         Action<IIocContainer>? configure = null,
         RenderFragment? extras = null)
     {

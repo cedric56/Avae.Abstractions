@@ -2,7 +2,6 @@
 using Microsoft.Maui.Media;
 using System.Diagnostics;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using System.Text;
 using Windows.Media.Core;

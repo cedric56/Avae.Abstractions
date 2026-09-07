@@ -5,10 +5,10 @@ namespace Example.Maui.Views;
 
 public partial class HomeView : ContentPage, IViewFor<HomeViewModel>
 {
-	public HomeView()
-	{
-		InitializeComponent();
-	}
+    public HomeView()
+    {
+        InitializeComponent();
+    }
 
     public object? Context { get => BindingContext; set => BindingContext = value; }
 }

@@ -8,10 +8,10 @@ using NavigableContext = Avae.ViewModels.NavigableContext;
 namespace Avae.Razor;
 
 public class IocConfiguration(
-        IServiceProvider serviceProvider,         
+        IServiceProvider serviceProvider,
         Action<IIocContainer>? configure = null,
         RenderFragment? extras = null) :
-        IIocConfiguration, ITaskDialogService, IContentDialogService, 
+        IIocConfiguration, ITaskDialogService, IContentDialogService,
         IDialogService,
         INotificationService,
         IRequestedThemeService
@@ -87,7 +87,7 @@ public class IocConfiguration(
 
     public async Task<ContentDialogResult> ShowAsync(ContentDialogParams @params)
     {
-        var dialog = await MudDialogService.ShowAsync<ContentDialog>(@params.Title, 
+        var dialog = await MudDialogService.ShowAsync<ContentDialog>(@params.Title,
         new MudBlazor.DialogParameters()
         {
             { "Parameters", @params }

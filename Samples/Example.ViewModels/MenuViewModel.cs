@@ -17,7 +17,7 @@ public partial class MenuViewModel : NavigableViewModel, IDisposable
     IDialogService dialogService;
 
     public MenuViewModel(IServiceProvider provider, IDialogService dialogService, Router router)
-        :base(router,false)
+        : base(router, false)
     {
         this.provider = provider;
         this.dialogService = dialogService;
@@ -102,7 +102,7 @@ public partial class MenuViewModel : NavigableViewModel, IDisposable
             viewModel.CloseRequested -= closeRequested;
             if (e is not null)
             {
-                action(e);                    
+                action(e);
             }
 
             CurrentView = null!;

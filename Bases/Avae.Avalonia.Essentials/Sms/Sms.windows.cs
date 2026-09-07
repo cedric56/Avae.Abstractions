@@ -26,20 +26,20 @@ namespace Avae.Avalonia.Essentials
 
     [SupportedOSPlatform("windows10.0.10240")]
     partial class SmsImplementation : ISms
-	{
-		public bool IsComposeSupported
-			=> ApiInformation.IsTypePresent("Windows.ApplicationModel.Chat.ChatMessageManager");
+    {
+        public bool IsComposeSupported
+            => ApiInformation.IsTypePresent("Windows.ApplicationModel.Chat.ChatMessageManager");
 
-		Task PlatformComposeAsync(SmsMessage message)
-		{
-			var chat = new ChatMessage();
-			if (!string.IsNullOrWhiteSpace(message?.Body))
-				chat.Body = message.Body;
+        Task PlatformComposeAsync(SmsMessage message)
+        {
+            var chat = new ChatMessage();
+            if (!string.IsNullOrWhiteSpace(message?.Body))
+                chat.Body = message.Body;
 
-			foreach (var recipient in message?.Recipients ?? [])
-				chat.Recipients.Add(recipient);
+            foreach (var recipient in message?.Recipients ?? [])
+                chat.Recipients.Add(recipient);
 
-			return ChatMessageManager.ShowComposeSmsMessageAsync(chat).AsTask();
-		}
-	}
+            return ChatMessageManager.ShowComposeSmsMessageAsync(chat).AsTask();
+        }
+    }
 }

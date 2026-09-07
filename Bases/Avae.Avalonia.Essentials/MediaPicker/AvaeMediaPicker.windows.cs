@@ -38,7 +38,7 @@ namespace Avae.Avalonia.Essentials
         public async Task<FileResult?> CapturePhotoAsync(MediaPickerOptions? options = null)
         {
             var captureUi = new WinUICameraCaptureUI();
-                captureUi.PhotoSettings.Format = CameraCaptureUIPhotoFormat.Jpeg;
+            captureUi.PhotoSettings.Format = CameraCaptureUIPhotoFormat.Jpeg;
             var file = await captureUi.CaptureFileAsync(CameraCaptureUIMode.Photo);
 
             if (file is not null)

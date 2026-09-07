@@ -14,8 +14,8 @@ public partial class HomeViewModel(
     IIocConfiguration iocConfiguration,
     INotificationService notificationService,
     ISystemNotificationService systemNotificationService,
-    IRequestedThemeService requestedTheme) : 
-    ObservableObject, 
+    IRequestedThemeService requestedTheme) :
+    ObservableObject,
     IViewModelBase,
     IEquatable<HomeViewModel>
 {
@@ -34,7 +34,7 @@ public partial class HomeViewModel(
         {
             result = await dialogService.ShowModalAsync<ModalViewModel, string?>();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             result = ex.Message;
         }

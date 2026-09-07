@@ -16,7 +16,7 @@ internal class NotificationService : Avae.Services.INotificationService
                      TimeSpan? expiration = null, Action? onClick = null, Action? onClose = null)
     {
         var topLevel = TopLevelStateManager.Default.GetActive();
-        if (topLevel == null) 
+        if (topLevel == null)
             return;
 
         // Always check and update manager
@@ -29,7 +29,7 @@ internal class NotificationService : Avae.Services.INotificationService
         else
         {
             Display();
-        }            
+        }
 
         void Ready(object? sender, TemplateAppliedEventArgs e)
         {

@@ -1,6 +1,6 @@
-﻿using Avae.ViewModels;
-using Avae.DAL;
+﻿using Avae.DAL;
 using Avae.Services;
+using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
@@ -28,7 +28,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
         }
     }
 
-    private List<Person> _selectedItems= [];
+    private List<Person> _selectedItems = [];
     public List<Person> SelectedItems
     {
         get
@@ -37,7 +37,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
         }
         set
         {
-            SetProperty(ref  _selectedItems, value);
+            SetProperty(ref _selectedItems, value);
         }
     }
 
@@ -62,7 +62,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
             IsBusy = false;
             if (!string.IsNullOrWhiteSpace(result.Exception))
                 await dialogService.ShowOkAsync(result.Exception, "Error");
-            
+
             await Close(result.Successful ? Person : null);
         }
     }
@@ -113,7 +113,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
 
     public override Task<bool> CanClose()
     {
-        return dialogService.ShowYesNoAsync("Are you sure you want to close ?", "Question"); 
+        return dialogService.ShowYesNoAsync("Are you sure you want to close ?", "Question");
     }
 
     protected override void NotifyPropertyChanged(string propertyName)

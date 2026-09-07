@@ -9,6 +9,6 @@ public partial class ModalView : ContentView, IModalFor<ModalViewModel, string?>
 
     public ModalView()
     {
-		InitializeComponent();
-	}
+        InitializeComponent();
+    }
 }

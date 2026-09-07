@@ -7,7 +7,7 @@ namespace Avae.Blazor.Essentials;
 
 internal class BlazorTextToSpeech : ITextToSpeech
 {
-    Dictionary <Locale, SpeechSynthesisVoice> dic = new();
+    Dictionary<Locale, SpeechSynthesisVoice> dic = new();
 
     public async Task<IEnumerable<Locale>> GetLocalesAsync()
     {

@@ -65,7 +65,7 @@ internal class BlazorMediaPicker : IMediaPicker
     {
         var files = new Dictionary<DevicePlatform, IEnumerable<string>>()
         {
-            { 
+            {
                 DevicePlatform.Unknown, new List<string>()
                 {
                     "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.webp"

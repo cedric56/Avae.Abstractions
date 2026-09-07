@@ -110,7 +110,7 @@ class TopLevelStateManagerImplementation : ITopLevelStateManager
             ISingleViewApplicationLifetime singleView => _active ?? TopLevel.GetTopLevel(singleView.MainView),
             _ => _active ?? TopLevel.GetTopLevel(null)
         };
-        
+
         return active ?? TopLevel.GetTopLevel(null);
     }
 }

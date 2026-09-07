@@ -1,6 +1,4 @@
 ﻿using Avae.Core;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Devices.Sensors;
 using System.Globalization;
 using System.Text.Json;
@@ -17,7 +15,7 @@ namespace Avae.Blazor.Essentials
 
     internal class BlazorGeocoding : IGeocoding
     {
-        public async  Task<IEnumerable<Location>> GetLocationsAsync(string address)
+        public async Task<IEnumerable<Location>> GetLocationsAsync(string address)
         {
             var httpClient = ServiceLocator.GetScopedService<HttpClient>();
             using var client = httpClient ?? new HttpClient();

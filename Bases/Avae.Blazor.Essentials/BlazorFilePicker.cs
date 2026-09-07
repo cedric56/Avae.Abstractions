@@ -1,7 +1,6 @@
 ﻿using Avae.Core;
 using Avae.Essentials;
 using KristofferStrube.Blazor.FileSystemAccess;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Microsoft.Maui.Storage;
 
@@ -34,9 +33,9 @@ class BlazorFileResult : FileResult
 
     //public Task<Stream> OpenReadableAsync() => file.StreamAsync();
 
-    
 
-   
+
+
 }
 
 class BlazorFilePicker : IFilePicker

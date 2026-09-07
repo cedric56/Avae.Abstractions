@@ -16,18 +16,18 @@ namespace Avae.Avalonia.Essentials
     }
 
     partial class AvaePhoneDialer : IPhoneDialer
-	{
-		public bool IsSupported =>
-			true;
+    {
+        public bool IsSupported =>
+            true;
 
-		public async void Open(string number)
-		{
-			ValidateOpen(number);
+        public async void Open(string number)
+        {
+            ValidateOpen(number);
 
-			//if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Calls.PhoneCallManager"))
-			//	PhoneCallManager.ShowPhoneCallUI(number, string.Empty);
-			//else
-			await Launcher.OpenAsync($"tel:{number}");
-		}
-	}
+            //if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Calls.PhoneCallManager"))
+            //	PhoneCallManager.ShowPhoneCallUI(number, string.Empty);
+            //else
+            await Launcher.OpenAsync($"tel:{number}");
+        }
+    }
 }

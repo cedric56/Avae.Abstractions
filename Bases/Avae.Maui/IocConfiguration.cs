@@ -1,14 +1,15 @@
-﻿using Avae.ViewModels;
-using Avae.Services;
+﻿using Avae.Services;
+using Avae.ViewModels;
 using Microsoft.Maui.Platform;
 using UXDivers.Popups.Maui.Controls;
 using UXDivers.Popups.Services;
 
 namespace Avae.Maui;
+
 internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContainer> getContainer, Action<IIocContainer>? configure = null) :
-        IIocConfiguration, 
-        ITaskDialogService, 
-        IContentDialogService, 
+        IIocConfiguration,
+        ITaskDialogService,
+        IContentDialogService,
         IDialogService,
         INotificationService,
         IRequestedThemeService
@@ -61,7 +62,7 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
         // ============ HEADER HOST ============
         var headerHost = new Grid
         {
-            IsVisible = @params.Header is not null ||@params.IconSource is not null
+            IsVisible = @params.Header is not null || @params.IconSource is not null
         };
         Grid.SetRow(headerHost, 0);
 
@@ -267,34 +268,34 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
             content = e.ToPlatform(Current?.Handler?.MauiContext ?? new MauiContext(serviceProvider));
         }
 #if ANDROID
-            var alertBuilder = new Android.App.AlertDialog.Builder(Platform.CurrentActivity);
+        var alertBuilder = new Android.App.AlertDialog.Builder(Platform.CurrentActivity);
 
-            alertBuilder.SetTitle(title);
-            if (content is string message)
-                alertBuilder.SetMessage(message);
-            else
-                alertBuilder.SetView(content as Android.Views.View);
+        alertBuilder.SetTitle(title);
+        if (content is string message)
+            alertBuilder.SetMessage(message);
+        else
+            alertBuilder.SetView(content as Android.Views.View);
 
-            if (!string.IsNullOrEmpty(primaryButtonText))
-                alertBuilder.SetPositiveButton(primaryButtonText, (senderAlert, args) =>
-                {
-                    taskCompletionSource.SetResult(primaryResult);
-                });
-            if (!string.IsNullOrEmpty(secondaryButtonText))
-                alertBuilder.SetNegativeButton(secondaryButtonText, (senderAlert, args) =>
-                {
-                    taskCompletionSource.SetResult(secondaryResult);
-                });
-            if (!string.IsNullOrEmpty(closeButtonText))
-                alertBuilder.SetNeutralButton(closeButtonText, (senderAlery, args) =>
-                {
-                    taskCompletionSource.SetResult(closeResult);
-                });
+        if (!string.IsNullOrEmpty(primaryButtonText))
+            alertBuilder.SetPositiveButton(primaryButtonText, (senderAlert, args) =>
+            {
+                taskCompletionSource.SetResult(primaryResult);
+            });
+        if (!string.IsNullOrEmpty(secondaryButtonText))
+            alertBuilder.SetNegativeButton(secondaryButtonText, (senderAlert, args) =>
+            {
+                taskCompletionSource.SetResult(secondaryResult);
+            });
+        if (!string.IsNullOrEmpty(closeButtonText))
+            alertBuilder.SetNeutralButton(closeButtonText, (senderAlery, args) =>
+            {
+                taskCompletionSource.SetResult(closeResult);
+            });
 
-            var alertDialog = alertBuilder.Create();
-            alertDialog?.Show();
+        var alertDialog = alertBuilder.Create();
+        alertDialog?.Show();
 
-            return await taskCompletionSource.Task;
+        return await taskCompletionSource.Task;
 #elif WINDOWS
 
         var current = Current;
@@ -352,7 +353,7 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
             rootViewController?.PresentViewController(alert, true, null);
             return await taskCompletionSource.Task;
         }
-        else if(content is UIKit.UIView contentView)
+        else if (content is UIKit.UIView contentView)
         {
             var vc = new UIKit.UIViewController { ModalPresentationStyle = UIKit.UIModalPresentationStyle.FormSheet };
             vc.PreferredContentSize = new CoreGraphics.CGSize(320, 360);
@@ -366,11 +367,11 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
                 {
                     Text = title
                 };
-                if(UIKit.UIFont.BoldSystemFontOfSize(17) is { } font)
+                if (UIKit.UIFont.BoldSystemFontOfSize(17) is { } font)
                 {
                     label.Font = font;
                 }
-                else if(UIKit.UIFont.SystemFontOfSize(17) is { } font2)
+                else if (UIKit.UIFont.SystemFontOfSize(17) is { } font2)
                 {
                     label.Font = font2;
                 }
@@ -409,7 +410,7 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
                 });
             return await taskCompletionSource.Task;
         }
-       
+
 #endif
         throw new NotImplementedException();
     }
@@ -423,7 +424,7 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
         if (Application.Current == null)
             return;
 
-        if (_isLoad) 
+        if (_isLoad)
             return;
 
         _isLoad = true;
@@ -442,7 +443,7 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
         else
             Application.Current?.Resources.MergedDictionaries.Remove(colors);
     }
-    
+
 
     public async void Show(string title, string message, NotificationType type = NotificationType.Information, TimeSpan? expiration = null, Action? onClick = null, Action? onClose = null)
     {
@@ -454,12 +455,12 @@ internal class IocConfiguration(IServiceProvider serviceProvider, Func<IocContai
             Title = title
         };
 
-        if(Application.Current?.RequestedTheme == AppTheme.Light)
+        if (Application.Current?.RequestedTheme == AppTheme.Light)
         {
             pop.PopupBackground = Colors.White;
             //pop.Background = Color.FromArgb("#ffb2b2b2");
         }
-        
+
         pop.IconColor = type switch
         {
             NotificationType.Success => Colors.Green,

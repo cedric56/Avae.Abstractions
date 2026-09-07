@@ -13,17 +13,17 @@ namespace Avae.Avalonia.Essentials
 {
     [SupportedOSPlatform("windows10.0.10240")]
     partial class SecureStorageImplementation : ISecureStorage
-	{
+    {
         internal static readonly string Alias = $"{AppInfo.Current.PackageName}.microsoft.maui.essentials.preferences";
 
         readonly ISecureStorageImplementation _secureStorage;
 
-		public SecureStorageImplementation()
-		{
-			_secureStorage = AppInfoUtils.IsPackagedApp
-				? new PackagedSecureStorageImplementation()
-				: new UnpackagedSecureStorageImplementation();
-		}
+        public SecureStorageImplementation()
+        {
+            _secureStorage = AppInfoUtils.IsPackagedApp
+                ? new PackagedSecureStorageImplementation()
+                : new UnpackagedSecureStorageImplementation();
+        }
 
         public async Task<string?> GetAsync(string key)
         {
@@ -64,128 +64,128 @@ namespace Avae.Avalonia.Essentials
         }
     }
 
-	interface ISecureStorageImplementation
-	{
-		Task<byte[]?> GetAsync(string key);
+    interface ISecureStorageImplementation
+    {
+        Task<byte[]?> GetAsync(string key);
 
-		Task SetAsync(string key, byte[] value);
+        Task SetAsync(string key, byte[] value);
 
-		bool Remove(string key);
+        bool Remove(string key);
 
-		void RemoveAll();
-	}
+        void RemoveAll();
+    }
     [SupportedOSPlatform("windows10.0.10240")]
     class PackagedSecureStorageImplementation : ISecureStorageImplementation
-	{
-		public Task<byte[]?> GetAsync(string key)
-		{
-			var settings = GetSettings(SecureStorageImplementation.Alias);
-			var encBytes = settings.Values[key] as byte[];
-			return Task.FromResult(encBytes);
-		}
+    {
+        public Task<byte[]?> GetAsync(string key)
+        {
+            var settings = GetSettings(SecureStorageImplementation.Alias);
+            var encBytes = settings.Values[key] as byte[];
+            return Task.FromResult(encBytes);
+        }
 
-		public Task SetAsync(string key, byte[] data)
-		{
-			var settings = GetSettings(SecureStorageImplementation.Alias);
-			settings.Values[key] = data;
-			return Task.CompletedTask;
-		}
+        public Task SetAsync(string key, byte[] data)
+        {
+            var settings = GetSettings(SecureStorageImplementation.Alias);
+            settings.Values[key] = data;
+            return Task.CompletedTask;
+        }
 
-		public bool Remove(string key)
-		{
-			var settings = GetSettings(SecureStorageImplementation.Alias);
-			return settings.Values.Remove(key);
-		}
+        public bool Remove(string key)
+        {
+            var settings = GetSettings(SecureStorageImplementation.Alias);
+            return settings.Values.Remove(key);
+        }
 
-		public void RemoveAll()
-		{
-			var settings = GetSettings(SecureStorageImplementation.Alias);
-			settings.Values.Clear();
-		}
+        public void RemoveAll()
+        {
+            var settings = GetSettings(SecureStorageImplementation.Alias);
+            settings.Values.Clear();
+        }
 
-		static ApplicationDataContainer GetSettings(string name)
-		{
-			var localSettings = ApplicationData.Current.LocalSettings;
-			if (!localSettings.Containers.ContainsKey(name))
-				localSettings.CreateContainer(name, ApplicationDataCreateDisposition.Always);
-			return localSettings.Containers[name];
-		}
-	}
+        static ApplicationDataContainer GetSettings(string name)
+        {
+            var localSettings = ApplicationData.Current.LocalSettings;
+            if (!localSettings.Containers.ContainsKey(name))
+                localSettings.CreateContainer(name, ApplicationDataCreateDisposition.Always);
+            return localSettings.Containers[name];
+        }
+    }
 
-	class UnpackagedSecureStorageImplementation : ISecureStorageImplementation
-	{
-		static readonly string AppSecureStoragePath = Path.Combine(FileSystem.AppDataDirectory, "..", "Settings", "securestorage.dat");
+    class UnpackagedSecureStorageImplementation : ISecureStorageImplementation
+    {
+        static readonly string AppSecureStoragePath = Path.Combine(FileSystem.AppDataDirectory, "..", "Settings", "securestorage.dat");
 
-		readonly SecureStorageDictionary _secureStorage = new();
+        readonly SecureStorageDictionary _secureStorage = new();
 
-		public UnpackagedSecureStorageImplementation()
-		{
-			Load();
-		}
+        public UnpackagedSecureStorageImplementation()
+        {
+            Load();
+        }
 
-		void Load()
-		{
-			if (!File.Exists(AppSecureStoragePath))
-				return;
+        void Load()
+        {
+            if (!File.Exists(AppSecureStoragePath))
+                return;
 
-			try
-			{
-				using var stream = File.OpenRead(AppSecureStoragePath);
+            try
+            {
+                using var stream = File.OpenRead(AppSecureStoragePath);
 
-				var readPreferences = JsonSerializer.Deserialize(stream, SecureStorageJsonSerializerContext.Default.SecureStorageDictionary);
+                var readPreferences = JsonSerializer.Deserialize(stream, SecureStorageJsonSerializerContext.Default.SecureStorageDictionary);
 
-				if (readPreferences != null)
-				{
-					_secureStorage.Clear();
-					foreach (var pair in readPreferences)
-						_secureStorage.TryAdd(pair.Key, pair.Value);
-				}
-			}
-			catch (JsonException)
-			{
-				// if deserialization fails proceed with empty settings
-			}
-		}
+                if (readPreferences != null)
+                {
+                    _secureStorage.Clear();
+                    foreach (var pair in readPreferences)
+                        _secureStorage.TryAdd(pair.Key, pair.Value);
+                }
+            }
+            catch (JsonException)
+            {
+                // if deserialization fails proceed with empty settings
+            }
+        }
 
-		void Save()
-		{
-			var dir = Path.GetDirectoryName(AppSecureStoragePath);
-			if (dir == null)
-				return;
+        void Save()
+        {
+            var dir = Path.GetDirectoryName(AppSecureStoragePath);
+            if (dir == null)
+                return;
             Directory.CreateDirectory(dir);
-			using var stream = File.Create(AppSecureStoragePath);
-			JsonSerializer.Serialize(stream, _secureStorage, SecureStorageJsonSerializerContext.Default.SecureStorageDictionary);
-		}
+            using var stream = File.Create(AppSecureStoragePath);
+            JsonSerializer.Serialize(stream, _secureStorage, SecureStorageJsonSerializerContext.Default.SecureStorageDictionary);
+        }
 
-		public Task<byte[]?> GetAsync(string key)
-		{
-			_secureStorage.TryGetValue(key, out var value);
-			return Task.FromResult(value);
-		}
+        public Task<byte[]?> GetAsync(string key)
+        {
+            _secureStorage.TryGetValue(key, out var value);
+            return Task.FromResult(value);
+        }
 
-		public Task SetAsync(string key, byte[] value)
-		{
-			if (value is null)
-				_secureStorage.TryRemove(key, out _);
-			else
-				_secureStorage[key] = value;
-			Save();
-			return Task.CompletedTask;
-		}
+        public Task SetAsync(string key, byte[] value)
+        {
+            if (value is null)
+                _secureStorage.TryRemove(key, out _);
+            else
+                _secureStorage[key] = value;
+            Save();
+            return Task.CompletedTask;
+        }
 
-		public bool Remove(string key)
-		{
-			var result = _secureStorage.TryRemove(key, out _);
-			Save();
-			return result;
-		}
+        public bool Remove(string key)
+        {
+            var result = _secureStorage.TryRemove(key, out _);
+            Save();
+            return result;
+        }
 
-		public void RemoveAll()
-		{
-			_secureStorage.Clear();
-			Save();
-		}
-	}
+        public void RemoveAll()
+        {
+            _secureStorage.Clear();
+            Save();
+        }
+    }
 }
 
 [JsonSerializable(typeof(SecureStorageDictionary), TypeInfoPropertyName = nameof(SecureStorageDictionary))]

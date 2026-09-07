@@ -8,7 +8,6 @@ using Avalonia.Styling;
 using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 using Application = Avalonia.Application;
-using Dispatcher = Avalonia.Threading.Dispatcher;
 using StyleInclude = Avalonia.Markup.Xaml.Styling.StyleInclude;
 
 namespace Avae.Avalonia;
@@ -22,7 +21,7 @@ public enum TypeDialog
 public abstract class AvaeApplication : Application, IIocConfiguration, IDisposable, IRequestedThemeService
 {
     public abstract string IconUrl { get; }
-    public abstract TypeDialog TypeDialog {  get; }
+    public abstract TypeDialog TypeDialog { get; }
 
     public AvaeApplication()
     {
@@ -37,18 +36,18 @@ public abstract class AvaeApplication : Application, IIocConfiguration, IDisposa
     }
 
     public virtual void Configure(IServiceCollection services)
-    {            
+    {
         services.AddSingleton<IBrokerService, BrokerService>();
         services.AddSingleton<IIocConfiguration>(this);
         services.AddSingleton<IDialogService>(sp =>
         {
-            return TypeDialog== TypeDialog.Box ? new DialogService(sp, IconUrl) :
+            return TypeDialog == TypeDialog.Box ? new DialogService(sp, IconUrl) :
                          sp.GetRequiredService<IContentDialogService>() as ContentDialogService ??
                          throw new InvalidOperationException("Failed to resolve IContentDialogService.");
         });
-        services.AddTransient<INotificationService,NotificationService>();
+        services.AddTransient<INotificationService, NotificationService>();
         services.AddSingleton<IContentDialogService>(sp => new ContentDialogService(sp));
-        services.AddSingleton<ITaskDialogService, TaskDialogService>();            
+        services.AddSingleton<ITaskDialogService, TaskDialogService>();
         services.AddSingleton<IRequestedThemeService>(this);
     }
 
@@ -103,7 +102,7 @@ public abstract class AvaeApplication : Application, IIocConfiguration, IDisposa
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
         {
             singleView.MainView = mainView;
-            
+
         }
 
         base.OnFrameworkInitializationCompleted();

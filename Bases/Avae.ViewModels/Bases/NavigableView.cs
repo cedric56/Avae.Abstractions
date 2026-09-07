@@ -1,7 +1,4 @@
-﻿
-using Avae.Core;
-
-namespace Avae.ViewModels;
+﻿namespace Avae.ViewModels;
 
 /// <summary>
 /// This class is used to represent a page in the application.

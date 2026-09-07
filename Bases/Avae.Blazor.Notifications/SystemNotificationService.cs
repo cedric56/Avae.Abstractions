@@ -9,7 +9,7 @@ namespace Avae.Blazor.Notifications;
 internal class SystemNotificationService : ISystemNotificationService, IAsyncDisposable
 {
     Dictionary<uint, ISystemNotification> currents = new();
-    
+
     Dictionary<string, NotificationChannel>? channels = null;
 
     IJSRuntime jSRuntime;
@@ -46,7 +46,7 @@ internal class SystemNotificationService : ISystemNotificationService, IAsyncDis
         if (_module is not null)
             await _module.DisposeAsync();
         if (_innerModule is not null)
-            await _innerModule.DisposeAsync();        
+            await _innerModule.DisposeAsync();
     }
 
     [JSInvokable]

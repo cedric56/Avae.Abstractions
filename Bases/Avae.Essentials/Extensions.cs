@@ -214,7 +214,7 @@ public static class Extensions
         ITextToSpeech textToSpeech,
         IVibration vibration,
         IWebAuthenticator webAuthenticator,
-        Func<IVersionTracking> versionTracking, 
+        Func<IVersionTracking> versionTracking,
         ServiceLifetime lifetime = ServiceLifetime.Singleton)
     {
         EssentialsAccessors.SetScreenshot(null, screenshot);

@@ -9,7 +9,7 @@ public class SystemNotificationEventArgs : EventArgs
 {
     public string? ActionTag { get; init; }
     public uint? NotificationId { get; init; }
-     
+
     // could be used for text input
     public object? UserData { get; init; }
     public bool IsCancelled { get; init; }
@@ -51,7 +51,7 @@ public interface ISystemNotification
     void Show();
     void Close();
 
-    
+
 }
 
 public interface ISystemNotificationService

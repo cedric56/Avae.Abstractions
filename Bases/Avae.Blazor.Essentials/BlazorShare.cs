@@ -1,7 +1,6 @@
 ﻿using Append.Blazor.WebShare;
 using Avae.Core;
 using Avae.Essentials;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Storage;
@@ -34,7 +33,7 @@ internal partial class BlazorShare : IAvaeShare
             throw new InvalidOperationException("Files must have been loaded from library");
 
         var service = ServiceLocator.GetScopedRequiredService<IWebShareService>();
-        if (await service.IsSupportedAsync())                
+        if (await service.IsSupportedAsync())
             await service.ShareAsync(new ShareDataEx()
             {
                 Title = title,

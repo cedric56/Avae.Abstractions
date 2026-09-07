@@ -67,7 +67,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<HomeViewModel>();
         builder.Services.AddSingleton<MenuViewModel>();
         builder.Services.AddTransient<EssentialsViewModel>();
-        builder.Services.AddTransient<ModalViewModel>();        
+        builder.Services.AddTransient<ModalViewModel>();
         builder.Services.AddTransient<FormViewModel>();
         builder.Services.UseDBSqlLayer<SqliteConnection>();
 #if DEBUG
@@ -85,12 +85,12 @@ class DefaultView : ContentView, IViewFor<FormViewModel>
 {
     public object? Context
     {
-        get => BindingContext; 
+        get => BindingContext;
         set
         {
             BindingContext = value;
             if (value is FormViewModel viewModel)
-                this.Content = new Label() { Text = "Form"};
+                this.Content = new Label() { Text = "Form" };
         }
     }
 }

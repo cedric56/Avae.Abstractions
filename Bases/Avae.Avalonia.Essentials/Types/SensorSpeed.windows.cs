@@ -2,23 +2,23 @@ using Microsoft.Maui.Devices.Sensors;
 
 namespace Avae.Avalonia.Essentials
 {
-	internal static partial class SensorSpeedExtensions
-	{
-		internal static uint ToPlatform(this SensorSpeed sensorSpeed)
-		{
-			switch (sensorSpeed)
-			{
-				case SensorSpeed.Fastest:
-					return sensorIntervalFastest;
-				case SensorSpeed.Game:
-					return sensorIntervalGame;
-				case SensorSpeed.UI:
-					return sensorIntervalUI;
-			}
+    internal static partial class SensorSpeedExtensions
+    {
+        internal static uint ToPlatform(this SensorSpeed sensorSpeed)
+        {
+            switch (sensorSpeed)
+            {
+                case SensorSpeed.Fastest:
+                    return sensorIntervalFastest;
+                case SensorSpeed.Game:
+                    return sensorIntervalGame;
+                case SensorSpeed.UI:
+                    return sensorIntervalUI;
+            }
 
-			return sensorIntervalDefault;
-		}
-	}
+            return sensorIntervalDefault;
+        }
+    }
 
     internal static partial class SensorSpeedExtensions
     {

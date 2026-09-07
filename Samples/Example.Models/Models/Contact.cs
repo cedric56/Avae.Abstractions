@@ -21,7 +21,8 @@ namespace Example.Models
         public Person Person
         {
             get { return person ??= DBBase.Instance.Get<Person>(IdPerson)!; }
-            set {
+            set
+            {
                 person = value;
                 OnPropertyChanged(nameof(Person));
             }
@@ -38,7 +39,7 @@ namespace Example.Models
         public Person PersonContact
         {
             get { return contact ??= DBBase.Instance.Get<Person>(IdContact)!; }
-            set 
+            set
             {
                 contact = value;
                 OnPropertyChanged(nameof(PersonContact));

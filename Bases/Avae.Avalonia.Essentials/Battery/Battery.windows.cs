@@ -1,8 +1,8 @@
+using Microsoft.Maui.Devices;
 using System.Runtime.Versioning;
 using Windows.System.Power;
-using EnergySaverStatus = Microsoft.Maui.Devices.EnergySaverStatus;
 using Dispatcher = Avalonia.Threading.Dispatcher;
-using Microsoft.Maui.Devices;
+using EnergySaverStatus = Microsoft.Maui.Devices.EnergySaverStatus;
 
 namespace Avae.Avalonia.Essentials
 {
@@ -84,91 +84,91 @@ namespace Avae.Avalonia.Essentials
 
     [SupportedOSPlatform("windows10.0.10240")]
     partial class BatteryImplementation : IBattery
-	{
-		void StartEnergySaverListeners() =>
-			PowerManager.EnergySaverStatusChanged += ReportEnergySaverUpdated;
+    {
+        void StartEnergySaverListeners() =>
+            PowerManager.EnergySaverStatusChanged += ReportEnergySaverUpdated;
 
-		void StopEnergySaverListeners() =>
-			PowerManager.EnergySaverStatusChanged -= ReportEnergySaverUpdated;
+        void StopEnergySaverListeners() =>
+            PowerManager.EnergySaverStatusChanged -= ReportEnergySaverUpdated;
 
-		void ReportEnergySaverUpdated(object? sender, object e)
-			=> Dispatcher.UIThread.Invoke(OnEnergySaverChanged);
+        void ReportEnergySaverUpdated(object? sender, object e)
+            => Dispatcher.UIThread.Invoke(OnEnergySaverChanged);
 
-		public void StartBatteryListeners() =>
-			DefaultBattery.ReportUpdated += ReportUpdated;
+        public void StartBatteryListeners() =>
+            DefaultBattery.ReportUpdated += ReportUpdated;
 
-		public void StopBatteryListeners() =>
-			DefaultBattery.ReportUpdated -= ReportUpdated;
+        public void StopBatteryListeners() =>
+            DefaultBattery.ReportUpdated -= ReportUpdated;
 
-		void ReportUpdated(object sender, object e)
-			=> Dispatcher.UIThread.Invoke(OnBatteryInfoChanged);
+        void ReportUpdated(object sender, object e)
+            => Dispatcher.UIThread.Invoke(OnBatteryInfoChanged);
 
-		global::Windows.Devices.Power.Battery DefaultBattery =>
-			global::Windows.Devices.Power.Battery.AggregateBattery;
+        global::Windows.Devices.Power.Battery DefaultBattery =>
+            global::Windows.Devices.Power.Battery.AggregateBattery;
 
-		public double ChargeLevel
-		{
-			get
-			{
-				var finalReport = DefaultBattery.GetReport();
-				var finalPercent = 1.0;
+        public double ChargeLevel
+        {
+            get
+            {
+                var finalReport = DefaultBattery.GetReport();
+                var finalPercent = 1.0;
 
-				var remaining = finalReport.RemainingCapacityInMilliwattHours;
-				var full = finalReport.FullChargeCapacityInMilliwattHours;
+                var remaining = finalReport.RemainingCapacityInMilliwattHours;
+                var full = finalReport.FullChargeCapacityInMilliwattHours;
 
-				if (remaining.HasValue && full.HasValue)
-					finalPercent = (double)remaining.Value / (double)full.Value;
+                if (remaining.HasValue && full.HasValue)
+                    finalPercent = (double)remaining.Value / (double)full.Value;
 
-				return finalPercent;
-			}
-		}
+                return finalPercent;
+            }
+        }
 
-		public BatteryState State
-		{
-			get
-			{
-				var report = DefaultBattery.GetReport();
+        public BatteryState State
+        {
+            get
+            {
+                var report = DefaultBattery.GetReport();
 
-				switch (report.Status)
-				{
-					case BatteryStatus.Charging:
-						return BatteryState.Charging;
-					case BatteryStatus.Discharging:
-						return BatteryState.Discharging;
-					case BatteryStatus.Idle:
-						if (ChargeLevel >= 1.0)
-							return BatteryState.Full;
-						return BatteryState.NotCharging;
-					case BatteryStatus.NotPresent:
-						return BatteryState.NotPresent;
-				}
+                switch (report.Status)
+                {
+                    case BatteryStatus.Charging:
+                        return BatteryState.Charging;
+                    case BatteryStatus.Discharging:
+                        return BatteryState.Discharging;
+                    case BatteryStatus.Idle:
+                        if (ChargeLevel >= 1.0)
+                            return BatteryState.Full;
+                        return BatteryState.NotCharging;
+                    case BatteryStatus.NotPresent:
+                        return BatteryState.NotPresent;
+                }
 
-				if (ChargeLevel >= 1.0)
-					return BatteryState.Full;
+                if (ChargeLevel >= 1.0)
+                    return BatteryState.Full;
 
-				return BatteryState.Unknown;
-			}
-		}
+                return BatteryState.Unknown;
+            }
+        }
 
-		public BatteryPowerSource PowerSource
-		{
-			get
-			{
-				switch (State)
-				{
-					case BatteryState.Full:
-					case BatteryState.Charging:
-					case BatteryState.NotPresent:
-						return BatteryPowerSource.AC;
-					case BatteryState.Unknown:
-						return BatteryPowerSource.Unknown;
-					default:
-						return BatteryPowerSource.Battery;
-				}
-			}
-		}
+        public BatteryPowerSource PowerSource
+        {
+            get
+            {
+                switch (State)
+                {
+                    case BatteryState.Full:
+                    case BatteryState.Charging:
+                    case BatteryState.NotPresent:
+                        return BatteryPowerSource.AC;
+                    case BatteryState.Unknown:
+                        return BatteryPowerSource.Unknown;
+                    default:
+                        return BatteryPowerSource.Battery;
+                }
+            }
+        }
 
-		public EnergySaverStatus EnergySaverStatus =>
-			PowerManager.EnergySaverStatus == global::Windows.System.Power.EnergySaverStatus.On ? EnergySaverStatus.On : EnergySaverStatus.Off;
-	}
+        public EnergySaverStatus EnergySaverStatus =>
+            PowerManager.EnergySaverStatus == global::Windows.System.Power.EnergySaverStatus.On ? EnergySaverStatus.On : EnergySaverStatus.Off;
+    }
 }

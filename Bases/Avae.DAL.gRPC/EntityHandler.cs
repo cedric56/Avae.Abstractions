@@ -25,7 +25,7 @@ public class EntityHandler<T>(IDBLayer layer) : EntityHandler where T : class, n
     }
     public override async Task<object?> GetAsync(long id, int? commandTimeout = null)
     {
-        return await layer.GetAsync<T>(id, commandTimeout:commandTimeout);
+        return await layer.GetAsync<T>(id, commandTimeout: commandTimeout);
     }
     public override async Task<object> FindByAnyAsync(Dictionary<string, object> filters, int? commandTimeout = null)
     {

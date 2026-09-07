@@ -30,7 +30,7 @@
 
 //        public static AppBuilder UseMauiEssentials(this AppBuilder builder)
 //        {
-            
+
 //            Patch();
 //            builder.AfterSetup(b =>
 //            {
@@ -77,7 +77,7 @@
 //                        var arg = args.FirstOrDefault(a => a.StartsWith(AppActionsExtensions.AppActionPrefix));
 //                        if (arg != null)
 //                        {
-                            
+
 //                            SendMessage(p.MainWindowHandle, arg);
 //                            proc.Kill();
 //                            Environment.Exit(0);

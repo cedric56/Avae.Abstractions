@@ -195,7 +195,7 @@ public partial class EssentialsViewModel(
     {
         try
         {
-            if(webAuthenticator!= null)
+            if (webAuthenticator != null)
             {
                 var authResult = await webAuthenticator.AuthenticateAsync(
                     new Uri("https://accounts.google.com/o/oauth2/v2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=email%20profile"),
@@ -477,7 +477,7 @@ public partial class EssentialsViewModel(
             return;
 
         var s = await mediaPicker.PickPhotosAsync();
-        if (s.Count>0)
+        if (s.Count > 0)
         {
             service.Show(s[0].FileName, "");
         }
@@ -496,7 +496,7 @@ public partial class EssentialsViewModel(
             return;
 
         var s = await mediaPicker.PickVideosAsync();
-        if (s.Count>0)
+        if (s.Count > 0)
         {
             service.Show(s[0].FileName, "");
         }
@@ -634,7 +634,7 @@ public partial class EssentialsViewModel(
                 service.Show(result.ToString(), "");
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             service.Show(ex.Message, "Error");
         }

@@ -30,7 +30,7 @@ public partial class AvaePopupPage : PopupPage
 
     public string Title
     {
-        get;set;
+        get; set;
     }
 
     public ObservableCollection<NamedCommand> Buttons

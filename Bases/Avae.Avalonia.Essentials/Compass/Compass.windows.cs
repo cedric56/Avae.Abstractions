@@ -1,4 +1,3 @@
-using Avalonia.Threading;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Devices.Sensors;
 using System.Runtime.Versioning;
@@ -79,54 +78,54 @@ namespace Avae.Avalonia.Essentials
 
     [SupportedOSPlatform("windows10.0.10240")]
     partial class CompassImplementation : ICompass
-	{
-		// Magic numbers from https://docs.microsoft.com/en-us/uwp/api/windows.devices.sensors.compass.reportinterval#Windows_Devices_Sensors_Compass_ReportInterval
-		internal const uint FastestInterval = 8;
-		internal const uint GameInterval = 22;
-		internal const uint NormalInterval = 33;
+    {
+        // Magic numbers from https://docs.microsoft.com/en-us/uwp/api/windows.devices.sensors.compass.reportinterval#Windows_Devices_Sensors_Compass_ReportInterval
+        internal const uint FastestInterval = 8;
+        internal const uint GameInterval = 22;
+        internal const uint NormalInterval = 33;
 
-		// keep around a reference so we can stop this same instance
-		WindowsCompass? sensor;
+        // keep around a reference so we can stop this same instance
+        WindowsCompass? sensor;
 
-		static WindowsCompass DefaultCompass =>
-			WindowsCompass.GetDefault();
+        static WindowsCompass DefaultCompass =>
+            WindowsCompass.GetDefault();
 
-		bool PlatformIsSupported =>
-			DefaultCompass != null;
+        bool PlatformIsSupported =>
+            DefaultCompass != null;
 
-		void PlatformStart(SensorSpeed sensorSpeed, bool applyLowPassFilter)
-		{
-			sensor = DefaultCompass;
+        void PlatformStart(SensorSpeed sensorSpeed, bool applyLowPassFilter)
+        {
+            sensor = DefaultCompass;
 
-			var interval = NormalInterval;
-			switch (sensorSpeed)
-			{
-				case SensorSpeed.Fastest:
-					interval = FastestInterval;
-					break;
-				case SensorSpeed.Game:
-					interval = GameInterval;
-					break;
-			}
+            var interval = NormalInterval;
+            switch (sensorSpeed)
+            {
+                case SensorSpeed.Fastest:
+                    interval = FastestInterval;
+                    break;
+                case SensorSpeed.Game:
+                    interval = GameInterval;
+                    break;
+            }
 
-			sensor.ReportInterval = sensor.MinimumReportInterval >= interval ? sensor.MinimumReportInterval : interval;
+            sensor.ReportInterval = sensor.MinimumReportInterval >= interval ? sensor.MinimumReportInterval : interval;
 
-			sensor.ReadingChanged += CompassReportedInterval;
-		}
+            sensor.ReadingChanged += CompassReportedInterval;
+        }
 
-		void CompassReportedInterval(object sender, CompassReadingChangedEventArgs e)
-		{
-			var data = new CompassData(e.Reading.HeadingMagneticNorth);
-			RaiseReadingChanged(data);
-		}
+        void CompassReportedInterval(object sender, CompassReadingChangedEventArgs e)
+        {
+            var data = new CompassData(e.Reading.HeadingMagneticNorth);
+            RaiseReadingChanged(data);
+        }
 
-		void PlatformStop()
-		{
+        void PlatformStop()
+        {
             if (sensor != null)
             {
                 sensor.ReadingChanged -= CompassReportedInterval;
                 sensor.ReportInterval = 0;
             }
-		}
-	}
+        }
+    }
 }

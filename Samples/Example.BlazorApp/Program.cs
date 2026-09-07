@@ -7,7 +7,8 @@ using Example.BlazorApp.Components;
 using Example.Razor;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddScoped(sp => new HttpClient { 
+builder.Services.AddScoped(sp => new HttpClient
+{
     BaseAddress = new Uri(builder.Environment.WebRootPath)
 });
 builder.Services.UseBlazorEssentials();

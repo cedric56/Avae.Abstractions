@@ -60,7 +60,7 @@ public static class Extensions
                 hub.OnRecordChanged(e);
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             logger?.LogError(ex.Message);
             return () => Task.CompletedTask;
@@ -90,7 +90,7 @@ public static class Extensions
 
         var handler = new GrpcWebSocketBridgeHandler();
         if (!OperatingSystem.IsBrowser() && handler.InnerHandler is HttpClientHandler httpHandler)
-            httpHandler.ServerCertificateCustomValidationCallback = ValidateCertificates2;        
+            httpHandler.ServerCertificateCustomValidationCallback = ValidateCertificates2;
         return GrpcChannel.ForAddress(url, new GrpcChannelOptions()
         {
             HttpHandler = handler

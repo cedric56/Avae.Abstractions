@@ -1,6 +1,5 @@
 using Avae.ViewModels;
 using Example.ViewModels;
-using System.Diagnostics;
 
 namespace Example;
 

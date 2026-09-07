@@ -1,13 +1,11 @@
 ﻿using Avae.Core;
 using Avae.DAL;
-using Dapper;
 using Dapper.Contrib.Extensions;
 using MessagePack;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Text;
 
 namespace Example.Models
 {
@@ -109,7 +107,7 @@ namespace Example.Models
                 {
                     if (Id == 0)
                     {
-                        connection.Insert(this, transaction, commandTimeout);                        
+                        connection.Insert(this, transaction, commandTimeout);
                     }
                     else
                     {
@@ -232,7 +230,7 @@ namespace Example.Models
 
                     isSuccessful = true;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     transaction.Rollback();
                     message = $"Suppression impossible, cette personne fait partie des contacts d'un autre usager." +

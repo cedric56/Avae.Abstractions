@@ -12,7 +12,7 @@ public class DBLogCommand(ILogger? logger, DbCommand command, IDBIdentity? ident
     [AllowNull]
     public override string CommandText
     {
-        get => command.CommandText;            
+        get => command.CommandText;
         set
         {
 

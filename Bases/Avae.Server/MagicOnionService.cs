@@ -13,21 +13,21 @@ namespace Avae.Server;
 public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicOnionLayer
 {
     private async UnaryResult<DBResult> Request(string type, Func<EntityHandler, DBTransactionalSerializerOptions?, Task<byte[]>> serialize)
-    {            
+    {
         if (string.IsNullOrWhiteSpace(type))
         {
-            return new DBResult() 
-            { 
-                Successful = false, 
-                Exception = "Type parameter is required" 
+            return new DBResult()
+            {
+                Successful = false,
+                Exception = "Type parameter is required"
             };
         }
         else if (!EntityHandler.Handlers.TryGetValue(type, out var handler))
         {
-            return new DBResult() 
-            { 
-                Successful = false, 
-                Exception = "Unable to find entity handler" 
+            return new DBResult()
+            {
+                Successful = false,
+                Exception = "Unable to find entity handler"
             };
         }
         else
@@ -87,7 +87,7 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
         finally
         {
             DBContext.CurrentConnectionId.Value = null;
-        }            
+        }
     }
 
     public async UnaryResult<DBResult> Save(DBTransactional transactional, string connectionId, int? commandTimeout = null)
@@ -105,7 +105,7 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
     }
 
     public async UnaryResult<DBResult> QueryAsync(string sql, object? param = null, int? commandTimeout = null, CommandType commandType = CommandType.Text)
-    {        
+    {
         try
         {
             var layer = ServiceLocator.GetRequiredService<IDBLayer>();

@@ -14,7 +14,7 @@ public class ConnectionTracker<TObject> : IDisposable where TObject : class, new
     readonly ILogger? logger;
 
     public ConnectionTracker(
-        IHubContext<SignalRHub<TObject>> hubContext, 
+        IHubContext<SignalRHub<TObject>> hubContext,
         IDBMonitor<TObject> monitor,
         ILogger? logger = null)
     {

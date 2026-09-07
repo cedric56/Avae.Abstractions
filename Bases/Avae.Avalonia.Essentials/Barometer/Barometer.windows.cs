@@ -1,4 +1,3 @@
-using Avalonia.Threading;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Devices.Sensors;
 using System.Runtime.Versioning;
@@ -81,35 +80,35 @@ namespace Avae.Avalonia.Essentials
 
     [SupportedOSPlatform("windows10.0.10240")]
     partial class BarometerImplementation : IBarometer
-	{
-		WinBarometer? sensor;
+    {
+        WinBarometer? sensor;
 
-		WinBarometer DefaultBarometer => WinBarometer.GetDefault();
+        WinBarometer DefaultBarometer => WinBarometer.GetDefault();
 
-		public bool IsSupported =>
-			DefaultBarometer != null;
+        public bool IsSupported =>
+            DefaultBarometer != null;
 
-		void PlatformStart(SensorSpeed sensorSpeed)
-		{
-			sensor = DefaultBarometer;
+        void PlatformStart(SensorSpeed sensorSpeed)
+        {
+            sensor = DefaultBarometer;
 
-			var interval = sensorSpeed.ToPlatform();
-			sensor.ReportInterval = sensor.MinimumReportInterval >= interval ? sensor.MinimumReportInterval : interval;
+            var interval = sensorSpeed.ToPlatform();
+            sensor.ReportInterval = sensor.MinimumReportInterval >= interval ? sensor.MinimumReportInterval : interval;
 
-			sensor.ReadingChanged += BarometerReportedInterval;
-		}
+            sensor.ReadingChanged += BarometerReportedInterval;
+        }
 
-		internal void BarometerReportedInterval(object sender, BarometerReadingChangedEventArgs e)
-			=> RaiseReadingChanged(new BarometerData(e.Reading.StationPressureInHectopascals));
+        internal void BarometerReportedInterval(object sender, BarometerReadingChangedEventArgs e)
+            => RaiseReadingChanged(new BarometerData(e.Reading.StationPressureInHectopascals));
 
-		void PlatformStop()
-		{
-			if (sensor == null)
-				return;
+        void PlatformStop()
+        {
+            if (sensor == null)
+                return;
 
-			sensor.ReadingChanged -= BarometerReportedInterval;
-			sensor.ReportInterval = 0;
-			sensor = null;
-		}
-	}
+            sensor.ReadingChanged -= BarometerReportedInterval;
+            sensor.ReportInterval = 0;
+            sensor = null;
+        }
+    }
 }

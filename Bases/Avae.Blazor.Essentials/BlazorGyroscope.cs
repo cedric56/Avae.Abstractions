@@ -9,9 +9,9 @@ internal class BlazorGyroscope : IGyroscope
 
     private void Accelerometer_OnReading(object? sender, EventArgs e)
     {
-        if(gyroscope != null) 
-        ReadingChanged?.Invoke(sender, new GyroscopeChangedEventArgs(
-            new GyroscopeData(gyroscope.X, gyroscope.Y, gyroscope.Z)));
+        if (gyroscope != null)
+            ReadingChanged?.Invoke(sender, new GyroscopeChangedEventArgs(
+                new GyroscopeData(gyroscope.X, gyroscope.Y, gyroscope.Z)));
     }
 
     public bool IsSupported => true;

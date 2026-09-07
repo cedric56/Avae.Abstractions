@@ -4,7 +4,7 @@ using Example.ViewModels;
 
 namespace Example;
 
-public partial class FormPage1View : View, 
+public partial class FormPage1View : View,
     IViewFor<FormViewModel>
 {
     public FormPage1View()

@@ -1,6 +1,6 @@
-﻿using Avae.ViewModels;
-using Avae.Core;
+﻿using Avae.Core;
 using Avae.Services;
+using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace Example.ViewModels;
 
-public partial class ModalViewModel(IDialogService dialogService) : ObservableValidator, 
+public partial class ModalViewModel(IDialogService dialogService) : ObservableValidator,
     ICloseableViewModel<string?>,
     IViewModelErrorInfo
 {
@@ -20,7 +20,7 @@ public partial class ModalViewModel(IDialogService dialogService) : ObservableVa
 
     [ObservableProperty]
     [Required(ErrorMessage = "You have to enter a value.")]
-    public partial string? Message {  get; set; }
+    public partial string? Message { get; set; }
 
     public event EventHandler<string?>? CloseRequested;
 

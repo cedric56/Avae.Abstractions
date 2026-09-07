@@ -6,7 +6,7 @@ namespace Avae.DAL.SqlTableDependency;
 public static class Extensions
 {
     public static SqlTableDependencyCore<TObject> AddTableDependency<TObject>(
-        this DBMonitor<TObject> monitor, string connectionString, 
+        this DBMonitor<TObject> monitor, string connectionString,
         Func<TObject, long> getId,
         out Action unsuscribe)
         where TObject : class, new()

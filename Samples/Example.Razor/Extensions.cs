@@ -1,16 +1,16 @@
-﻿using Avae.ViewModels;
-using Avae.Razor;
+﻿using Avae.Razor;
 using Avae.Razor.Components;
 using Avae.Services;
+using Avae.ViewModels;
 using Example.DAL;
 using Example.Models;
 using Example.Razor.Components;
 using Example.Razor.Layout;
 using Example.ViewModels;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
-using Microsoft.AspNetCore.Components;
 
 namespace Example.Razor;
 
@@ -90,7 +90,7 @@ public static class Extensions
         }
         else
         {
-           services.UseDBOnionLayer();
+            services.UseDBOnionLayer();
         }
     }
 }

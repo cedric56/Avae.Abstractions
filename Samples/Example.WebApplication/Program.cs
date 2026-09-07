@@ -1,6 +1,6 @@
-using Avae.Core;
-using Avae.Blazor.Notifications;
 using Avae.Blazor.Essentials;
+using Avae.Blazor.Notifications;
+using Avae.Core;
 using Example.Razor;
 
 var builder = WebApplication.CreateBuilder(args);

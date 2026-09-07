@@ -8,18 +8,18 @@ public partial class AppShell : Shell
     public AppShell()
     {
         InitializeComponent();
-        
+
         var vm = new MainViewModel(new Avae.ViewModels.Router(ServiceLocator.Default));
 
         BindingContext = vm;
 
-        foreach(var navigable in vm.Navigables)
+        foreach (var navigable in vm.Navigables)
         {
             this.Items.Add(
             new ShellContent()
             {
                 Icon = navigable.Source as ImageSource,
-                Title = navigable.DisplayName,            
+                Title = navigable.DisplayName,
                 ContentTemplate = new DataTemplate(() =>
                 {
                     vm.SelectedNavigable = navigable;

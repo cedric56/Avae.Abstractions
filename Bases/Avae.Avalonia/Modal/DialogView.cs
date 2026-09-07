@@ -1,6 +1,6 @@
-﻿using Avae.ViewModels;
-using Avae.Core;
+﻿using Avae.Core;
 using Avae.Services;
+using Avae.ViewModels;
 using Avalonia.Controls;
 using MsBox.Avalonia;
 
@@ -39,7 +39,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
                     value = @params!.PrimaryButtonCommand?.CanExecute(@params.PrimaryButtonCommandParameter) ?? true;
                 else if (result == "Secondary")
                     value = @params!.SecondaryButtonCommand?.CanExecute(@params.SecondaryButtonCommandParameter) ?? true;
-                else 
+                else
                     value = @params!.CloseButtonCommand?.CanExecute(@params.CloseButtonCommandParameter) ?? true;
 
                 return !value;
@@ -59,7 +59,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
     {
         TResult? result = default;
         var viewModel = ViewModel;
-        if(viewModel is null)
+        if (viewModel is null)
             throw new ArgumentNullException(nameof(viewModel));
 
         var modalParams = new ModalParameters<TViewModel, TResult?>(Icon, viewModel)

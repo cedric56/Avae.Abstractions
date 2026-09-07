@@ -1,5 +1,4 @@
 using Avae.ViewModels;
-using Avalonia.Controls;
 using Example.ViewModels;
 
 namespace Example;
