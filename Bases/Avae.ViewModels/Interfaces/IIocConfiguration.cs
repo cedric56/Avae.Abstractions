@@ -6,8 +6,6 @@
 /// </summary>
 public interface IIocConfiguration : IIoc
 {
-    //void Configure(IIocContainer container);
-
     object? GetView(string key, params object[] @params);
 
     IViewFor? GetContextFor(string key, NavigableContext context);

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 
 namespace Avae.ViewModels;
 
@@ -7,29 +6,12 @@ namespace Avae.ViewModels;
 /// A simple container for registering and accessing pages in various frameworks such
 /// as Windows, Windows Phone, Android, iOS etc.
 /// </summary>
-public class IocContainer : IIocContainer, IIocConfiguration
+public class IocContainer(IServiceProvider provider) : IIocContainer, IIocConfiguration
 {
-    private IServiceProvider provider;
-
     /// <summary>
     /// Registered view factories, keyed by view identifier (typically a type name).
     /// </summary>
     private readonly ConcurrentDictionary<string, ViewFactory> _factories = [];
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="IocContainer"/> class, building and configuring
-    /// a service provider from the supplied configuration.
-    /// </summary>
-    /// <param name="config">The configuration used to register services and views with this container.</param>
-    /// <param name="buildServiceProvider">
-    /// If <see langword="true"/>, a <see cref="ServiceProvider"/> is built from the configured services
-    /// and assigned as this container's <see cref="Provider"/>. If <see langword="false"/>, the provider
-    /// must be supplied later via <see cref="SetProvider"/>.
-    /// </param>
-    public IocContainer(IServiceProvider provider)
-    {
-        this.provider = provider;
-    }
 
     /// <summary>
     /// Resolves and creates the view registered under the specified key.
