@@ -1,5 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Labs.Notifications;
+using Example.DAL;
+using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Example.Windows;
 
@@ -10,7 +14,12 @@ class Program
 
     public static AppBuilder BuildAvaloniaApp()
     {
-        return App.Configure()
+        return App.CreateApp(services =>
+            {
+                services.UseDBSqlLayer<SqliteConnection>();
+                //services.UseDBOnionLayer();
+                services.AddSingleton<ILogger>(LoggerFactory.Create(b => b.AddDebug()).CreateLogger<App>());
+            })
             .WithDataAnnotationsValidation()
             .WithAppNotifications(new AppNotificationOptions()
             {

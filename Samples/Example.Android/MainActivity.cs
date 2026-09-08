@@ -41,15 +41,11 @@ public class MainApplication : AvaloniaAndroidApplication<AndroidApp>
 
     protected override AppBuilder CreateAppBuilder()
     {
-        return base.CreateAppBuilder();
-    }
-
-    protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
-    {
         Microsoft.Maui.ApplicationModel.Platform.Init(this);
-        return base.CustomizeAppBuilder(builder)
-           .WithAppNotifications(ApplicationContext!)
-           .UseAndroid();
+        return App.CreateApp<AndroidApp>(
+             configure: services => services.UseDBOnionLayer())
+            .WithAppNotifications(ApplicationContext!)
+            .UseAndroid();
     }
 }
 

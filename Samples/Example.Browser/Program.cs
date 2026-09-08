@@ -15,7 +15,7 @@ internal sealed partial class Program
         BuildAvaloniaApp().StartBrowserAppAsync("out");
 
     public static AppBuilder BuildAvaloniaApp()
-        => App.Configure<BrowserApp>(configure: services => services.UseDBOnionLayer())
+        => App.CreateApp<BrowserApp>(configure: services => services.UseDBOnionLayer())
                         .WithAppNotifications();
 
     public class BrowserApp : App

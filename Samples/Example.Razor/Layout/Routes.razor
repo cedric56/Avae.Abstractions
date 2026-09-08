@@ -26,7 +26,7 @@
             unsuscribe = await monitor.AddStreamingHub();
             //unsuscribe = await provider.AddSignalR(monitor);
         }
-        
+        Repository.Initialize(monitor);
         await base.OnInitializedAsync();
     }
 

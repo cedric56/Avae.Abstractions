@@ -1,5 +1,4 @@
-﻿using Avae.Core;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 
 namespace Avae.ViewModels;
@@ -8,15 +7,9 @@ namespace Avae.ViewModels;
 /// A simple container for registering and accessing pages in various frameworks such
 /// as Windows, Windows Phone, Android, iOS etc.
 /// </summary>
-public class IocContainer : IIocContainer
+public class IocContainer : IIocContainer, IIocConfiguration
 {
-    public IServiceProvider provider;
-
-    ///// <summary>
-    ///// Gets the service provider used to resolve dependencies, falling back to <see cref="ServiceLocator.Default"/>
-    ///// if none has been explicitly configured or supplied via <see cref="SetProvider"/>.
-    ///// </summary>
-    //public IServiceProvider Provider { get { return _provider ??= ServiceLocator.Default; } private set { _provider = value; } }
+    private IServiceProvider provider;
 
     /// <summary>
     /// Registered view factories, keyed by view identifier (typically a type name).
@@ -33,27 +26,10 @@ public class IocContainer : IIocContainer
     /// and assigned as this container's <see cref="Provider"/>. If <see langword="false"/>, the provider
     /// must be supplied later via <see cref="SetProvider"/>.
     /// </param>
-    public IocContainer(IServiceProvider provider, IIocConfiguration config)
+    public IocContainer(IServiceProvider provider)
     {
         this.provider = provider;
-        //services ??= new ServiceCollection();
-        //config.Configure(services);
-        config.Configure(this);
-        //if (provider == null)
-        //{
-        //    config.Configure(Provider = services.BuildServiceProvider());
-        //}
     }
-
-    ///// <summary>
-    ///// Explicitly sets the service provider used to resolve dependencies, overriding any
-    ///// provider built during construction.
-    ///// </summary>
-    ///// <param name="provider">The service provider to use.</param>
-    //public void SetProvider(IServiceProvider provider)
-    //{
-    //    _provider = provider;
-    //}
 
     /// <summary>
     /// Resolves and creates the view registered under the specified key.
@@ -225,5 +201,41 @@ public class IocContainer : IIocContainer
     public void Register<TContextFor, TArg1, TArg2, TArgs3, TArgs4, TArgs5>(Func<IServiceProvider, TArg1, TArg2, TArgs3, TArgs4, TArgs5, TContextFor> func) where TContextFor : IViewFor
     {
         Register((sp, args) => func(sp, args.Get<TArg1>(0), args.Get<TArg2>(1), args.Get<TArgs3>(2), args.Get<TArgs4>(3), args.Get<TArgs5>(4)));
+    }
+
+    /// <summary>
+    /// Resolves the view registered under the specified key, using the supplied navigation context.
+    /// </summary>
+    /// <param name="key">The key the view was registered under.</param>
+    /// <param name="context">The navigation context to pass to the view's factory.</param>
+    /// <returns>The resolved view as an <see cref="IViewFor"/>.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the resolved view does not implement <see cref="IViewFor"/>.</exception>
+    public IViewFor? GetContextFor(string key, NavigableContext context)
+    {
+        var view = GetView(key, [context]);
+        return view as IViewFor ?? throw new InvalidOperationException($"View must implement {nameof(IViewFor)}");
+    }
+
+    /// <summary>
+    /// Resolves the strongly typed view for the specified view model type, using the supplied navigation context.
+    /// </summary>
+    /// <typeparam name="TViewModel">The view model type whose view should be resolved.</typeparam>
+    /// <param name="context">The navigation context to pass to the view's factory.</param>
+    /// <returns>The resolved view as an <see cref="IViewFor{TViewModel}"/>, or <see langword="null"/> if resolution fails or the result does not match.</returns>
+    public IViewFor<TViewModel>? GetContextFor<TViewModel>(NavigableContext context) where TViewModel : IViewModelBase
+    {
+        return GetView(typeof(TViewModel).Name, [context]) as IViewFor<TViewModel>;
+    }
+
+    /// <summary>
+    /// Resolves the modal view associated with the specified closeable view model type.
+    /// </summary>
+    /// <typeparam name="TViewModel">The closeable view model type whose modal view should be resolved.</typeparam>
+    /// <typeparam name="TResult">The result type produced when the modal is closed.</typeparam>
+    /// <param name="context">The navigation context to pass to the view's factory.</param>
+    /// <returns>The resolved modal view, or <see langword="null"/> if resolution fails.</returns>
+    public IModalFor<TViewModel, TResult>? GetModalFor<TViewModel, TResult>(NavigableContext context) where TViewModel : ICloseableViewModel<TResult>
+    {
+        return GetModal<TViewModel, TResult>(context);
     }
 }

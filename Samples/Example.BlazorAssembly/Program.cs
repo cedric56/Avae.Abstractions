@@ -1,7 +1,7 @@
 using Avae.Avalonia.Essentials;
 using Avae.Avalonia.Notifications;
 using Avae.Browser;
-using Avae.Core;
+using Avae.DAL;
 using Avalonia.Labs.Notifications;
 using Example.Razor;
 using Example.Razor.Layout;
@@ -21,5 +21,5 @@ builder.Services.UseAvaeNotifications();
 builder.Services.UseSharedLibrary(true);
 await builder.Services.UseEmbeddedAvaloniaApp("avalonia", b => b.WithAppNotifications());
 var app = builder.Build();
-ServiceLocator.SetDefault(app.Services);
+DBBase.Initialize(app.Services.GetRequiredService<IDBLayer>());
 await app.RunAsync();

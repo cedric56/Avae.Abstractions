@@ -1,6 +1,6 @@
 using Avae.Blazor.Essentials;
 using Avae.Blazor.Notifications;
-using Avae.Core;
+using Avae.DAL;
 using Avalonia.Labs.Notifications;
 using Example.BlazorApp;
 using Example.BlazorApp.Components;
@@ -37,7 +37,7 @@ builder.Services
     });
 
 var app = builder.Build();
-
+DBBase.Initialize(app.Services.GetRequiredService<IDBLayer>());
 app.UseRouting();
 app.UseAntiforgery();
 app.MapStaticAssets();

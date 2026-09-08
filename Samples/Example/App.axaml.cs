@@ -13,7 +13,6 @@ using Example.ViewModels;
 using Example.Views;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Optris.Icons.Avalonia;
 using Optris.Icons.Avalonia.FontAwesome;
 using System;
@@ -25,19 +24,17 @@ namespace Example;
 
 public partial class App : AvaeApplication
 {
-    public static AppBuilder Configure(
+    public static AppBuilder CreateApp(
         Action<IServiceCollection>? configure = null)
     {
-        return Configure<App>(configure: configure);
+        return CreateApp<App>(configure: configure);
     }
 
-    public static AppBuilder Configure<TApp>(
-        Func<IServiceProvider, TApp>? factory = null,
+    public static AppBuilder CreateApp<TApp>(
         Action<IServiceCollection>? configure = null) where TApp : App
     {
-        return AvaeBuilder
-           .Configure<TApp>(
-           sp => factory?.Invoke(sp) ?? (TApp)new App(sp),
+        return AvaeBuilder.CreateAvaeApp(
+           sp => new App(sp),
            services =>
            {
                IconResolver.Register(new ExampleIconResolver());
@@ -52,18 +49,6 @@ public partial class App : AvaeApplication
                services.AddTransient<FormPage2ViewModel>();
                services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
                services.AddTransient<ModalViewModel>();
-
-               if (!OperatingSystem.IsBrowser())
-               {
-                   //services.UseDBSqlLayer<SqliteConnection>();
-                   services.UseDBOnionLayer();
-               }
-
-               if (OperatingSystem.IsWindows())
-               {
-                   services.AddSingleton<ILogger>(LoggerFactory.Create(b => b.AddDebug()).CreateLogger<App>());
-               }
-
                configure?.Invoke(services);
            },
            container =>

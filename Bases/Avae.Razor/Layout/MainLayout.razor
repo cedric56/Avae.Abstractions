@@ -1,17 +1,20 @@
 ﻿@using Avae.Core
 @using Avae.Razor.Components
+@using Avae.Razor.Services
 @using Avae.Services
 @using Avae.ViewModels
 @using MudBlazor
 @inherits LayoutComponentBase
 @* @implements IDisposable *@
+@inject IRequestedThemeService themeService
+@inject RenderFragment fragment
 @inject IIocConfiguration Configuration
 @inject IServiceProvider ServiceProvider
 @inject ComponentView NavMenu
 
-@IocConfiguration.Extras
+@fragment
 @* Required *@
-<MudThemeProvider IsDarkMode="IocConfiguration.IsDarkMode" />
+<MudThemeProvider IsDarkMode="Service.IsDarkMode" />
 <MudPopoverProvider />
 
 @* Needed for dialogs *@
@@ -43,7 +46,7 @@
         _drawerOpen = !_drawerOpen;
     }
 
-    private IocConfiguration IocConfiguration => ((IocConfiguration)Configuration);
+    private RequestThemeService Service => ((RequestThemeService)themeService);
 
     protected override void OnInitialized()
     {
@@ -51,7 +54,7 @@
 
         CircuitServiceAccessor.Provider = ServiceProvider;
 
-        IocConfiguration.RequestedThemeChanged += ThemeChanged;
+        Service.RequestedThemeChanged += ThemeChanged;
     }
 
     async void ThemeChanged(object? sender, RequestedTheme theme)
@@ -61,6 +64,6 @@
 
     public void Dispose()
     {
-        IocConfiguration.RequestedThemeChanged -= ThemeChanged;
+        Service.RequestedThemeChanged -= ThemeChanged;
     }
 } 

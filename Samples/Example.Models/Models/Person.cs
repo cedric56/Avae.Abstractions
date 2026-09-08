@@ -2,7 +2,6 @@
 using Avae.DAL;
 using Dapper.Contrib.Extensions;
 using MessagePack;
-using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;

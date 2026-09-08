@@ -6,7 +6,7 @@
 /// </summary>
 public interface IIocConfiguration : IIoc
 {
-    void Configure(IIocContainer container);
+    //void Configure(IIocContainer container);
 
     object? GetView(string key, params object[] @params);
 

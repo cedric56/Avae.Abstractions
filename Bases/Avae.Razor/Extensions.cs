@@ -1,5 +1,6 @@
 ﻿using Avae.Core;
 using Avae.Razor.Components;
+using Avae.Razor.Services;
 using Avae.Services;
 using Avae.ViewModels;
 using Microsoft.AspNetCore.Components;
@@ -43,18 +44,21 @@ public static class Extensions
         Action<IIocContainer>? configure = null,
         RenderFragment? extras = null)
     {
+        //TODO settings twice
         services.AddSingleton<CircuitServiceAccessor>();
-        services.AddSingleton<IIocContainer>(sp => new IocContainer(sp, GetConfiguration(sp)));
-        services.AddSingleton<IIocConfiguration>(sp => new IocConfiguration(sp, configure, extras));
-        services.AddTransient<Router>(sp => new Router(sp));
-        services.AddSingleton<Services.IDialogService>(GetConfiguration);
-        services.AddSingleton<IContentDialogService>(GetConfiguration);
-        services.AddSingleton<ITaskDialogService>(GetConfiguration);
-        services.AddSingleton<Services.INotificationService>(GetConfiguration);
-        services.AddSingleton<IRequestedThemeService>(GetConfiguration);
-        IocConfiguration GetConfiguration(IServiceProvider provider)
+        services.AddSingleton<IIocContainer>(sp =>
         {
-            return (IocConfiguration)provider.GetRequiredService<IIocConfiguration>();
-        }
+            var container = new IocContainer(sp);
+            configure?.Invoke(container);
+            return container;
+        });
+        services.AddSingleton<IIocConfiguration>(sp => (IocContainer)sp.GetRequiredService<IIocContainer>());
+        services.AddSingleton<RenderFragment>(_ => extras ?? new RenderFragment(_ => { }));
+        services.AddTransient<Router>();
+        services.AddSingleton<Avae.Services.IDialogService, Services.DialogService>();
+        services.AddSingleton<IContentDialogService, ContentDialogService>();
+        services.AddSingleton<ITaskDialogService,TaskDialogService>();
+        services.AddSingleton<INotificationService, NotificationService>();
+        services.AddSingleton<IRequestedThemeService,RequestThemeService>();
     }
 }

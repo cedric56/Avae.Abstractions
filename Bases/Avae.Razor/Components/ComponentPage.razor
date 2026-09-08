@@ -1,12 +1,15 @@
-﻿@using MudBlazor
-@inject IDialogService DialogService
+﻿@using Avae.Razor.Services
+@using MudBlazor
 @inject ISnackbar Snackbar
+@inject MudBlazor.IDialogService dialogService
 @code {
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        IocConfiguration.MudDialogService = DialogService;
-        IocConfiguration.SnackbarService = Snackbar;
+        TaskDialogService.MudDialogService = dialogService;
+        ContentDialogService.MudDialogService = dialogService;
+        NotificationService.SnackbarService = Snackbar;
+        Services.DialogService.MudDialogService = dialogService;
     }
 }

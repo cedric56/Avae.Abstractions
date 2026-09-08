@@ -1,5 +1,4 @@
-﻿using Avae.Services;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
@@ -29,8 +28,7 @@ public enum TypeDialog
 /// Base class for the Avalonia application entry point, wiring up dependency injection, navigation,
 /// dialog services, and framework lifecycle handling for Avae-based applications.
 /// </summary>
-public abstract class AvaeApplication(IServiceProvider provider) : Application, 
-    IDisposable, IRequestedThemeService
+public abstract class AvaeApplication(IServiceProvider provider) : Application,  IDisposable
 {
     /// <summary>
     /// Gets the URL of the application's icon, used by the boxed dialog service.
@@ -128,19 +126,5 @@ public abstract class AvaeApplication(IServiceProvider provider) : Application,
             disposable.Dispose();
 
         GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Applies the specified theme to the application by setting <see cref="Application.RequestedThemeVariant"/>.
-    /// </summary>
-    /// <param name="theme">The requested theme.</param>
-    public void Request(RequestedTheme theme)
-    {
-        RequestedThemeVariant = theme switch
-        {
-            RequestedTheme.Light => ThemeVariant.Light,
-            RequestedTheme.Dark => ThemeVariant.Dark,
-            _ => ThemeVariant.Default,
-        };
     }
 }
