@@ -44,7 +44,7 @@ public static class Extensions
         RenderFragment? extras = null)
     {
         services.AddSingleton<CircuitServiceAccessor>();
-        services.AddSingleton<IIocContainer>(sp => new IocContainer(GetConfiguration(sp), false));
+        services.AddSingleton<IIocContainer>(sp => new IocContainer(sp, GetConfiguration(sp)));
         services.AddSingleton<IIocConfiguration>(sp => new IocConfiguration(sp, configure, extras));
         services.AddTransient<Router>(sp => new Router(sp));
         services.AddSingleton<Services.IDialogService>(GetConfiguration);

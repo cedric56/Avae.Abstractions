@@ -1,6 +1,7 @@
 ﻿using Append.Blazor.WebShare;
 using Avae.Core;
 using Avae.Essentials;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Storage;
@@ -8,11 +9,11 @@ using System.Text.Json.Serialization;
 
 namespace Avae.Blazor.Essentials;
 
-internal partial class BlazorShare : IAvaeShare
+internal partial class BlazorShare(CircuitServiceAccessor circuitServiceAccessor) : IAvaeShare
 {
     public async Task RequestAsync(ShareTextRequest request)
     {
-        var service = ServiceLocator.GetScopedRequiredService<IWebShareService>();
+        var service = circuitServiceAccessor.GetRequiredService<IWebShareService>();
         if (await service.IsSupportedAsync())
             await service.ShareAsync(request.Title ?? string.Empty, request.Text ?? string.Empty, request.Uri ?? string.Empty);
     }
@@ -32,7 +33,7 @@ internal partial class BlazorShare : IAvaeShare
         if (!files.All(file => file is BlazorFileResult))
             throw new InvalidOperationException("Files must have been loaded from library");
 
-        var service = ServiceLocator.GetScopedRequiredService<IWebShareService>();
+        var service = circuitServiceAccessor.GetRequiredService<IWebShareService>();
         if (await service.IsSupportedAsync())
             await service.ShareAsync(new ShareDataEx()
             {

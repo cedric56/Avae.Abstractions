@@ -1,9 +1,10 @@
 ﻿using Avae.Core;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Devices.Sensors;
 
 namespace Avae.Blazor.Essentials;
 
-internal class BlazorOrientationSensor : IOrientationSensor
+internal class BlazorOrientationSensor(CircuitServiceAccessor circuitServiceAccessor) : IOrientationSensor
 {
     BlazorSensors.AbsoluteOrientationSensor? sensor;
 
@@ -25,7 +26,7 @@ internal class BlazorOrientationSensor : IOrientationSensor
     {
         if (sensor == null)
         {
-            sensor = ServiceLocator.GetScopedRequiredService<BlazorSensors.AbsoluteOrientationSensor>();
+            sensor = circuitServiceAccessor.GetRequiredService<BlazorSensors.AbsoluteOrientationSensor>();
             sensor.OnReading += Accelerometer_OnReading;
         }
 

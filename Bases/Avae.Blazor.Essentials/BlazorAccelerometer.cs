@@ -1,4 +1,5 @@
 ﻿using Avae.Core;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Devices.Sensors;
 
 namespace Avae.Blazor.Essentials;
@@ -30,7 +31,7 @@ internal static partial class SensorSpeedExtensions
     internal const double sensorIntervalFastest = 5;
 }
 
-internal class BlazorAccelerometer : IAccelerometer
+internal class BlazorAccelerometer(CircuitServiceAccessor circuitServiceAccessor) : IAccelerometer
 {
     BlazorSensors.Accelerometer? accelerometer;
 
@@ -53,7 +54,7 @@ internal class BlazorAccelerometer : IAccelerometer
     {
         if (accelerometer == null)
         {
-            accelerometer = ServiceLocator.GetScopedRequiredService<BlazorSensors.Accelerometer>();
+            accelerometer = circuitServiceAccessor.GetRequiredService<BlazorSensors.Accelerometer>();
             accelerometer.OnReading += Accelerometer_OnReading;
         }
 

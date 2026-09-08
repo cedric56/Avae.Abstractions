@@ -1,4 +1,5 @@
 ﻿using Avae.Core;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Media;
 using Microsoft.Maui.Storage;
@@ -17,13 +18,13 @@ public sealed class VideoCaptureCoordinator
     }
 }
 
-internal class BlazorMediaPicker : IMediaPicker
+internal class BlazorMediaPicker(CircuitServiceAccessor circuitServiceAccessor) : IMediaPicker
 {
     public bool IsCaptureSupported => true;
 
     public async Task<FileResult?> CapturePhotoAsync(MediaPickerOptions? options = null)
     {
-        var camera = ServiceLocator.GetScopedRequiredService<BlazorNative.Device.ICamera>();
+        var camera = circuitServiceAccessor.GetRequiredService<BlazorNative.Device.ICamera>();
         var result = await camera.CapturePhotoAsync();
         if (result.Status == BlazorNative.Core.CameraStatus.Captured
             && !string.IsNullOrWhiteSpace(result.Path))
@@ -33,31 +34,31 @@ internal class BlazorMediaPicker : IMediaPicker
 
     public Task<FileResult?> CaptureVideoAsync(MediaPickerOptions? options = null)
     {
-        var coordinator = ServiceLocator.GetScopedRequiredService<VideoCaptureCoordinator>();
+        var coordinator = circuitServiceAccessor.GetRequiredService<VideoCaptureCoordinator>();
         return coordinator.RequestVideoCaptureAsync();
     }
 
     public Task<FileResult?> PickPhotoAsync(MediaPickerOptions? options = null)
     {
-        var picker = ServiceLocator.GetScopedRequiredService<IFilePicker>();
+        var picker = circuitServiceAccessor.GetRequiredService<IFilePicker>();
         return picker.PickAsync(CreatePhotoPickerOptions(options));
     }
 
     public async Task<List<FileResult>> PickPhotosAsync(MediaPickerOptions? options = null)
     {
-        var picker = ServiceLocator.GetScopedRequiredService<IFilePicker>();
+        var picker = circuitServiceAccessor.GetRequiredService<IFilePicker>();
         return [.. await picker.PickMultipleAsync(CreatePhotoPickerOptions(options)) ?? []];
     }
 
     public Task<FileResult?> PickVideoAsync(MediaPickerOptions? options = null)
     {
-        var picker = ServiceLocator.GetScopedRequiredService<IFilePicker>();
+        var picker = circuitServiceAccessor.GetRequiredService<IFilePicker>();
         return picker.PickAsync(CreateVideoPickerOptions(options));
     }
 
     public async Task<List<FileResult>> PickVideosAsync(MediaPickerOptions? options = null)
     {
-        var picker = ServiceLocator.GetScopedRequiredService<IFilePicker>();
+        var picker = circuitServiceAccessor.GetRequiredService<IFilePicker>();
         return [.. await picker.PickMultipleAsync(CreateVideoPickerOptions(options)) ?? []];
     }
 

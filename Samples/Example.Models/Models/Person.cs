@@ -95,11 +95,11 @@ namespace Example.Models
             Contacts = [.. contacts];
         }
 
-        public override async Task<DBResult> Save(IDBLayer instance, int? commandTimeout = null)
+        public override async Task<DBResult> Save(IDBLayer instance, IDBFactory factory, int? commandTimeout = null)
         {
             bool isSuccessful = false;
             string message = string.Empty;
-            using var connection = ServiceLocator.Default.GetRequiredService<IDbConnection>();
+            using var connection = factory.CreateConnection()!;
             connection.Open();
             using (var transaction = connection.BeginTransaction())
             {
@@ -203,13 +203,13 @@ namespace Example.Models
             };
         }
 
-        public override async Task<DBResult> Remove(IDBLayer instance, int? commandTimeout = null)
+        public override async Task<DBResult> Remove(IDBLayer instance, IDBFactory factory, int? commandTimeout = null)
         {
             string message = string.Empty;
 
             bool isSuccessful = false;
 
-            using var connection = ServiceLocator.Default.GetRequiredService<IDbConnection>();
+            using var connection = factory.CreateConnection()!;
             connection.Open();
             using (var transaction = connection.BeginTransaction())
             {

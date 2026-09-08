@@ -8,12 +8,11 @@ namespace Example.Server;
 
 public class ExampleLayerService : MagicOnionService
 {
-    static DBTransactionalSerializerOptions options;
+    DBTransactionalSerializerOptions options;
 
-    static ExampleLayerService()
+    public ExampleLayerService(IDBLayer layer, IDBFactory factory)
+        : base(layer, factory)
     {
-        var layer = ServiceLocator.GetRequiredService<IDBLayer>();
-
         options = new DBTransactionalSerializerOptions(DBTransactionalResolver.Instance);
 
         EntityHandler.Handlers = new Dictionary<string, EntityHandler>()

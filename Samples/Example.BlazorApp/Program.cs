@@ -38,7 +38,6 @@ builder.Services
 
 var app = builder.Build();
 
-ServiceLocator.SetDefault(app.Services);
 app.UseRouting();
 app.UseAntiforgery();
 app.MapStaticAssets();

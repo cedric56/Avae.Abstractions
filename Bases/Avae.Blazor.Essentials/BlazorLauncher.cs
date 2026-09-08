@@ -1,10 +1,11 @@
 ﻿using Avae.Core;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Microsoft.Maui.ApplicationModel;
 
 namespace Avae.Blazor.Essentials;
 
-internal class BlazorLauncher : ILauncher
+internal class BlazorLauncher(CircuitServiceAccessor circuitServiceAccessor) : ILauncher
 {
 
     //Todo include BrowserEssentials.js
@@ -17,7 +18,7 @@ internal class BlazorLauncher : ILauncher
 
     private async ValueTask<IJSObjectReference> GetModuleAsync()
     {
-        var jSRuntime = ServiceLocator.GetScopedRequiredService<IJSRuntime>();
+        var jSRuntime = circuitServiceAccessor.GetRequiredService<IJSRuntime>();
         return _module ??= await jSRuntime.InvokeAsync<IJSObjectReference>(
             "import", "./js/appLauncher.js");
     }

@@ -12,10 +12,11 @@ public static class Extensions
 
     public static async Task<Func<Task>> AddSignalR<TObject>(
         this IDBMonitor<TObject> monitor,
-        string url,
+        string url,        
         IRetryPolicy? retryPolicy = null,
-        Func<HttpMessageHandler, HttpMessageHandler>? factory = null,
-        ILogger? logger = null)
+        Func<HttpMessageHandler, HttpMessageHandler>? factory = null,        
+        ILogger? logger = null,
+        SignalRHub<TObject>? signalRHub = null)
         where TObject : class, new()
     {
         IDBFactory.Monitors.Add(monitor);
@@ -75,9 +76,8 @@ public static class Extensions
                 await hub.InvokeAsync(nameof(SignalRHub<TObject>.OnRecordChanged), e);
 
             //If an embedded server, we notify clients
-            var signal = ServiceLocator.GetService<SignalRHub<TObject>>();
-            if (signal is not null)
-                signal.OnRecordChanged(e);
+            if (signalRHub is not null)
+                signalRHub.OnRecordChanged(e);
         }
 
         async Task TryConnect()

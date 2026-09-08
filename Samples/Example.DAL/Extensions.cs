@@ -46,6 +46,15 @@ public static class Extensions
         services.AddSingleton<IXmlHttpRequest, XmlHttpRequest>();
         services.AddSingleton(sp => sp.Create<IMagicOnionLayer>(ServerUrl));
         services.UseLayer(sp => new MagicOnionLayer(sp, OnionUrl, 1000, sp.GetService<ILogger>()));
+        services.AddSingleton<IDBFactory, Fake>();
+    }
+
+    class Fake : IDBFactory
+    {
+        public DbConnection? CreateConnection()
+        {
+            throw new NotImplementedException("This must never be called since it is alongside Onion layer");
+        }
     }
 
     public static void UseDBSqlLayer<TDBConnection>(this IServiceCollection services)
@@ -73,7 +82,7 @@ public static class Extensions
             services.UseFactory<TDBConnection>(connectionString);
         }
 
-        services.UseLayer(sp => new DBLayer(sp),
+        services.UseLayer(sp => new DBLayer(sp.GetRequiredService<IDBFactory>()),
         () =>
         {
             if (type == typeof(SqliteConnection))

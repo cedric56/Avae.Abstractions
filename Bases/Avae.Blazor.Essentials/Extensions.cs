@@ -1,4 +1,5 @@
 ﻿using Append.Blazor.WebShare;
+using Avae.Core;
 using Avae.Essentials;
 using BlazorNative.Core;
 using BlazorNative.Device;
@@ -24,6 +25,9 @@ public static class Extensions
 {
     public static void UseBlazorEssentials(this IServiceCollection services)
     {
+        var circuit = new CircuitServiceAccessor();
+        services.AddSingleton<CircuitServiceAccessor>(_ => circuit);
+        services.AddSingleton<IMobileBridge, DevHostBridge>();        
         services.AddFileSystemAccessService();
         services.AddWebShare();
         services.AddAsyncClipboardService();
@@ -38,39 +42,39 @@ public static class Extensions
         services.TryAddScoped<BlazorSensors.AbsoluteOrientationSensor>();
 
         services.SetDefaults(
-          new BlazorAccelerometer(),
+          new BlazorAccelerometer(circuit),
           AppActions.Current,
           AppInfo.Current,
           Barometer.Default,
           Battery.Default,
-          new BlazorBrowser(),
-          new BlazorClipboard(),
+          new BlazorBrowser(circuit),
+          new BlazorClipboard(circuit),
           Compass.Default,
           Connectivity.Current,
           Contacts.Default,
           DeviceDisplay.Current,
           DeviceInfo.Current,
           Email.Default,
-          new BlazorFilePicker(),
+          new BlazorFilePicker(circuit),
           FileSystem.Current,
           Flashlight.Default,
-          new BlazorGeocoding(),
+          new BlazorGeocoding(circuit),
           Geolocation.Default,
-          new BlazorGyroscope(),
+          new BlazorGyroscope(circuit),
           HapticFeedback.Default,
-          new BlazorLauncher(),
-          new BlazorMagnetometer(),
+          new BlazorLauncher(circuit),
+          new BlazorMagnetometer(circuit),
           Map.Default,
-          new BlazorMediaPicker(),
-          new BlazorOrientationSensor(),
-          new BlazorPhoneDialer(),
+          new BlazorMediaPicker(circuit),
+          new BlazorOrientationSensor(circuit),
+          new BlazorPhoneDialer(circuit),
           Preferences.Default,
           Screenshot.Default,
-          () => new BlazorSecureStorage(),
+          () => new BlazorSecureStorage(circuit),
           SemanticScreenReader.Default,
-          new BlazorShare(),
-          new BlazorSms(),
-          new BlazorTextToSpeech(),
+          new BlazorShare(circuit),
+          new BlazorSms(circuit),
+          new BlazorTextToSpeech(circuit),
           Vibration.Default,
           WebAuthenticator.Default,
           null!,

@@ -10,14 +10,15 @@ public class DBBase
     {
         get
         {
-            if (_instance == null)
-            {
-                lock (_lock)
-                {
-                    _instance ??= ServiceLocator.GetRequiredService<IDBLayer>();
-                }
-            }
-            return _instance;
+            return _instance ?? throw new InvalidOperationException("DBBase not initialized");
+        }
+    }
+
+    public static void Initialize(IDBLayer layer)
+    {
+        lock (_lock)
+        {
+            _instance ??= layer;
         }
     }
 }

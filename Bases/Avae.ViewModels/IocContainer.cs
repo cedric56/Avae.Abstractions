@@ -10,13 +10,13 @@ namespace Avae.ViewModels;
 /// </summary>
 public class IocContainer : IIocContainer
 {
-    private IServiceProvider? _provider;
+    public IServiceProvider provider;
 
-    /// <summary>
-    /// Gets the service provider used to resolve dependencies, falling back to <see cref="ServiceLocator.Default"/>
-    /// if none has been explicitly configured or supplied via <see cref="SetProvider"/>.
-    /// </summary>
-    public IServiceProvider Provider { get { return _provider ??= ServiceLocator.Default; } private set { _provider = value; } }
+    ///// <summary>
+    ///// Gets the service provider used to resolve dependencies, falling back to <see cref="ServiceLocator.Default"/>
+    ///// if none has been explicitly configured or supplied via <see cref="SetProvider"/>.
+    ///// </summary>
+    //public IServiceProvider Provider { get { return _provider ??= ServiceLocator.Default; } private set { _provider = value; } }
 
     /// <summary>
     /// Registered view factories, keyed by view identifier (typically a type name).
@@ -33,26 +33,27 @@ public class IocContainer : IIocContainer
     /// and assigned as this container's <see cref="Provider"/>. If <see langword="false"/>, the provider
     /// must be supplied later via <see cref="SetProvider"/>.
     /// </param>
-    public IocContainer(IIocConfiguration config, bool buildServiceProvider = true)
+    public IocContainer(IServiceProvider provider, IIocConfiguration config)
     {
-        var services = new ServiceCollection();
-        config.Configure(services);
+        this.provider = provider;
+        //services ??= new ServiceCollection();
+        //config.Configure(services);
         config.Configure(this);
-        if (buildServiceProvider)
-        {
-            config.Configure(_provider = services.BuildServiceProvider());
-        }
+        //if (provider == null)
+        //{
+        //    config.Configure(Provider = services.BuildServiceProvider());
+        //}
     }
 
-    /// <summary>
-    /// Explicitly sets the service provider used to resolve dependencies, overriding any
-    /// provider built during construction.
-    /// </summary>
-    /// <param name="provider">The service provider to use.</param>
-    public void SetProvider(IServiceProvider provider)
-    {
-        _provider = provider;
-    }
+    ///// <summary>
+    ///// Explicitly sets the service provider used to resolve dependencies, overriding any
+    ///// provider built during construction.
+    ///// </summary>
+    ///// <param name="provider">The service provider to use.</param>
+    //public void SetProvider(IServiceProvider provider)
+    //{
+    //    _provider = provider;
+    //}
 
     /// <summary>
     /// Resolves and creates the view registered under the specified key.
@@ -65,7 +66,7 @@ public class IocContainer : IIocContainer
     {
         if (_factories.TryGetValue(key, out var factory))
         {
-            return factory(Provider, context);
+            return factory(provider, context);
         }
 
         throw new Exception($"No such view registered: {key}");

@@ -8,7 +8,7 @@ namespace Example;
 
 public partial class HomeView : View, IViewFor<HomeViewModel>
 {
-    public HomeView()
+    public HomeView(IDialogService dialogService)
     {
         InitializeComponent();
 
@@ -20,7 +20,6 @@ public partial class HomeView : View, IViewFor<HomeViewModel>
                 WeakReferenceMessenger.Default.Register<string, HomeViewModel>(
                     this, vm, async (o, s) =>
                     {
-                        var dialogService = ServiceLocator.GetRequiredService<IDialogService>();
                         await dialogService.ShowOkAsync(s, "Message from HomeViewModel");
                     });
             }

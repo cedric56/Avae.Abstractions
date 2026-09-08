@@ -8,6 +8,7 @@ using Avalonia;
 using Avalonia.Android;
 using Avalonia.Labs.Notifications;
 using Example.DAL;
+using Example.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
@@ -38,6 +39,11 @@ public class MainApplication : AvaloniaAndroidApplication<AndroidApp>
     {
     }
 
+    protected override AppBuilder CreateAppBuilder()
+    {
+        return base.CreateAppBuilder();
+    }
+
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
         Microsoft.Maui.ApplicationModel.Platform.Init(this);
@@ -49,16 +55,24 @@ public class MainApplication : AvaloniaAndroidApplication<AndroidApp>
 
 public class AndroidApp : App
 {
+    public AndroidApp(IServiceProvider provider)
+        : base(provider)
+    {
+
+    }
+
     Func<Task>? unsuscribe = null;
 
     protected override async Task AfterCompletedAsync()
     {
-        var monitor = Container.Provider.GetRequiredService<IDBMonitor<Example.Models.Person>>();
+        var monitor = provider.GetRequiredService<IDBMonitor<Example.Models.Person>>();
         //unsuscribe = await Container.Provider.AddSignalR(monitor, factory: _ => new Xamarin.Android.Net.AndroidMessageHandler
         //{
         //    ServerCertificateCustomValidationCallback = Avae.DAL.gRPC.Client.Extensions.ValidateCertificates2,
         //    AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate,
         //});
+        Repository.Initialize(monitor);
+        
         unsuscribe = await monitor.AddStreamingHub(new SocketsHttpHandler()
         {
             SslOptions =

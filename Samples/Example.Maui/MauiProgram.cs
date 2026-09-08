@@ -1,4 +1,5 @@
 ﻿using Avae.Core;
+using Avae.DAL;
 using Avae.Essentials;
 using Avae.Maui;
 using Avae.Maui.Notifications;
@@ -6,6 +7,7 @@ using Avae.ViewModels;
 using Avalonia.Labs.Notifications;
 using Example.DAL;
 using Example.Maui.Views;
+using Example.Models;
 using Example.ViewModels;
 using MauiIcons.Core;
 using MauiIcons.FontAwesome.Solid;
@@ -76,7 +78,9 @@ public static class MauiProgram
 
         var app = builder.Build();
         IconResolver.Register(new ExampleIconResolver());
-        ServiceLocator.SetDefault(app.Services);
+        Repository.Initialize(app.Services.GetRequiredService<IDBMonitor<Person>>());
+        DBBase.Initialize(app.Services.GetRequiredService<IDBLayer>());
+        //ServiceLocator.SetDefault(app.Services);
         return app;
     }
 }

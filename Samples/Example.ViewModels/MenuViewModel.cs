@@ -15,11 +15,13 @@ public partial class MenuViewModel : NavigableViewModel, IDisposable
 {
     IServiceProvider provider;
     IDialogService dialogService;
+    IDBFactory factory;
 
-    public MenuViewModel(IServiceProvider provider, IDialogService dialogService, Router router)
+    public MenuViewModel(IServiceProvider provider, IDBFactory factory, IDialogService dialogService, Router router)
         : base(router, false)
     {
         this.provider = provider;
+        this.factory = factory;
         this.dialogService = dialogService;
 
         Repository.Instance.PersonsChanged += OnPersonsChanged;
@@ -76,7 +78,7 @@ public partial class MenuViewModel : NavigableViewModel, IDisposable
     public async Task Remove()
     {
         await SelectedPerson!.LoadContactsAsync();
-        var result = await SelectedPerson.Remove(DBBase.Instance);//.Remove(SelectedPerson);
+        var result = await SelectedPerson.Remove(DBBase.Instance, factory);//.Remove(SelectedPerson);
         if (!result.Successful)
         {
             await dialogService.ShowOkAsync(result.Exception!, "Error");

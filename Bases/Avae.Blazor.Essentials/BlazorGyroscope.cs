@@ -1,9 +1,10 @@
 ﻿using Avae.Core;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Devices.Sensors;
 
 namespace Avae.Blazor.Essentials;
 
-internal class BlazorGyroscope : IGyroscope
+internal class BlazorGyroscope(CircuitServiceAccessor circuitServiceAccessor) : IGyroscope
 {
     BlazorSensors.Gyroscope? gyroscope;
 
@@ -24,7 +25,7 @@ internal class BlazorGyroscope : IGyroscope
     {
         if (gyroscope == null)
         {
-            gyroscope = ServiceLocator.GetScopedRequiredService<BlazorSensors.Gyroscope>();
+            gyroscope = circuitServiceAccessor.GetRequiredService<BlazorSensors.Gyroscope>();
             gyroscope.OnReading += Accelerometer_OnReading;
         }
 

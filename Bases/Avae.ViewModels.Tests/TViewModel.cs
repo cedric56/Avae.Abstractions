@@ -24,7 +24,7 @@ public abstract class TViewModel<T> : IIoc, IDisposable where T : IViewModelBase
 
     public virtual void Configure(IServiceProvider serviceProvider)
     {
-        ServiceLocator.SetDefault(serviceProvider);
+        //ServiceLocator.SetDefault(serviceProvider);
     }
 
     public virtual void Dispose()

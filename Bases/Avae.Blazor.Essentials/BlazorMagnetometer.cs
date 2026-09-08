@@ -1,9 +1,10 @@
 ﻿using Avae.Core;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Devices.Sensors;
 
 namespace Avae.Blazor.Essentials;
 
-internal class BlazorMagnetometer : IMagnetometer
+internal class BlazorMagnetometer(CircuitServiceAccessor circuitServiceAccessor) : IMagnetometer
 {
     BlazorSensors.Magnetometer? magnetometer;
 
@@ -24,7 +25,7 @@ internal class BlazorMagnetometer : IMagnetometer
     {
         if (magnetometer == null)
         {
-            magnetometer = ServiceLocator.GetScopedRequiredService<BlazorSensors.Magnetometer>();
+            magnetometer = circuitServiceAccessor.GetRequiredService<BlazorSensors.Magnetometer>();
             magnetometer.OnReading += Accelerometer_OnReading;
         }
 

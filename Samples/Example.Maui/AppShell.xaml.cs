@@ -5,11 +5,11 @@ namespace Example.Maui;
 
 public partial class AppShell : Shell
 {
-    public AppShell()
+    public AppShell(IServiceProvider provider)
     {
         InitializeComponent();
 
-        var vm = new MainViewModel(new Avae.ViewModels.Router(ServiceLocator.Default));
+        var vm = new MainViewModel(new Avae.ViewModels.Router(provider));
 
         BindingContext = vm;
 

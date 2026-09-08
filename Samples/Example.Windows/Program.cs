@@ -10,7 +10,7 @@ class Program
 
     public static AppBuilder BuildAvaloniaApp()
     {
-        return AppBuilder.Configure<App>()
+        return App.Configure()
             .WithDataAnnotationsValidation()
             .WithAppNotifications(new AppNotificationOptions()
             {

@@ -1,5 +1,4 @@
-﻿using Avae.Core;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using SQLitePCL;
 using System.Data;
@@ -21,11 +20,15 @@ public static class Extensions
     {
         private readonly string connectionString;
         private readonly bool isTransaction;
-        public SqliteFactory(string connectionString, bool isTransaction = true)
+
+        IServiceProvider provider;
+
+        public SqliteFactory(IServiceProvider provider, string connectionString, bool isTransaction = true)
             : base(connectionString)
         {
             this.connectionString = connectionString;
             this.isTransaction = isTransaction;
+            this.provider = provider;
         }
 
         public override DbConnection? CreateConnection()
@@ -82,16 +85,15 @@ public static class Extensions
                     }
             }
 
-            return new DBLogConnection(ServiceLocator.Default, connection);
+            return new DBLogConnection(provider, connection);
         }
     }
 
     public static void UseSqliteFactory(this IServiceCollection services,
        string connectionString, bool isTransaction = true)
     {
-        var factory = new SqliteFactory(connectionString, isTransaction);
         services.AddSingleton<IDBIdentity, SqliteIdentity>();
-        services.AddSingleton<IDBFactory>(sp => factory);
-        services.AddTransient<IDbConnection>(_ => factory.CreateConnection()!);
+        services.AddSingleton<IDBFactory>(sp => new SqliteFactory(sp, connectionString, isTransaction));
+        services.AddTransient<IDbConnection>(sp => sp.GetRequiredService<IDBFactory>().CreateConnection()!);
     }
 }

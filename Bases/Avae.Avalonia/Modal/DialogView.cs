@@ -25,6 +25,12 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
     IModalFor<TViewModel, TResult?>
     where TViewModel : class, ICloseableViewModel<TResult?>
 {
+    IContentDialogService contentDialogService;
+    public DialogView(IContentDialogService contentDialogService)
+    {
+        this.contentDialogService = contentDialogService;
+    }
+
     /// <summary>
     /// Gets or sets the dialog's data context, exposed as an untyped <see cref="object"/> for <see cref="IModalFor{TViewModel, TResult}"/>.
     /// </summary>
@@ -114,7 +120,6 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
         if (TypeDialog == TypeDialog.Fluent)
         {
             var contentDialogParams = CreateContentDialogParams(modalParams);
-            var contentDialogService = ServiceLocator.GetRequiredService<IContentDialogService>();
             EventHandler<TResult>? closeRequested = null!;
             viewModel.CloseRequested += closeRequested = (sender, e) =>
             {

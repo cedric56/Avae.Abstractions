@@ -6,7 +6,6 @@
 @inherits LayoutComponentBase
 @* @implements IDisposable *@
 @inject IIocConfiguration Configuration
-@inject CircuitServiceAccessor circuit
 @inject IServiceProvider ServiceProvider
 @inject ComponentView NavMenu
 
@@ -50,7 +49,7 @@
     {
         base.OnInitialized();
 
-        circuit.Provider = ServiceProvider;
+        CircuitServiceAccessor.Provider = ServiceProvider;
 
         IocConfiguration.RequestedThemeChanged += ThemeChanged;
     }

@@ -40,7 +40,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        unsuscribe = await provider.AddStreamingHub(monitor);        
+        unsuscribe = await monitor.AddStreamingHub();
         await base.OnInitializedAsync();
     }
 

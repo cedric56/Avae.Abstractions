@@ -15,22 +15,20 @@ internal sealed partial class Program
         BuildAvaloniaApp().StartBrowserAppAsync("out");
 
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<BrowserApp>()
+        => App.Configure<BrowserApp>(configure: services => services.UseDBOnionLayer())
                         .WithAppNotifications();
 
     public class BrowserApp : App
     {
-        public override async void Configure(IServiceCollection services)
-        {
-            base.Configure(services);
+        public BrowserApp(IServiceProvider provider)
+            : base(provider) { }
 
-            services.UseDBOnionLayer();
-        }
         Func<Task>? unsuscribe = null;
         protected override async Task AfterCompletedAsync()
         {
-            var monitor = Container.Provider.GetRequiredService<IDBMonitor<Person>>();
-
+            var monitor = provider.GetRequiredService<IDBMonitor<Person>>();
+            Repository.Initialize(monitor);
+            DBBase.Initialize(provider.GetRequiredService<IDBLayer>());
             //unsuscribe = await Container.Provider.AddSignalR(monitor);
             unsuscribe = await monitor.AddStreamingHub();
         }

@@ -13,7 +13,7 @@ builder.Services.AddServerSideBlazor();
 
 var app = builder.Build();
 
-ServiceLocator.SetDefault(app.Services);
+//ServiceLocator.SetDefault(app.Services);
 
 // IMPORTANT: Static files must be served first
 app.UseStaticFiles(); // This serves wwwroot files

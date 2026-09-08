@@ -13,22 +13,23 @@ public class Repository : IDisposable
     {
         get
         {
-            if (_instance == null)
-            {
-                lock (_lock)
-                {
-                    _instance ??= new Repository(ServiceLocator.Default);
-                }
-            }
-            return _instance;
+            return _instance ?? throw new InvalidOperationException("Repository not initialized");
+        }
+    }
+
+    public static void Initialize(IDBMonitor<Person> monitor)
+    {
+        lock (_lock)
+        {
+            _instance ??= new Repository(monitor);
         }
     }
 
     private readonly IDBMonitor<Person>? personMonitor;
 
-    private Repository(IServiceProvider provider)
+    private Repository(IDBMonitor<Person> monitor)
     {
-        personMonitor = provider.GetService<IDBMonitor<Person>>();
+        personMonitor = monitor;
         personMonitor?.OnRecordChanged += Monitor_OnChanged;
     }
 

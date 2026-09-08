@@ -33,8 +33,8 @@ app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });//required for Xm
 app.MapMagicOnionService().EnableGrpcWeb();
 app.MapHub<SignalRHub<Person>>("/PersonHub");
 
-ServiceLocator.SetDefault(app.Services);
-_ = DBBase.Instance;
+//ServiceLocator.SetDefault(app.Services);
+DBBase.Initialize(app.Services.GetRequiredService<IDBLayer>());
 
 app.Run();
 

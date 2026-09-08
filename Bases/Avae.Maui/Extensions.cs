@@ -29,7 +29,7 @@ public static class Extensions
         where TApp : Application
     {
         builder.UseUXDiversPopups();
-        builder.Services.AddSingleton<IIocContainer>(sp => new IocContainer(GetConfiguration(sp), false));
+        builder.Services.AddSingleton<IIocContainer>(sp => new IocContainer(sp, GetConfiguration(sp)));
         builder.Services.AddSingleton<IIocConfiguration>(sp => new IocConfiguration(sp, () => (IocContainer)sp.GetRequiredService<IIocContainer>(), configure));
         builder.Services.AddTransient<Router>(sp => new Router(sp));
         builder.Services.AddSingleton<IDialogService>(GetConfiguration);

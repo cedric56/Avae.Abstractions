@@ -14,7 +14,7 @@ namespace Avae.Server;
 /// Base MagicOnion service exposing generic entity CRUD/query operations, transactional save/remove,
 /// and raw SQL query/execute operations over the configured data access layer.
 /// </summary>
-public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicOnionLayer
+public abstract class MagicOnionService(IDBLayer layer, IDBFactory factory) : ServiceBase<IMagicOnionLayer>, IMagicOnionLayer
 {
     /// <summary>
     /// Resolves the <see cref="EntityHandler"/> registered for <paramref name="type"/> and invokes
@@ -136,11 +136,10 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
     /// <returns>A <see cref="DBResult"/> indicating the outcome of the removal.</returns>
     public async UnaryResult<DBResult> Remove(DBTransactional transactional, string connectionId, int? commandTimeout = null)
     {
-        var layer = ServiceLocator.GetRequiredService<IDBLayer>();
         DBContext.CurrentConnectionId.Value = connectionId;
         try
         {
-            return await transactional.Remove(layer, commandTimeout);
+            return await transactional.Remove(layer, factory, commandTimeout);
         }
         finally
         {
@@ -158,11 +157,10 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
     /// <returns>A <see cref="DBResult"/> indicating the outcome of the save.</returns>
     public async UnaryResult<DBResult> Save(DBTransactional transactional, string connectionId, int? commandTimeout = null)
     {
-        var layer = ServiceLocator.GetRequiredService<IDBLayer>();
         DBContext.CurrentConnectionId.Value = connectionId;
         try
         {
-            return await transactional.Save(layer, commandTimeout);
+            return await transactional.Save(layer, factory, commandTimeout);
         }
         finally
         {
@@ -182,7 +180,7 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
     {
         try
         {
-            using var db = ServiceLocator.GetRequiredService<IDbConnection>();
+            using var db = factory.CreateConnection();
             var results = await db.QueryAsync(sql, GetParam(param), commandTimeout: commandTimeout, commandType: commandType);
             return new DBResult()
             {
@@ -212,7 +210,7 @@ public abstract class MagicOnionService : ServiceBase<IMagicOnionLayer>, IMagicO
     {
         try
         {
-            using var db = ServiceLocator.GetRequiredService<IDbConnection>();
+            using var db = factory.CreateConnection();
             var results = await db.ExecuteAsync(sql, GetParam(param), commandTimeout: commandTimeout, commandType: commandType);
             return new DBResult()
             {
