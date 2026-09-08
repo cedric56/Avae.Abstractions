@@ -26,7 +26,6 @@ public static class Extensions
     public static void UseBlazorEssentials(this IServiceCollection services)
     {
         var circuit = new CircuitServiceAccessor();
-        services.AddSingleton<CircuitServiceAccessor>(_ => circuit);
         services.AddSingleton<IMobileBridge, DevHostBridge>();        
         services.AddFileSystemAccessService();
         services.AddWebShare();

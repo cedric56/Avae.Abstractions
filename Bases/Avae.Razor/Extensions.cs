@@ -44,8 +44,6 @@ public static class Extensions
         Action<IIocContainer>? configure = null,
         RenderFragment? extras = null)
     {
-        //TODO settings twice
-        services.AddSingleton<CircuitServiceAccessor>();
         services.AddSingleton<IIocContainer>(sp =>
         {
             var container = new IocContainer(sp);
