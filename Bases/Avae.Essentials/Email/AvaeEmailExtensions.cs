@@ -145,7 +145,7 @@ public static class AvaeEmailExtensions
                 {
                     using var stream = new FileStream(attachment.FullPath, FileMode.Open, FileAccess.Read);
                     //await AppendAttachement(AvaloniaFileResult.ResolveContentType(attachment.FileName), stream);
-                    await AppendAttachement(EssentialsAccessors.ResolveContentType(attachment.FileName), stream);
+                    await AppendAttachement(ContentTypeResolver.Resolve(attachment.FileName), stream);
                 }
                 else
                 {

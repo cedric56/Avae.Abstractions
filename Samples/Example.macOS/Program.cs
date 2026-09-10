@@ -13,7 +13,7 @@ class Program
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => App.CreateApp<App>()
+        => App.CreateApp()
             .UseHarfBuzz()
             .UseAvaloniaNative()
             .UseSkia()

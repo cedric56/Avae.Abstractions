@@ -1,6 +1,6 @@
 ﻿using Avae.Avalonia;
-using Avae.Avalonia.Essentials;
 using Avae.DAL;
+using Avae.Essentials;
 using Avae.Notifications;
 using Avae.Services;
 using Avae.ViewModels;
@@ -99,7 +99,7 @@ public partial class App(IServiceProvider provider) : Application
     {
         IconResolver.Register(new ExampleIconResolver());
 
-        services.UseAvaeEssentials();
+        services.UseEssentials();
         services.UseAvaeNotifications();
         services.AddTransient<Router>();
         services.AddSingleton<HomeViewModel>();

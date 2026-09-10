@@ -8,10 +8,11 @@ namespace Example.iOS;
 // User Interface of the application, as well as listening (and optionally responding) to 
 // application events from iOS.
 [Register("AppDelegate")]
-public partial class AppDelegate : AvaloniaAppDelegate<App>
+public partial class AppDelegate : AvaloniaAppDelegate<Avalonia.Application>
 {
-    protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
+    protected override AppBuilder CreateAppBuilder()
     {
-        return base.CustomizeAppBuilder(builder);
+        return App.CreateApp()
+            .UseiOS();
     }
 }

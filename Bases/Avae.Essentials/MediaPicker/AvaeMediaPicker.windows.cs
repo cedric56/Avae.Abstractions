@@ -45,7 +45,7 @@ namespace Avae.Avalonia.Essentials
 #if WINDOWS
                 return new FileResult(file.Path);
 #else
-                return new AvaeFileResult(file.Path, EssentialsAccessors.ResolveContentType(file.Path));
+                return new AvaeFileResult(file.Path, ContentTypeResolver.Resolve(file.Path));
 #endif
             return null;
         }
@@ -59,7 +59,7 @@ namespace Avae.Avalonia.Essentials
 #if WINDOWS
                 return new FileResult(file.Path);
 #else
-                return new AvaeFileResult(file.Path, EssentialsAccessors.ResolveContentType(file.Path));
+                return new AvaeFileResult(file.Path, ContentTypeResolver.Resolve(file.Path));
 #endif
             return null;
         }

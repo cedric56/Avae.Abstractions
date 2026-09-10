@@ -26,7 +26,7 @@ public partial class EssentialsViewModel(
     //IClipboard clipboard,
     ICompass compass,
     IConnectivity connectivity,
-    IContacts contacts,
+    //IContacts contacts,
     IDeviceDisplay deviceDisplay,
     IDeviceInfo deviceInfo,
     IEmail email,
@@ -576,11 +576,9 @@ public partial class EssentialsViewModel(
     [RelayCommand]
     public async Task ContactsCmd()
     {
-        var values = await contacts.GetAllAsync();
+        //var values = await contacts.GetAllAsync();
 
-        service.Show(values.FirstOrDefault()?.ToString() ?? string.Empty, "");
-
-        //service.Show(contacts);
+        //service.Show(values.FirstOrDefault()?.ToString() ?? string.Empty, "");
     }
 
     [RelayCommand]

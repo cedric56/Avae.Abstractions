@@ -1,6 +1,6 @@
 ﻿using Android.App;
 using Android.Content.PM;
-using Avae.Maui.Notifications;
+using Avae.Notifications;
 
 namespace Example.Maui;
 

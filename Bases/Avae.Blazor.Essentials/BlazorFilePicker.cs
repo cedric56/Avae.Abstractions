@@ -55,7 +55,7 @@ class BlazorFilePicker(CircuitServiceAccessor circuitServiceAccessor) : IFilePic
             var task = fileHandles.Select(f => f.GetFileAsync()).Single();
             var file = await task;
             var name = await file.GetNameAsync();
-            return new BlazorFileResult(file, name, EssentialsAccessors.ResolveContentType(name));
+            return new BlazorFileResult(file, name, ContentTypeResolver.Resolve(name));
         }
         catch
         {
@@ -78,7 +78,7 @@ class BlazorFilePicker(CircuitServiceAccessor circuitServiceAccessor) : IFilePic
             return await Task.WhenAll(files.Select(async file =>
             {
                 var name = await file.GetNameAsync();
-                return new BlazorFileResult(file, name, EssentialsAccessors.ResolveContentType(name));
+                return new BlazorFileResult(file, name, ContentTypeResolver.Resolve(name));
 
             }));
         }
