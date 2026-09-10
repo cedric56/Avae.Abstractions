@@ -1,5 +1,4 @@
-﻿using Avae.Core;
-using Avae.Services;
+﻿using Avae.Services;
 using Avae.ViewModels;
 using Avalonia.Controls;
 using MsBox.Avalonia;
@@ -49,7 +48,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
     /// <summary>
     /// Gets which dialog implementation this view uses. Defaults to <see cref="TypeDialog.Box"/>.
     /// </summary>
-    protected virtual TypeDialog TypeDialog { get; } = TypeDialog.Box;
+    protected virtual bool IsFluent { get; } = false;
 
     /// <summary>
     /// Builds the FluentAvalonia content dialog parameters for this dialog, wiring up primary,
@@ -117,7 +116,7 @@ public class DialogView<TViewModel, TResult> : DialogViewBase,
             CloseOnClickAway = true
         };
 
-        if (TypeDialog == TypeDialog.Fluent)
+        if (IsFluent)
         {
             var contentDialogParams = CreateContentDialogParams(modalParams);
             EventHandler<TResult>? closeRequested = null!;

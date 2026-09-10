@@ -2,7 +2,7 @@
 using Avae.DAL;
 using Avae.Essentials;
 using Avae.Maui;
-using Avae.Maui.Notifications;
+using Avae.Notifications;
 using Avae.ViewModels;
 using Avalonia.Labs.Notifications;
 using Example.DAL;

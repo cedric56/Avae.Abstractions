@@ -8,7 +8,7 @@
              x:DataType="{x:Type vm:HomeViewModel}">
     <Grid RowDefinitions="Auto,*">
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1">
-		    <Button Content="Modal" Command="{Binding ShowModal}" />		
+		        <Button Content="Modal" Command="{Binding ShowModal}" />		
             <Button Content="TaskDialog" Command="{Binding ShowTaskDialog}" />		
             <Button Content="ContentDialog" Command="{Binding ShowContentDialog}" />		
             <Button Content="Notification" Command="{Binding ShowNotification}" />		

@@ -46,6 +46,10 @@ public static class TopLevelStateManager
     internal static void Initialize()
     {
         SetDefault(new TopLevelStateManagerImplementation());
+        TopLevel.LoadedEvent.AddClassHandler(typeof(TopLevel), (sender, args) =>
+        {
+            Default.OnActivated((TopLevel)sender!);
+        });
         TopLevel.GotFocusEvent.AddClassHandler(typeof(TopLevel), (sender, args) =>
         {
             Default.OnActivated((TopLevel)sender!);

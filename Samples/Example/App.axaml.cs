@@ -1,13 +1,13 @@
 ﻿using Avae.Avalonia;
 using Avae.Avalonia.Essentials;
-using Avae.Avalonia.Notifications;
 using Avae.DAL;
+using Avae.Notifications;
 using Avae.Services;
 using Avae.ViewModels;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Example.DAL;
 using Example.Models;
 using Example.ViewModels;
 using Example.Views;
@@ -16,127 +16,130 @@ using Microsoft.Extensions.DependencyInjection;
 using Optris.Icons.Avalonia;
 using Optris.Icons.Avalonia.FontAwesome;
 using System;
-using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Example;
 
-public partial class App : AvaeApplication
+public partial class App(IServiceProvider provider) : Application
 {
+    public const string Icon = "avares://Example/Assets/avalonia-logo.ico";
+
     public static AppBuilder CreateApp(
-        Action<IServiceCollection>? configure = null)
+        Action<IServiceCollection>? configureServices = null,
+        Action<IServiceProvider>? afterBuildProvider = null,
+         Action? onAppDispose = null)
     {
-        return CreateApp<App>(configure: configure);
-    }
-
-    public static AppBuilder CreateApp<TApp>(
-        Action<IServiceCollection>? configure = null) where TApp : App
-    {
-        return AvaeBuilder.CreateAvaeApp(
+        Func<Task> unsuscribe = () => Task.CompletedTask;
+        return AvaeBuilder.CreateAvaloniaApp(
+          Icon,
+          true,
            sp => new App(sp),
-           services =>
+           configureExternalServices: services => ConfigureServices(services, configureServices),
+           configureContainer: container => ConfigureContainer(container),
+           afterBuild: sp => AfterBuild(sp, afterBuildProvider),
+           onDispose: async () =>
            {
-               IconResolver.Register(new ExampleIconResolver());
-
-               services.UseAvaeEssentials();
-               services.UseAvaeNotifications();
-               services.AddTransient<Router>();
-               services.AddSingleton<HomeViewModel>();
-               services.AddSingleton<MenuViewModel>();
-               services.AddSingleton<EssentialsViewModel>();
-               services.AddTransient<ViewModelFactory<FormViewModel>>();
-               services.AddTransient<FormPage2ViewModel>();
-               services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
-               services.AddTransient<ModalViewModel>();
-               configure?.Invoke(services);
-           },
-           container =>
-           {
-               container.Register(HomeViewModel.TaskDialogKey, (sp, parameters) =>
-               {
-                   return parameters[0] switch
-                   {
-                       "Footer" => new TextBlock() { Text = "This is a footer" },
-                       "IconSource" => new FABitmapIconSource() { UriSource = new Uri("C:\\Users\\cedri\\source\\repos\\Avae.Abstractions\\Samples\\Example\\Assets\\avalonia-logo.ico") },
-                       "Content" => new TextBlock() { Text = "Here is content", FontSize = 27 },
-                       _ => throw new NotImplementedException()
-                   };
-               });
-               container.Register<HomeView>((sp, context) => new HomeView(sp.GetRequiredService<IDialogService>()));
-               container.Register<MenuView>();
-               container.Register<EssentialsView>();
-               container.Register<FormViewModel>((sp, context) =>
-               {
-                   if (context.FactoryParameters.OfType<string>().Any(p => p == FormViewModel.KEY))
-                   {
-                       return new FormPage1View();
-                   }
-                   return new FormView();
-               });
-               container.Register<FormPage2View>();
-               container.Register<FormPage3View, Person>((sp, person) => new FormPage3View(person));
-               container.Register<ModalWindow>((sp, context) => new ModalWindow(sp.GetRequiredService<IContentDialogService>()));
+               await unsuscribe.Invoke();
+               onAppDispose?.Invoke();
            });
     }
 
-    protected IServiceProvider provider;
-
-    public App(IServiceProvider provider) : base(provider)
+    private static async void AfterBuild(IServiceProvider provider, Action<IServiceProvider>? afterBuildProvider)
     {
-        this.provider = provider;
-
         DBBase.Initialize(provider.GetRequiredService<IDBLayer>());
+
+        var monitor = provider.GetRequiredService<IDBMonitor<Person>>();
+
+        Repository.Initialize(monitor);
+
+        var http = provider.GetService<HttpMessageHandler>();
+
+        //unsuscribe = await monitor.AddStreamingHub(http);
+
+        Func<HttpMessageHandler, HttpMessageHandler> factory = null!;
+        if (http != null)
+            factory = _ => http;
+
+        //unsuscribe = await monitor.AddSignalR(factory: factory);
+
+        afterBuildProvider?.Invoke(provider);
     }
 
-    Func<Task>? unsuscribe = null;
-
-    public override string IconUrl => "avares://Example/Assets/avalonia-logo.ico";
-
-    public override TypeDialog TypeDialog => TypeDialog.Fluent;
-
-    protected string Logs =>
-        Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Example"), "logs");
-
-    public override void Initialize()
+    private static void ConfigureContainer(IIocContainer container)
     {
-        AvaloniaXamlLoader.Load(this);
+        container.Register(HomeViewModel.TaskDialogKey, (sp, parameters) =>
+        {
+            return parameters[0] switch
+            {
+                "Footer" => new TextBlock() { Text = "This is a footer" },
+                "IconSource" => new FABitmapIconSource() { UriSource = new Uri(Icon) },
+                "Content" => new TextBlock() { Text = "Here is content", FontSize = 27 },
+                _ => throw new NotImplementedException()
+            };
+        });
+        container.Register<HomeView>((sp, context) => new HomeView(sp.GetRequiredService<IDialogService>()));
+        container.Register<MenuView>();
+        container.Register<EssentialsView>();
+        container.Register<FormViewModel>((sp, context) =>
+        {
+            if (context.FactoryParameters.OfType<string>().Any(p => p == FormViewModel.KEY))
+            {
+                return new FormPage1View();
+            }
+            return new FormView();
+        });
+        container.Register<FormPage2View>();
+        container.Register<FormPage3View, Person>((sp, person) => new FormPage3View(person));
+        container.Register<ModalWindow>((sp, context) => new ModalWindow(sp.GetRequiredService<IContentDialogService>()));
+    }
+
+    private static void ConfigureServices(IServiceCollection services, Action<IServiceCollection>? configureServices = null)
+    {
+        IconResolver.Register(new ExampleIconResolver());
+
+        services.UseAvaeEssentials();
+        services.UseAvaeNotifications();
+        services.AddTransient<Router>();
+        services.AddSingleton<HomeViewModel>();
+        services.AddSingleton<MenuViewModel>();
+        services.AddSingleton<EssentialsViewModel>();
+        services.AddTransient<ViewModelFactory<FormViewModel>>();
+        services.AddTransient<FormPage2ViewModel>();
+        services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
+        services.AddTransient<ModalViewModel>();
+        configureServices?.Invoke(services);
     }
 
     public override void OnFrameworkInitializationCompleted()
     {
         base.OnFrameworkInitializationCompleted();
-    }
 
-    protected override Window GetMainWindow()
-    {
-        return new MainWindow();
-    }
-
-    protected override Control GetMainView()
-    {
-        return new MainView()
+        var mainView = new MainView()
         {
             DataContext = new MainViewModel(new Router(provider))
         };
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            var window = new MainWindow();
+            window.Content = mainView;
+            desktop.MainWindow = window;
+        }
+        else if (ApplicationLifetime is IActivityApplicationLifetime activityLifetime)
+        {
+            activityLifetime.MainViewFactory = () => mainView;
+        }
+        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
+        {
+            singleView.MainView = mainView;
+
+        }
     }
 
-    protected override async Task AfterCompletedAsync()
+    public override void Initialize()
     {
-        var monitor = provider.GetRequiredService<IDBMonitor<Person>>();
-
-        Repository.Initialize(monitor);
-        
-        //unsuscribe = await provider.AddSignalR(monitor);
-        unsuscribe = await monitor.AddStreamingHub();
-    }
-
-    public override async void Dispose()
-    {
-        if (unsuscribe != null)
-            await unsuscribe();
-
-        base.Dispose();
+        AvaloniaXamlLoader.Load(this);
     }
 
     class ExampleIconResolver : IIconResolver

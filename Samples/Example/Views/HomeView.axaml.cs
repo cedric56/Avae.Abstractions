@@ -1,6 +1,6 @@
-using Avae.Core;
 using Avae.Services;
 using Avae.ViewModels;
+using Avalonia.Interactivity;
 using CommunityToolkit.Mvvm.Messaging;
 using Example.ViewModels;
 
@@ -12,17 +12,19 @@ public partial class HomeView : View, IViewFor<HomeViewModel>
     {
         InitializeComponent();
 
-        Loaded += (sender, e) =>
+        Loaded += OnLoaded;
+
+        void OnLoaded(object? sender, RoutedEventArgs e)
         {
+            Loaded -= OnLoaded;
             if (DataContext is HomeViewModel vm)
             {
-                WeakReferenceMessenger.Default.UnregisterAll(this);
                 WeakReferenceMessenger.Default.Register<string, HomeViewModel>(
                     this, vm, async (o, s) =>
                     {
                         await dialogService.ShowOkAsync(s, "Message from HomeViewModel");
                     });
             }
-        };
+        }
     }
 }

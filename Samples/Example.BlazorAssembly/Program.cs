@@ -1,5 +1,5 @@
 using Avae.Avalonia.Essentials;
-using Avae.Avalonia.Notifications;
+using Avae.Notifications;
 using Avae.Browser;
 using Avae.DAL;
 using Avalonia.Labs.Notifications;

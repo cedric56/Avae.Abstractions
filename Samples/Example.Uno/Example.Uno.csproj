@@ -1,0 +1,43 @@
+﻿<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net11.0-android;net11.0-ios;net11.0-desktop</TargetFrameworks>
+    <!--net10.0-browserwasm;-->
+    <SupportedOSPlatformVersion Condition="'$(TargetFramework)'=='net11.0-android'">24.0</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <UnoSingleProject>true</UnoSingleProject>
+
+    <!-- Display name -->
+    <ApplicationTitle>Example.Uno</ApplicationTitle>
+    <!-- App Identifier -->
+    <ApplicationId>com.companyname.Example.Uno</ApplicationId>
+    <!-- Versions -->
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <!-- Package Publisher -->
+    <ApplicationPublisher>cedri</ApplicationPublisher>
+    <!-- Package Description -->
+    <Description>Example.Uno powered by Uno Platform.</Description>
+
+    <!--
+      UnoFeatures are used to quickly add and manage features enabled for your app.
+      https://aka.platform.uno/singleproject-features
+    -->
+    <UnoFeatures>
+      Toolkit;
+      Logging;
+      Navigation;
+      Mvvm;
+      Configuration;
+      HttpKiota;
+      Serialization;
+      Localization;
+      ThemeService;
+      SkiaRenderer;
+      SimpleTheme;
+      Hosting;
+    </UnoFeatures>
+    <!---->
+  </PropertyGroup>
+
+
+</Project>

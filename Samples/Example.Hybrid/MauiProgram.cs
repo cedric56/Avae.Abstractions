@@ -1,6 +1,6 @@
 ﻿using Avae.DAL;
 using Avae.Essentials;
-using Avae.Maui.Notifications;
+using Avae.Notifications;
 using Example.Razor;
 using Microsoft.Extensions.Logging;
 

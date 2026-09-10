@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Bases\Avae.Blazor.Essentials\Avae.Blazor.Essentials.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.Blazor.Notifications\Avae.Blazor.Notifications.csproj" />
+    <ProjectReference Include="..\..\Bases\Avae.Notifications\Avae.Notifications.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.Razor\Avae.Razor.csproj" />
     <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />

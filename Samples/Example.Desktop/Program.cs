@@ -16,7 +16,10 @@ class Program
 
     public static AppBuilder BuildAvaloniaApp()
     {
-        return App.CreateApp(services =>
+        //var logs = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Example"), "logs");
+
+        return App.CreateApp(
+            services =>
             {
                 services.UseDBSqlLayer<SqliteConnection>();
                 //services.UseDBOnionLayer();

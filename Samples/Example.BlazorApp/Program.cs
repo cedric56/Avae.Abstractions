@@ -1,5 +1,5 @@
 using Avae.Blazor.Essentials;
-using Avae.Blazor.Notifications;
+using Avae.Notifications;
 using Avae.DAL;
 using Avalonia.Labs.Notifications;
 using Example.BlazorApp;
