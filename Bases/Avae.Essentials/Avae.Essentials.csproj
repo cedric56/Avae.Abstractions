@@ -1,8 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net11.0;net11.0-browser;net11.0-ios;net11.0-android;net11.0-macos</TargetFrameworks>
-    <TargetFrameworks>$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>
+      net11.0;
+      net11.0-browser1.0;
+      net11.0-ios26.5;
+      net11.0-android37.0;
+      net11.0-macos26.5;
+      net11.0-windows10.0.19041
+    </TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsLinuxOS>$([MSBuild]::IsOSPlatform('linux'))"</IsLinuxOS>
@@ -13,6 +19,7 @@
     <IsBrowserTFM>$([System.String]::Copy('$(TargetFramework)').Contains('-browser'))</IsBrowserTFM>
     <IsWindowsTFM>$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))</IsWindowsTFM>
     <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -24,6 +31,20 @@
     <DefineConstants Condition="'$(IsWindowsOS)' == 'true'">$(DefineConstants);WINDOWS_OS</DefineConstants>
     <DefineConstants Condition="'$(IsLinuxOS)' == 'true'">$(DefineConstants);LINUX_OS</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="build\**" PackagePath="build\" />
+    <Content Include="build\**" PackagePath="buildTransitive\" />
+    <Compile Remove="Blazor\*.cs" />
+    <TfmSpecificPackageFile Include="Blazor\*.cs">
+      <PackagePath>lib\$(TargetFramework)\Blazor\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </TfmSpecificPackageFile>
+    <TfmSpecificPackageFile Include="build\**">
+      <PackagePath>lib\$(TargetFramework)\Avae.Essentials\build\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </TfmSpecificPackageFile>
+  </ItemGroup>
 
   <!-- Start clean -->
   <ItemGroup>
@@ -51,7 +72,6 @@
   </PropertyGroup>
   <ItemGroup Condition="'$(IsBrowserTFM)' == 'true'">
     <Compile Include="**\*.browser.cs" />
-    <!--<PackageReference Include="Avalonia.Browser" Version="12.1.1" />-->
   </ItemGroup>
 
   <!-- macOS -->
@@ -69,6 +89,5 @@
     <PackageReference Include="Avalonia.Controls.Maui.Essentials" />
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
-
 
 </Project>

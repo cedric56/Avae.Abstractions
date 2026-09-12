@@ -65,7 +65,7 @@ namespace Avae.Avalonia.Essentials
         Task<IEnumerable<Locale>> PlatformGetLocalesAsync() =>
             Task.FromResult(SpeechSynthesizer.AllVoices.Select(v =>
             {
-                var country = Avae.Essentials.Extensions.GetCountry(v.Language);
+                var country = CountryResolver.Resolve(v.Language);
                 return (Locale)EssentialsAccessors.CreateLocale(v.Language, country ?? string.Empty, v.DisplayName, v.Id);
             }));
 

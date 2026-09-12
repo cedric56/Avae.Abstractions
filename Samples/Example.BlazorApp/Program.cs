@@ -1,8 +1,8 @@
-using Avae.Blazor.Essentials;
-using Avae.Notifications;
 using Avae.DAL;
+using Avae.Essentials;
+using Avae.Notifications;
+using Avae.Razor.Interfaces;
 using Avalonia.Labs.Notifications;
-using Example.BlazorApp;
 using Example.BlazorApp.Components;
 using Example.Razor;
 
@@ -23,11 +23,13 @@ builder.Services.UseBlazorNotifications(
             ]
         }]
     );
-builder.Services.UseSharedLibrary(true, extras: builder =>
+builder.Services.UseSharedLibrary(true, 
+extras: builder =>
 {
-    builder.OpenComponent<VideoCapture>(0);
-    builder.CloseComponent();
-});
+    //builder.OpenComponent<VideoCapture>(0);
+    //builder.CloseComponent();
+},
+circuitProvider: new CircuitProvider());
 builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents()
@@ -48,3 +50,8 @@ app.MapRazorComponents<App>()
         typeof(Example.Razor.Components.Home).Assembly
     );
 app.Run();
+
+class CircuitProvider : ICircuitProvider
+{
+    public IServiceProvider Provider { get => CircuitServiceAccessor.Provider; set => CircuitServiceAccessor.Provider = value; }
+}

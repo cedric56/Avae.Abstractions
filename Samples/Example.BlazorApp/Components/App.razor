@@ -1,4 +1,5 @@
 ﻿@using Avae.DAL
+@using Avae.Essentials
 @using Example.DAL
 @using Example.Models
 @using Example.Razor.Layout
@@ -8,7 +9,7 @@
 @inject IDBMonitor<Person> monitor;
 @inject IJSRuntime runtime;
 @inject IServiceProvider provider;
-@implements IAsyncDisposable
+@* @implements IAsyncDisposable *@
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,7 +31,6 @@
     <Routes @rendermode="InteractiveServer" />
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="_framework/blazor.web.js"></script>
-    <script src="_content/Avae.Blazor.Essentials/avae_camera.js"></script>
 </body>
 </html>
 
@@ -44,9 +44,9 @@
         await base.OnInitializedAsync();
     }
 
-    public ValueTask DisposeAsync()
-    {
-        return ValueTask.CompletedTask;
-        //throw new NotImplementedException();
-    }
+    // public ValueTask DisposeAsync()
+    // {
+    //     return ValueTask.CompletedTask;
+    //     //throw new NotImplementedException();
+    // }
 }

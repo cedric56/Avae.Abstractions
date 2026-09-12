@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net11.0;net11.0-browser;net11.0-ios;net11.0-android;net11.0-macos;net11.0-maccatalyst;</TargetFrameworks>
-    <TargetFrameworks>$(TargetFrameworks);net11.0-windows</TargetFrameworks>
+    <!--<TargetFrameworks>net11.0;net11.0-browser;net11.0-ios;net11.0-android;net11.0-macos;net11.0-maccatalyst;</TargetFrameworks>
+    <TargetFrameworks>$(TargetFrameworks);net11.0-windows</TargetFrameworks>-->
+    <TargetFrameworks>net11.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
@@ -10,11 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Avae.Essentials" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.Essentials\Avae.Essentials.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.Services\Avae.Services.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
   </ItemGroup>

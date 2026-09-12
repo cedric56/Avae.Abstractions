@@ -6,16 +6,25 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsNotAsErrors>NU1510</WarningsNotAsErrors>-->
+    <!--<SourceLink>false</SourceLink>
+    <EnableSourceControlManagerQueries>false</EnableSourceControlManagerQueries>
+    <EmbedUntrackedSources>false</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>-->
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="VideoCapture.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--<PackageReference Include="Avae.Blazor.Essentials" />-->
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.Blazor.Essentials\Avae.Blazor.Essentials.csproj" />
+    <!--<ProjectReference Include="..\..\Bases\Avae.Blazor.Essentials\Avae.Blazor.Essentials.csproj" >
+      <AdditionalProperties>DefineConstants=HELLO</AdditionalProperties>
+    </ProjectReference>-->
     <ProjectReference Include="..\..\Bases\Avae.Notifications\Avae.Notifications.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.Razor\Avae.Razor.csproj" />

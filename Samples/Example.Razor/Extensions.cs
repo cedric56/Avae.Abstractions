@@ -1,5 +1,6 @@
 ﻿using Avae.Razor;
 using Avae.Razor.Components;
+using Avae.Razor.Interfaces;
 using Avae.Services;
 using Avae.ViewModels;
 using Example.DAL;
@@ -64,11 +65,12 @@ public static class Extensions
         bool useScoped = false,
         NotificationPosition position = NotificationPosition.BottomLeft,
         int maxDispayments = 5,
-        RenderFragment? extras = null)
+        RenderFragment? extras = null,
+        ICircuitProvider? circuitProvider = null)
     {
         var navMenu = new ComponentView<NavMenu>();
 
-        services.ConfigureBase(navMenu, position, maxDispayments, RegisterViews, extras);
+        services.ConfigureBase(navMenu, position, maxDispayments, RegisterViews, extras, circuitProvider);
         if (useScoped)
         {
             services.AddScoped<HomeViewModel>();

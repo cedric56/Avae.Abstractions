@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using Avae.Essentials;
+using Avalonia;
 using Avalonia.Labs.Notifications;
 using Example.DAL;
 using Microsoft.Data.Sqlite;

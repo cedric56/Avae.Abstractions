@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Avae.Razor.Interfaces
+﻿namespace Avae.Razor.Interfaces
 {
-    public interface IFragments
+    public interface ICircuitProvider
     {
-
+        IServiceProvider Provider { get; set; }
     }
 }

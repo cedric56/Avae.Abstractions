@@ -57,11 +57,11 @@ public partial class EssentialsViewModel(
 {
     public bool IsSupportedInMauiPlatform()
     {
-#if WINDOWS || ANDROID || MACCATALYST || IOS
-        return true;
-#else
+//#if WINDOWS || ANDROID || MACCATALYST || IOS
+//        return true;
+//#else
         return false;
-#endif
+//#endif
     }
 
     public bool IsSupportedInMauiPlatformInverted()

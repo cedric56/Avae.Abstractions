@@ -1,5 +1,6 @@
 ﻿using Avae.Core;
 using Avae.Razor.Components;
+using Avae.Razor.Interfaces;
 using Avae.Razor.Services;
 using Avae.Services;
 using Avae.ViewModels;
@@ -12,13 +13,21 @@ namespace Avae.Razor;
 
 public static class Extensions
 {
+    class CircuitProvider : ICircuitProvider
+    {
+        public required IServiceProvider Provider { get; set; }
+    }
+
     public static void ConfigureBase(this IServiceCollection services,
         ComponentView navMenu,
         NotificationPosition position = NotificationPosition.BottomLeft,
         int maxDispayments = 5,
         Action<IIocContainer>? configure = null,
-        RenderFragment? extras = null)
+        RenderFragment? extras = null,
+        ICircuitProvider? circuitProvider = null)
     {
+        circuitProvider ??= new CircuitProvider() { Provider = null! };
+
         services.AddSingleton<ComponentView>(navMenu);
         services.AddMudServices(config =>
         {
@@ -37,13 +46,15 @@ public static class Extensions
                 MaxDisplayedSnackbars = maxDispayments
             };
         });
-        services.ConfigureIocContainer(configure, extras: extras);
+        services.ConfigureIocContainer(circuitProvider, configure, extras: extras);
     }
 
     private static void ConfigureIocContainer(this IServiceCollection services,
+        ICircuitProvider circuitProvider,
         Action<IIocContainer>? configure = null,
         RenderFragment? extras = null)
     {
+        services.AddSingleton<ICircuitProvider>(circuitProvider);
         services.AddSingleton<IIocContainer>(sp =>
         {
             var container = new IocContainer(sp);
