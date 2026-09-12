@@ -34,8 +34,7 @@ xmlns="https://github.com/avaloniaui"
         <Button Content="Screenshot" Grid.Row="6" Command="{Binding ScreenshotCmdCommand}"/>
         <Button Content="Browser" Command="{Binding BrowserCmdCommand}" />
         <Button Content="Map" Command="{Binding MapCmdCommand}" />
-        <Button Content="LaunchMail" Command="{Binding LaunchMailCmdCommand}"/>
-        <Button Content="LaunchBrowser" Command="{Binding LaunchBrowserCmdCommand}"/>
+        <Button Content="LaunchBrowser" Command="{Binding LaunchCmdCommand}"/>
         <Button Content="AppInfo" Command="{Binding AppInfoCmdCommand}" />
         <Button Content="DeviceInfo" Command="{Binding DeviceInfoCmdCommand}" />
       </WrapPanel>

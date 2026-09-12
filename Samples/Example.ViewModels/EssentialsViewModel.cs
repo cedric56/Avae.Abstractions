@@ -57,11 +57,7 @@ public partial class EssentialsViewModel(
 {
     public bool IsSupportedInMauiPlatform()
     {
-//#if WINDOWS || ANDROID || MACCATALYST || IOS
-//        return true;
-//#else
-        return false;
-//#endif
+        return AvaePlatform.IsMaui;
     }
 
     public bool IsSupportedInMauiPlatformInverted()
@@ -503,21 +499,9 @@ public partial class EssentialsViewModel(
     }
 
     [RelayCommand]
-    public async Task LaunchMailCmd()
+    public async Task LaunchCmd()
     {
-        var recipient = "example@example.com";
-        var subject = "Hello from Blazor!";
-        var body = "This is a test email from my Blazor app.";
-
-        // Build the mailto URI
-        var mailtoUri = $"mailto:{recipient}?subject={Uri.EscapeDataString(subject)}&body={Uri.EscapeDataString(body)}";
-        await launcher.OpenAsync(new Uri(mailtoUri));
-    }
-
-    [RelayCommand]
-    public async Task LaunchBrowserCmd()
-    {
-        await launcher.OpenAsync(new Uri("https://github.com/xamarin/Essentials"));
+        await launcher.OpenAsync(new Uri("notepad.exe"));
     }
 
     [RelayCommand]
