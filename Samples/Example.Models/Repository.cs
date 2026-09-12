@@ -1,6 +1,4 @@
-﻿using Avae.Core;
-using Avae.DAL;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Avae.DAL;
 
 namespace Example.Models;
 

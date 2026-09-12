@@ -1,5 +1,4 @@
-﻿using Avae.Core;
-using Dapper;
+﻿using Dapper;
 using MessagePack;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

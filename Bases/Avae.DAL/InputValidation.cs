@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Avae.Core;
+namespace Avae.DAL;
 
 /// <summary>
 /// https://stackoverflow.com/questions/2112143/how-can-i-define-a-idataerrorinfo-error-property-for-multiple-bo-properties

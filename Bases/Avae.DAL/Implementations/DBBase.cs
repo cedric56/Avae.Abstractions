@@ -1,6 +1,4 @@
-﻿using Avae.Core;
-
-namespace Avae.DAL;
+﻿namespace Avae.DAL;
 
 public class DBBase
 {

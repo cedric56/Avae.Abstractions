@@ -1,5 +1,4 @@
-﻿using Avae.Core;
-using Avae.DAL;
+﻿using Avae.DAL;
 using Example.Models.MessagePackFormatters;
 using System.Runtime.CompilerServices;
 

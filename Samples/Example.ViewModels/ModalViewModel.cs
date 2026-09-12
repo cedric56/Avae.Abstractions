@@ -1,4 +1,4 @@
-﻿using Avae.Core;
+﻿using Avae.DAL;
 using Avae.Services;
 using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;

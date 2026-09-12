@@ -1,5 +1,4 @@
-﻿using Avae.Core;
-using Avae.DAL;
+﻿using Avae.DAL;
 using Dapper.Contrib.Extensions;
 using MessagePack;
 using System.ComponentModel;

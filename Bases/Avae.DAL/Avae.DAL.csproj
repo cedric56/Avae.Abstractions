@@ -14,8 +14,4 @@
     <PackageReference Include="Dapper.Contrib" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Avae.Core\Avae.Core.csproj" />
-  </ItemGroup>
-
 </Project>

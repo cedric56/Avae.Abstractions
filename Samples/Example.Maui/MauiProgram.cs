@@ -1,5 +1,4 @@
-﻿using Avae.Core;
-using Avae.DAL;
+﻿using Avae.DAL;
 using Avae.Essentials;
 using Avae.Maui;
 using Avae.Notifications;

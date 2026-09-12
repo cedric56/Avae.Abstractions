@@ -1,4 +1,4 @@
-﻿namespace Avae.Core;
+﻿namespace Avae.DAL;
 
 public static class AsyncHelper
 {
