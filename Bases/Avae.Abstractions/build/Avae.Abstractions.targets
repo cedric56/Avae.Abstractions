@@ -3,20 +3,16 @@
     <ItemGroup Condition="'$(UsingMicrosoftNETSdkRazor)' == 'true'">
       <PackageReference Update="Microsoft.AspNetCore.Components.Web" />
       <PackageReference Include="MudBlazor" />
-      <!--<Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Razor\**\*.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Razor\**\*.razor" />
-      <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Components\**\*.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Components\**\*.razor" />-->
-      <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Razor\**\*.cs">
-        <Link>Razor\%(RecursiveDir)%(Filename)%(Extension)</Link>
-      </Compile>
-      <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Razor\**\*.css">
-        <Link>Razor\%(RecursiveDir)%(Filename)%(Extension)</Link>
-      </Compile>
-      <RazorComponent Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Razor\**\*.razor">
-         <Link>Razor\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Razor\**\*.cs"/>
+      <RazorComponent Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Components\**\*.css">
+        <Link>Components\%(RecursiveDir)%(Filename)%(Extension)</Link>
+        <TargetPath>Components\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+        <CssScope></CssScope>
       </RazorComponent>
-    </ItemGroup>
+      <Content Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Components\**\*.razor">
+        <Link>Components\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      </Content>
+  </ItemGroup>
 
     <ItemGroup Condition="'$(UseMaui)' == 'true' AND '$(UsingMicrosoftNETSdkRazor)' != 'true'">
       <PackageReference Include="UXDivers.Popups.Maui" />

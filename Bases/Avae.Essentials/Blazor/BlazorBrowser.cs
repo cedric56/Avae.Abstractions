@@ -1,5 +1,4 @@
-﻿using Avae.Core;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.ApplicationModel;
 
 namespace Avae.Essentials;

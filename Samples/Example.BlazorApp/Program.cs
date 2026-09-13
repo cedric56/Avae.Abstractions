@@ -46,8 +46,7 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddAdditionalAssemblies(
-        typeof(Avae.Razor.Layout.MainLayout).Assembly,
-        typeof(Example.Razor.Components.Home).Assembly
+        typeof(Example.Razor.Components.MainLayout).Assembly
     );
 app.Run();
 

@@ -132,7 +132,7 @@ internal class BlazorNotificationService : ISystemNotificationService, IAsyncDis
     {
         var module = await GetModuleAsync();
         if (module != null)
-            await module.InvokeVoidAsync("create", notification.Title, JsonSerializer.Serialize(options, NotificationJsonContext.Default.NotificationOptions));
+            await module.InvokeVoidAsync("showNotification", notification.Title, JsonSerializer.Serialize(options, NotificationJsonContext.Default.NotificationOptions));
 
         currents.Add(notification.Id, notification);
     }
@@ -141,7 +141,7 @@ internal class BlazorNotificationService : ISystemNotificationService, IAsyncDis
     {
         var module = await GetModuleAsync();
         if (module != null)
-            await module.InvokeVoidAsync("close", id.ToString());
+            await module.InvokeVoidAsync("closeNotification", id.ToString());
         currents.Remove(id);
     }
 

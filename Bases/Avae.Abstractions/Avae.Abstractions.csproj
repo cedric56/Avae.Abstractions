@@ -25,6 +25,9 @@
     <Compile Remove="Razor\**" />
     <None Remove="Razor\**" />
     <Content Remove="Razor\**" />
+    <Compile Remove="Components\**" />
+    <None Remove="Components\**" />
+    <Content Remove="Components\**" />
     <TfmSpecificPackageFile Include="Avalonia\**">
       <PackagePath>lib\$(TargetFramework)\Avalonia\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
@@ -37,14 +40,14 @@
       <PackagePath>lib\$(TargetFramework)\Razor\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </TfmSpecificPackageFile>
+    <TfmSpecificPackageFile Include="Components\**">
+      <PackagePath>lib\$(TargetFramework)\Components\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </TfmSpecificPackageFile>
     <TfmSpecificPackageFile Include="build\**">
       <PackagePath>lib\$(TargetFramework)\Avae.Abstractions\build\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </TfmSpecificPackageFile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <TfmSpecificPackageFile Remove="Razor\ComponentView.cs" />
   </ItemGroup>
 
  

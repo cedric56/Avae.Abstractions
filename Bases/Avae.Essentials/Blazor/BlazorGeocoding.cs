@@ -1,5 +1,4 @@
-﻿using Avae.Core;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Devices.Sensors;
 using System.Globalization;
 using System.Text.Json;

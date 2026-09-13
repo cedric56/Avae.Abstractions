@@ -30,8 +30,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Bases\Avae.Notifications\Avae.Notifications.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
-    <!--<ProjectReference Include="..\..\Bases\Avae.Avalonia\Avae.Avalonia.csproj" />-->
-    <ProjectReference Include="..\..\Bases\Avae.DAL\Avae.DAL.csproj" />
     <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
     <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />

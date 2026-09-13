@@ -1,6 +1,4 @@
 ﻿using Append.Blazor.WebShare;
-using Avae.Core;
-using Avae.Essentials;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Microsoft.Maui.ApplicationModel.DataTransfer;

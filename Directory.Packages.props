@@ -12,6 +12,7 @@
     <!-- AVALONIA -->
     <PackageVersion Include="AathifMahir.Maui.MauiIcons.FontAwesome.Solid" Version="6.0.0" />
     <PackageVersion Include="Avae.Abstractions" Version="1.0.0" />
+    <PackageVersion Include="Avae.DAL" Version="1.0.0" />
     <PackageVersion Include="Avae.Essentials" Version="1.0.0" />
     <PackageVersion Include="Avalonia" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Android" Version="$(AvaloniaVersion)" />

@@ -1,6 +1,4 @@
-﻿using Avae.Razor;
-using Avae.Razor.Components;
-using Avae.Razor.Interfaces;
+﻿using Avae.Abstractions;
 using Avae.Services;
 using Avae.ViewModels;
 using Example.DAL;

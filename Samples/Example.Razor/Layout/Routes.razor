@@ -1,4 +1,5 @@
-﻿@using Avae.DAL
+﻿@using Example.Razor.Components
+@using Avae.DAL
 @using Example.DAL
 @using Example.Models
 @using Microsoft.AspNetCore.Components.Routing
@@ -7,10 +8,10 @@
 @implements IAsyncDisposable
 
 <Router AppAssembly="typeof(Example.Razor.Components.Home).Assembly"
-        AdditionalAssemblies="new[] { typeof(Avae.Razor.Layout.MainLayout).Assembly }"
-        NotFoundPage="typeof(Avae.Razor.Components.NotFound)">
+        AdditionalAssemblies="new[] { typeof(MainLayout).Assembly }"
+        NotFoundPage="typeof(NotFound)">
     <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Avae.Razor.Layout.MainLayout)" />
+        <RouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
 </Router>

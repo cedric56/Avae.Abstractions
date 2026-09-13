@@ -5,16 +5,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UnoFeatures>postgre;sqlite;sqlTableDependency;signalR;MagicOnion;MagicClient</UnoFeatures>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.DAL.gRPC.Client\Avae.DAL.gRPC.Client.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.DAL.gRPC\Avae.DAL.gRPC.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.DAL.PostgreSQL\Avae.DAL.PostgreSQL.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.DAL.SignalR\Avae.DAL.SignalR.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.DAL.Sqlite\Avae.DAL.Sqlite.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.DAL.SqlTableDependency\Avae.DAL.SqlTableDependency.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.DAL\Avae.DAL.csproj" />
+    <PackageReference Include="Avae.DAL" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
   </ItemGroup>
 

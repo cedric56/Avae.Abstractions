@@ -1,5 +1,4 @@
-﻿using Avae.Core;
-using Avae.Essentials;
+﻿using Avae.Essentials;
 using Microsoft.Maui.Media;
 using Toolbelt.Blazor.SpeechSynthesis;
 

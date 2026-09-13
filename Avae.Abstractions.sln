@@ -35,14 +35,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Razor", "Samples\Ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Hybrid", "Samples\Example.Hybrid\Example.Hybrid.csproj", "{760BECE8-FEA6-4386-A064-54144006844C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.SignalR", "Bases\Avae.DAL.SignalR\Avae.DAL.SignalR.csproj", "{728E0D80-576E-4DBD-B30D-23377F3B5F1C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.SqlTableDependency", "Bases\Avae.DAL.SqlTableDependency\Avae.DAL.SqlTableDependency.csproj", "{DD247354-4B8E-4132-8836-DF926B4F169E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.Sqlite", "Bases\Avae.DAL.Sqlite\Avae.DAL.Sqlite.csproj", "{DC68B81A-30FA-4D77-9323-72AFBC1EF9C9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.gRPC", "Bases\Avae.DAL.gRPC\Avae.DAL.gRPC.csproj", "{866018E5-CFCF-4218-976F-2CB72298D9AD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Server", "Bases\Avae.Server\Avae.Server.csproj", "{7C64D268-307B-426C-B128-5B7485829C5B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Windows", "Samples\Example.Windows\Example.Windows.csproj", "{84E74E36-3B06-45D0-BBC0-C6D3609EB31E}"
@@ -52,10 +44,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Avalonia.Browser", "Bases\Avae.Avalonia.Browser\Avae.Avalonia.Browser.csproj", "{AA48C62B-4B99-4960-B9AB-151FDDCE514E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.macOS", "Samples\Example.macOS\Example.macOS.csproj", "{C92A9E1B-797D-4159-A914-40C07F060ECF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.gRPC.Client", "Bases\Avae.DAL.gRPC.Client\Avae.DAL.gRPC.Client.csproj", "{061E88F6-E5DA-4B0E-A951-9176037A9BA6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.PostgreSQL", "Bases\Avae.DAL.PostgreSQL\Avae.DAL.PostgreSQL.csproj", "{B1F7EC09-E18E-472D-B585-667B9202B82A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Essentials", "Bases\Avae.Essentials\Avae.Essentials.csproj", "{6BC2B39F-0E00-4DC1-855C-75029175F4B9}"
 EndProject
@@ -143,22 +131,6 @@ Global
 		{760BECE8-FEA6-4386-A064-54144006844C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{760BECE8-FEA6-4386-A064-54144006844C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{760BECE8-FEA6-4386-A064-54144006844C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{728E0D80-576E-4DBD-B30D-23377F3B5F1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{728E0D80-576E-4DBD-B30D-23377F3B5F1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{728E0D80-576E-4DBD-B30D-23377F3B5F1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{728E0D80-576E-4DBD-B30D-23377F3B5F1C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DD247354-4B8E-4132-8836-DF926B4F169E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DD247354-4B8E-4132-8836-DF926B4F169E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DD247354-4B8E-4132-8836-DF926B4F169E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DD247354-4B8E-4132-8836-DF926B4F169E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC68B81A-30FA-4D77-9323-72AFBC1EF9C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC68B81A-30FA-4D77-9323-72AFBC1EF9C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC68B81A-30FA-4D77-9323-72AFBC1EF9C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC68B81A-30FA-4D77-9323-72AFBC1EF9C9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{866018E5-CFCF-4218-976F-2CB72298D9AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{866018E5-CFCF-4218-976F-2CB72298D9AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{866018E5-CFCF-4218-976F-2CB72298D9AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{866018E5-CFCF-4218-976F-2CB72298D9AD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7C64D268-307B-426C-B128-5B7485829C5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7C64D268-307B-426C-B128-5B7485829C5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C64D268-307B-426C-B128-5B7485829C5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -179,14 +151,6 @@ Global
 		{C92A9E1B-797D-4159-A914-40C07F060ECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C92A9E1B-797D-4159-A914-40C07F060ECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C92A9E1B-797D-4159-A914-40C07F060ECF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{061E88F6-E5DA-4B0E-A951-9176037A9BA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{061E88F6-E5DA-4B0E-A951-9176037A9BA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{061E88F6-E5DA-4B0E-A951-9176037A9BA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{061E88F6-E5DA-4B0E-A951-9176037A9BA6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B1F7EC09-E18E-472D-B585-667B9202B82A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B1F7EC09-E18E-472D-B585-667B9202B82A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B1F7EC09-E18E-472D-B585-667B9202B82A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B1F7EC09-E18E-472D-B585-667B9202B82A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6BC2B39F-0E00-4DC1-855C-75029175F4B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6BC2B39F-0E00-4DC1-855C-75029175F4B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BC2B39F-0E00-4DC1-855C-75029175F4B9}.Release|Any CPU.ActiveCfg = Release|Any CPU

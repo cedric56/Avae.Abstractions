@@ -1,9 +1,4 @@
 ﻿using Avae.DAL;
-using Avae.DAL.gRPC;
-using Avae.DAL.gRPC.Client;
-using Avae.DAL.PostgreSQL;
-using Avae.DAL.SignalR;
-using Avae.DAL.Sqlite;
 using Example.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Data.Sqlite;

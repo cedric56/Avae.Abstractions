@@ -5,14 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!--<UnoFeatures>postgre</UnoFeatures>-->
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Avae.DAL" />
     <PackageReference Include="MagicOnion.Serialization.MessagePack" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.DAL\Avae.DAL.csproj" />
   </ItemGroup>
 
 </Project>

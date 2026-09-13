@@ -12,9 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.DAL.SignalR\Avae.DAL.SignalR.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.DAL\Avae.DAL.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.Server\Avae.Server.csproj" />
     <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
