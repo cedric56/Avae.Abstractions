@@ -1,5 +1,28 @@
 ﻿namespace Avae.Essentials;
 
+// The following dictionary is derived from
+// Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider's default mappings.
+//
+//   Source:    https://github.com/dotnet/aspnetcore/blob/main/src/Middleware/StaticFiles/src/FileExtensionContentTypeProvider.cs
+//   Copyright: (c) .NET Foundation and Contributors. All rights reserved.
+//   License:   Apache License, Version 2.0 — http://www.apache.org/licenses/LICENSE-2.0
+//
+// The full attribution notice and the Apache-2.0 license text required by section 4
+// of the license are reproduced in THIRD-PARTY-NOTICES.txt at the root of this repository.
+// When redistributing this assembly, that notice file must accompany the distribution.
+//
+// Why vendored (snapshot, not a dependency):
+//  - Microsoft.Maui.Essentials' portable build throws NotImplementedInReferenceAssemblyException
+//    from FileBase.PlatformGetContentType, so we cannot defer to MAUI here.
+//  - Taking a runtime dependency on Microsoft.AspNetCore.StaticFiles for a control library
+//    would pull ASP.NET Core into every consuming app, including non-server scenarios
+//    (desktop, Browser), which is not appropriate for an Avalonia/MAUI compatibility shim.
+//  - The mapping list is stable and rarely-changing; an inline copy keeps this library
+//    self-contained at the cost of being a point-in-time snapshot.
+//
+// Caveat: this table can drift from upstream over time. If a new common type is missing
+// (e.g. a future image/video format), re-sync from the link above. Files with extensions
+// not in this table fall back to "application/octet-stream".
 public static class ContentTypeResolver
 {
     const string FallbackContentType = "application/octet-stream";
@@ -17,29 +40,7 @@ public static class ContentTypeResolver
             ? contentType
             : FallbackContentType;
     }
-    // The following dictionary is derived from
-    // Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider's default mappings.
-    //
-    //   Source:    https://github.com/dotnet/aspnetcore/blob/main/src/Middleware/StaticFiles/src/FileExtensionContentTypeProvider.cs
-    //   Copyright: (c) .NET Foundation and Contributors. All rights reserved.
-    //   License:   Apache License, Version 2.0 — http://www.apache.org/licenses/LICENSE-2.0
-    //
-    // The full attribution notice and the Apache-2.0 license text required by section 4
-    // of the license are reproduced in THIRD-PARTY-NOTICES.txt at the root of this repository.
-    // When redistributing this assembly, that notice file must accompany the distribution.
-    //
-    // Why vendored (snapshot, not a dependency):
-    //  - Microsoft.Maui.Essentials' portable build throws NotImplementedInReferenceAssemblyException
-    //    from FileBase.PlatformGetContentType, so we cannot defer to MAUI here.
-    //  - Taking a runtime dependency on Microsoft.AspNetCore.StaticFiles for a control library
-    //    would pull ASP.NET Core into every consuming app, including non-server scenarios
-    //    (desktop, Browser), which is not appropriate for an Avalonia/MAUI compatibility shim.
-    //  - The mapping list is stable and rarely-changing; an inline copy keeps this library
-    //    self-contained at the cost of being a point-in-time snapshot.
-    //
-    // Caveat: this table can drift from upstream over time. If a new common type is missing
-    // (e.g. a future image/video format), re-sync from the link above. Files with extensions
-    // not in this table fall back to "application/octet-stream".
+    
     static readonly Dictionary<string, string> s_extensionMap = new(StringComparer.OrdinalIgnoreCase)
 {
     { ".323", "text/h323" },

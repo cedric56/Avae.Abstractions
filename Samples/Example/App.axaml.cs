@@ -1,4 +1,5 @@
-﻿using Avae.Avalonia;
+﻿using Avae.Abstractions;
+using Avae.Avalonia;
 using Avae.DAL;
 using Avae.Essentials;
 using Avae.Notifications;

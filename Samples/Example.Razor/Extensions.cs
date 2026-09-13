@@ -70,7 +70,13 @@ public static class Extensions
     {
         var navMenu = new ComponentView<NavMenu>();
 
-        services.ConfigureBase(navMenu, position, maxDispayments, RegisterViews, extras, circuitProvider);
+        services.ConfigureIocContainer(navMenu, 
+            position, 
+            maxDispayments, 
+            RegisterViews, 
+            extras, 
+            circuitProvider);
+
         if (useScoped)
         {
             services.AddScoped<HomeViewModel>();

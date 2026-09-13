@@ -1,7 +1,7 @@
 using Avae.DAL;
 using Avae.Essentials;
 using Avae.Notifications;
-using Avae.Razor.Interfaces;
+using Avae.Abstractions;
 using Avalonia.Labs.Notifications;
 using Example.BlazorApp.Components;
 using Example.Razor;

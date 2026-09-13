@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Samples\Example\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Desktop", "Samples\Example.Desktop\Example.Desktop.csproj", "{96EFDB0E-DD15-9326-EC86-F8695A3F9295}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Avalonia", "Bases\Avae.Avalonia\Avae.Avalonia.csproj", "{CDAF206C-449B-48EC-9CC3-88537C929E36}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL", "Bases\Avae.DAL\Avae.DAL.csproj", "{145330B2-570C-42F3-8B5C-F0F33A49F445}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Android", "Samples\Example.Android\Example.Android.csproj", "{417BDE18-8108-A1F5-A86C-3172BCCFB0B6}"
@@ -29,8 +27,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.ViewModels", "Sampl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Services", "Bases\Avae.Services\Avae.Services.csproj", "{41B6648D-4F90-4D6C-99B2-55586E88AC50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Maui", "Bases\Avae.Maui\Avae.Maui.csproj", "{6DC57DEA-1EF1-4298-A3AF-6A60CBBDFEE5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.BlazorApp", "Samples\Example.BlazorApp\Example.BlazorApp.csproj", "{7172266F-592E-4C4F-BA47-7E5A4F5A5477}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.BlazorAssembly", "Samples\Example.BlazorAssembly\Example.BlazorAssembly.csproj", "{6F1AC887-3884-4893-9DF0-C92E972F8BE7}"
@@ -38,8 +34,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Razor", "Samples\Example.Razor\Example.Razor.csproj", "{9681C149-B655-4647-98F5-E307EB03A4F2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Hybrid", "Samples\Example.Hybrid\Example.Hybrid.csproj", "{760BECE8-FEA6-4386-A064-54144006844C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Razor", "Bases\Avae.Razor\Avae.Razor.csproj", "{B93CC2FF-B006-4655-829A-32D5103AD3EE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.DAL.SignalR", "Bases\Avae.DAL.SignalR\Avae.DAL.SignalR.csproj", "{728E0D80-576E-4DBD-B30D-23377F3B5F1C}"
 EndProject
@@ -71,6 +65,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.ViewModels.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Notifications", "Bases\Avae.Notifications\Avae.Notifications.csproj", "{C3E3A970-A0F3-4EBE-8ED7-D00C92F2B3AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Abstractions", "Bases\Avae.Abstractions\Avae.Abstractions.csproj", "{981DA332-0248-4CDA-9BE8-A5D34215C619}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,10 +85,6 @@ Global
 		{96EFDB0E-DD15-9326-EC86-F8695A3F9295}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96EFDB0E-DD15-9326-EC86-F8695A3F9295}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96EFDB0E-DD15-9326-EC86-F8695A3F9295}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CDAF206C-449B-48EC-9CC3-88537C929E36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CDAF206C-449B-48EC-9CC3-88537C929E36}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CDAF206C-449B-48EC-9CC3-88537C929E36}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CDAF206C-449B-48EC-9CC3-88537C929E36}.Release|Any CPU.Build.0 = Release|Any CPU
 		{145330B2-570C-42F3-8B5C-F0F33A49F445}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{145330B2-570C-42F3-8B5C-F0F33A49F445}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{145330B2-570C-42F3-8B5C-F0F33A49F445}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -134,10 +126,6 @@ Global
 		{41B6648D-4F90-4D6C-99B2-55586E88AC50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41B6648D-4F90-4D6C-99B2-55586E88AC50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41B6648D-4F90-4D6C-99B2-55586E88AC50}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6DC57DEA-1EF1-4298-A3AF-6A60CBBDFEE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6DC57DEA-1EF1-4298-A3AF-6A60CBBDFEE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6DC57DEA-1EF1-4298-A3AF-6A60CBBDFEE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6DC57DEA-1EF1-4298-A3AF-6A60CBBDFEE5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7172266F-592E-4C4F-BA47-7E5A4F5A5477}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7172266F-592E-4C4F-BA47-7E5A4F5A5477}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7172266F-592E-4C4F-BA47-7E5A4F5A5477}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -155,10 +143,6 @@ Global
 		{760BECE8-FEA6-4386-A064-54144006844C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{760BECE8-FEA6-4386-A064-54144006844C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{760BECE8-FEA6-4386-A064-54144006844C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B93CC2FF-B006-4655-829A-32D5103AD3EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B93CC2FF-B006-4655-829A-32D5103AD3EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B93CC2FF-B006-4655-829A-32D5103AD3EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B93CC2FF-B006-4655-829A-32D5103AD3EE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{728E0D80-576E-4DBD-B30D-23377F3B5F1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{728E0D80-576E-4DBD-B30D-23377F3B5F1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{728E0D80-576E-4DBD-B30D-23377F3B5F1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -219,6 +203,10 @@ Global
 		{C3E3A970-A0F3-4EBE-8ED7-D00C92F2B3AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3E3A970-A0F3-4EBE-8ED7-D00C92F2B3AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3E3A970-A0F3-4EBE-8ED7-D00C92F2B3AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{981DA332-0248-4CDA-9BE8-A5D34215C619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{981DA332-0248-4CDA-9BE8-A5D34215C619}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{981DA332-0248-4CDA-9BE8-A5D34215C619}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{981DA332-0248-4CDA-9BE8-A5D34215C619}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

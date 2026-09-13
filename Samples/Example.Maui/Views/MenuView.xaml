@@ -2,10 +2,10 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="Example.Maui.Views.MenuView"
-    xmlns:avae="clr-namespace:Avae.Maui;assembly=Avae.Maui">
+    xmlns:abstractions="using:Avae.Abstractions">
     <ContentPage.Resources>
         <ResourceDictionary>
-            <avae:NullConverter x:Key="IsNullConverter" />
+            <abstractions:NullConverter x:Key="IsNullConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <Grid RowDefinitions="*">

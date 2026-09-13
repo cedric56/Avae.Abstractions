@@ -1,0 +1,15 @@
+﻿@using Avae.Abstractions
+@using MudBlazor
+@inject ISnackbar Snackbar
+@inject MudBlazor.IDialogService dialogService
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        TaskDialogService.MudDialogService = dialogService;
+        ContentDialogService.MudDialogService = dialogService;
+        NotificationService.SnackbarService = Snackbar;
+        Services.DialogService.MudDialogService = dialogService;
+    }
+}

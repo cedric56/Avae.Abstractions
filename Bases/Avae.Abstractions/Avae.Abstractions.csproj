@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <!--<ImplicitUsings>enable</ImplicitUsings>-->
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+  
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Avae.Services\Avae.Services.csproj" />
+    <ProjectReference Include="..\Avae.ViewModels\Avae.ViewModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="build\**" PackagePath="build\" />
+    <Compile Remove="Avalonia\**" />
+    <None Remove="Avalonia\**" />
+    <Compile Remove="Maui\**" />
+    <None Remove="Maui\**" />
+    <Compile Remove="Razor\**" />
+    <None Remove="Razor\**" />
+    <Content Remove="Razor\**" />
+    <TfmSpecificPackageFile Include="Avalonia\**">
+      <PackagePath>lib\$(TargetFramework)\Avalonia\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </TfmSpecificPackageFile>
+    <TfmSpecificPackageFile Include="Maui\**">
+      <PackagePath>lib\$(TargetFramework)\Maui\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </TfmSpecificPackageFile>
+    <TfmSpecificPackageFile Include="Razor\**">
+      <PackagePath>lib\$(TargetFramework)\Razor\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </TfmSpecificPackageFile>
+    <TfmSpecificPackageFile Include="build\**">
+      <PackagePath>lib\$(TargetFramework)\Avae.Abstractions\build\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </TfmSpecificPackageFile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TfmSpecificPackageFile Remove="Razor\ComponentView.cs" />
+  </ItemGroup>
+
+ 
+</Project>

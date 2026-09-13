@@ -19,7 +19,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>    
+  <ItemGroup>
+    <PackageReference Include="Avae.Abstractions" />
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
@@ -29,7 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Bases\Avae.Notifications\Avae.Notifications.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.Avalonia\Avae.Avalonia.csproj" />
+    <!--<ProjectReference Include="..\..\Bases\Avae.Avalonia\Avae.Avalonia.csproj" />-->
     <ProjectReference Include="..\..\Bases\Avae.DAL\Avae.DAL.csproj" />
     <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />

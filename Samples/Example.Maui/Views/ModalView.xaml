@@ -1,11 +1,10 @@
 <ContentView x:Class="Example.Maui.Views.ModalView"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:avae="clr-namespace:Avae.Maui;assembly=Avae.Maui"
+             xmlns:abstractions="using:Avae.Abstractions"
              xmlns:current="clr-namespace:Example.Maui.Views"
 >
-    <avae:AvaeEntry 
-        x:Name="entry"
+    <abstractions:AvaeEntry 
         ColumnName="Message"
         Text="{Binding Message}"
         UnderlineColor="Red"
