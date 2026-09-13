@@ -41,8 +41,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Windows", "Samples\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.DAL", "Samples\Example.DAL\Example.DAL.csproj", "{99051E04-4430-4D6B-9357-FD74A75EB959}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Avalonia.Browser", "Bases\Avae.Avalonia.Browser\Avae.Avalonia.Browser.csproj", "{AA48C62B-4B99-4960-B9AB-151FDDCE514E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.macOS", "Samples\Example.macOS\Example.macOS.csproj", "{C92A9E1B-797D-4159-A914-40C07F060ECF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Essentials", "Bases\Avae.Essentials\Avae.Essentials.csproj", "{6BC2B39F-0E00-4DC1-855C-75029175F4B9}"
@@ -143,10 +141,6 @@ Global
 		{99051E04-4430-4D6B-9357-FD74A75EB959}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99051E04-4430-4D6B-9357-FD74A75EB959}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99051E04-4430-4D6B-9357-FD74A75EB959}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA48C62B-4B99-4960-B9AB-151FDDCE514E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA48C62B-4B99-4960-B9AB-151FDDCE514E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA48C62B-4B99-4960-B9AB-151FDDCE514E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA48C62B-4B99-4960-B9AB-151FDDCE514E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C92A9E1B-797D-4159-A914-40C07F060ECF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C92A9E1B-797D-4159-A914-40C07F060ECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C92A9E1B-797D-4159-A914-40C07F060ECF}.Release|Any CPU.ActiveCfg = Release|Any CPU

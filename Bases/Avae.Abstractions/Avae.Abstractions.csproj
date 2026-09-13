@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <!--<ImplicitUsings>enable</ImplicitUsings>-->
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
@@ -17,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="build\**" PackagePath="build\" />
+    <Content Include="buildTransitive\**" PackagePath="buildTransitive\" />
     <Compile Remove="Avalonia\**" />
     <None Remove="Avalonia\**" />
     <Compile Remove="Maui\**" />
@@ -28,6 +27,7 @@
     <Compile Remove="Components\**" />
     <None Remove="Components\**" />
     <Content Remove="Components\**" />
+    <Compile Remove="Embedded\**" />
     <TfmSpecificPackageFile Include="Avalonia\**">
       <PackagePath>lib\$(TargetFramework)\Avalonia\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
@@ -44,8 +44,8 @@
       <PackagePath>lib\$(TargetFramework)\Components\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </TfmSpecificPackageFile>
-    <TfmSpecificPackageFile Include="build\**">
-      <PackagePath>lib\$(TargetFramework)\Avae.Abstractions\build\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+    <TfmSpecificPackageFile Include="Embedded\**">
+      <PackagePath>lib\$(TargetFramework)\Embedded\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </TfmSpecificPackageFile>
   </ItemGroup>

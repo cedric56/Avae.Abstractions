@@ -5,15 +5,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AvaeFeatures>MagicOnion</AvaeFeatures>
   </PropertyGroup>
 
   <ItemGroup>
       <PackageReference Include="Grpc.AspNetCore.Web" />
       <PackageReference Include="Grpc.AspNetCore" />
       <PackageReference Include="MagicOnion.Server" />
+      <PackageReference Include="Avae.DAL" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Avae.DAL.gRPC\Avae.DAL.gRPC.csproj" />
-  </ItemGroup>
 </Project>

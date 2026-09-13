@@ -1,11 +1,13 @@
 ﻿using Avalonia;
 using Avalonia.Browser;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Runtime.Versioning;
+using System.Threading.Tasks;
 
-namespace Avae.Browser;
+namespace Avae.Abstractions;
 
-public static class Extensions
+public static class EmbeddedExtensions
 {
     [SupportedOSPlatform("browser")]
     public static async Task UseEmbeddedAvaloniaApp(this IServiceCollection services, string appDiv = "app", Func<AppBuilder, AppBuilder>? action = null)

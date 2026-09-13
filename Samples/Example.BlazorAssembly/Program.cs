@@ -1,4 +1,4 @@
-using Avae.Browser;
+using Avae.Abstractions;
 using Avae.DAL;
 using Avae.Essentials;
 using Avae.Notifications;

@@ -1,33 +1,33 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <ItemGroup Condition="$(UnoFeatures.Contains('postgre'))">
+  <ItemGroup Condition="$(AvaeFeatures.Contains('PostgreSQL'))">
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\PostgreSQL\**\*.cs"/>
   </ItemGroup>
 
-  <ItemGroup Condition="$(UnoFeatures.Contains('sqlite'))">
+  <ItemGroup Condition="$(AvaeFeatures.Contains('Sqlite'))">
     <PackageReference Include="Microsoft.Data.Sqlite" />
     <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Sqlite\**\*.cs"/>
   </ItemGroup>
 
-  <ItemGroup Condition="$(UnoFeatures.Contains('sqlTableDependency'))">
+  <ItemGroup Condition="$(AvaeFeatures.Contains('SqlTableDependency'))">
     <PackageReference Include="SqlTableDependencyCore" />
     <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\SqlDependency\**\*.cs"/>
   </ItemGroup>
 
-  <ItemGroup Condition="$(UnoFeatures.Contains('signalR'))">
+  <ItemGroup Condition="$(AvaeFeatures.Contains('SignalR'))">
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" />
     <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\SignalR\**\*.cs"/>
   </ItemGroup>
 
-  <ItemGroup Condition="$(UnoFeatures.Contains('MagicOnion'))">
+  <ItemGroup Condition="$(AvaeFeatures.Contains('MagicOnion'))">
     <PackageReference Include="MagicOnion.Abstractions" />
     <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\MagicOnion\**\*.cs"/>
   </ItemGroup>
 
-  <ItemGroup Condition="$(UnoFeatures.Contains('MagicClient'))">
+  <ItemGroup Condition="$(AvaeFeatures.Contains('MagicClient'))">
     <PackageReference Include="GrpcWebSocketBridge.Client" />
     <PackageReference Include="MagicOnion.Client" />
     <PackageReference Include="Grpc.Net.Client.Web" />

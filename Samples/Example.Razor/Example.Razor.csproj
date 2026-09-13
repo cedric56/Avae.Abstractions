@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AvaeFeatures>Razor</AvaeFeatures>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,13 +26,8 @@
 
     <ProjectReference Include="..\..\Bases\Avae.Services\Avae.Services.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
-    <!--<ProjectReference Include="..\..\Bases\Avae.Razor\Avae.Razor.csproj" />-->
     <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
     <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
   </ItemGroup>
-
-  <Target Name="CheckRazorSdk" BeforeTargets="BeforeCompile">
-    <Message Text="Using Razor SDK = $(UsingMicrosoftNETSdkRazor)" Importance="high" />
-  </Target>
 </Project>

@@ -3,11 +3,12 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
+using Application = Avalonia.Application;
 
-namespace Avae.Browser;
+namespace Avae.Abstractions;
 
 [SupportedOSPlatform("browser")]
-class EmbeddedAvalonia : Avalonia.Application
+class EmbeddedAvalonia : Application
 {
     public static string AppDiv { get; set; } = "app";
 

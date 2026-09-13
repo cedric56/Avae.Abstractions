@@ -6,7 +6,14 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <UnoFeatures>postgre;sqlite;sqlTableDependency;signalR;MagicOnion;MagicClient</UnoFeatures>
+    <AvaeFeatures>
+      PostgreSQL;
+      Sqlite;
+      SqlTableDependency;
+      SignalR;
+      MagicOnion;
+      MagicClient
+    </AvaeFeatures>
   </PropertyGroup>
 
   <ItemGroup>
