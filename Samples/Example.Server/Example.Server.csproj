@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AvaeFeatures>MagicServer</AvaeFeatures>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.Server\Avae.Server.csproj" />
     <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
   </ItemGroup>

@@ -1,8 +1,6 @@
-﻿using Avae.DAL;
-using Avae.DAL.gRPC;
-using MagicOnion.Server.Hubs;
+﻿using MagicOnion.Server.Hubs;
 
-namespace Avae.Server;
+namespace Avae.DAL;
 
 /// <summary>
 /// Streaming hub that broadcasts record change notifications for entities of type <typeparamref name="TObject"/>

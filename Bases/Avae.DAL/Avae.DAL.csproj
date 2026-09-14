@@ -46,6 +46,12 @@
       <PackagePath>lib\$(TargetFramework)\MagicOnionClient\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </TfmSpecificPackageFile>
+
+    <Compile Remove="MagicOnionServer\**" />
+    <TfmSpecificPackageFile Include="MagicOnionServer\**">
+      <PackagePath>lib\$(TargetFramework)\MagicOnionServer\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </TfmSpecificPackageFile>
   </ItemGroup>
 
   <ItemGroup>

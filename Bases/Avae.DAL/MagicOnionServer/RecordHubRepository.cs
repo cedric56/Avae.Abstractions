@@ -1,9 +1,7 @@
-﻿using Avae.DAL;
-using Avae.DAL.gRPC;
-using MagicOnion.Server.Hubs;
+﻿using MagicOnion.Server.Hubs;
 using Microsoft.Extensions.Logging;
 
-namespace Avae.Server;
+namespace Avae.DAL;
 
 /// <summary>
 /// Tracks which connections are subscribed to record change notifications for <typeparamref name="TObject"/>,

@@ -1,5 +1,4 @@
 ﻿using Avae.DAL;
-using Avae.Server;
 using Example.DAL;
 using Example.Models;
 using Grpc.AspNetCore.Server;

@@ -1,13 +1,11 @@
-﻿using Avae.DAL;
-using Avae.DAL.gRPC;
-using Dapper;
+﻿using Dapper;
 using MagicOnion;
 using MagicOnion.Server;
 using MessagePack;
 using System.Collections;
 using System.Data;
 
-namespace Avae.Server;
+namespace Avae.DAL;
 
 /// <summary>
 /// Base MagicOnion service exposing generic entity CRUD/query operations, transactional save/remove,

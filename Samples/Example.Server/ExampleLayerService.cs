@@ -1,6 +1,4 @@
 ﻿using Avae.DAL;
-using Avae.DAL.gRPC;
-using Avae.Server;
 using Example.Models;
 
 namespace Example.Server;

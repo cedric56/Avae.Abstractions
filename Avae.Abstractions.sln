@@ -35,8 +35,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Razor", "Samples\Ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Hybrid", "Samples\Example.Hybrid\Example.Hybrid.csproj", "{760BECE8-FEA6-4386-A064-54144006844C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Server", "Bases\Avae.Server\Avae.Server.csproj", "{7C64D268-307B-426C-B128-5B7485829C5B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Windows", "Samples\Example.Windows\Example.Windows.csproj", "{84E74E36-3B06-45D0-BBC0-C6D3609EB31E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.DAL", "Samples\Example.DAL\Example.DAL.csproj", "{99051E04-4430-4D6B-9357-FD74A75EB959}"
@@ -129,10 +127,6 @@ Global
 		{760BECE8-FEA6-4386-A064-54144006844C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{760BECE8-FEA6-4386-A064-54144006844C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{760BECE8-FEA6-4386-A064-54144006844C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C64D268-307B-426C-B128-5B7485829C5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C64D268-307B-426C-B128-5B7485829C5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C64D268-307B-426C-B128-5B7485829C5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C64D268-307B-426C-B128-5B7485829C5B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{84E74E36-3B06-45D0-BBC0-C6D3609EB31E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{84E74E36-3B06-45D0-BBC0-C6D3609EB31E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84E74E36-3B06-45D0-BBC0-C6D3609EB31E}.Release|Any CPU.ActiveCfg = Release|Any CPU
