@@ -1,9 +1,8 @@
-using Avae.ViewModels;
 using Example.ViewModels;
 
 namespace Example;
 
-public partial class MenuView : View, IViewFor<MenuViewModel>
+public partial class MenuView : ViewFor<MenuViewModel>
 {
     public MenuView()
     {

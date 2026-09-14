@@ -121,9 +121,10 @@ public partial class App(IServiceProvider provider) : Application
         };
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var window = new MainWindow();
-            window.Content = mainView;
-            desktop.MainWindow = window;
+            desktop.MainWindow = new MainWindow
+            {
+                Content = mainView
+            };
         }
         else if (ApplicationLifetime is IActivityApplicationLifetime activityLifetime)
         {

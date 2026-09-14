@@ -1,12 +1,11 @@
 using Avae.Services;
-using Avae.ViewModels;
 using Avalonia.Interactivity;
 using CommunityToolkit.Mvvm.Messaging;
 using Example.ViewModels;
 
 namespace Example;
 
-public partial class HomeView : View, IViewFor<HomeViewModel>
+public partial class HomeView : ViewFor<HomeViewModel>
 {
     public HomeView(IDialogService dialogService)
     {

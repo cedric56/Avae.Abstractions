@@ -38,7 +38,7 @@
     [Parameter]
     public required ContentDialogParams Parameters{ get; set; }
 
-    private ComponentView? ComponentView => Parameters.Content as ComponentView;
+    private ViewFor? ComponentView => Parameters.Content as ViewFor;
 
     private string Style(string? text)
     {

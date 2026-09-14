@@ -1,11 +1,9 @@
-using Avae.ViewModels;
 using Avalonia.Interactivity;
 using Example.ViewModels;
 
 namespace Example;
 
-public partial class FormPage1View : View,
-    IViewFor<FormViewModel>
+public partial class FormPage1View : ViewFor<FormViewModel>
 {
     public FormPage1View()
     {

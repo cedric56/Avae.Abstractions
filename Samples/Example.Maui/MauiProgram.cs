@@ -79,7 +79,6 @@ public static class MauiProgram
         IconResolver.Register(new ExampleIconResolver());
         Repository.Initialize(app.Services.GetRequiredService<IDBMonitor<Person>>());
         DBBase.Initialize(app.Services.GetRequiredService<IDBLayer>());
-        //ServiceLocator.SetDefault(app.Services);
         return app;
     }
 }

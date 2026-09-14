@@ -7,7 +7,7 @@
         grid-template-columns: 1fr auto auto auto;
     }
 </style>
-<ComponentForm ViewModel="@ViewModel" IsBusy="@ViewModel.IsBusy" >
+<AvaeForm ViewModel="@ViewModel" IsBusy="@ViewModel.IsBusy" >
     <ChildContent>
         <div class="columns">
             <div class="center">
@@ -25,7 +25,7 @@
             <MudButton OnClick="Close">Cancel</MudButton>
         </div>
     </Buttons>
-</ComponentForm>
+</AvaeForm>
 @code
 {
     [Parameter]

@@ -87,7 +87,7 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
         var tcs = new TaskCompletionSource<TResult?>();
         var viewModel = provider.GetViewModel<TViewModel>(context);
         var contextFor = configuration.GetContextFor(typeof(TViewModel).Name, context ?? new NavigableContext());
-        if (contextFor is ComponentView view)
+        if (contextFor is ViewFor view)
         {
             var dialog = await MudDialogService.ShowAsync(view.Type, viewModel.Title, new MudBlazor.DialogParameters()
         {

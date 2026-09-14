@@ -4,7 +4,7 @@
 @using Example.Models
 @using Example.ViewModels
 @using MudBlazor
-@inherits ComponentPage
+@inherits AvaeComponentBase
 @page "/menu"
 @inject MenuViewModel ViewModel
 @if (CurrentView != null)
@@ -31,7 +31,7 @@ else
     
     private bool IsEnabled => ViewModel.SelectedPerson == null;
 
-    private ComponentView? CurrentView => ViewModel.CurrentView as ComponentView;
+    private ViewFor? CurrentView => ViewModel.CurrentView as ViewFor;
 
 
     protected async override Task OnAfterRenderAsync(bool firstRender)

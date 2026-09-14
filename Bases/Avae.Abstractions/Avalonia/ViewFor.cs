@@ -1,9 +1,9 @@
 ﻿using Avae.ViewModels;
 using Avalonia.Controls;
 
-namespace Example;
+namespace Avae.Abstractions;
 
-public class View : UserControl, IViewFor
+public class ViewFor<TViewModel> : UserControl, IViewFor<TViewModel>
 {
     public object? Context { get => DataContext; set => DataContext = value; }
 }

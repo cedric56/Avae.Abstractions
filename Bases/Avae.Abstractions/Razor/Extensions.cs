@@ -16,7 +16,7 @@ public static class Extensions
     }
 
     public static void ConfigureIocContainer(this IServiceCollection services,
-        ComponentView navMenu,
+        ViewFor navMenu,
         NotificationPosition position = NotificationPosition.BottomLeft,
         int maxDispayments = 5,
         Action<IIocContainer>? configure = null,
@@ -25,7 +25,7 @@ public static class Extensions
     {
         circuitProvider ??= new CircuitProvider() { Provider = null! };
 
-        services.AddSingleton<ComponentView>(navMenu);
+        services.AddSingleton<ViewFor>(navMenu);
         services.AddMudServices(config =>
         {
             config.SnackbarConfiguration = new SnackbarConfiguration()

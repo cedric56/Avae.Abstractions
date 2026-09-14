@@ -21,37 +21,40 @@ public static class Extensions
         {
             return parameters[0] switch
             {
-                "Footer" => new ComponentView<MudText>("Footer"),
-                "IconSource" => new ComponentView<MudImage>() { Parameters = new Dictionary<string, object>() { { nameof(MudImage.Src), "avalonia-logo.ico" } } },
-                "Content" => new CenteredComponentView<MudText>("Here is my content"),
+                "Footer" => new ViewFor<MudText>("Footer"),
+                "IconSource" => new ViewFor<MudImage>() { Parameters = new Dictionary<string, object>() { { nameof(MudImage.Src), "avalonia-logo.ico" } } },
+                "Content" => new ViewFor<MudText>("Here is my content") { Class = "center" },
                 _ => throw new NotImplementedException()
             };
         });
 
-        container.Register<CenteredComponentView<ModalView, ModalViewModel>>();
-        container.Register<CenteredComponentView<EssentialsView, EssentialsViewModel>>();
+        container.Register((sp, ctx) => new ViewFor<ModalView, ModalViewModel>() { Class = "center" });
+        container.Register((sp, ctx) => new ViewFor<EssentialsView, EssentialsViewModel>() { Class = "center" });
         container.Register(typeof(FormViewModel).Name, (sp, parameters) =>
         {
             if (parameters.FirstOrDefault() is NavigableContext context)
             {
                 if (context.FactoryParameters.OfType<string>().Any(p => p == FormViewModel.KEY))
                 {
-                    return new ComponentView<FormPage1, FormViewModel>();
+                    return new ViewFor<FormPage1, FormViewModel>();
                 }
             }
 
-            return new ComponentView<FormView, FormViewModel>();
+            return new ViewFor<FormView, FormViewModel>();
         });
 
-        container.Register<CenteredComponentView<FormPage2, FormPage2ViewModel>>();
+        container.Register((sp, ctx) => new ViewFor<FormPage2, FormPage2ViewModel>() { Class = "center" });
         container.Register(typeof(FormPage3ViewModel).Name, (sp, parameters) =>
         {
             if (parameters.FirstOrDefault() is NavigableContext context)
             {
-                return new CenteredComponentView<FormPage3, FormPage3ViewModel>(sp, context, new Dictionary<string, object>()
+                    return new ViewFor<FormPage3, FormPage3ViewModel>(sp, context, new Dictionary<string, object>()
                     {
                         { nameof(Person), context.ViewParameters[0] }
-                    });
+                    })
+                    {
+                        Class = "center"
+                    };
             }
 
             throw new InvalidOperationException();
@@ -66,7 +69,7 @@ public static class Extensions
         RenderFragment? extras = null,
         ICircuitProvider? circuitProvider = null)
     {
-        var navMenu = new ComponentView<NavMenu>();
+        var navMenu = new ViewFor<NavMenu>();
 
         services.ConfigureIocContainer(navMenu, 
             position, 

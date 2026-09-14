@@ -1,9 +1,8 @@
-using Avae.ViewModels;
 using Example.ViewModels;
 
 namespace Example;
 
-public partial class EssentialsView : View, IViewFor<EssentialsViewModel>
+public partial class EssentialsView : ViewFor<EssentialsViewModel>
 {
     public EssentialsView()
     {
