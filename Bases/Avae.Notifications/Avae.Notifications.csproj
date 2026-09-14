@@ -5,23 +5,19 @@
     <TargetFrameworks>$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>Avae.Notifications</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
   </PropertyGroup>
 
-  <PropertyGroup>
-    <StaticWebAssetsEnabled Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-browser'))">false</StaticWebAssetsEnabled>
-  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Condition="'$(TargetFramework)' == 'net11.0'" Include="Avalonia.Desktop" />
-    <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" Include="Avalonia.Desktop" />
-    <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-macos'))" Include="Avalonia.Desktop" />
-    <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-ios'))" Include="Avalonia.iOS" />
-    <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-maccatalyst'))" Include="Avalonia.iOS" />
-    <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-android'))" Include="Avalonia.Android" />
-  </ItemGroup>
+    <Content Remove="wwwroot\**" />
+    <None Include="wwwroot\blazor-notifications.js" />
+    <TfmSpecificPackageFile Include="wwwroot\**">
+      <PackagePath>lib\$(TargetFramework)\wwwroot\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </TfmSpecificPackageFile>
 
-  <ItemGroup>
     <Compile Remove="Blazor\**" />
     <TfmSpecificPackageFile Include="Blazor\**">
       <PackagePath>lib\$(TargetFramework)\Blazor\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>

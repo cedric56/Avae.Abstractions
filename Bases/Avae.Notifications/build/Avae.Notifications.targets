@@ -2,9 +2,13 @@
 
   <ItemGroup Condition="$(AvaeFeatures.Contains('BlazorNotifications'))">
     <PackageReference Update="Microsoft.JSInterop" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Blazor\**\*.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Blazor\**\*.cs">
       <Visible>false</Visible>
     </Compile>
+    <Content Include="$(MSBuildThisFileDirectory)..\lib\net11.0\wwwroot\blazor-notifications.js">
+      <Link>wwwroot\blazor-notifications.js</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <PropertyGroup Condition="$(AvaeFeatures.Contains('MauiNotifications'))">
@@ -12,6 +16,12 @@
   </PropertyGroup>
 
   <ItemGroup Condition="$(AvaeFeatures.Contains('MauiNotifications'))">
+    <PackageReference Condition="'$(TargetFramework)' == 'net11.0'" Include="Avalonia.Desktop" />
+    <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" Include="Avalonia.Desktop" />
+    <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-macos'))" Include="Avalonia.Desktop" />
+    <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-ios'))" Include="Avalonia.iOS" />
+    <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-maccatalyst'))" Include="Avalonia.iOS" />
+    <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-android'))" Include="Avalonia.Android" />
     <PackageReference Update="Microsoft.Maui.Controls" />
     <Compile Include="$(MSBuildThisFileDirectory)..\lib\$(TargetFramework)\Maui\**\*.cs">
       <Visible>false</Visible>

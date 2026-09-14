@@ -2,7 +2,7 @@
 
 > Yet another navigation framework — but one built to run the *same* MVVM app across Avalonia (desktop/Linux), .NET MAUI (mobile/desktop), and Blazor (web), from a single shared ViewModel layer.
 
-Avae is a set of small, composable libraries that let you write navigation, view-resolution, and data-access logic **once** and reuse it across every .NET UI stack. Instead of re-implementing routing and DI wiring per platform, you write against Avae's abstractions and plug in the platform-specific adapter.
+Avae lets you write navigation, view-resolution, and data-access logic **once** and reuse it across every .NET UI stack. Instead of re-implementing routing and DI wiring per platform, you write against Avae's abstractions and opt in to the platform-specific code you need through a single MSBuild property — `AvaeFeatures` — rather than pulling in a different NuGet package per platform.
 
 --- 
 
@@ -18,44 +18,52 @@ Most cross-platform .NET UI frameworks stop at "shared business logic." Avae goe
 
 ## Repository layout
 
-All library packages live under `Bases/`. Every target platform depends on `Avae.ViewModels` for its navigation/IoC contracts, then adds only the packages it needs.
+Library code lives under `Bases/`. Rather than one NuGet package per platform, Avae ships a small number of **feature-flagged packages** — each one contains source for every platform it supports, and a consumer opts in to just the parts it needs by setting `<AvaeFeatures>` in its own `.csproj`.
 
 | Project | Purpose |
 |---|---|
-| `Avae.ViewModels` | Core abstractions and base classes shared by every other package (`IIocContainer`, `IViewModelBase`, `IViewFor`, `NavigableViewModelBase`, `Router`, etc.) — the seed that everything else depends on. |
+| `Avae.ViewModels` | Core abstractions and base classes shared by everything else (`IIocContainer`, `IViewModelBase`, `IViewFor`, `NavigableViewModelBase`, `Router`, etc.) — the seed every other package depends on. |
 | `Avae.ViewModels.Tests` | Unit tests for the `Avae.ViewModels` layer. |
-| `Avae.Core` | Small platform-agnostic helpers (async helpers, certificate handling, input validation). |
 | `Avae.Essentials` | A cross-platform device/feature layer in the spirit of MAUI Essentials — geolocation, battery, clipboard, sensors, media picker, sharing, and more — usable from Avalonia, MAUI, or Blazor. |
-| `Avae.Avalonia` | Avalonia-specific implementation: view resolution, navigation hosts, `IocContainer` wiring. |
-| `Avae.Avalonia.Browser` | Avalonia running in the browser via WebAssembly. |
-| `Avae.Maui` | .NET MAUI-specific implementation: `Shell`-based navigation and MAUI-flavored view resolution. |
-| `Avae.Razor` | Blazor/Razor Components integration (built on MudBlazor) for running Avae ViewModels on the web. |
-| `Avae.Notifications` | Cross-platform local/system notifications for Avalonia, MAUI, and Blazor. |
-| `Avae.DAL` | Data-access-layer abstractions shared across storage providers. |
-| `Avae.DAL.Sqlite` / `Avae.DAL.PostgreSQL` | Concrete `Avae.DAL` implementations for SQLite and PostgreSQL. |
-| `Avae.DAL.SqlTableDependency` | Real-time SQL change notifications wired into the Avae data layer. |
-| `Avae.DAL.SignalR` | Real-time client/server messaging integration. |
-| `Avae.DAL.gRPC` / `Avae.DAL.gRPC.Client` | gRPC-based data-access server and client, built on MagicOnion. |
-| `Avae.Server` / `Avae.Services` | Server-side hosting and service abstractions. |
+| `Avae.Abstractions` | The UI-adapter package. Feature-gated via `AvaeFeatures`: `Avalonia` (view resolution, `IocContainer`, navigation hosts, FluentAvalonia/MessageBox integration), `Maui` (`AvaeEntry`, popups, Shell-flavored view resolution), `Razor` (MudBlazor-based Razor Components integration), `Embedded` (hosting an Avalonia view inside another host via `EmbeddedAvalonia`). |
+| `Avae.Notifications` | Cross-platform local/system notifications. Feature-gated: `BlazorNotifications`, `MauiNotifications` (Avalonia notification support is unconditional). |
+| `Avae.DAL` | Data-access layer. Feature-gated: `Sqlite`, `PostgreSQL`, `SqlTableDependency` (real-time SQL change notifications), `SignalR`, `MagicOnion`/`MagicClient`/`MagicServer` (gRPC via MagicOnion, split into shared/client/server pieces). |
+| `Avae.Services` | Service abstractions and DI wiring shared across platforms. |
+
+### The `AvaeFeatures` pattern
+
+Instead of referencing `Avae.DAL.Sqlite`, `Avae.DAL.PostgreSQL`, etc. as separate packages, every consumer references the same `Avae.DAL` package and lists which pieces it wants:
+
+```xml
+<PropertyGroup>
+  <AvaeFeatures>Sqlite;SignalR</AvaeFeatures>
+</PropertyGroup>
+
+<ItemGroup>
+  <PackageReference Include="Avae.DAL" />
+</ItemGroup>
+```
+
+Each package's `build`/`buildTransitive` `.targets` file reads `$(AvaeFeatures)` and conditionally adds the matching `PackageReference`s and source files — so a Sqlite-only consumer never pulls in Npgsql, SignalR, or MagicOnion dependencies it doesn't need. The same mechanism is used for platform selection in `Avae.Abstractions` (`Avalonia` / `Maui` / `Razor` / `Embedded`) and `Avae.Notifications` (`BlazorNotifications` / `MauiNotifications`).
 
 ### Examples
 
 Every supported target has a runnable sample so you can see the same ViewModel layer hosted on each platform:
 
-| Example | Platform |
-|---|---|
-| `Example.Desktop` | Avalonia desktop (Windows/Linux/macOS) |
-| `Example.Windows` / `Example.macOS` | Platform-specific Avalonia packaging |
-| `Example.Android` / `Example.iOS` | Avalonia/MAUI mobile |
-| `Example.Maui` | .NET MAUI |
-| `Example.BlazorApp` / `Example.BlazorAssembly` | Blazor Server / WebAssembly |
-| `Example.Razor` | Razor Components |
-| `Example.Browser` | Avalonia browser-hosted app (WebAssembly) |
-| `Example.Hybrid` | Hybrid (MAUI Blazor Hybrid–style) app |
-| `Example.Uno` | Uno Platform host |
-| `Example.Server` | Backend/server host |
-| `Example` / `Example.ViewModels` / `Example.Models` / `Example.DAL` | Shared code referenced by every sample above |
-| `Example.ViewModels.Tests` | Tests for the shared example ViewModel layer |
+| Example | Platform | `AvaeFeatures` |
+|---|---|---|
+| `Example` | Avalonia desktop (Windows/Linux/macOS) | `Avalonia` |
+| `Example.Windows` / `Example.macOS` / `Example.Android` / `Example.iOS` | Platform-specific Avalonia packaging | `Avalonia` |
+| `Example.Desktop` | Avalonia desktop host | `Avalonia` |
+| `Example.Browser` | Avalonia running in the browser (WebAssembly) | `Avalonia` |
+| `Example.Maui` | .NET MAUI | `Maui;MauiNotifications` |
+| `Example.Razor` | Razor Class Library / Components | `Razor` |
+| `Example.BlazorApp` / `Example.BlazorAssembly` | Blazor Server / WebAssembly | `Razor` |
+| `Example.Hybrid` | MAUI Blazor Hybrid | `Maui` |
+| `Example.Uno` | Uno Platform host | n/a (Uno's own `UnoFeatures`, unrelated to Avae's) |
+| `Example.Server` | Backend/server host, MagicOnion gRPC server | `MagicServer` |
+| `Example.ViewModels` / `Example.Models` / `Example.DAL` | Shared code referenced by every sample above | — |
+| `Example.ViewModels.Tests` | Tests for the shared example ViewModel layer | — |
 
 ---
 
@@ -82,6 +90,7 @@ public interface IIocContainer
 {
     void Register(string key, Func<IServiceProvider, object[], object> factory);
     void Register<TContextFor>() where TContextFor : IViewFor, new();
+    void Register<T>(Func<IServiceProvider, NavigableContext, object> factory);
     void Register<TContextFor>(Func<IServiceProvider, NavigableContext, TContextFor> factory)
         where TContextFor : IViewFor;
     // + overloads for TContextFor with up to 5 constructor arguments
@@ -115,6 +124,25 @@ dotnet run --project Samples/Example.BlazorApp    # Blazor
 ```
 
 Each example references `Example.ViewModels`, `Example.Models`, and `Example.DAL` — the shared layer you'd replace with your own app's equivalents.
+
+### Adding Avae to your own project
+
+Reference the packages you need and declare which pieces of them to activate via `AvaeFeatures`:
+
+```xml
+<PropertyGroup>
+  <!-- e.g. for an Avalonia desktop app -->
+  <AvaeFeatures>Avalonia</AvaeFeatures>
+</PropertyGroup>
+
+<ItemGroup>
+  <PackageReference Include="Avae.ViewModels" />
+  <PackageReference Include="Avae.Abstractions" />
+  <PackageReference Include="Avae.Notifications" />
+</ItemGroup>
+```
+
+> **Note:** if you're iterating on Avae itself rather than just consuming it, prefer `ProjectReference`s to the `Bases/` projects over `PackageReference` during local development — NuGet's package cache doesn't pick up source changes until you `dotnet pack` a new version and clear the old one from `~/.nuget/packages`.
 
 ---
 

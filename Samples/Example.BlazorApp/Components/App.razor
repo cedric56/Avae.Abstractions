@@ -40,7 +40,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        unsuscribe = await monitor.AddStreamingHub();
+        unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl);
         await base.OnInitializedAsync();
     }
 

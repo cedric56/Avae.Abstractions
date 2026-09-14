@@ -32,7 +32,7 @@ internal class BlazorNotificationService : ISystemNotificationService, IAsyncDis
         if (_module == null)
         {
             _module = await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Avalonia.Labs.Notifications/notifications.js");
-            _innerModule = await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Avae.Notifications/blazor-notifications.js");
+            _innerModule = await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./blazor-notifications.js");
             await _module.InvokeVoidAsync("registerServiceWorker");
             await _innerModule.InvokeVoidAsync("registrations", _dotNetRef);
         }
