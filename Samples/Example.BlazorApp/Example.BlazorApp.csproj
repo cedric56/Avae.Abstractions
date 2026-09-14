@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AvaeFeatures>BlazorNotifications</AvaeFeatures>
+    <AvaeFeatures>;BlazorNotifications;</AvaeFeatures>
   </PropertyGroup>
 
   <ItemGroup>

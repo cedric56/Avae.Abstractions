@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   
-  <ItemGroup Condition="$(AvaeFeatures.Contains('Embedded'))">
+  <ItemGroup Condition="$(AvaeFeatures.Contains(';Embedded;'))">
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Browser" />
     <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Embedded\**\*.cs">
@@ -8,7 +8,7 @@
     </Compile>
   </ItemGroup>
 
-  <ItemGroup Condition="$(AvaeFeatures.Contains('Razor'))">
+  <ItemGroup Condition="$(AvaeFeatures.Contains(';Razor;'))">
     <PackageReference Update="Microsoft.AspNetCore.Components.Web" />
     <PackageReference Include="MudBlazor" />
     <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Razor\**\*.cs">
@@ -26,7 +26,7 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup Condition="$(AvaeFeatures.Contains('Maui'))">
+  <ItemGroup Condition="$(AvaeFeatures.Contains(';Maui;'))">
     <PackageReference Include="UXDivers.Popups.Maui" />
     <PackageReference Update="Microsoft.Maui.Controls" />
     <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Maui\**\*.cs">
@@ -37,7 +37,7 @@
     </MauiXaml>
   </ItemGroup>
 
-  <ItemGroup Condition="$(AvaeFeatures.Contains('Avalonia'))">
+  <ItemGroup Condition="$(AvaeFeatures.Contains(';Avalonia;'))">
     <PackageReference Update="Avalonia" />
     <PackageReference Include="MessageBox.Avalonia" />
     <PackageReference Include="FluentAvaloniaUI" />

@@ -7,12 +7,12 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AvaeFeatures>
-      PostgreSQL;
-      Sqlite;
-      SqlTableDependency;
-      SignalR;
-      MagicOnion;
-      MagicClient
+      ;PostgreSQL;
+      ;Sqlite;
+      ;SqlTableDependency;
+      ;SignalR;
+      ;MagicOnion;
+      ;MagicClient;
     </AvaeFeatures>
   </PropertyGroup>
 

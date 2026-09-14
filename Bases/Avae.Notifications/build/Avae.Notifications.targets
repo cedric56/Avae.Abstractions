@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <ItemGroup Condition="$(AvaeFeatures.Contains('BlazorNotifications'))">
+  <ItemGroup Condition="$(AvaeFeatures.Contains(';BlazorNotifications;'))">
     <PackageReference Update="Microsoft.JSInterop" />
     <Compile Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Blazor\**\*.cs">
       <Visible>false</Visible>
@@ -11,11 +11,11 @@
     </Content>
   </ItemGroup>
 
-  <PropertyGroup Condition="$(AvaeFeatures.Contains('MauiNotifications'))">
+  <PropertyGroup Condition="$(AvaeFeatures.Contains(';MauiNotifications;'))">
     <UseMaui>true</UseMaui>
   </PropertyGroup>
 
-  <ItemGroup Condition="$(AvaeFeatures.Contains('MauiNotifications'))">
+  <ItemGroup Condition="$(AvaeFeatures.Contains(';MauiNotifications;'))">
     <PackageReference Condition="'$(TargetFramework)' == 'net11.0'" Include="Avalonia.Desktop" />
     <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" Include="Avalonia.Desktop" />
     <PackageReference Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-macos'))" Include="Avalonia.Desktop" />

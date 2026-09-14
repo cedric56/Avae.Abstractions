@@ -3,7 +3,7 @@
     <TargetFramework>net11.0</TargetFramework>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AvaeFeatures>Avalonia</AvaeFeatures>
+    <AvaeFeatures>;Avalonia;</AvaeFeatures>
   </PropertyGroup>
 
   <ItemGroup>

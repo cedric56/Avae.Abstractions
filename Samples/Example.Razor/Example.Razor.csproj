@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AvaeFeatures>Razor</AvaeFeatures>
+    <AvaeFeatures>;Razor;</AvaeFeatures>
   </PropertyGroup>
 
   <ItemGroup>

@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AvaeFeatures>MagicServer</AvaeFeatures>
+    <AvaeFeatures>;MagicServer;</AvaeFeatures>
   </PropertyGroup>
 
   <ItemGroup>
