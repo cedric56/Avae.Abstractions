@@ -23,6 +23,6 @@ public abstract class TViewModel<T> : IDisposable where T : IViewModelBase
 
     public virtual void Dispose()
     {
-        //Avae.Messenger.Messenger.Instance.Unregister(this);
+
     }
 }

@@ -18,7 +18,7 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 builder.Services.UseEssentials();
 builder.Services.UseNotifications();
-builder.Services.UseSharedLibrary(true);
+builder.Services.UseSharedLibrary(ServiceLifetime.Scoped);
 await builder.Services.UseEmbeddedAvaloniaApp("avalonia", b => b.WithAppNotifications());
 var app = builder.Build();
 DBBase.Initialize(app.Services.GetRequiredService<IDBLayer>());

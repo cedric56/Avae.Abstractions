@@ -15,8 +15,6 @@
 
   <ItemGroup>
     <PackageReference Include="Avae.Abstractions" />
-    <PackageReference Include="Avae.Services" />
-    <PackageReference Include="Avae.ViewModels" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
   </ItemGroup>
 

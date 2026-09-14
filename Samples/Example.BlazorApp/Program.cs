@@ -23,12 +23,7 @@ builder.Services.UseBlazorNotifications(
             ]
         }]
     );
-builder.Services.UseSharedLibrary(true, 
-extras: builder =>
-{
-    //builder.OpenComponent<VideoCapture>(0);
-    //builder.CloseComponent();
-},
+builder.Services.UseSharedLibrary(ServiceLifetime.Scoped,
 circuitProvider: new CircuitProvider());
 builder.Services
     .AddRazorComponents()

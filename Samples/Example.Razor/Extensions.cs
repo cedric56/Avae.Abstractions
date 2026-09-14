@@ -9,6 +9,7 @@ using Example.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using MudBlazor;
 
 namespace Example.Razor;
@@ -63,7 +64,7 @@ public static class Extensions
 
 
     public static void UseSharedLibrary(this IServiceCollection services,
-        bool useScoped = false,
+        ServiceLifetime lifetime = ServiceLifetime.Singleton,
         NotificationPosition position = NotificationPosition.BottomLeft,
         int maxDispayments = 5,
         RenderFragment? extras = null,
@@ -78,18 +79,11 @@ public static class Extensions
             extras, 
             circuitProvider);
 
-        if (useScoped)
-        {
-            services.AddScoped<HomeViewModel>();
-            services.AddScoped<MenuViewModel>();
-            services.AddScoped<EssentialsViewModel>();
-        }
-        else
-        {
-            services.AddSingleton<HomeViewModel>();
-            services.AddSingleton<MenuViewModel>();
-            services.AddSingleton<EssentialsViewModel>();
-        }
+        services.TryAdd(ServiceDescriptor.Describe(typeof(HomeViewModel), typeof(HomeViewModel), lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(MenuViewModel), typeof(MenuViewModel), lifetime));
+        services.TryAdd(ServiceDescriptor.Describe(typeof(EssentialsViewModel), typeof(EssentialsViewModel), lifetime));
+
+
         services.AddTransient<ModalViewModel>();
         services.AddTransient<FormPage2ViewModel>();
         services.AddTransient<FormPage3ViewModel>();
