@@ -23,18 +23,102 @@
 
 .dialog-container {
     /* Dynamic sizing using clamp() */
-    min-width: clamp(300px, 50vw, 800px);
-    min-height: clamp(200px, 40vw, 600px);
+    /*min-width: clamp(300px, 50vw, 800px);
+    min-height: clamp(200px, 40vw, 600px);*/
     /* Or for more responsive */
+    /*width: clamp(300px, 70vw, 800px);
+    height: clamp(200px, 50vw, 600px);*/
+    min-width: 300px;
     width: clamp(300px, 70vw, 800px);
-    height: clamp(200px, 50vw, 600px);
 }
 
-@media (max-width: 600px) {
+/*@media (max-width: 600px) {
     .dialog-container {
         min-width: 70vw;
         min-height: 50vw;
         width: 70vw;
         height: 50vw;
     }
+}*/
+
+/* --- Container: dark card, sharp corners, centered --- */
+.dialog-container.modal {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    max-width: 90vw;
+    min-height: 0; /* <-- add this */
+    height: auto; /* <-- add this */
+    background: #3b3b3b;
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    border-radius: 0;
+    overflow: hidden;
+    font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+/* --- Title: big, bold, left-aligned, padded --- */
+.dialog-title {
+    padding: 20px 24px 4px 24px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: left;
+}
+
+/* --- Body: message / dynamic content --- */
+.dialog-body {
+    padding: 8px 24px 20px 24px;
+    font-size: 1rem;
+    color: #d0d0d0;
+    text-align: left;
+}
+
+    /* When Class = "center" is set (i.e. former CenteredViewFor) */
+    .dialog-body.center {
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+/* --- Actions: full-width stacked buttons --- */
+.dialog-actions {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgba(255,255,255,0.08); /* optional faint divider */
+}
+
+.dialog-action {
+    appearance: none;
+    background: transparent;
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 16px 24px;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+}
+
+/* First action should not double-up the divider with the actions container */
+.dialog-action:first-child {
+    border-top: none;
+}
+
+.dialog-action:hover:not(:disabled) {
+    background: rgba(255,255,255,0.06);
+}
+
+.dialog-action:active:not(:disabled) {
+    background: rgba(255,255,255,0.10);
+}
+
+.dialog-action:disabled {
+    color: rgba(255,255,255,0.3);
+    cursor: default;
 }

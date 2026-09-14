@@ -4,7 +4,7 @@
 /// An interface defining how pages can be configured in various frameworks such
 /// as Windows, Windows Phone, Android, iOS etc.
 /// </summary>
-public interface IIocConfiguration : IIoc
+public interface IIocConfiguration
 {
     object? GetView(string key, params object[] @params);
 

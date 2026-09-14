@@ -9,11 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GrpcWebSocketBridge.AspNetCore" />    
+    <PackageReference Include="GrpcWebSocketBridge.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
     <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
   </ItemGroup>

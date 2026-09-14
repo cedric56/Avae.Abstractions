@@ -1,3 +1,4 @@
+using Avae.Abstractions;
 using Example.ViewModels;
 
 namespace Example;

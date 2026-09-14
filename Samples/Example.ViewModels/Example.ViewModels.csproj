@@ -6,15 +6,16 @@
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AvaeFeatures>;CommunityToolkit;</AvaeFeatures>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Avae.Essentials" />
-    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Avae.Services" />
+    <PackageReference Include="Avae.ViewModels" />
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.Services\Avae.Services.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
   </ItemGroup>
 

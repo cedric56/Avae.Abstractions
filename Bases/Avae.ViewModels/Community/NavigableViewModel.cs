@@ -1,10 +1,11 @@
-﻿using Avae.ViewModels;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Example.ViewModels;
+namespace Avae.ViewModels;
 
+[INotifyPropertyChanged]
 public abstract partial class NavigableViewModel(Router router, bool initialize = true) :
-    NavigableViewModelBase(router, initialize)
+NavigableViewModelBase(router, initialize)
 {
     [RelayCommand]
     public override void GoBack()
@@ -23,8 +24,14 @@ public abstract partial class NavigableViewModel(Router router, bool initialize 
         GoBackCommand.NotifyCanExecuteChanged();
         GoForwardCommand.NotifyCanExecuteChanged();
     }
+
+    protected override void NotifyPropertyChanged(string propertyName)
+    {
+        OnPropertyChanged(propertyName);
+    }
 }
 
+[INotifyPropertyChanged]
 public abstract partial class NavigableViewModel<TResult>(Router router, bool initialize = true) :
     NavigableViewModelBase<TResult>(router, initialize)
 {
@@ -44,5 +51,10 @@ public abstract partial class NavigableViewModel<TResult>(Router router, bool in
     {
         GoBackCommand.NotifyCanExecuteChanged();
         GoForwardCommand.NotifyCanExecuteChanged();
+    }
+
+    protected override void NotifyPropertyChanged(string propertyName)
+    {
+        OnPropertyChanged(propertyName);
     }
 }

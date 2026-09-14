@@ -2,7 +2,7 @@
 @using Avae.Abstractions
 @using Avae.Services
 @using MudBlazor
-<div class="dialog-container form">
+@* <div class="dialog-container form">
     <div></div>
     <div class="@ComponentView?.Class">
         @if (ComponentView != null)
@@ -14,6 +14,38 @@
         <MudButton Disabled="@Parameters.IsPrimaryButtonEnabled" style="@Style(@Parameters.PrimaryButtonText)" OnClick="Primary">@Parameters.PrimaryButtonText</MudButton>
         <MudButton Disabled="@Parameters.IsSecondaryButtonEnabled" style="@Style(@Parameters.SecondaryButtonText)" OnClick="Secondary">@Parameters.SecondaryButtonText</MudButton>
         <MudButton style="@Style(@Parameters.CloseButtonText)" OnClick="Close">@Parameters.CloseButtonText</MudButton>
+    </div>
+</div> *@
+<div class="dialog-container modal @ComponentView?.Class">
+    @if (!string.IsNullOrWhiteSpace(Parameters.Title))
+    {
+        <div class="dialog-title">@Parameters.Title</div>
+    }
+
+    <div class="dialog-body @ComponentView?.Class">
+        @if (ComponentView != null)
+        {
+            <DynamicComponent Type="@ComponentView.Type" Parameters="@ComponentView.Parameters" />
+        }
+    </div>
+
+    <div class="dialog-actions">
+        @if (!string.IsNullOrWhiteSpace(Parameters.PrimaryButtonText))
+        {
+            <button class="dialog-action"
+                    disabled="@Parameters.IsPrimaryButtonEnabled"
+                    @onclick="Primary">@Parameters.PrimaryButtonText</button>
+        }
+        @if (!string.IsNullOrWhiteSpace(Parameters.SecondaryButtonText))
+        {
+            <button class="dialog-action"
+                    disabled="@Parameters.IsSecondaryButtonEnabled"
+                    @onclick="Secondary">@Parameters.SecondaryButtonText</button>
+        }
+        @if (!string.IsNullOrWhiteSpace(Parameters.CloseButtonText))
+        {
+            <button class="dialog-action" @onclick="Close">@Parameters.CloseButtonText</button>
+        }
     </div>
 </div>
 @code {

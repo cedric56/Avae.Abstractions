@@ -2,7 +2,7 @@
 
 namespace Avae.ViewModels.Tests;
 
-public abstract class TViewModel<T> : IIoc, IDisposable where T : IViewModelBase
+public abstract class TViewModel<T> : IDisposable where T : IViewModelBase
 {
     public TViewModel()
     {
@@ -13,17 +13,12 @@ public abstract class TViewModel<T> : IIoc, IDisposable where T : IViewModelBase
     {
         var services = new ServiceCollection();
         Configure(services);
-        Configure(services.BuildServiceProvider());
+        _ = services.BuildServiceProvider();
     }
 
     public virtual void Configure(IServiceCollection services)
     {
 
-    }
-
-    public virtual void Configure(IServiceProvider serviceProvider)
-    {
-        //ServiceLocator.SetDefault(serviceProvider);
     }
 
     public virtual void Dispose()

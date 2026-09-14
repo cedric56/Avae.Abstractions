@@ -10,7 +10,6 @@ using Person = Example.Models.Person;
 
 namespace Example.ViewModels;
 
-[INotifyPropertyChanged]
 public partial class MenuViewModel : NavigableViewModel, IDisposable
 {
     IServiceProvider provider;
@@ -111,11 +110,6 @@ public partial class MenuViewModel : NavigableViewModel, IDisposable
         };
 
         CurrentView = _router.GoTo(viewModel);
-    }
-
-    protected override void NotifyPropertyChanged(string propertyName)
-    {
-        OnPropertyChanged(propertyName);
     }
 
     public void Dispose()

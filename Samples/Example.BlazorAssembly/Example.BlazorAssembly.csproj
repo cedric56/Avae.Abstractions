@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
     <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />
   </ItemGroup>
 

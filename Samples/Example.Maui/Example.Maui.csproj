@@ -69,7 +69,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
 	  <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
 	  <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
 	</ItemGroup>

@@ -9,7 +9,6 @@ using System.ComponentModel;
 using Person = Example.Models.Person;
 namespace Example.ViewModels;
 
-[INotifyPropertyChanged]
 public partial class FormViewModel(IDialogService dialogService, Router router, Person person) :
     NavigableViewModel<Person>(router), IDataErrorInfo
 {
@@ -114,10 +113,5 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
     public override Task<bool> CanClose()
     {
         return dialogService.ShowYesNoAsync("Are you sure you want to close ?", "Question");
-    }
-
-    protected override void NotifyPropertyChanged(string propertyName)
-    {
-        OnPropertyChanged(propertyName);
     }
 }
