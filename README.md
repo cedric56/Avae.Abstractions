@@ -36,7 +36,7 @@ Instead of referencing `Avae.DAL.Sqlite`, `Avae.DAL.PostgreSQL`, etc. as separat
 
 ```xml
 <PropertyGroup>
-  <AvaeFeatures>Sqlite;SignalR</AvaeFeatures>
+  <AvaeFeatures>;Sqlite;SignalR;</AvaeFeatures>
 </PropertyGroup>
 
 <ItemGroup>
@@ -132,7 +132,7 @@ Reference the packages you need and declare which pieces of them to activate via
 ```xml
 <PropertyGroup>
   <!-- e.g. for an Avalonia desktop app -->
-  <AvaeFeatures>Avalonia</AvaeFeatures>
+  <AvaeFeatures>;Avalonia;</AvaeFeatures>
 </PropertyGroup>
 
 <ItemGroup>
