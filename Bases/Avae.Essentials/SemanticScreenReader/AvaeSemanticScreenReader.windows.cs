@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     partial class AvaeSemanticScreenReader : ISemanticScreenReader
     {

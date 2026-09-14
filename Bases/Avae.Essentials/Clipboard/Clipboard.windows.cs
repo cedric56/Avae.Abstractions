@@ -6,7 +6,7 @@ using DataPackage = Windows.ApplicationModel.DataTransfer.DataPackage;
 
 using WindowsClipboard = Windows.ApplicationModel.DataTransfer.Clipboard;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     partial class ClipboardImplementation : IClipboard
     {

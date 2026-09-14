@@ -5,7 +5,7 @@ using System.Runtime.Versioning;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.System.Profile;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     [SupportedOSPlatform("windows10.0.10240")]
     class DeviceInfoImplementation : IDeviceInfo

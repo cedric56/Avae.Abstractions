@@ -4,7 +4,7 @@ using Windows.Storage;
 using Windows.System;
 using WinLauncher = Windows.System.Launcher;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     partial class LauncherImplementation : ILauncher
     {

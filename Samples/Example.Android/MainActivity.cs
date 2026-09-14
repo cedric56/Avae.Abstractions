@@ -48,13 +48,13 @@ public class MainApplication : AvaloniaAndroidApplication<Avalonia.Application>
                      {
                          SslOptions =
                         {
-                            RemoteCertificateValidationCallback = Avae.DAL.gRPC.Client.Extensions.ValidateCertificates
+                            RemoteCertificateValidationCallback = Avae.DAL.MagicOnionClientExtensions.ValidateCertificates
                         }
                      };
 
                 //      new Xamarin.Android.Net.AndroidMessageHandler
                 //    {
-                //        ServerCertificateCustomValidationCallback = Avae.DAL.gRPC.Client.Extensions.ValidateCertificates2,
+                //        ServerCertificateCustomValidationCallback = Avae.DAL.MagicOnionClientExtensions.ValidateCertificates2,
                 //        AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate,
                 //    }
                  });

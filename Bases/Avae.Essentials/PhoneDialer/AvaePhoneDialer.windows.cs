@@ -1,7 +1,7 @@
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.Communication;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     partial class AvaePhoneDialer : IPhoneDialer
     {

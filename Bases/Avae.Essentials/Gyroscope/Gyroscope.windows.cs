@@ -5,7 +5,7 @@ using Windows.Devices.Sensors;
 using Dispatcher = Avalonia.Threading.Dispatcher;
 using WindowsGyro = Windows.Devices.Sensors.Gyrometer;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     partial class GyroscopeImplementation : IGyroscope
     {

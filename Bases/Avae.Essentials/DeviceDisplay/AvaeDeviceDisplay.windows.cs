@@ -6,7 +6,7 @@ using Windows.Graphics.Display;
 using Windows.System.Display;
 using Dispatcher = Avalonia.Threading.Dispatcher;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     abstract class DeviceDisplayImplementationBase : IDeviceDisplay
     {

@@ -4,7 +4,7 @@ using System.Runtime.Versioning;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Lights;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     [SupportedOSPlatform("windows10.0.10240")]
     class FlashlightImplementation : IFlashlight

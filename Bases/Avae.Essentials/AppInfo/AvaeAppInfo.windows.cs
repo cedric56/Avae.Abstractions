@@ -8,7 +8,7 @@ using Windows.ApplicationModel;
 using Application = Avalonia.Application;
 using Dispatcher = Avalonia.Threading.Dispatcher;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     [SupportedOSPlatform("windows10.0.10240")]
     class AvaeAppInfo : IAppInfo

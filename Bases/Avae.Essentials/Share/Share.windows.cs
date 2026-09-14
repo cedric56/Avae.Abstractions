@@ -9,7 +9,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using WinRT;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     [SupportedOSPlatform("windows10.0.10240")]
     partial class ShareImplementation : IAvaeShare

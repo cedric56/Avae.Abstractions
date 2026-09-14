@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     internal class ConnectivityNativeHelper
     {

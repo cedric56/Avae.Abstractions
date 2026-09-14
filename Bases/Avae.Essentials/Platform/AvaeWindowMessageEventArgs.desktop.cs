@@ -1,5 +1,5 @@
 ﻿#nullable enable
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     class WindowMessageEventArgs : EventArgs
     {

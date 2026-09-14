@@ -1,5 +1,4 @@
 ﻿using Avae.Abstractions;
-using Avae.Avalonia;
 using Avae.DAL;
 using Avae.Essentials;
 using Avae.Notifications;
@@ -9,6 +8,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Example.DAL;
 using Example.Models;
 using Example.ViewModels;
 using Example.Views;
@@ -39,33 +39,31 @@ public partial class App(IServiceProvider provider) : Application
            sp => new App(sp),
            configureExternalServices: services => ConfigureServices(services, configureServices),
            configureContainer: container => ConfigureContainer(container),
-           afterBuild: sp => AfterBuild(sp, afterBuildProvider),
+           afterBuild: async provider =>
+           {
+               DBBase.Initialize(provider.GetRequiredService<IDBLayer>());
+
+               var monitor = provider.GetRequiredService<IDBMonitor<Person>>();
+
+               Repository.Initialize(monitor);
+
+               var http = provider.GetService<HttpMessageHandler>();
+
+               unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl, http);
+
+               //Func<HttpMessageHandler, HttpMessageHandler> factory = null!;
+               //if (http != null)
+               //    factory = _ => http;
+
+               //unsuscribe = await monitor.AddSignalR(Constants.SignalHubUrl, factory: factory);
+
+               afterBuildProvider?.Invoke(provider);
+           },
            onDispose: async () =>
            {
                await unsuscribe.Invoke();
                onAppDispose?.Invoke();
            });
-    }
-
-    private static async void AfterBuild(IServiceProvider provider, Action<IServiceProvider>? afterBuildProvider)
-    {
-        DBBase.Initialize(provider.GetRequiredService<IDBLayer>());
-
-        var monitor = provider.GetRequiredService<IDBMonitor<Person>>();
-
-        Repository.Initialize(monitor);
-
-        var http = provider.GetService<HttpMessageHandler>();
-
-        //unsuscribe = await monitor.AddStreamingHub(http);
-
-        Func<HttpMessageHandler, HttpMessageHandler> factory = null!;
-        if (http != null)
-            factory = _ => http;
-
-        //unsuscribe = await monitor.AddSignalR(factory: factory);
-
-        afterBuildProvider?.Invoke(provider);
     }
 
     private static void ConfigureContainer(IIocContainer container)
@@ -101,7 +99,7 @@ public partial class App(IServiceProvider provider) : Application
         IconResolver.Register(new ExampleIconResolver());
 
         services.UseEssentials();
-        services.UseAvaeNotifications();
+        services.UseNotifications();
         services.AddTransient<Router>();
         services.AddSingleton<HomeViewModel>();
         services.AddSingleton<MenuViewModel>();

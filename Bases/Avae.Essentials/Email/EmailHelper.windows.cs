@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System.Runtime.InteropServices;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     static class EmailHelper
     {

@@ -2,7 +2,7 @@
 using Microsoft.Maui.ApplicationModel;
 using System.Runtime.Versioning;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     [SupportedOSPlatform("windows10.0.10240")]
     partial class BrowserImplementation : IBrowser

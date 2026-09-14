@@ -3,7 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Application = Avalonia.Application;
 using Window = Avalonia.Controls.Window;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     /// <summary>
     /// Manager object that manages window states on Windows.

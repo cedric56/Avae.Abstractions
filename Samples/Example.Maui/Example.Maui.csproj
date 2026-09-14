@@ -5,7 +5,7 @@
     <TargetFrameworks>net11.0-android;net11.0-ios;net11.0-maccatalyst;</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
 
-    <AvaeFeatures>Maui</AvaeFeatures>
+    <AvaeFeatures>Maui;MauiNotifications</AvaeFeatures>
 
     <!-- Note for MacCatalyst:
 		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
@@ -63,14 +63,13 @@
 	<ItemGroup>
     <PackageReference Include="AathifMahir.Maui.MauiIcons.FontAwesome.Solid" />
     <PackageReference Include="Avae.Abstractions" />
+    <PackageReference Include="Avae.Notifications" />
     <PackageReference Include="Microsoft.Maui.Controls" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />		
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Bases\Avae.Notifications\Avae.Notifications.csproj" />
 	  <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
-	  <!--<ProjectReference Include="..\..\Bases\Avae.Maui\Avae.Maui.csproj" />-->
 	  <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
 	  <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
 	</ItemGroup>

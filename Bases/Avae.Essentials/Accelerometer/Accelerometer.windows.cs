@@ -6,7 +6,7 @@ using Windows.Devices.Sensors;
 using Dispatcher = Avalonia.Threading.Dispatcher;
 using WindowsAccelerometer = Windows.Devices.Sensors.Accelerometer;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     partial class AccelerometerImplementation : IAccelerometer
     {

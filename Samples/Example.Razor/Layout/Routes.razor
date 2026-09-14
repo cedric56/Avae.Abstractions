@@ -24,7 +24,7 @@
     {
         if (OperatingSystem.IsBrowser())
         {
-            unsuscribe = await monitor.AddStreamingHub();
+            unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl);
             //unsuscribe = await provider.AddSignalR(monitor);
         }
         Repository.Initialize(monitor);

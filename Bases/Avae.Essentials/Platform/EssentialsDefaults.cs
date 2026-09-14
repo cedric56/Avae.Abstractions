@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls.Maui.Essentials;
 using System.Runtime.CompilerServices;
 
-namespace Avae.Avalonia.Essentials;
+namespace Avae.Essentials;
 
 static class MacosDefaults
 {

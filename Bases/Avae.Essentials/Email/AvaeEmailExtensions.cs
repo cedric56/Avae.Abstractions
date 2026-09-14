@@ -4,7 +4,7 @@ using Microsoft.Maui.Storage;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Avae.Avalonia.Essentials;
+namespace Avae.Essentials;
 
 /// <summary>
 /// Provides extension methods for sending emails with attachments and converting emails to different formats.

@@ -5,7 +5,7 @@ using Windows.Devices.Sensors;
 using Dispatcher = Avalonia.Threading.Dispatcher;
 using WindowsMagnetometer = Windows.Devices.Sensors.Magnetometer;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     partial class MagnetometerImplementation : IMagnetometer
     {

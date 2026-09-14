@@ -9,14 +9,14 @@
     <AvaeFeatures>Embedded</AvaeFeatures>
   </PropertyGroup>
 
-  <ItemGroup>    
+  <ItemGroup>
+    <PackageReference Include="Avae.Notifications" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />    
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
-    <ProjectReference Include="..\..\Bases\Avae.Notifications\Avae.Notifications.csproj" />
     <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />
   </ItemGroup>
 

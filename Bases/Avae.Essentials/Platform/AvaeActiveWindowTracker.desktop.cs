@@ -2,7 +2,7 @@
 
 using Window = Avalonia.Controls.Window;
 
-namespace Avae.Avalonia.Essentials;
+namespace Avae.Essentials;
 
 class AvaeActiveWindowTracker
 {

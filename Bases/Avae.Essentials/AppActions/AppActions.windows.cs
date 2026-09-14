@@ -4,7 +4,7 @@ using System.Runtime.Versioning;
 using System.Text;
 using Windows.UI.StartScreen;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     [SupportedOSPlatform("windows10.0.10586")]
     class AppActionsImplementation : IAppActions

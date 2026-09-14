@@ -1,0 +1,21 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup Condition="$(AvaeFeatures.Contains('BlazorNotifications'))">
+    <PackageReference Update="Microsoft.JSInterop" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Blazor\**\*.cs">
+      <Visible>false</Visible>
+    </Compile>
+  </ItemGroup>
+
+  <PropertyGroup Condition="$(AvaeFeatures.Contains('MauiNotifications'))">
+    <UseMaui>true</UseMaui>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(AvaeFeatures.Contains('MauiNotifications'))">
+    <PackageReference Update="Microsoft.Maui.Controls" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\lib\$(TargetFramework)\Maui\**\*.cs">
+      <Visible>false</Visible>
+    </Compile>
+  </ItemGroup>
+
+</Project>

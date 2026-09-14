@@ -17,7 +17,7 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
 });
 builder.Services.UseEssentials();
-builder.Services.UseAvaeNotifications();
+builder.Services.UseNotifications();
 builder.Services.UseSharedLibrary(true);
 await builder.Services.UseEmbeddedAvaloniaApp("avalonia", b => b.WithAppNotifications());
 var app = builder.Build();

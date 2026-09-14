@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AvaeFeatures>BlazorNotifications</AvaeFeatures>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,11 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Avae.Notifications" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.Notifications\Avae.Notifications.csproj" />
     <ProjectReference Include="..\..\Bases\Avae.ViewModels\Avae.ViewModels.csproj" />
     <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />
   </ItemGroup>

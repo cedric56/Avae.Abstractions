@@ -3,7 +3,7 @@ using Avalonia.Controls.Maui.Essentials;
 using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.Storage;
 
-namespace Avae.Avalonia.Essentials;
+namespace Avae.Essentials;
 
 internal partial class AvaeEmail : IAvaeEmail
 {

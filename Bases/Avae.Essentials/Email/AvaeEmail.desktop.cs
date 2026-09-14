@@ -2,7 +2,7 @@ using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.Storage;
 using System.Diagnostics;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     partial class AvaeEmail
     {

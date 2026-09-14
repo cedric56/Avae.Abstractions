@@ -2,7 +2,7 @@ using Microsoft.Maui.Devices.Sensors;
 using System.Runtime.Versioning;
 using Windows.Services.Maps;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     [SupportedOSPlatform("windows10.0.10240")]
     static partial class LocationExtensions

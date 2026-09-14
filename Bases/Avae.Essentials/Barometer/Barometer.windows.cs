@@ -5,7 +5,7 @@ using Windows.Devices.Sensors;
 using Dispatcher = Avalonia.Threading.Dispatcher;
 using WinBarometer = Windows.Devices.Sensors.Barometer;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     partial class BarometerImplementation : IBarometer
     {

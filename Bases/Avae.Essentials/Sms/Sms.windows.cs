@@ -4,7 +4,7 @@ using System.Runtime.Versioning;
 using Windows.ApplicationModel.Chat;
 using Windows.Foundation.Metadata;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     partial class SmsImplementation : ISms
     {

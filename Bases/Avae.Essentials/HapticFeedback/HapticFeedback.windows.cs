@@ -4,7 +4,7 @@ using System.Runtime.Versioning;
 using Windows.Devices.Haptics;
 using Windows.Foundation.Metadata;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     [SupportedOSPlatform("windows10.0.15063")]
     partial class HapticFeedbackImplementation : IHapticFeedback

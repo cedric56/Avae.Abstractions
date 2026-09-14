@@ -1,5 +1,4 @@
-﻿using Avae.Avalonia.Essentials;
-using Avalonia.Controls.Maui.Essentials;
+﻿using Avalonia.Controls.Maui.Essentials;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Maui.Accessibility;
@@ -305,7 +304,7 @@ public static class Extensions
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new ContactsImplementation() : null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new AvaeDeviceDisplay() : null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new DeviceInfoImplementation() : null!,
-            new Avae.Avalonia.Essentials.AvaeEmail(),
+            new Avae.Essentials.AvaeEmail(),
             filepicker,
             fileSystem,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new FlashlightImplementation() : null!,
@@ -321,7 +320,7 @@ public static class Extensions
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new MagnetometerImplementation() : null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new MapImplementation() : null!,
             OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new AvaeMediaPicker((AvaloniaMediaPicker)mediapicker) : null!,
-            OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avalonia.Essentials.OrientationSensorImplementation() : null!,
+            OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240, 0) ? new Avae.Essentials.OrientationSensorImplementation() : null!,
             new AvaePhoneDialer(),
             preferences,
             screenshot,

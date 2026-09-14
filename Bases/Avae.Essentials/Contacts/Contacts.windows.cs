@@ -8,7 +8,7 @@ using Contact = Microsoft.Maui.ApplicationModel.Communication.Contact;
 using ContactEmail = Microsoft.Maui.ApplicationModel.Communication.ContactEmail;
 using ContactPhone = Microsoft.Maui.ApplicationModel.Communication.ContactPhone;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     [SupportedOSPlatform("windows10.0.10240")]
     class ContactsImplementation : IContacts

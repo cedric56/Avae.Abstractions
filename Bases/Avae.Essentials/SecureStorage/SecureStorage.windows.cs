@@ -9,7 +9,7 @@ using Windows.Security.Cryptography.DataProtection;
 using Windows.Storage;
 using SecureStorageDictionary = System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     [SupportedOSPlatform("windows10.0.10240")]
     partial class SecureStorageImplementation : ISecureStorage

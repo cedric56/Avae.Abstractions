@@ -4,7 +4,7 @@ using Windows.System.Power;
 using Dispatcher = Avalonia.Threading.Dispatcher;
 using EnergySaverStatus = Microsoft.Maui.Devices.EnergySaverStatus;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     partial class BatteryImplementation : IBattery
     {

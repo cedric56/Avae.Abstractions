@@ -2,7 +2,7 @@
 using Avalonia.Platform.Storage;
 using Microsoft.Maui.ApplicationModel.Communication;
 
-namespace Avae.Avalonia.Essentials;
+namespace Avae.Essentials;
 
 class AvaeEmailAttachment : EmailAttachment
 {

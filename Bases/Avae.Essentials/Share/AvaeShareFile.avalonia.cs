@@ -2,7 +2,7 @@
 using Avalonia.Platform.Storage;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 
-namespace Avae.Avalonia.Essentials;
+namespace Avae.Essentials;
 
 partial class AvaeShareFile : ShareFile
 {

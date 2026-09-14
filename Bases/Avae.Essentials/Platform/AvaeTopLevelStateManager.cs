@@ -3,7 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Maui.Essentials;
 using Application = Avalonia.Application;
 
-namespace Avae.Avalonia.Essentials;
+namespace Avae.Essentials;
 
 public class AvaeTopLevelStateManager : IAvaloniaEssentialsPlatformProvider
 {

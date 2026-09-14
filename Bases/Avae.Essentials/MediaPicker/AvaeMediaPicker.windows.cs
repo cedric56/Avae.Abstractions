@@ -11,7 +11,7 @@ using Windows.System;
 using WinRT;
 using Launcher = Windows.System.Launcher;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     [SupportedOSPlatform("windows10.0.10240")]
     public class AvaeMediaPicker(AvaloniaMediaPicker picker) : IMediaPicker

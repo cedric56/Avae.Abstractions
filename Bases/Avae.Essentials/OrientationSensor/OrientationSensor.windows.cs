@@ -5,7 +5,7 @@ using Windows.Devices.Sensors;
 using Dispatcher = Avalonia.Threading.Dispatcher;
 using WindowsOrientationSensor = Windows.Devices.Sensors.OrientationSensor;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     /// <summary>
     /// Concrete implementation of the <see cref="Microsoft.Maui.Devices.Sensors.IOrientationSensor"/> APIs.

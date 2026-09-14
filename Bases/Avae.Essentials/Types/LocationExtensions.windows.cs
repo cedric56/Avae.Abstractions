@@ -5,7 +5,7 @@ using Windows.Services.Maps;
 using AltitudeReferenceSystem = Microsoft.Maui.Devices.Sensors.AltitudeReferenceSystem;
 using WindowsARS = Windows.Devices.Geolocation.AltitudeReferenceSystem;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     [SupportedOSPlatform("windows10.0.10240")]
     static partial class LocationExtensions

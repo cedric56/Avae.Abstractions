@@ -2,7 +2,7 @@
 
 using Microsoft.Maui.Devices.Sensors;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     static class GeolocationAccuracyExtensionMethods
     {

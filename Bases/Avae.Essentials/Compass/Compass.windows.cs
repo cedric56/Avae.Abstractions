@@ -5,7 +5,7 @@ using Windows.Devices.Sensors;
 using Dispatcher = Avalonia.Threading.Dispatcher;
 using WindowsCompass = Windows.Devices.Sensors.Compass;
 
-namespace Avae.Avalonia.Essentials
+namespace Avae.Essentials
 {
     partial class CompassImplementation : ICompass
     {
