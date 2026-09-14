@@ -150,10 +150,6 @@ Reference the packages you need and declare which pieces of them to activate via
 
 This project is under active development. APIs may change between commits. Contributions, issues, and design feedback are welcome via [GitHub Issues](https://github.com/cedric56/Avae.Abstractions/issues).
 
-## License
-
-_Add your chosen license here (e.g. MIT) and drop a `LICENSE` file at the repo root — none is currently published._
-
 ## Contributing
 
 Pull requests are welcome. If you're proposing a new platform adapter (e.g. WinUI), please open an issue first to discuss how it fits the `IIocContainer` / `Router` / `IViewFor` contracts in `Avae.ViewModels`.
