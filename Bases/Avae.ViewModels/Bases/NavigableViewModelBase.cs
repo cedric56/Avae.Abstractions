@@ -34,22 +34,10 @@ public abstract partial class NavigableViewModelBase<TResult>(Router router, boo
     /// </returns>
     public virtual Task<bool> CanClose() => Task.FromResult(true);
 
-    private ICommand? closeCommand;
-
     /// <summary>
     /// Gets the command that, when executed, checks <see cref="CanClose"/> and closes the view model if allowed.
     /// </summary>
-    public ICommand CloseCommand
-    {
-        get
-        {
-            return closeCommand ??= new AsyncRelayCommand(async () =>
-            {
-                if (await CanClose())
-                    await Close(default);
-            });
-        }
-    }
+    public abstract ICommand CloseCommand { get; }
 
     /// <summary>
     /// Gets the collection of commands exposed by this view model. By default, contains only the close command.
@@ -226,4 +214,18 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IVie
 
         return viewFor;
     }
+    //protected virtual IViewFor GoTo<T>(NavigableView<T> value, out T viewModel) where T : class, IViewModelBase
+    //{
+    //    IViewFor viewFor;
+    //    if (value.ViewModel is T t)
+    //    {
+    //        viewFor = _router.GoTo<T>(viewModel = t, value.Context);
+    //    }
+    //    else
+    //    {
+    //        viewFor = _router.GoTo<T>(out viewModel, value.Context);
+    //    }
+
+    //    return viewFor;
+    //}
 }

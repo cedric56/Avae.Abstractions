@@ -3,6 +3,11 @@ using Avae.ViewModels;
 using System;
 using System.Threading.Tasks;
 using UXDivers.Popups.Services;
+using Microsoft.Maui;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Graphics;
+using Microsoft.Maui.Platform;
 
 namespace Avae.Abstractions;
 
@@ -101,7 +106,7 @@ internal class DialogService(Helper helper, IServiceProvider provider, IIocConfi
 
         var viewModel = provider.GetViewModel<TViewModel>(context);
         var view = configuration.GetModalFor<TViewModel, TResult>(context ?? new NavigableContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
-        view.Context = viewModel;
+        view.Context = viewModel;        
         var modal = new AvaePopupPage<TResult>(viewModel.Title, viewModel.Commands)
         {
             Content = view as Microsoft.Maui.Controls.View

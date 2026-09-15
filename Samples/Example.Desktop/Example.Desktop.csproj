@@ -13,6 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
+  <Content Include="..\Example\Assets\avalonia-logo.ico"
+           CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\Example\Example.csproj" />
   </ItemGroup>
 

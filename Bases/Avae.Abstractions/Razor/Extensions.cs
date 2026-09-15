@@ -10,20 +10,20 @@ namespace Avae.Abstractions;
 
 public static class Extensions
 {
-    class CircuitProvider : ICircuitProvider
+    class CircuitProvider(Action<IServiceProvider> initialize) : ICircuitProvider
     {
-        public required IServiceProvider Provider { get; set; }
+        public IServiceProvider Provider { get => null!; set => initialize(value); }
     }
 
-    public static void ConfigureIocContainer(this IServiceCollection services,
+    public static void UseAvaeContainer(this IServiceCollection services,
         ViewFor navMenu,
         NotificationPosition position = NotificationPosition.BottomLeft,
         int maxDispayments = 5,
         Action<IIocContainer>? configure = null,
         RenderFragment? extras = null,
-        ICircuitProvider? circuitProvider = null)
+        Action<IServiceProvider>? initialize = null)
     {
-        circuitProvider ??= new CircuitProvider() { Provider = null! };
+        var circuitProvider = new CircuitProvider(initialize ?? (sp => { }));
 
         services.AddSingleton<ViewFor>(navMenu);
         services.AddMudServices(config =>

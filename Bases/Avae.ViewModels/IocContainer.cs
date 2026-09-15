@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Avae.ViewModels;
 
@@ -42,6 +43,15 @@ public class IocContainer(IServiceProvider provider) : IIocContainer, IIocConfig
     /// Thrown if the resolved view's declared result type does not match <typeparamref name="TResult"/>,
     /// or if the resolved view does not implement <see cref="IModalFor{T, TResult}"/>.
     /// </exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2075",
+    Justification = "View types are always registered via explicit compile-time factories " +
+                     "(e.g. new TContextFor(), ActivatorUtilities.CreateInstance<TContextFor>()) " +
+                     "in IocContainer.Register<TContextFor>(...). Because the concrete type and its " +
+                     "constructor are referenced directly at the registration call site, the trimmer " +
+                     "already roots that type — including the interfaces it implements — as part of " +
+                     "normal reachability analysis. This reflection only re-discovers metadata the " +
+                     "trimmer has already preserved for an independent reason; it doesn't rely on " +
+                     "trimming *not* removing something that would otherwise be removable.")]
     public IModalFor<T, TResult> GetModal<T, TResult>(NavigableContext context) where T : ICloseableViewModel<TResult>
     {
         var view = GetView(typeof(T).Name, [context]);

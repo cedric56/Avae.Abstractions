@@ -26,6 +26,13 @@ public partial class AvaePopupPage : PopupPage
 
         InitializeComponent();
 
+        ControlTemplate = DeviceInfo.Platform switch
+        {
+            var p when p == DevicePlatform.Android => (ControlTemplate)Resources["AndroidTemplate"],
+            var p when p == DevicePlatform.WinUI => (ControlTemplate)Resources["WindowsTemplate"],
+            _ => (ControlTemplate)Resources["iOSTemplate"] // iOS + MacCatalyst
+        };
+
         if (Application.Current?.RequestedTheme == AppTheme.Light)
         {
             PopupBackground = Colors.White;

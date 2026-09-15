@@ -7,7 +7,7 @@ namespace Avae.Notifications
 {
     public static class BlazorExtensions
     {
-        public static void UseBlazorNotifications(this IServiceCollection services, IEnumerable<NotificationChannel>? channels = null)
+        public static void WithAppNotifications(this IServiceCollection services, IEnumerable<NotificationChannel>? channels = null)
         {
             services.AddScoped<ISystemNotificationService>(provider => new BlazorNotificationService(provider.GetRequiredService<IJSRuntime>(), channels));
         }

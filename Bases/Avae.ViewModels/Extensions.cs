@@ -1,4 +1,7 @@
-﻿namespace Avae.ViewModels;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Avae.ViewModels;
 
 /// <summary>
 /// General-purpose extension methods for resolving view models from an <see cref="IServiceProvider"/>
@@ -19,6 +22,36 @@ public static class Extensions
         return (T)GetViewModel(provider, typeof(T), context);
     }
 
+    public static void RegisterViewModel<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TViewModel>(
+    this IServiceCollection services,
+    ServiceLifetime lifetime = ServiceLifetime.Singleton)
+    where TViewModel : class, IViewModelBase
+    {
+        switch (lifetime)
+        {
+            case ServiceLifetime.Singleton:
+                services.AddKeyedSingleton<Func<IServiceProvider, object[], IViewModelBase>>(
+                    typeof(TViewModel),
+                    ActivatorUtilities.CreateInstance<TViewModel>);
+                break;
+
+            case ServiceLifetime.Scoped:
+                services.AddKeyedScoped<Func<IServiceProvider, object[], IViewModelBase>>(
+                    typeof(TViewModel),
+                    (provider, _) => ActivatorUtilities.CreateInstance<TViewModel>);
+                break;
+
+            case ServiceLifetime.Transient:
+                services.AddKeyedTransient<Func<IServiceProvider, object[], IViewModelBase>>(
+                    typeof(TViewModel),
+                    (provider, _) => ActivatorUtilities.CreateInstance<TViewModel>);
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, null);
+        }
+    }
+
     /// <summary>
     /// Resolves or creates a view model of the specified type, using a registered
     /// <see cref="ViewModelFactory{T}"/> if one exists, or falling back to direct service resolution.
@@ -34,20 +67,19 @@ public static class Extensions
     /// </exception>
     public static IViewModelBase GetViewModel(this IServiceProvider provider, Type viewModelType, NavigableContext? context = null)
     {
-        var type = typeof(ViewModelFactory<>).MakeGenericType(viewModelType);
-        if (provider.GetService(type) is IViewModelBaseFactory factory)
+        var factory = provider.GetKeyedService<Func<IServiceProvider, object[], IViewModelBase>>(viewModelType);
+        if (factory is not null)
         {
-            var viewModel = factory.Create(viewModelType, [.. context?.ViewModelParameters ?? []]);
+            var viewModel = factory(provider, [.. context?.ViewModelParameters ?? []]);
             if (viewModel is not null)
-            {
                 return viewModel;
-            }
-            throw new InvalidOperationException($"Unable to create {viewModelType.Name}.  Ensure that it is registered with the service provider.");
+
+            throw new InvalidOperationException($"Unable to create {viewModelType.Name}. Ensure that it is registered with the service provider.");
         }
 
         if (context?.ViewModelParameters.Length > 0)
         {
-            throw new InvalidOperationException("You must register a factory for view models with parameters.");
+            throw new InvalidOperationException($"You must register using {nameof(RegisterViewModel)} for view models with parameters.");
         }
 
         if (provider.GetService(viewModelType) is IViewModelBase service)

@@ -2,6 +2,7 @@
 using Avalonia.Labs.Notifications;
 using Example.DAL;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Example.Windows;
@@ -22,7 +23,7 @@ class Program
             })
             .WithAppNotifications(new AppNotificationOptions()
             {
-                AppIcon = "C:\\Users\\cedri\\source\\repos\\Avae.Abstractions\\Samples\\Example\\Assets\\avalonia-logo.ico",
+                AppIcon = Path.Combine(AppContext.BaseDirectory, "avalonia-logo.ico"),
                 AppName = "Example"
             })
             .WithDataAnnotationsValidation()

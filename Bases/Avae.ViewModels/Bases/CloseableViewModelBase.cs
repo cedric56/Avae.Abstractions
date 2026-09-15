@@ -14,18 +14,10 @@ public abstract partial class CloseableViewModelBase<TResult> : ICloseableViewMo
     /// </summary>
     public event EventHandler<TResult?>? CloseRequested;
 
-    private ICommand? closeCommand;
-
     /// <summary>
     /// Gets the command that, when executed, closes the view model with a default result value.
     /// </summary>
-    public ICommand? CloseCommand
-    {
-        get
-        {
-            return closeCommand ??= new AsyncRelayCommand(() => Close(default));
-        }
-    }
+    public abstract ICommand CloseCommand { get; }
 
     /// <summary>
     /// Gets the collection of commands exposed by this view model. Empty by default.
@@ -36,6 +28,8 @@ public abstract partial class CloseableViewModelBase<TResult> : ICloseableViewMo
     /// Gets the display title for this view model.
     /// </summary>
     public abstract string Title { get; }
+
+    public virtual Task<bool> CanClose() => Task.FromResult(true);
 
     /// <summary>
     /// Closes this view model, raising <see cref="CloseRequested"/> with the supplied result value.

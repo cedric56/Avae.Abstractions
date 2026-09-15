@@ -4,11 +4,11 @@ namespace Avae.Essentials;
 
 public class CircuitServiceAccessor
 {
-    private static IServiceProvider? _provider;
-    public static IServiceProvider Provider { get { return _provider ?? throw new InvalidOperationException("CircuitServiceAccessor.Provider is not been set."); } set { _provider = value; } }
+    public static IServiceProvider? Provider { get; set; }
 
     public TService GetRequiredService<TService>() where TService : class
     {
+        if (Provider == null) throw new InvalidOperationException("CircuitServiceAccessor.Provider is not been set.");
         return Provider.GetRequiredService<TService>();
     }
 }

@@ -1,10 +1,11 @@
+using Avae.Abstractions;
 using Avae.DAL;
 using Avae.Essentials;
 using Avae.Notifications;
-using Avae.Abstractions;
 using Avalonia.Labs.Notifications;
 using Example.BlazorApp.Components;
 using Example.Razor;
+using MagicOnion;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(sp => new HttpClient
@@ -12,19 +13,19 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri(builder.Environment.WebRootPath)
 });
 builder.Services.UseBlazorEssentials();
-builder.Services.UseBlazorNotifications(
-    [
-        new NotificationChannel("actions", "Send Notification with Predefined Actions", NotificationPriority.High)
-        {
-            Actions =
-            [
-                new("Hello", "hello"),
-                new("world", "world")
-            ]
-        }]
-    );
-builder.Services.UseSharedLibrary(ServiceLifetime.Scoped,
-circuitProvider: new CircuitProvider());
+builder.Services.UseNotifications();
+//builder.Services.UseBlazorNotifications(
+//    [
+//        new NotificationChannel("actions", "Send Notification with Predefined Actions", NotificationPriority.High)
+//        {
+//            Actions =
+//            [
+//                new("Hello", "hello"),
+//                new("world", "world")
+//            ]
+//        }]
+//    );
+builder.Services.UseSharedLibrary(ServiceLifetime.Scoped, initialize: provider => CircuitServiceAccessor.Provider = provider);
 builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents()
@@ -32,7 +33,6 @@ builder.Services
     {
         options.DetailedErrors = true;
     });
-
 var app = builder.Build();
 DBBase.Initialize(app.Services.GetRequiredService<IDBLayer>());
 app.UseRouting();
@@ -44,8 +44,3 @@ app.MapRazorComponents<App>()
         typeof(Example.Razor.Components.MainLayout).Assembly
     );
 app.Run();
-
-class CircuitProvider : ICircuitProvider
-{
-    public IServiceProvider Provider { get => CircuitServiceAccessor.Provider; set => CircuitServiceAccessor.Provider = value; }
-}

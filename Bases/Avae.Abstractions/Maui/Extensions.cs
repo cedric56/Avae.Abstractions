@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Hosting;
 using System;
+using System.Threading.Tasks;
 using UXDivers.Popups.Maui;
 
 namespace Avae.Abstractions;
@@ -18,16 +19,14 @@ public static class Extensions
     /// Registers a shared <see cref="IocContainer"/> instance (as <see cref="IIocContainer"/>,
     /// <see cref="IDialogService"/>, <see cref="IContentDialogService"/>, <see cref="ITaskDialogService"/>,
     /// <see cref="INotificationService"/>, and <see cref="IRequestedThemeService"/>), an <see cref="IIocContainer"/>,
-    /// a transient <see cref="Router"/>, and a logger for <typeparamref name="TApp"/> with the MAUI service collection,
+    /// a transient <see cref="Router"/>,
     /// and enables UXDivers popups support.
     /// </summary>
-    /// <typeparam name="TApp">The application type the logger and container are configured for.</typeparam>
     /// <param name="builder">The MAUI app builder to configure.</param>
     /// <param name="configure">Optional callback invoked to register additional views/components with the IoC container.</param>
     /// <returns>The same <paramref name="builder"/>, for chaining.</returns>
-    public static MauiAppBuilder ConfigureIocContainer<TApp>(this MauiAppBuilder builder,
+    public static MauiAppBuilder UseAvaeContainer(this MauiAppBuilder builder,
         Action<IIocContainer>? configure = null)
-        where TApp : Application
     {
         builder.UseUXDiversPopups();
         builder.Services.AddSingleton<IIocContainer>(sp =>

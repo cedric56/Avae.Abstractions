@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <PackageId>Avae.Notifications</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IsAotCompatible>true</IsAotCompatible>
     <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
   </PropertyGroup>
 

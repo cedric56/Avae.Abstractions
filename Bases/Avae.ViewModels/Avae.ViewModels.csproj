@@ -6,11 +6,12 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Include="build\**" PackagePath="buildtransitive\" />
-    <Compile Remove="Community\**"/>
+    <Compile Remove="Community\**" />
     <TfmSpecificPackageFile Include="Community\**">
       <PackagePath>lib\$(TargetFramework)\Community\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>

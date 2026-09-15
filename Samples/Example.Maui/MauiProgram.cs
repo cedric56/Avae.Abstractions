@@ -24,7 +24,7 @@ public static class MauiProgram
             .WithAppNotifications(new AppNotificationOptions()
             {
 #if WINDOWS
-                AppIcon = "C:\\Users\\cedri\\source\\repos\\Avae.Abstractions\\Samples\\Example.Maui\\Resources\\Images\\dotnet_bot.png",
+                AppIcon = Path.Combine(AppContext.BaseDirectory, "appicon.ico"),
                 AppName = "Maui example"
 #endif
             })
@@ -35,7 +35,7 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             })
-            .ConfigureIocContainer<App>(container =>
+            .UseAvaeContainer(container =>
             {
                 container.Register(HomeViewModel.TaskDialogKey, (sp, parameters) =>
                 {
@@ -62,14 +62,14 @@ public static class MauiProgram
                     return new FormView();
                 });
             });
-
+        builder.Services.UseNotifications();
         builder.Services.RegisterEssentials();
-        builder.Services.AddSingleton<MainViewModel>();
-        builder.Services.AddSingleton<HomeViewModel>();
-        builder.Services.AddSingleton<MenuViewModel>();
-        builder.Services.AddTransient<EssentialsViewModel>();
-        builder.Services.AddTransient<ModalViewModel>();
-        builder.Services.AddTransient<FormViewModel>();
+        builder.Services.RegisterViewModel<MainViewModel>();
+        builder.Services.RegisterViewModel<HomeViewModel>();
+        builder.Services.RegisterViewModel<MenuViewModel>();
+        builder.Services.RegisterViewModel<EssentialsViewModel>();
+        builder.Services.RegisterViewModel<ModalViewModel>(ServiceLifetime.Transient);
+        builder.Services.RegisterViewModel<FormViewModel>(ServiceLifetime.Transient);
         builder.Services.UseDBSqlLayer<SqliteConnection>();
 #if DEBUG
         builder.Logging.AddDebug();

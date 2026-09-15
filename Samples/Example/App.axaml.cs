@@ -101,13 +101,13 @@ public partial class App(IServiceProvider provider) : Application
         services.UseEssentials();
         services.UseNotifications();
         services.AddTransient<Router>();
-        services.AddSingleton<HomeViewModel>();
-        services.AddSingleton<MenuViewModel>();
-        services.AddSingleton<EssentialsViewModel>();
-        services.AddTransient<ViewModelFactory<FormViewModel>>();
-        services.AddTransient<FormPage2ViewModel>();
-        services.AddTransient<ViewModelFactory<FormPage3ViewModel>>();
-        services.AddTransient<ModalViewModel>();
+        services.RegisterViewModel<HomeViewModel>();
+        services.RegisterViewModel<MenuViewModel>();
+        services.RegisterViewModel<EssentialsViewModel>();
+        services.RegisterViewModel<FormViewModel>(ServiceLifetime.Transient);
+        services.RegisterViewModel<FormPage2ViewModel>(ServiceLifetime.Transient);
+        services.RegisterViewModel<FormPage3ViewModel>(ServiceLifetime.Transient);
+        services.RegisterViewModel<ModalViewModel>(ServiceLifetime.Transient);
         configureServices?.Invoke(services);
     }
 
