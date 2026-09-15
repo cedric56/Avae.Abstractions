@@ -74,6 +74,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\TestPopupPage.xaml.cs">
+	    <DependentUpon>TestPopupPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Views\TestPopupPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\EssentialsView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

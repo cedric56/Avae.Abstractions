@@ -11,20 +11,6 @@ public interface IDBTransactionalFormatter : IMessagePackFormatter
     object? Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options);
 }
 
-//public class DBTransactionalFormatter<T>(IMessagePackFormatter<T?> formatter) : 
-//    IDBTransactionnalFormatter where T : DBTransactional?
-//{
-//    public void Serialize(ref MessagePackWriter writer, object? value, MessagePackSerializerOptions options)
-//    {
-//        formatter.Serialize(ref writer, value as T, options);
-//    }
-
-//    public object? Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
-//    {
-//        return formatter.Deserialize(ref reader, options);
-//    }
-//}
-
 internal class DBTransactionalFormatter : IMessagePackFormatter<DBTransactional?>
 {
     private static Dictionary<Type, IDBTransactionalFormatter> _formatters = new();
