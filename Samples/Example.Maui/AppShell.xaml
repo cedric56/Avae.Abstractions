@@ -4,9 +4,4 @@
     xmlns:local="clr-namespace:Example.Maui.Views"
     Title="Example.Maui">
 
-    <!--<ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:HomeView}"
-        Route="HomePage" />-->
-
 </Shell>

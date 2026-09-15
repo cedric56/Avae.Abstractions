@@ -1,4 +1,7 @@
-﻿namespace Example.Maui;
+﻿using Avae.ViewModels;
+using Example.ViewModels;
+
+namespace Example.Maui;
 
 public partial class App : Application
 {
@@ -12,6 +15,7 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
+        //return new Window(new MainPage() { BindingContext = provider.GetViewModel<MainViewModel>() });
         return new Window(new AppShell(provider));
     }
 }
