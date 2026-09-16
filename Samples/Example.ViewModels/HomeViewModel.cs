@@ -40,7 +40,7 @@ public partial class HomeViewModel(
         }
         finally
         {
-            await dialogService.ShowOkAsync(result ?? string.Empty, "Result");
+            await dialogService.ShowYesNoAbortAsync(result ?? string.Empty, "Result");
         }
     }
 

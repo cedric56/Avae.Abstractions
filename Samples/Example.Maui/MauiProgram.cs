@@ -1,6 +1,6 @@
-﻿using Avae.Abstractions;
-using Avae.DAL;
+﻿using Avae.DAL;
 using Avae.Essentials;
+using Avae.Maui;
 using Avae.Notifications;
 using Avae.ViewModels;
 using Avalonia.Labs.Notifications;
@@ -106,7 +106,7 @@ class ExampleIconResolver : IIconResolver
             var name = path["fa-solid fa-".Length..].Replace("-", "");
             if (Enum.TryParse<FontAwesomeSolidIcons>(name, true, out var icon))
             {
-                return new MauiIcon() { Icon = icon };
+                return icon;
             }
         }
         return null;

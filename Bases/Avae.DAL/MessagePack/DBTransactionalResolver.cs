@@ -4,6 +4,7 @@ using MessagePack.Resolvers;
 
 namespace Avae.DAL;
 
+//[GeneratedMessagePackResolver]
 public sealed class DBTransactionalResolver : IFormatterResolver
 {
     List<IMessagePackFormatter> _formatters = [new DBTransactionalFormatter()];
@@ -35,8 +36,9 @@ public sealed class DBTransactionalResolver : IFormatterResolver
         if (type == null)
             return null;
 
-        var generic = typeof(IMessagePackFormatter<>).MakeGenericType(type);
-        return _formatters.FirstOrDefault(f => f.GetType() == generic);
+        return _formatters
+        .OfType<IMessagePackFormatterFor>()
+        .FirstOrDefault(f => f.TargetType == type);
     }
 
     public IMessagePackFormatter<T> GetFormatter<T>()

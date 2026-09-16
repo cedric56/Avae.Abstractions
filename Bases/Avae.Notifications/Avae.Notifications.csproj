@@ -35,13 +35,10 @@
   <ItemGroup>
     <Content Include="build\**" PackagePath="buildtransitive\" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\Avae.Services\Avae.Services.csproj" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avae.Services" />
     <PackageReference Include="Avalonia.Labs.Notifications" />
   </ItemGroup>
 

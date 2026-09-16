@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Avae.DAL;
 
@@ -6,7 +7,7 @@ namespace Avae.DAL;
 /// https://stackoverflow.com/questions/2112143/how-can-i-define-a-idataerrorinfo-error-property-for-multiple-bo-properties
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public static class InputValidation<T>
+public static class InputValidation<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>
 {
     public static void Init()
     {

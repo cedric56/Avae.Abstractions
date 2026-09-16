@@ -62,13 +62,14 @@
 
 	<ItemGroup>
     <PackageReference Include="AathifMahir.Maui.MauiIcons.FontAwesome.Solid" />
-    <PackageReference Include="Avae.Abstractions" />
+    <!--<PackageReference Include="Avae.Abstractions" />-->
     <PackageReference Include="Avae.Notifications" />
     <PackageReference Include="Microsoft.Maui.Controls" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />		
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup>    
+	  <ProjectReference Include="..\..\Bases\Avae.Maui\Avae.Maui.csproj" />    
 	  <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
 	  <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
 	</ItemGroup>

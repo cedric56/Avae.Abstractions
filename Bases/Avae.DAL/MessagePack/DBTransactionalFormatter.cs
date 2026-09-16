@@ -4,7 +4,12 @@ using System.Text;
 
 namespace Avae.DAL;
 
-public interface IDBTransactionalFormatter : IMessagePackFormatter
+public interface IMessagePackFormatterFor : IMessagePackFormatter
+{
+    Type TargetType { get; }
+}
+
+public interface IDBTransactionalFormatter : IMessagePackFormatterFor
 {
     void Serialize(ref MessagePackWriter writer, object? value, MessagePackSerializerOptions options);
 
@@ -14,9 +19,12 @@ public interface IDBTransactionalFormatter : IMessagePackFormatter
 internal class DBTransactionalFormatter : IMessagePackFormatter<DBTransactional?>
 {
     private static Dictionary<Type, IDBTransactionalFormatter> _formatters = new();
+    private static Dictionary<string, Type> _typesByName = new();
     public static void Register<T>(IDBTransactionalFormatter formatter) where T : DBTransactional?
     {
-        _formatters.Add(typeof(T), formatter);
+        var type = typeof(T);
+        _formatters.Add(type, formatter);
+        _typesByName[type.FullName!] = type;
     }
 
     public void Serialize(ref MessagePackWriter writer, DBTransactional? value, MessagePackSerializerOptions options)
@@ -53,7 +61,9 @@ internal class DBTransactionalFormatter : IMessagePackFormatter<DBTransactional?
         if (string.IsNullOrEmpty(typeName))
             throw new MessagePackSerializationException("Type name is null or empty");
 
-        var targetType = Type.GetType(typeName) ?? throw new MessagePackSerializationException($"Could not resolve type: {typeName}");
+        if (!_typesByName.TryGetValue(typeName, out var targetType))
+            throw new MessagePackSerializationException($"Could not resolve type: {typeName}");
+
         if (_formatters.TryGetValue(targetType, out var formatter))
             return formatter.Deserialize(ref reader, options) as DBTransactional;
 

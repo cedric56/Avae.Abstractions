@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Notifications", "Bases
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Abstractions", "Bases\Avae.Abstractions\Avae.Abstractions.csproj", "{981DA332-0248-4CDA-9BE8-A5D34215C619}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Maui", "Bases\Avae.Maui\Avae.Maui.csproj", "{0767F1F6-1F95-4870-88CF-5ABD53C5925A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,10 @@ Global
 		{981DA332-0248-4CDA-9BE8-A5D34215C619}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{981DA332-0248-4CDA-9BE8-A5D34215C619}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{981DA332-0248-4CDA-9BE8-A5D34215C619}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0767F1F6-1F95-4870-88CF-5ABD53C5925A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0767F1F6-1F95-4870-88CF-5ABD53C5925A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0767F1F6-1F95-4870-88CF-5ABD53C5925A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0767F1F6-1F95-4870-88CF-5ABD53C5925A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

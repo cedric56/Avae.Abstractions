@@ -6,7 +6,6 @@
     xmlns:local="Avae.Abstractions"
     xmlns:uxd="clr-namespace:UXDivers.Popups.Maui;assembly=UXDivers.Popups.Maui"
     xmlns:uxdc="clr-namespace:UXDivers.Popups.Maui.Controls;assembly=UXDivers.Popups.Maui"
-    
     >
   <!--PopupBackground="{DynamicResource BackgroundSecondaryColor}"
   PopupCornerRadius="{DynamicResource CornerRadiusXBig}"-->

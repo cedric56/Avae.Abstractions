@@ -40,7 +40,9 @@
       <!--Bold text-->
       <TextBox Grid.Row="0" Classes="header styled" FontFamily="{Binding FontFamily}" Text="{Binding ContentHeader}"
                IsVisible="{Binding HasHeader}" />
-        <ContentPresenter Name="Cp" Grid.Row="2"  Content="{Binding Content}"/>
+        <ContentPresenter Name="Cp" Grid.Row="2"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                          Content="{Binding Content}"/>
     </Grid>
     <!--Buttons-->
     <ItemsControl Name="ButtonItemsPresenter" Classes="buttons-item-presenter"
