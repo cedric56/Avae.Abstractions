@@ -1,6 +1,4 @@
 ﻿using Avae.Services;
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Controls;
 
 namespace Avae.Maui;
 

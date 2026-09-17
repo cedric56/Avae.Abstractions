@@ -584,7 +584,7 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
                 borderbrush = Color.FromRgba(c.R, c.G, c.B, c.A);
             }
 
-            if (TryGetThemedBrush("ContentDialogBackgroundThemeBrush", out var bgBrush) && bgBrush is not null)
+            if (TryGetThemedBrush("ContentDialogBackground", out var bgBrush) && bgBrush is not null)
             {
                 var c = bgBrush.Color;
                 background = Color.FromRgba(c.R, c.G, c.B, c.A);
@@ -602,7 +602,7 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
                 foreground = Color.FromRgba(c.R, c.G, c.B, c.A);
             }
 #endif
-            border.SetValue(Border.BackgroundColorProperty, background);// new SolidColorBrush(Color.FromArgb("#FF202020")));
+            border.SetValue(Border.BackgroundProperty, Color.FromHex("#2b2b2b"));// new SolidColorBrush(Color.FromArgb("#FF202020")));
             //border.Effects.Add(Effect = "drop-shadow(0 8 32 #66000000)")
             //border.SetValue(Border.BackgroundColorProperty, background);
             border.SetValue(Border.StrokeProperty, borderbrush);
@@ -625,14 +625,9 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
             Grid.SetRow(titleLabel, 0);
             grid.Add(titleLabel);
 
-            var inner = new Border()
-            {
-                BackgroundColor = overlaybrush
-            };
             var contentPresenter = new ContentPresenter { Padding = new Thickness(24, 12, 24, 24) };
-            inner.Content = contentPresenter;
-            Grid.SetRow(inner, 1);
-            grid.Add(inner);
+            Grid.SetRow(contentPresenter, 1);
+            grid.Add(contentPresenter);
 
             var buttonRow = new Grid
             {
@@ -695,9 +690,10 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
 
             foreach (var merged in app.Resources.MergedDictionaries)
             {
-                if (merged.ThemeDictionaries.TryGetValue(themeKey, out var themeObj) &&
-                    themeObj is Microsoft.UI.Xaml.ResourceDictionary themeDict &&
-                    themeDict.TryGetValue(key, out var value) &&
+                if (
+                    //merged.ThemeDictionaries.TryGetValue(themeKey, out var themeObj) &&
+                    //themeObj is Microsoft.UI.Xaml.ResourceDictionary themeDict &&
+                    merged.TryGetValue(key, out var value) &&
                     value is Microsoft.UI.Xaml.Media.SolidColorBrush b)
                 {
                     brush = b;

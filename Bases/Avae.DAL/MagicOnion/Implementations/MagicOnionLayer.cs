@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using MessagePack;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -9,554 +8,343 @@ using System.Reflection;
 
 namespace Avae.DAL;
 
-public partial class MagicOnionLayer(IServiceProvider provider, string url, int globalCommandTimeout, ILogger? logger = null) : IDBLayer
+public partial class MagicOnionLayer(IServiceProvider provider, string url, int globalCommandTimeout) : IDBLayer
 {
-    public async Task<DBResult> Remove(DBTransactional transactional, int? commandTimeout = null)
+    public virtual async Task<DBResult> Remove(DBTransactional transactional, int? commandTimeout = null)
     {
-        try
-        {
-            using var tcs = new CancellationTokenSource(globalCommandTimeout);
-            IDBLayer.Sessions.TryGetValue(transactional.GetType(), out var connectionId);
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            return await service
-                .WithCancellationToken(tcs.Token)
-                .Remove(transactional, connectionId ?? string.Empty, commandTimeout)
-                .ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return new DBResult()
-            {
-                Successful = false,
-                Exception = ex.Message
-            };
-        }
+        using var tcs = new CancellationTokenSource(globalCommandTimeout);
+        IDBLayer.Sessions.TryGetValue(transactional.GetType(), out var connectionId);
+        var service = provider.GetRequiredService<IMagicOnionLayer>();
+        return await service
+            .WithCancellationToken(tcs.Token)
+            .Remove(transactional, connectionId ?? string.Empty, commandTimeout)
+            .ConfigureAwait(false);
     }
 
-    public async Task<DBResult> Save(DBTransactional transactional, int? commandTimeout = null)
+    public virtual async Task<DBResult> Save(DBTransactional transactional, int? commandTimeout = null)
     {
-        try
-        {
-            using var tcs = new CancellationTokenSource(globalCommandTimeout);
-            IDBLayer.Sessions.TryGetValue(transactional.GetType(), out var connectionId);
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            return await service
-                .WithCancellationToken(tcs.Token)
-                .Save(transactional, connectionId ?? string.Empty, commandTimeout)
-                .ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return new DBResult()
-            {
-                Successful = false,
-                Exception = ex.Message
-            };
-        }
+        using var tcs = new CancellationTokenSource(globalCommandTimeout);
+        IDBLayer.Sessions.TryGetValue(transactional.GetType(), out var connectionId);
+        var service = provider.GetRequiredService<IMagicOnionLayer>();
+        return await service
+            .WithCancellationToken(tcs.Token)
+            .Save(transactional, connectionId ?? string.Empty, commandTimeout)
+            .ConfigureAwait(false);
     }
 
-    public IEnumerable<T> FindByAny<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(Dictionary<string, object> filters, int? commandTimeout = null) where T : class, new()
+    public virtual IEnumerable<T> FindByAny<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(Dictionary<string, object> filters, int? commandTimeout = null) where T : class, new()
     {
-        try
+        if (OperatingSystem.IsBrowser())
         {
-            if (OperatingSystem.IsBrowser())
-            {
-                logger?.LogWarning("FindByAny<T> is not recommended for use in WebAssembly due to potential performance issues. Consider using FindByAnyAsync<T> instead.");
-                var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(url, nameof(FindByAnyAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters, commandTimeout ?? int.MaxValue }), globalCommandTimeout);
-                if (result == Array.Empty<byte>()) return [];
-                return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
-            }
-            return AsyncHelper.RunSync(() => FindByAnyAsync<T>(filters, commandTimeout));
+            var request = provider.GetRequiredService<IXmlHttpRequest>();
+            var result = request.Send(url, nameof(FindByAnyAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters, commandTimeout ?? int.MaxValue }), globalCommandTimeout);
+            if (result == Array.Empty<byte>()) return [];
+            return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
         }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return [];
-        }
+        return AsyncHelper.RunSync(() => FindByAnyAsync<T>(filters, commandTimeout));
     }
 
-    public async Task<IEnumerable<T>> FindByAnyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(Dictionary<string, object> filters, int? commandTimeout = null) where T : class, new()
+    public virtual async Task<IEnumerable<T>> FindByAnyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(Dictionary<string, object> filters, int? commandTimeout = null) where T : class, new()
     {
-        try
-        {
-            using var tcs = new CancellationTokenSource(globalCommandTimeout);
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service
-                .WithCancellationToken(tcs.Token)
-                .FindByAnyAsync(typeof(T).Name, filters, commandTimeout)
-                .ConfigureAwait(false);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data);
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return [];
-        }
+        using var tcs = new CancellationTokenSource(globalCommandTimeout);
+        var service = provider.GetRequiredService<IMagicOnionLayer>();
+        var result = await service
+            .WithCancellationToken(tcs.Token)
+            .FindByAnyAsync(typeof(T).Name, filters, commandTimeout)
+            .ConfigureAwait(false);
+        if (!result.Successful) throw new Exception(result.Exception);
+        if (result.Data == Array.Empty<byte>()) return [];
+        return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data);
     }
 
-    public T? Get<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
+    public virtual T? Get<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
     {
-        try
+        if (OperatingSystem.IsBrowser())
         {
-            if (OperatingSystem.IsBrowser())
-            {
-                logger?.LogWarning("Get is not recommended for use in WebAssembly due to potential performance issues. Use GetAsync instead.");
-                var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(url, nameof(GetAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, id, commandTimeout ?? int.MaxValue }), globalCommandTimeout);
-                if (result == Array.Empty<byte>()) return null;
-                return MessagePackSerializer.Deserialize<T>(result);
-            }
-            return AsyncHelper.RunSync(() => GetAsync<T>(id, transaction, commandTimeout));
+            var request = provider.GetRequiredService<IXmlHttpRequest>();
+            var result = request.Send(url, nameof(GetAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, id, commandTimeout ?? int.MaxValue }), globalCommandTimeout);
+            if (result == Array.Empty<byte>()) return null;
+            return MessagePackSerializer.Deserialize<T>(result);
         }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return null;
-        }
+        return AsyncHelper.RunSync(() => GetAsync<T>(id, transaction, commandTimeout));
     }
 
-    public IEnumerable<T> GetAll<T>(IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
+    public virtual IEnumerable<T> GetAll<T>(IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
     {
-        try
+        if (OperatingSystem.IsBrowser())
         {
-            if (OperatingSystem.IsBrowser())
-            {
-                logger?.LogWarning("GetAll<T> is not recommended for use in WebAssembly due to potential performance issues. Consider using FindByAny<T> with appropriate filters instead.");
-                var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(url, nameof(GetAllAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, commandTimeout ?? int.MaxValue }), globalCommandTimeout);
-                if (result == Array.Empty<byte>()) return [];
-                return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
-            }
-            return AsyncHelper.RunSync(() => GetAllAsync<T>(transaction, commandTimeout));
+            var request = provider.GetRequiredService<IXmlHttpRequest>();
+            var result = request.Send(url, nameof(GetAllAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, commandTimeout ?? int.MaxValue }), globalCommandTimeout);
+            if (result == Array.Empty<byte>()) return [];
+            return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
         }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return [];
-        }
+        return AsyncHelper.RunSync(() => GetAllAsync<T>(transaction, commandTimeout));
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync<T>(IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
+    public virtual async Task<IEnumerable<T>> GetAllAsync<T>(IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
     {
-        try
-        {
-            using var tcs = new CancellationTokenSource(globalCommandTimeout);
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service
-                .WithCancellationToken(tcs.Token)
-                .GetAllAsync(typeof(T).Name, commandTimeout)
-                .ConfigureAwait(false);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return [];
-        }
+        using var tcs = new CancellationTokenSource(globalCommandTimeout);
+        var service = provider.GetRequiredService<IMagicOnionLayer>();
+        var result = await service
+            .WithCancellationToken(tcs.Token)
+            .GetAllAsync(typeof(T).Name, commandTimeout)
+            .ConfigureAwait(false);
+        if (!result.Successful) throw new Exception(result.Exception);
+        if (result.Data == Array.Empty<byte>()) return [];
+        return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
     }
 
-    public async Task<T?> GetAsync<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
+    public virtual async Task<T?> GetAsync<T>(long id, IDbTransaction? transaction = null, int? commandTimeout = null) where T : class, new()
     {
-        try
-        {
-            using var tcs = new CancellationTokenSource(globalCommandTimeout);
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service
-                .WithCancellationToken(tcs.Token)
-                .GetAsync(typeof(T).Name, id, commandTimeout)
-                .ConfigureAwait(false);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return null;
-            return MessagePackSerializer.Deserialize<T>(result.Data);
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return null;
-        }
+        using var tcs = new CancellationTokenSource(globalCommandTimeout);
+        var service = provider.GetRequiredService<IMagicOnionLayer>();
+        var result = await service
+            .WithCancellationToken(tcs.Token)
+            .GetAsync(typeof(T).Name, id, commandTimeout)
+            .ConfigureAwait(false);
+        if (!result.Successful) throw new Exception(result.Exception);
+        if (result.Data == Array.Empty<byte>()) return null;
+        return MessagePackSerializer.Deserialize<T>(result.Data);
     }
 
-    public IEnumerable<T> Where<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(Dictionary<string, object> filters, int? commandTimeout = null) where T : class, new()
+    public virtual IEnumerable<T> Where<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(Dictionary<string, object> filters, int? commandTimeout = null) where T : class, new()
     {
-        try
+        if (OperatingSystem.IsBrowser())
         {
-            if (OperatingSystem.IsBrowser())
-            {
-                logger?.LogWarning("Where<T> is not recommended for use in WebAssembly due to potential performance issues. Consider using WhereAsync<T> instead.");
-                var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(url, nameof(WhereAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters, commandTimeout ?? int.MaxValue }), globalCommandTimeout);
-                if (result == Array.Empty<byte>()) return [];
-                return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
-            }
-            return AsyncHelper.RunSync(() => WhereAsync<T>(filters, commandTimeout));
+            var request = provider.GetRequiredService<IXmlHttpRequest>();
+            var result = request.Send(url, nameof(WhereAsync), MessagePackSerializer.Serialize(new object[] { typeof(T).Name, filters, commandTimeout ?? int.MaxValue }), globalCommandTimeout);
+            if (result == Array.Empty<byte>()) return [];
+            return MessagePackSerializer.Deserialize<IEnumerable<T>>(result) ?? [];
         }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return [];
-        }
+        return AsyncHelper.RunSync(() => WhereAsync<T>(filters, commandTimeout));
     }
 
-    public async Task<IEnumerable<T>> WhereAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(Dictionary<string, object> filters, int? commandTimeout = null) where T : class, new()
+    public virtual async Task<IEnumerable<T>> WhereAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(Dictionary<string, object> filters, int? commandTimeout = null) where T : class, new()
     {
-        try
-        {
-            using var tcs = new CancellationTokenSource(globalCommandTimeout);
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service
-                .WithCancellationToken(tcs.Token)
-                .WhereAsync(typeof(T).Name, filters, commandTimeout)
-                .ConfigureAwait(false);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return [];
-        }
+        using var tcs = new CancellationTokenSource(globalCommandTimeout);
+        var service = provider.GetRequiredService<IMagicOnionLayer>();
+        var result = await service
+            .WithCancellationToken(tcs.Token)
+            .WhereAsync(typeof(T).Name, filters, commandTimeout)
+            .ConfigureAwait(false);
+        if (!result.Successful) throw new Exception(result.Exception);
+        if (result.Data == Array.Empty<byte>()) return [];
+        return MessagePackSerializer.Deserialize<IEnumerable<T>>(result.Data) ?? [];
     }
 
-    public int Execute(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+    public virtual int Execute(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
     {
-        try
+        if (OperatingSystem.IsBrowser())
         {
-            if (OperatingSystem.IsBrowser())
-            {
-                logger?.LogWarning("Execute is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TReturn> instead.");
-                var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(url, nameof(ExecuteAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
-                if (result == Array.Empty<byte>()) return 0;
-                return MessagePackSerializer.Deserialize<int>(result);
-            }
-            return AsyncHelper.RunSync(() => ExecuteAsync(sql, param, transaction, commandTimeout, commandType));
+            var request = provider.GetRequiredService<IXmlHttpRequest>();
+            var result = request.Send(url, nameof(ExecuteAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
+            if (result == Array.Empty<byte>()) return 0;
+            return MessagePackSerializer.Deserialize<int>(result);
         }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return 0;
-        }
+        return AsyncHelper.RunSync(() => ExecuteAsync(sql, param, transaction, commandTimeout, commandType));
     }
 
-    public async Task<int> ExecuteAsync(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+    public virtual async Task<int> ExecuteAsync(string sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
     {
-        try
-        {
-            using var tcs = new CancellationTokenSource(globalCommandTimeout);
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service
-                .WithCancellationToken(tcs.Token)
-                .ExecuteAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
-                .ConfigureAwait(false);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return 0;
-            return MessagePackSerializer.Deserialize<int>(result.Data);
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return 0;
-        }
+        using var tcs = new CancellationTokenSource(globalCommandTimeout);
+        var service = provider.GetRequiredService<IMagicOnionLayer>();
+        var result = await service
+            .WithCancellationToken(tcs.Token)
+            .ExecuteAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+            .ConfigureAwait(false);
+        if (!result.Successful) throw new Exception(result.Exception);
+        if (result.Data == Array.Empty<byte>()) return 0;
+        return MessagePackSerializer.Deserialize<int>(result.Data);
     }
 
-    public IEnumerable<TReturn> Query<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFirst, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new()
+    public virtual IEnumerable<TReturn> Query<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFirst, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new()
     {
-        try
+        if (OperatingSystem.IsBrowser())
         {
-            if (OperatingSystem.IsBrowser())
-            {
-                logger?.LogWarning("Query<TFirst, TSecond, TReturn> is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TReturn> instead.");
-                var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
-                if (result == Array.Empty<byte>()) return [];
-                var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
-                return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-            }
-            return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
+            var request = provider.GetRequiredService<IXmlHttpRequest>();
+            var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
+            if (result == Array.Empty<byte>()) return [];
+            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
+            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
         }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return [];
-        }
+        return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
     }
 
-    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new()
+    public virtual Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new()
     {
         return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
     }
 
-    public IEnumerable<TReturn> Query<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFirst, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSecond, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new()
+    public virtual IEnumerable<TReturn> Query<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFirst, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSecond, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new()
     {
-        try
+        if (OperatingSystem.IsBrowser())
         {
-            if (OperatingSystem.IsBrowser())
-            {
-                logger?.LogWarning("Query<TFirst, TSecond, TThird, TReturn> is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TThird, TReturn> instead.");
-                var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
-                if (result == Array.Empty<byte>()) return [];
-                var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
-                return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-            }
-            return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return [];
-        }
-    }
-
-    public IEnumerable<TReturn> Query<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFirst, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSecond, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TThird, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new()
-    {
-        try
-        {
-            if (OperatingSystem.IsBrowser())
-            {
-                logger?.LogWarning("Query<TFirst, TSecond, TThird, TFourth, TReturn> is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn> instead.");
-                var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
-                if (result == Array.Empty<byte>()) return [];
-                var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
-                return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-            }
-            return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return [];
-        }
-    }
-
-    public IEnumerable<TReturn> Query<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFirst, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSecond, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TThird, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFourth, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFifth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new()
-    {
-        try
-        {
-            if (OperatingSystem.IsBrowser())
-            {
-                logger?.LogWarning("Query<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> instead.");
-                var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
-                if (result == Array.Empty<byte>()) return [];
-                var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
-                return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-            }
-            return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return [];
-        }
-    }
-
-    public IEnumerable<TReturn> Query<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFirst, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSecond, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TThird, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFourth, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFifth, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSixth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new() where TSixth : new()
-    {
-        try
-        {
-            if (OperatingSystem.IsBrowser())
-            {
-                logger?.LogWarning("Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> instead.");
-                var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
-                if (result == Array.Empty<byte>()) return [];
-                var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
-                return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-            }
-            return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return [];
-        }
-    }
-
-    public IEnumerable<TReturn> Query<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFirst, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSecond, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TThird, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFourth, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFifth, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSixth, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSeventh, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new() where TSixth : new() where TSeventh : new()
-    {
-        try
-        {
-            if (OperatingSystem.IsBrowser())
-            {
-                logger?.LogWarning("Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> is not recommended for use in WebAssembly due to potential performance issues. Consider using QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> instead.");
-                var request = provider.GetRequiredService<IXmlHttpRequest>();
-                var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
-                if (result == Array.Empty<byte>()) return [];
-                var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
-                return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-            }
-            return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return [];
-        }
-    }
-
-    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new()
-    {
-        try
-        {
-            using var tcs = new CancellationTokenSource(globalCommandTimeout);
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service
-                .WithCancellationToken(tcs.Token)
-                .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
-                .ConfigureAwait(false);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
+            var request = provider.GetRequiredService<IXmlHttpRequest>();
+            var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
+            if (result == Array.Empty<byte>()) return [];
+            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
             return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
         }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return Enumerable.Empty<TReturn>();
-        }
+        return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
     }
 
-    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new()
+    public virtual IEnumerable<TReturn> Query<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFirst, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSecond, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TThird, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new()
     {
-        try
+        if (OperatingSystem.IsBrowser())
         {
-            using var tcs = new CancellationTokenSource(globalCommandTimeout);
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service
-                .WithCancellationToken(tcs.Token)
-                .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
-                .ConfigureAwait(false);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
+            var request = provider.GetRequiredService<IXmlHttpRequest>();
+            var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
+            if (result == Array.Empty<byte>()) return [];
+            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
             return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
         }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return Enumerable.Empty<TReturn>();
-        }
+        return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
     }
 
-    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new()
+    public virtual IEnumerable<TReturn> Query<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFirst, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSecond, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TThird, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFourth, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFifth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new()
+    {
+        if (OperatingSystem.IsBrowser())
+        {
+            var request = provider.GetRequiredService<IXmlHttpRequest>();
+            var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
+            if (result == Array.Empty<byte>()) return [];
+            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
+            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
+        }
+        return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
+    }
+
+    public virtual IEnumerable<TReturn> Query<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFirst, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSecond, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TThird, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFourth, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFifth, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSixth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new() where TSixth : new()
+    {
+        if (OperatingSystem.IsBrowser())
+        {
+            var request = provider.GetRequiredService<IXmlHttpRequest>();
+            var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
+            if (result == Array.Empty<byte>()) return [];
+            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
+            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
+        }
+        return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
+    }
+
+    public virtual IEnumerable<TReturn> Query<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFirst, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSecond, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TThird, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFourth, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TFifth, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSixth, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TSeventh, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new() where TSixth : new() where TSeventh : new()
+    {
+        if (OperatingSystem.IsBrowser())
+        {
+            var request = provider.GetRequiredService<IXmlHttpRequest>();
+            var result = request.Send(url, nameof(QueryAsync), MessagePackSerializer.Serialize(new object[] { sql, param ?? new object(), commandTimeout ?? int.MaxValue, commandType ?? CommandType.Text }), globalCommandTimeout);
+            if (result == Array.Empty<byte>()) return [];
+            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result) ?? [];
+            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
+        }
+        return AsyncHelper.RunSync(() => QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType, aliases));
+    }
+
+    public virtual async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new()
+    {
+        using var tcs = new CancellationTokenSource(globalCommandTimeout);
+        var service = provider.GetRequiredService<IMagicOnionLayer>();
+        var result = await service
+            .WithCancellationToken(tcs.Token)
+            .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+            .ConfigureAwait(false);
+        if (!result.Successful) throw new Exception(result.Exception);
+        if (result.Data == Array.Empty<byte>()) return [];
+        var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
+        return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
+    }
+
+    public virtual async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new()
+    {
+        using var tcs = new CancellationTokenSource(globalCommandTimeout);
+        var service = provider.GetRequiredService<IMagicOnionLayer>();
+        var result = await service
+            .WithCancellationToken(tcs.Token)
+            .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+            .ConfigureAwait(false);
+        if (!result.Successful) throw new Exception(result.Exception);
+        if (result.Data == Array.Empty<byte>()) return [];
+        var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
+        return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
+    }
+
+    public virtual Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new()
     {
         return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
     }
 
-    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new()
+    public virtual async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new()
     {
-        try
-        {
-            using var tcs = new CancellationTokenSource(globalCommandTimeout);
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service
-                .WithCancellationToken(tcs.Token)
-                .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
-                .ConfigureAwait(false);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
-            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return Enumerable.Empty<TReturn>();
-        }
+        using var tcs = new CancellationTokenSource(globalCommandTimeout);
+        var service = provider.GetRequiredService<IMagicOnionLayer>();
+        var result = await service
+            .WithCancellationToken(tcs.Token)
+            .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+            .ConfigureAwait(false);
+        if (!result.Successful) throw new Exception(result.Exception);
+        if (result.Data == Array.Empty<byte>()) return [];
+        var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
+        return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
     }
 
-    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new()
+    public virtual Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new()
     {
         return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
     }
 
-    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new()
+    public virtual async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new()
     {
-        try
-        {
-            using var tcs = new CancellationTokenSource(globalCommandTimeout);
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service
-                .WithCancellationToken(tcs.Token)
-                .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
-                .ConfigureAwait(false);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
-            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return Enumerable.Empty<TReturn>();
-        }
+        using var tcs = new CancellationTokenSource(globalCommandTimeout);
+        var service = provider.GetRequiredService<IMagicOnionLayer>();
+        var result = await service
+            .WithCancellationToken(tcs.Token)
+            .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+            .ConfigureAwait(false);
+        if (!result.Successful) throw new Exception(result.Exception);
+        if (result.Data == Array.Empty<byte>()) return [];
+        var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
+        return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
     }
 
-    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new()
+    public virtual Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new()
     {
         return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
     }
 
-    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new() where TSixth : new()
+    public virtual async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new() where TSixth : new()
     {
-        try
-        {
-            using var tcs = new CancellationTokenSource(globalCommandTimeout);
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service
-                .WithCancellationToken(tcs.Token)
-                .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
-                .ConfigureAwait(false);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
-            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return Enumerable.Empty<TReturn>();
-        }
+        using var tcs = new CancellationTokenSource(globalCommandTimeout);
+        var service = provider.GetRequiredService<IMagicOnionLayer>();
+        var result = await service
+            .WithCancellationToken(tcs.Token)
+            .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+            .ConfigureAwait(false);
+        if (!result.Successful) throw new Exception(result.Exception);
+        if (result.Data == Array.Empty<byte>()) return [];
+        var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
+        return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
     }
 
-    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new() where TSixth : new()
+    public virtual Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new() where TSixth : new()
     {
         return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
     }
 
-    public async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new() where TSixth : new() where TSeventh : new()
+    public virtual async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, object? param = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new() where TSixth : new() where TSeventh : new()
     {
-        try
-        {
-            using var tcs = new CancellationTokenSource(globalCommandTimeout);
-            var service = provider.GetRequiredService<IMagicOnionLayer>();
-            var result = await service
-                .WithCancellationToken(tcs.Token)
-                .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
-                .ConfigureAwait(false);
-            if (!result.Successful) throw new Exception(result.Exception);
-            if (result.Data == Array.Empty<byte>()) return [];
-            var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
-            return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex.Message);
-            return Enumerable.Empty<TReturn>();
-        }
+        using var tcs = new CancellationTokenSource(globalCommandTimeout);
+        var service = provider.GetRequiredService<IMagicOnionLayer>();
+        var result = await service
+            .WithCancellationToken(tcs.Token)
+            .QueryAsync(sql, param, commandTimeout, commandType ?? CommandType.Text)
+            .ConfigureAwait(false);
+        if (!result.Successful) throw new Exception(result.Exception);
+        if (result.Data == Array.Empty<byte>()) return [];
+        var rows = MessagePackSerializer.Deserialize<IEnumerable<IDictionary<string, object>>>(result.Data) ?? [];
+        return rows.Select(row => MapRow(row, map, splitOn, aliases)).ToList();
     }
 
-    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new() where TSixth : new() where TSeventh : new()
+    public virtual Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, string splitOn = "Id", IEnumerable<DBAlias>? aliases = null) where TFirst : new() where TSecond : new() where TThird : new() where TFourth : new() where TFifth : new() where TSixth : new() where TSeventh : new()
     {
         return QueryAsync(command.CommandText, map, command.Parameters, command.Transaction, command.Buffered, splitOn, command.CommandTimeout, command.CommandType, aliases);
     }

@@ -24,7 +24,7 @@ internal class DBTransactionalFormatter : IMessagePackFormatter<DBTransactional?
     {
         var type = typeof(T);
         _formatters.Add(type, formatter);
-        _typesByName[type.FullName!] = type;
+        _typesByName[type.AssemblyQualifiedName ?? type.FullName ?? type.Name] = type;
     }
 
     public void Serialize(ref MessagePackWriter writer, DBTransactional? value, MessagePackSerializerOptions options)
@@ -36,7 +36,7 @@ internal class DBTransactionalFormatter : IMessagePackFormatter<DBTransactional?
         }
 
         var type = value.GetType();
-        var typeName = type.AssemblyQualifiedName ?? type.FullName;
+        var typeName = type.AssemblyQualifiedName ?? type.FullName ?? type.Name;
 
         // Write as array: [TypeName, Data]
         writer.WriteArrayHeader(2);

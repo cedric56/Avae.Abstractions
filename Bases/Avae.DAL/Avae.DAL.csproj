@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Content Include="build\**" PackagePath="buildtransitive\" />
+
     <Compile Remove="PostgreSQL\**" />
     <TfmSpecificPackageFile Include="PostgreSQL\**">
       <PackagePath>lib\$(TargetFramework)\PostgreSQL\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>

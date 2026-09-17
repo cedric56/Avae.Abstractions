@@ -7,6 +7,8 @@ namespace Example.Models.MessagePackFormatters;
 
 public class PersonFormatter : IMessagePackFormatter<Person?>, IDBTransactionalFormatter//, IMessagePackFormatter<DBTransactional?>
 {
+    public Type TargetType => typeof(Person);
+
     public void Serialize(ref MessagePackWriter writer, Person? value, MessagePackSerializerOptions options)
     {
         if (value == null)

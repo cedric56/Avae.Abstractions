@@ -15,7 +15,7 @@ public static class Extensions
         services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
         services.AddSingleton<IXmlHttpRequest, XmlHttpRequest>();
         services.AddSingleton(sp => sp.Create<IMagicOnionLayer>(Constants.ServerUrl));
-        services.UseLayer(sp => new MagicOnionLayer(sp, Constants.OnionUrl, 1000, sp.GetService<ILogger>()));
+        services.UseLayer(sp => new MagicCatchableLayer(sp, Constants.OnionUrl, 1000, sp.GetService<ILogger>()));
         services.AddSingleton<IDBFactory, Fake>();
     }
 
