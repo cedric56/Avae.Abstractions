@@ -1,7 +1,4 @@
-﻿using Avae.ViewModels;
-using Example.ViewModels;
-
-namespace Example.Maui;
+﻿namespace Example.Maui;
 
 public partial class App : Application
 {

@@ -64,6 +64,7 @@
     <PackageReference Include="AathifMahir.Maui.MauiIcons.FontAwesome.Solid" />
     <!--<PackageReference Include="Avae.Abstractions" />-->
     <PackageReference Include="Avae.Notifications" />
+    <PackageReference Include="CommunityToolkit.Maui" />
     <PackageReference Include="Microsoft.Maui.Controls" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />		
 	</ItemGroup>
@@ -75,15 +76,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Views\TestPopupPage.xaml.cs">
-	    <DependentUpon>TestPopupPage.xaml</DependentUpon>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <MauiXaml Update="Views\TestPopupPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
 	  <MauiXaml Update="Views\EssentialsView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

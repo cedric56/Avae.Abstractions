@@ -1,8 +1,106 @@
-<ContentView x:Class="Example.Maui.Views.EssentialsView">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI Essentials !"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
-</ContentView>
+<ContentPage
+    x:Class="Example.Maui.Views.EssentialsView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vm="clr-namespace:Example.ViewModels;assembly=Example.ViewModels"
+    mc:Ignorable="d"
+    x:DataType="vm:EssentialsViewModel">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
+
+        <toolkit:Expander Grid.Row="2">
+            <toolkit:Expander.Header>
+                <Label Text="Dialogs" FontAttributes="Bold" Padding="0,8" />
+            </toolkit:Expander.Header>
+            <FlexLayout Wrap="Wrap" Direction="Row">
+                <Button Text="Pick a Photo" Command="{Binding PickPhotoCmdCommand}" />
+                <Button Text="Pick a Video" Command="{Binding PickVideoCmdCommand}" />
+                <Button Text="File" Command="{Binding PickFileCmdCommand}" />
+                <Button Text="Image" Command="{Binding PickImageCmdCommand}" />
+                <Button Text="Pdf" Command="{Binding PickPdfCmdCommand}" />
+                <Button Text="Custom" Command="{Binding PickCustomTypeCmdCommand}" />
+                <Button Text="Multiple" Command="{Binding PickMultipleFilesCmdCommand}" />
+            </FlexLayout>
+        </toolkit:Expander>
+
+        <toolkit:Expander Grid.Row="3">
+            <toolkit:Expander.Header>
+                <Label Text="Medias" FontAttributes="Bold" Padding="0,8" />
+            </toolkit:Expander.Header>
+            <FlexLayout Wrap="Wrap" Direction="Row">
+                <Button Text="Dial" Command="{Binding DialCmdCommand}" />
+                <Button Text="Sms" Command="{Binding SmsCmdCommand}" />
+                <Button Text="Contacts" Command="{Binding ContactsCmdCommand}" />
+                <Button Text="Email" Command="{Binding EmailCmdCommand}" />
+                <Button Text="Share" Command="{Binding ShareCmdCommand}" />
+                <Button Text="CapturePhoto" Command="{Binding CapturePhotoCmdCommand}" />
+                <Button Text="CaptureVideo" Command="{Binding CaptureVideoCmdCommand}" />
+                <Button Text="Screenshot" Command="{Binding ScreenshotCmdCommand}" />
+                <Button Text="Browser" Command="{Binding BrowserCmdCommand}" />
+                <Button Text="Map" Command="{Binding MapCmdCommand}" />
+                <Button Text="LaunchBrowser" Command="{Binding LaunchCmdCommand}" />
+                <Button Text="AppInfo" Command="{Binding AppInfoCmdCommand}" />
+                <Button Text="DeviceInfo" Command="{Binding DeviceInfoCmdCommand}" />
+            </FlexLayout>
+        </toolkit:Expander>
+
+        <toolkit:Expander Grid.Row="4">
+            <toolkit:Expander.Header>
+                <Label Text="Sensors" FontAttributes="Bold" Padding="0,8" />
+            </toolkit:Expander.Header>
+            <FlexLayout Wrap="Wrap" Direction="Row">
+                <Button Text="Accelerometer" Command="{Binding AccelerometerCmdCommand}" />
+                <Button Text="Magnetometer" Command="{Binding MagnetometerCmdCommand}" />
+                <Button Text="Barometer" Command="{Binding BarometerCmdCommand}" />
+                <Button Text="OrientationSensor" Command="{Binding OrientationSensorCmdCommand}" />
+                <Button Text="Vibration" Command="{Binding VibrationCmdCommand}" />
+                <Button Text="Compass" Command="{Binding CompassCmdCommand}" />
+                <Button Text="Gyroscope" Command="{Binding GyroscopeCmdCommand}" />
+                <Button Text="Flash On" Command="{Binding FlashOnCmdCommand}" />
+                <Button Text="Flash Off" Command="{Binding FlashOffCmdCommand}" />
+            </FlexLayout>
+        </toolkit:Expander>
+
+        <toolkit:Expander Grid.Row="5">
+            <toolkit:Expander.Header>
+                <Label Text="Others" FontAttributes="Bold" Padding="0,8" />
+            </toolkit:Expander.Header>
+            <FlexLayout Wrap="Wrap" Direction="Row">
+                <Button Text="Connectivity" Command="{Binding ConnectivityCmdCommand}" />
+                <Button Text="Version" Command="{Binding VersionCmdCommand}" />
+                <Button Text="Speech" Command="{Binding SpeechCmdCommand}" />
+                <Button Text="Battery" Command="{Binding BatteryCmdCommand}" />
+                <Button Text="DeviceDisplay" Command="{Binding DeviceDisplayCmdCommand}" />
+                <Button Text="SecureStorage" Command="{Binding SecureStorageCmdCommand}" />
+                <Button Text="FileSystem" Command="{Binding FileSystemCmdCommand}" />
+                <Button Text="Haptic" Command="{Binding HapticCmdCommand}" />
+                <Button Text="Semantic" Command="{Binding SemanticCmdCommand}" />
+            </FlexLayout>
+        </toolkit:Expander>
+
+        <toolkit:Expander Grid.Row="6">
+            <toolkit:Expander.Header>
+                <Label Text="Geolocations" FontAttributes="Bold" Padding="0,8" />
+            </toolkit:Expander.Header>
+            <FlexLayout Wrap="Wrap" Direction="Row">
+                <Button Text="Geocode" Command="{Binding GeocodeCmdCommand}" />
+                <Button Text="Geolocation" Command="{Binding GeolocationCmdCommand}" />
+            </FlexLayout>
+        </toolkit:Expander>
+
+        <toolkit:Expander Grid.Row="7">
+            <toolkit:Expander.Header>
+                <Label Text="Authentification" FontAttributes="Bold" Padding="0,8" />
+            </toolkit:Expander.Header>
+            <FlexLayout Wrap="Wrap" Direction="Row">
+                <Button Text="Google" Command="{Binding GoogleCmdCommand}" />
+                <Label Text="Auth Token:" Margin="12,12,12,0" VerticalOptions="Center" />
+                <Label Text="{Binding AuthToken}" VerticalOptions="Center" />
+            </FlexLayout>
+        </toolkit:Expander>
+
+    </Grid>
+</ContentPage>

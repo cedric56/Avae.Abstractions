@@ -2,7 +2,7 @@
 
   <ItemGroup Condition="$(AvaeFeatures.Contains(';CommunityToolkit;'))">
     <PackageReference Include="CommunityToolkit.Mvvm" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Community\**\*.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Community\**\*.cs">
       <Visible>false</Visible>
     </Compile>
   </ItemGroup>

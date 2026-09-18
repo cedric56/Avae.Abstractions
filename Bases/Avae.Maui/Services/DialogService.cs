@@ -1,17 +1,37 @@
 ﻿using Avae.Services;
 using Avae.ViewModels;
-using Microsoft.Maui.Controls.Shapes;
-using Microsoft.Maui.Platform;
-using System.Collections;
-using System.Collections.ObjectModel;
-using UXDivers.Popups;
-using UXDivers.Popups.Maui;
-using UXDivers.Popups.Services;
 
 namespace Avae.Maui;
 
 internal class DialogService(IServiceProvider provider, IIocConfiguration configuration) : IDialogService
 {
+#if WINDOWS
+
+    class ContentDialogEx : Microsoft.UI.Xaml.Controls.ContentDialog
+    {
+        public bool IsClosed { get; set; }        
+    }
+
+    public Microsoft.UI.Xaml.Controls.ContentDialog? GetPrevious()
+    {
+        var current = Current;
+        if (current == null)
+            throw new InvalidNavigationException($"{nameof(Current)} can not be null");
+
+        var xamlRoot = current.Handler?.PlatformView is Microsoft.UI.Xaml.UIElement page
+            ? page.XamlRoot
+            : null;
+        if (xamlRoot == null) return null;
+
+        var popups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(xamlRoot);
+        return popups.Where(p => p.Child is Microsoft.UI.Xaml.Controls.ContentDialog)
+            .Select(c => c.Child as Microsoft.UI.Xaml.Controls.ContentDialog)
+            .FirstOrDefault();
+    }
+
+#endif
+
+
     /// <summary>
     /// Gets the currently active MAUI page: the page of the activated window if one exists,
     /// otherwise the first available window's page, otherwise <see cref="Shell.Current"/>.
@@ -24,9 +44,35 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
     /// <param name="ex">The exception whose message should be displayed.</param>
     /// <param name="title">The dialog title. Defaults to "Error".</param>
     /// <returns>A task representing the asynchronous display operation.</returns>
-    public Task ShowErrorAsync(Exception ex, string title = "Error")
+    public async Task ShowErrorAsync(Exception ex, string title = "Error")
     {
-        return Current.DisplayAlertAsync(title, ex.Message, "Ok");
+#if WINDOWS
+        var previous = GetPrevious();
+        previous?.Hide();
+        previous?.Closed += Closed;
+#endif
+        try
+        {
+            await Current.DisplayAlertAsync(title, ex.Message, "Ok");
+        }
+        finally
+        {
+#if WINDOWS
+            if (previous != null)
+                await previous.ShowAsync();
+#endif
+        }
+
+#if WINDOWS
+        void Closed(
+        Microsoft.UI.Xaml.Controls.ContentDialog sender,
+        Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs e)
+        {
+            previous.Closed -= Closed;
+            if (sender is ContentDialogEx ex && ex.IsClosed)
+                previous = null;
+        }
+#endif
     }
 
     /// <summary>
@@ -35,9 +81,35 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
     /// <param name="message">The message to display.</param>
     /// <param name="title">The dialog title. Defaults to "Title".</param>
     /// <returns>A task representing the asynchronous display operation.</returns>
-    public Task ShowOkAsync(string message, string title = "Title")
+    public async Task ShowOkAsync(string message, string title = "Title")
     {
-        return Current.DisplayAlertAsync(title, message, "Ok");
+#if WINDOWS
+        var previous = GetPrevious();
+        previous?.Hide();
+        previous?.Closed += Closed;
+#endif
+        try
+        {
+            await Current.DisplayAlertAsync(title, message, "Ok");
+        }
+        finally
+        {
+#if WINDOWS
+            if (previous != null)
+                await previous.ShowAsync();
+#endif
+        }
+
+#if WINDOWS
+        void Closed(
+        Microsoft.UI.Xaml.Controls.ContentDialog sender,
+        Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs e)
+        {
+            previous.Closed -= Closed;
+            if (sender is ContentDialogEx ex && ex.IsClosed)
+                previous = null;
+        }
+#endif
     }
 
     /// <summary>
@@ -46,9 +118,35 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
     /// <param name="message">The message to display.</param>
     /// <param name="title">The dialog title. Defaults to "Title".</param>
     /// <returns><see langword="true"/> if the user selected "Yes"; otherwise <see langword="false"/>.</returns>
-    public Task<bool> ShowYesNoAsync(string message, string title = "Title")
+    public async Task<bool> ShowYesNoAsync(string message, string title = "Title")
     {
-        return Current.DisplayAlertAsync(title, message, "Yes", "No");
+#if WINDOWS
+        var previous = GetPrevious();
+        previous?.Hide();
+        previous?.Closed += Closed;
+#endif
+        try
+        {
+            return await Current.DisplayAlertAsync(title, message, "Yes", "No");
+        }
+        finally
+        {
+#if WINDOWS
+            if (previous != null)
+                await previous.ShowAsync();
+#endif
+        }
+
+#if WINDOWS
+        void Closed(
+        Microsoft.UI.Xaml.Controls.ContentDialog sender,
+        Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs e)
+        {
+            previous.Closed -= Closed;
+            if (sender is ContentDialogEx ex && ex.IsClosed)
+                previous = null;
+        }
+#endif
     }
 
     /// <summary>
@@ -57,9 +155,35 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
     /// <param name="message">The message to display.</param>
     /// <param name="title">The dialog title. Defaults to "Title".</param>
     /// <returns><see langword="true"/> if the user selected "Ok"; otherwise <see langword="false"/>.</returns>
-    public Task<bool> ShowOkCancelAsync(string message, string title = "Title")
+    public async Task<bool> ShowOkCancelAsync(string message, string title = "Title")
     {
-        return Current.DisplayAlertAsync(title, message, "Ok", "Cancel");
+#if WINDOWS
+        var previous = GetPrevious();
+        previous?.Hide();
+        previous?.Closed += Closed;
+#endif
+        try
+        {
+            return await Current.DisplayAlertAsync(title, message, "Ok", "Cancel");
+        }
+        finally
+        {
+#if WINDOWS
+            if (previous != null)
+                await previous.ShowAsync();
+#endif
+        }
+
+#if WINDOWS
+        void Closed(
+        Microsoft.UI.Xaml.Controls.ContentDialog sender,
+        Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs e)
+        {
+            previous.Closed -= Closed;
+            if (sender is ContentDialogEx ex && ex.IsClosed)
+                previous = null;
+        }
+#endif
     }
 
     /// <summary>
@@ -68,9 +192,35 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
     /// <param name="message">The message to display.</param>
     /// <param name="title">The dialog title. Defaults to "Title".</param>
     /// <returns><see langword="true"/> if the user selected "Ok"; otherwise <see langword="false"/>.</returns>
-    public Task<bool> ShowOkAbortAsync(string message, string title = "Title")
+    public async Task<bool> ShowOkAbortAsync(string message, string title = "Title")
     {
-        return Current.DisplayAlertAsync(title, message, "Ok", "Abort");
+#if WINDOWS
+        var previous = GetPrevious();
+        previous?.Hide();
+        previous?.Closed += Closed;
+#endif
+        try
+        {
+            return await Current.DisplayAlertAsync(title, message, "Ok", "Abort");
+        }
+        finally
+        {
+#if WINDOWS
+            if (previous != null)
+                await previous.ShowAsync();
+#endif
+        }
+
+#if WINDOWS
+        void Closed(
+        Microsoft.UI.Xaml.Controls.ContentDialog sender,
+        Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs e)
+        {
+            previous.Closed -= Closed;
+            if (sender is ContentDialogEx ex && ex.IsClosed)
+                previous = null;
+        }
+#endif
     }
 
     /// <summary>
@@ -107,24 +257,102 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
     async Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigableContext? context)
         where TResult : default
     {
-        //helper.Ensure();
 
         var viewModel = provider.GetViewModel<TViewModel>(context);
         var view = configuration.GetModalFor<TViewModel, TResult>(context ?? new NavigableContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
-        view.Context = viewModel;        
-        var modal = new AvaePopupPage<TResult>(viewModel.Title, viewModel.Commands)
-        {
-            Content = view as Microsoft.Maui.Controls.View
-        };
-        viewModel.CloseRequested += CloseRequestedHandler;
-        return await IPopupService.Current.PushAsync(modal);
+        view.Context = viewModel;
 
-        async void CloseRequestedHandler(object? sender, TResult? e)
+#if WINDOWS
+        var previous = GetPrevious();
+        previous?.Hide();
+        previous?.Closed += Closed;
+        try
         {
-            viewModel.CloseRequested -= CloseRequestedHandler;
-            modal.SetResult(e);
-            await IPopupService.Current.PopAsync(modal);
+
+            var taskCompletionSource = new TaskCompletionSource<TResult?>();
+            var current = Current;
+            if (current == null)
+                throw new InvalidNavigationException($"{nameof(Current)} can not be null");
+
+            var xamlRoot = current.Handler?.PlatformView is Microsoft.UI.Xaml.UIElement page
+                ? page.XamlRoot
+                : null;
+
+            var dialog = new ContentDialogEx()
+            {
+                RequestedTheme = Application.Current?.RequestedTheme == AppTheme.Dark
+                    ? Microsoft.UI.Xaml.ElementTheme.Dark
+                    : Application.Current?.RequestedTheme == AppTheme.Light
+                        ? Microsoft.UI.Xaml.ElementTheme.Light
+                        : Microsoft.UI.Xaml.ElementTheme.Default,
+                Title = viewModel.Title,
+                PrimaryButtonCommand = viewModel.Commands.ElementAtOrDefault(0)?.Command,
+                PrimaryButtonText = viewModel.Commands.ElementAtOrDefault(0)?.Name,
+                SecondaryButtonCommand = viewModel.Commands.ElementAtOrDefault(1)?.Command,
+                SecondaryButtonText = viewModel.Commands.ElementAtOrDefault(1)?.Name,
+                CloseButtonCommand = viewModel.Commands.ElementAtOrDefault(2)?.Command,
+                CloseButtonText = viewModel.Commands.ElementAtOrDefault(2)?.Name,
+                XamlRoot = xamlRoot
+            };
+            //dialog.ContentTemplate  =  new Microsoft.UI.Xaml.Controls.TextBlock() { Text = "Hello" };
+            // --- Build extended content: original content + extra buttons ---
+            var rootPanel = new Microsoft.UI.Xaml.Controls.StackPanel
+            {
+                Spacing = 8
+            };
+
+            rootPanel.Children.Add(Microsoft.Maui.Platform.ElementExtensions.ToPlatform((View)view, Current?.Handler?.MauiContext ?? new MauiContext(provider)));
+
+            // extraButtons is a param you add to the method signature, e.g.:
+            // IEnumerable<(string Text, TResult Result)> extraButtons = null
+            if (viewModel.Commands.Count > 3)
+            {
+                var buttonPanel = new Microsoft.UI.Xaml.Controls.StackPanel
+                {
+                    Orientation = Microsoft.UI.Xaml.Controls.Orientation.Horizontal,
+                    Spacing = 8,
+                    HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Right
+                };
+
+                foreach (var c in viewModel.Commands)
+                {
+                    var button = new Microsoft.UI.Xaml.Controls.Button { Content = c.Name };
+                    button.Click += (s, e) =>
+                    {
+                        taskCompletionSource.SetResult(default);
+                        dialog.Hide();
+                    };
+                    buttonPanel.Children.Add(button);
+                }
+
+                rootPanel.Children.Add(buttonPanel);
+            }
+
+            dialog.Content = rootPanel;
+            viewModel.CloseRequested += (s, e) =>
+            {
+                dialog.IsClosed = true;
+                taskCompletionSource.SetResult(e);                
+            };
+            await dialog.ShowAsync();
+            return await taskCompletionSource.Task;
         }
+        finally
+        {
+            if (previous != null)
+                await previous.ShowAsync();
+        }
+
+        void Closed(
+        Microsoft.UI.Xaml.Controls.ContentDialog sender,
+        Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs e)
+        {
+            previous.Closed -= Closed;
+            if (sender is ContentDialogEx ex && ex.IsClosed)
+                previous = null;
+        }
+#endif
+        throw new NotImplementedException();
     }
 
     /// <summary>
@@ -153,7 +381,7 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
 
         if (content is Element e)
         {
-            content = e.ToPlatform(Current?.Handler?.MauiContext ?? new MauiContext(provider));
+            content = Microsoft.Maui.Platform.ElementExtensions.ToPlatform(e, Current?.Handler?.MauiContext ?? new MauiContext(provider));
         }
 #if ANDROID
         var alertBuilder = new Android.App.AlertDialog.Builder(Platform.CurrentActivity);
@@ -190,25 +418,44 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
         if (current == null)
             throw new InvalidNavigationException($"{nameof(Current)} can not be null");
 
-        var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
+        var previous = GetPrevious();
+        previous?.Hide();
+        previous?.Closed += Closed;
+        try
         {
-            RequestedTheme = Application.Current?.RequestedTheme ==
+            var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
+            {
+                RequestedTheme = Application.Current?.RequestedTheme ==
              AppTheme.Dark ? Microsoft.UI.Xaml.ElementTheme.Dark :
              Application.Current?.RequestedTheme == AppTheme.Light ?
              Microsoft.UI.Xaml.ElementTheme.Light : Microsoft.UI.Xaml.ElementTheme.Default,
-            Title = title,
-            Content = content,
-            PrimaryButtonText = primaryButtonText,
-            SecondaryButtonText = secondaryButtonText,
-            CloseButtonText = closeButtonText,
-            XamlRoot = current.Handler?.PlatformView is Microsoft.UI.Xaml.UIElement page ? page.XamlRoot : null
-        };
-        dialog.PrimaryButtonClick += (s, e) => taskCompletionSource.SetResult(primaryResult);
-        dialog.SecondaryButtonClick += (s, e) => taskCompletionSource.SetResult(secondaryResult);
-        dialog.CloseButtonClick += (s, e) => taskCompletionSource.SetResult(closeResult);
+                Title = title,
+                Content = content,
+                PrimaryButtonText = primaryButtonText,
+                SecondaryButtonText = secondaryButtonText,
+                CloseButtonText = closeButtonText,
+                XamlRoot = current.Handler?.PlatformView is Microsoft.UI.Xaml.UIElement page ? page.XamlRoot : null
+            };
+            dialog.PrimaryButtonClick += (s, e) => taskCompletionSource.SetResult(primaryResult);
+            dialog.SecondaryButtonClick += (s, e) => taskCompletionSource.SetResult(secondaryResult);
+            dialog.CloseButtonClick += (s, e) => taskCompletionSource.SetResult(closeResult);
+            await dialog.ShowAsync();
+            return await taskCompletionSource.Task;
+        }
+        finally
+        {
+            if (previous != null)
+                await previous.ShowAsync();
+        }
 
-        await dialog.ShowAsync();
-        return await taskCompletionSource.Task;
+        void Closed(
+        Microsoft.UI.Xaml.Controls.ContentDialog sender,
+        Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs e)
+        {
+            previous.Closed -= Closed;
+            if (sender is ContentDialogEx ex && ex.IsClosed)
+                previous = null;
+        }
 #elif MACCATALYST || IOS
         if (content is string message)
         {
@@ -301,432 +548,5 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
 
 #endif
         throw new NotImplementedException();
-    }
-
-    public class AvaePopupPage : PopupPage
-    {
-        public class CommandIndex : NamedCommand
-        {
-            public required int Index { get; set; }
-        }
-
-        public AvaePopupPage(
-            string title,
-            ObservableCollection<NamedCommand> commands)
-        {
-            Title = title;
-            Buttons = commands;
-
-            ControlTemplate = new ControlTemplate(() => DeviceInfo.Platform switch
-            {
-                var p when p == DevicePlatform.Android => BuildAndroidTemplate(Commands),
-                var p when p == DevicePlatform.WinUI => BuildWindowsTemplate(title, Commands),
-                _ => BuildIosTemplate(Commands) // iOS + MacCatalyst
-            });
-
-            if (Application.Current?.RequestedTheme == AppTheme.Light)
-            {
-                PopupBackground = Colors.White;
-                Background = Color.FromArgb("#80B2B2B2");
-            }
-        }
-
-        public string Title
-        {
-            get; set;
-        }
-
-        public ObservableCollection<NamedCommand> Buttons
-        {
-            get;
-            set;
-        }
-
-        public ColumnDefinitionCollection Definitions
-        {
-            get
-            {
-                return [.. Buttons?.Select(b => new ColumnDefinition(GridLength.Star)).ToArray() ?? []];
-            }
-        }
-
-        public ObservableCollection<CommandIndex> Commands
-        {
-            get
-            {
-                return new ObservableCollection<CommandIndex>(
-                    Buttons?.Select(b => new CommandIndex()
-                    {
-                        Name = b.Name,
-                        Command = b.Command,
-                        Index = Buttons.IndexOf(b)
-
-                    }) ?? []);
-            }
-        }
-
-        private static object BuildIosTemplate(IEnumerable commands)
-        {
-            var grid = new Grid
-            {
-                WidthRequest = IdiomValue(270, 320, 320),
-                VerticalOptions = LayoutOptions.Center,
-                RowDefinitions = new RowDefinitionCollection
-                {
-                    new RowDefinition(GridLength.Auto),
-                    new RowDefinition(GridLength.Auto),
-                    new RowDefinition(1),
-                    new RowDefinition(GridLength.Auto),
-                }
-            };
-
-            var border = new Border
-            {
-                Stroke = Colors.Transparent,
-                StrokeShape = new RoundRectangle { CornerRadius = 14 }
-            };
-            border.SetBinding(Border.BackgroundColorProperty,
-                new Binding(nameof(AvaePopupPage.PopupBackground), source: RelativeBindingSource.TemplatedParent));
-            Grid.SetRowSpan(border, 4);
-            grid.Add(border);
-
-            var titleLabel = new Label
-            {
-                FontSize = 17,
-                FontAttributes = FontAttributes.Bold,
-                HorizontalTextAlignment = TextAlignment.Center
-            };
-            titleLabel.SetBinding(Label.TextProperty,
-                new Binding(nameof(AvaePopupPage.Title), source: RelativeBindingSource.TemplatedParent));
-            titleLabel.SetDynamicResource(Label.TextColorProperty, "TextColor");
-
-            var titleStack = new VerticalStackLayout { Spacing = 4, Padding = new Thickness(16, 20, 16, 4) };
-            titleStack.Add(titleLabel);
-            Grid.SetRow(titleStack, 0);
-            grid.Add(titleStack);
-
-            var contentPresenter = new ContentPresenter { Padding = new Thickness(16, 0, 16, 20) };
-            Grid.SetRow(contentPresenter, 1);
-            grid.Add(contentPresenter);
-
-            var hairline = new BoxView { HeightRequest = 1 };
-            hairline.SetDynamicResource(BoxView.ColorProperty, "PopupBorderColor");
-            Grid.SetRow(hairline, 2);
-            grid.Add(hairline);
-
-            var buttonRow = new Grid
-            {
-                ColumnSpacing = 1,
-                HeightRequest = 44
-            };
-            buttonRow.SetBinding(Grid.ColumnDefinitionsProperty,
-                new Binding(nameof(AvaePopupPage.Definitions), source: RelativeBindingSource.TemplatedParent));
-            buttonRow.SetDynamicResource(Grid.BackgroundColorProperty, "PopupBorderColor");
-
-            BindableLayout.SetItemsSource(buttonRow, commands);
-            BindableLayout.SetItemTemplate(buttonRow, new DataTemplate(() =>
-            {
-                var button = new Button
-                {
-                    TextColor = Color.FromArgb("#007AFF"),
-                    CornerRadius = 0,
-                    BorderWidth = 0,
-                    HorizontalOptions = LayoutOptions.Fill
-                };
-                button.SetBinding(Button.TextProperty, "Name");
-                button.SetBinding(Button.CommandProperty, "Command");
-                button.SetBinding(Grid.ColumnProperty, "Index");
-                button.SetDynamicResource(Button.BackgroundColorProperty, "BackgroundSecondaryColor");
-                //button.SetBinding(Button.FontAttributesProperty, new Binding("IsPrimary", converter: new BoolToFontAttrConverter()));
-                return button;
-            }));
-
-            Grid.SetRow(buttonRow, 3);
-            grid.Add(buttonRow);
-
-            return grid;
-        }
-
-        // ===================== Android — Material 3 dialog style =====================
-        private static object BuildAndroidTemplate(IEnumerable commands)
-        {
-            var grid = new Grid
-            {
-                WidthRequest = IdiomValue(-1, 340, 340),
-                VerticalOptions = LayoutOptions.Center,
-                RowDefinitions = new RowDefinitionCollection
-                {
-                    new RowDefinition(GridLength.Star),
-                    new RowDefinition(GridLength.Auto),
-                },
-                Padding = new Thickness(24, 20, 24, 8)
-            };
-            grid.SetDynamicResource(View.MarginProperty, "AirSpacing");
-            grid.SetDynamicResource(Grid.RowSpacingProperty, "SpacingSmall");
-
-            var border = new Border
-            {
-                Margin = new Thickness(-24),
-                Stroke = Colors.Transparent,
-                StrokeShape = new RoundRectangle { CornerRadius = 28 },
-                Shadow = new Shadow
-                {
-                    Brush = new SolidColorBrush(Color.FromArgb("#40000000")),
-                    Offset = new Point(0, 2),
-                    Radius = 12,
-                    Opacity = 0.3f
-                }
-            };
-            border.SetBinding(Border.BackgroundColorProperty,
-                new Binding(nameof(AvaePopupPage.PopupBackground), source: RelativeBindingSource.TemplatedParent));
-            Grid.SetRowSpan(border, 2);
-            grid.Add(border);
-
-            var titleLabel = new Label
-            {
-                FontSize = 24,
-                FontAttributes = FontAttributes.Bold,
-                HorizontalOptions = LayoutOptions.Start
-            };
-            titleLabel.SetBinding(Label.TextProperty,
-                new Binding(nameof(AvaePopupPage.Title), source: RelativeBindingSource.TemplatedParent));
-            titleLabel.SetDynamicResource(Label.TextColorProperty, "TextColor");
-
-            var contentPresenter = new ContentPresenter
-            {
-                HorizontalOptions = LayoutOptions.Fill,
-                VerticalOptions = LayoutOptions.Fill
-            };
-
-            var titleStack = new VerticalStackLayout { Spacing = 8 };
-            titleStack.Add(titleLabel);
-            titleStack.Add(contentPresenter);
-            Grid.SetRow(titleStack, 0);
-            grid.Add(titleStack);
-
-            var buttonRow = new HorizontalStackLayout
-            {
-                HorizontalOptions = LayoutOptions.End,
-                Spacing = 8,
-                Margin = new Thickness(0, 4, 0, 4)
-            };
-            BindableLayout.SetItemsSource(buttonRow, commands);
-            BindableLayout.SetItemTemplate(buttonRow, new DataTemplate(() =>
-            {
-                var button = new Button
-                {
-                    BackgroundColor = Colors.Transparent,
-                    FontAttributes = FontAttributes.None,
-                    CornerRadius = 20,
-                    Padding = new Thickness(12, 0),
-                    BorderWidth = 0
-                };
-                button.SetBinding(Button.TextProperty, "Name");
-                button.SetBinding(Button.CommandProperty, "Command");
-                button.SetDynamicResource(Button.TextColorProperty, "PrimaryColor");
-                return button;
-            }));
-
-            Grid.SetRow(buttonRow, 1);
-            grid.Add(buttonRow);
-
-            return grid;
-        }
-
-        // ===================== Windows — WinUI ContentDialog style =====================
-        private static object BuildWindowsTemplate(string title, IEnumerable commands)
-        {
-            var grid = new Grid
-            {
-                WidthRequest = IdiomValue(-1, 380, 380),
-                VerticalOptions = LayoutOptions.Center,
-                RowDefinitions = new RowDefinitionCollection
-                {
-                    new RowDefinition(GridLength.Auto),
-                    new RowDefinition(GridLength.Auto),
-                    new RowDefinition(GridLength.Auto),
-                }
-            };
-
-            var border = new Border
-            {
-                StrokeThickness = 1,
-                StrokeShape = new RoundRectangle { CornerRadius = 8 },
-                // Original XAML had this binding commented out:
-                // BackgroundColor = {Binding PopupBackground, Source={RelativeSource TemplatedParent}}
-                //Shadow = new Shadow
-                //{
-                //    Brush = new SolidColorBrush(Color.FromArgb("#40000000")),
-                //    Offset = new Point(0, 4),
-                //    Radius = 16,
-                //    Opacity = 0.2f
-                //}
-                //Shadow = new Shadow
-                //{
-                //    Brush = new SolidColorBrush(Colors.Black),
-                //    Offset = new Point(0, 8),
-                //    Radius = 32,
-                //    Opacity = 0.4f
-                //}
-            };
-
-            
-
-            Color? foreground = null;
-            Color? background = null;
-            Color? borderbrush = null;
-            Color? overlaybrush = null;
-#if WINDOWS
-
-            if (TryGetThemedBrush("ContentDialogBorderBrush", out var borderBrush) && borderBrush is not null)
-            {
-                var c = borderBrush.Color;
-                borderbrush = Color.FromRgba(c.R, c.G, c.B, c.A);
-            }
-
-            if (TryGetThemedBrush("ContentDialogBackground", out var bgBrush) && bgBrush is not null)
-            {
-                var c = bgBrush.Color;
-                background = Color.FromRgba(c.R, c.G, c.B, c.A);
-            }
-
-            if (TryGetThemedBrush("ContentDialogTopOverlay", out var bgOverlay) && bgBrush is not null)
-            {
-                var c = bgBrush.Color;
-                overlaybrush = Color.FromRgba(c.R, c.G, c.B, c.A);
-            }
-
-            if (TryGetThemedBrush("ContentDialogForeground", out var fgBrush) && fgBrush is not null)
-            {
-                var c = fgBrush.Color;
-                foreground = Color.FromRgba(c.R, c.G, c.B, c.A);
-            }
-#endif
-            border.SetValue(Border.BackgroundProperty, Color.FromHex("#2b2b2b"));// new SolidColorBrush(Color.FromArgb("#FF202020")));
-            //border.Effects.Add(Effect = "drop-shadow(0 8 32 #66000000)")
-            //border.SetValue(Border.BackgroundColorProperty, background);
-            border.SetValue(Border.StrokeProperty, borderbrush);
-            //border.SetDynamicResource(Border.BackgroundColorProperty, "ContentDialogBackground");
-            //border.SetDynamicResource(Border.StrokeProperty, "ContentDialogBackground");
-            Grid.SetRowSpan(border, 3);
-            grid.Add(border);
-
-            var titleLabel = new Label
-            {
-                FontSize = 20,
-                FontAttributes = FontAttributes.Bold,
-                Padding = new Thickness(24, 24, 24, 0)
-            };
-            titleLabel.SetValue(Label.TextProperty, title);
-            if (foreground != null)
-                titleLabel.SetValue(Label.TextColorProperty, foreground);
-            else
-                titleLabel.SetDynamicResource(Label.TextColorProperty, "TextColor");
-            Grid.SetRow(titleLabel, 0);
-            grid.Add(titleLabel);
-
-            var contentPresenter = new ContentPresenter { Padding = new Thickness(24, 12, 24, 24) };
-            Grid.SetRow(contentPresenter, 1);
-            grid.Add(contentPresenter);
-
-            var buttonRow = new Grid
-            {
-                ColumnSpacing = 2,
-                HeightRequest = 44
-            };
-            buttonRow.SetBinding(Grid.ColumnDefinitionsProperty,
-                new Binding(nameof(Definitions), source: RelativeBindingSource.TemplatedParent));
-
-            BindableLayout.SetItemsSource(buttonRow, commands);
-            BindableLayout.SetItemTemplate(buttonRow, new DataTemplate(() =>
-            {
-                var button = new Button
-                {
-                    CornerRadius = 4,
-                    BorderWidth = 0,
-                    Padding = 0,
-                    FontSize = 14,
-                    HorizontalOptions = LayoutOptions.Fill,
-                    VerticalOptions = LayoutOptions.Fill
-                };
-                button.SetBinding(Button.TextProperty, "Name");
-                button.SetBinding(Button.CommandProperty, "Command");
-                button.SetBinding(Grid.ColumnProperty, "Index");
-                //button.SetBinding(Button.BackgroundColorProperty,
-                //    new Binding("IsPrimary", converter: new BoolToAccentOrNeutralConverter()));
-                //button.SetBinding(Button.TextColorProperty,
-                //    new Binding("IsPrimary", converter: new BoolToWhiteOrTextColorConverter()));
-                if (foreground != null)
-                    button.SetValue(Button.TextColorProperty, foreground);
-                return button;
-            }));
-
-            Grid.SetRow(buttonRow, 2);
-            grid.Add(buttonRow);
-
-            return grid;
-        }
-
-        // ===================== Helpers =====================
-
-        /// <summary>
-        /// C# equivalent of the XAML OnIdiom markup extension for double values.
-        /// </summary>
-        private static double IdiomValue(double defaultValue, double tablet, double desktop)
-        {
-            if (DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                return tablet;
-            if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
-                return desktop;
-            return defaultValue;
-        }
-
-#if WINDOWS
-        public static bool TryGetThemedBrush(string key, out Microsoft.UI.Xaml.Media.SolidColorBrush? brush)
-        {
-            brush = null;
-            var app = Microsoft.UI.Xaml.Application.Current;
-            var themeKey = app.RequestedTheme == Microsoft.UI.Xaml.ApplicationTheme.Dark ? "Dark" : "Light";
-
-            foreach (var merged in app.Resources.MergedDictionaries)
-            {
-                if (
-                    //merged.ThemeDictionaries.TryGetValue(themeKey, out var themeObj) &&
-                    //themeObj is Microsoft.UI.Xaml.ResourceDictionary themeDict &&
-                    merged.TryGetValue(key, out var value) &&
-                    value is Microsoft.UI.Xaml.Media.SolidColorBrush b)
-                {
-                    brush = b;
-                    return true;
-                }
-            }
-
-            // Fallback: some entries live at the top level, not nested under ThemeDictionaries
-            if (app.Resources.TryGetValue(key, out var flatValue) && flatValue is Microsoft.UI.Xaml.Media.SolidColorBrush flatBrush)
-            {
-                brush = flatBrush;
-                return true;
-            }
-
-            if (app.Resources.TryGetValue(key, out var e))
-            {
-                //brush = b;
-                return true;
-            }
-
-            return false;
-        }
-#endif
-    }
-
-
-    public partial class AvaePopupPage<TResult>(string title, ObservableCollection<NamedCommand> commands) : AvaePopupPage(title, commands), IPopupResultPage<TResult?>
-    {
-        public TResult? Result { get; set; }
-
-        public void SetResult(TResult? result)
-        {
-            Result = result;
-        }
     }
 }

@@ -4,6 +4,7 @@ using Avae.Maui;
 using Avae.Notifications;
 using Avae.ViewModels;
 using Avalonia.Labs.Notifications;
+using CommunityToolkit.Maui;
 using Example.DAL;
 using Example.Maui.Views;
 using Example.Models;
@@ -29,6 +30,7 @@ public static class MauiProgram
 #endif
             })
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .UseFontAwesomeSolidMauiIcons()
             .ConfigureFonts(fonts =>
             {

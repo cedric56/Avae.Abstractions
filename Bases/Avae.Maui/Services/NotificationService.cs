@@ -1,6 +1,4 @@
 ﻿using Avae.Services;
-using UXDivers.Popups.Maui.Controls;
-using UXDivers.Popups.Services;
 
 namespace Avae.Maui;
 
@@ -18,52 +16,53 @@ internal class NotificationService : INotificationService
     /// <param name="onClose">Optional callback invoked once the notification has been dismissed.</param>
     public async void Show(string title, string message, NotificationType type = NotificationType.Information, TimeSpan? expiration = null, Action? onClick = null, Action? onClose = null)
     {
-        var pop = new FloaterPopup()
-        {
-            Text = message,
-            Title = title
-        };
+        throw new NotImplementedException();
+        //var pop = new FloaterPopup()
+        //{
+        //    Text = message,
+        //    Title = title
+        //};
 
-        if (Application.Current?.RequestedTheme == AppTheme.Light)
-        {
-            pop.PopupBackground = Colors.White;
-            //pop.Background = Color.FromArgb("#ffb2b2b2");
-        }
+        //if (Application.Current?.RequestedTheme == AppTheme.Light)
+        //{
+        //    pop.PopupBackground = Colors.White;
+        //    //pop.Background = Color.FromArgb("#ffb2b2b2");
+        //}
 
-        pop.IconColor = type switch
-        {
-            NotificationType.Success => Colors.Green,
-            NotificationType.Warning => Colors.Orange,
-            NotificationType.Information => Colors.Blue,
-            NotificationType.Error => Colors.Red,
-            _ => Colors.Blue
-        };
+        //pop.IconColor = type switch
+        //{
+        //    NotificationType.Success => Colors.Green,
+        //    NotificationType.Warning => Colors.Orange,
+        //    NotificationType.Information => Colors.Blue,
+        //    NotificationType.Error => Colors.Red,
+        //    _ => Colors.Blue
+        //};
 
-        var tapGesture = new TapGestureRecognizer();
-        tapGesture.Tapped += Tapped;
-        pop.GestureRecognizers.Add(tapGesture);
+        //var tapGesture = new TapGestureRecognizer();
+        //tapGesture.Tapped += Tapped;
+        //pop.GestureRecognizers.Add(tapGesture);
 
-        bool isClosed = false;
-        if (expiration.HasValue)
-        {
-            _ = Task.Run(Delay);
-        }
+        //bool isClosed = false;
+        //if (expiration.HasValue)
+        //{
+        //    _ = Task.Run(Delay);
+        //}
 
-        await IPopupService.Current.PushAsync(pop);
-        isClosed = true;
-        onClose?.Invoke();
+        //await IPopupService.Current.PushAsync(pop);
+        //isClosed = true;
+        //onClose?.Invoke();
 
-        async void Tapped(object? sender, TappedEventArgs e)
-        {
-            onClick?.Invoke();
-            await IPopupService.Current.PopAsync(pop);
-        }
+        //async void Tapped(object? sender, TappedEventArgs e)
+        //{
+        //    onClick?.Invoke();
+        //    await IPopupService.Current.PopAsync(pop);
+        //}
 
-        async Task Delay()
-        {
-            await Task.Delay((int)expiration.Value.TotalMilliseconds);
-            if (!isClosed)
-                await IPopupService.Current.PopAsync(pop);
-        }
+        //async Task Delay()
+        //{
+        //    await Task.Delay((int)expiration.Value.TotalMilliseconds);
+        //    if (!isClosed)
+        //        await IPopupService.Current.PopAsync(pop);
+        //}
     }
 }

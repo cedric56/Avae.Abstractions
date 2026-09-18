@@ -1,6 +1,5 @@
 ﻿using Avae.Services;
 using Avae.ViewModels;
-using UXDivers.Popups.Maui;
 
 namespace Avae.Maui;
 
@@ -23,7 +22,7 @@ public static class Extensions
     public static MauiAppBuilder UseAvaeContainer(this MauiAppBuilder builder,
         Action<IIocContainer>? configure = null)
     {
-        builder.UseUXDiversPopups();
+        //builder.UseUXDiversPopups();
         builder.Services.AddSingleton<IIocContainer>(sp =>
         {
             var container = new IocContainer(sp);

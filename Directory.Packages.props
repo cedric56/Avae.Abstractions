@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <AvaloniaVersion>12.1.2</AvaloniaVersion>
-    <MauiVersion>11.0.0-preview.6.26360.8</MauiVersion>
+    <MauiVersion>11.0.0-rc.1.26451.6</MauiVersion>
     <MicrosoftVersion>10.0.11</MicrosoftVersion>
     <MagicOnionVersion>7.10.2</MagicOnionVersion>
     <GrpcVersion>2.83.0</GrpcVersion>
@@ -28,8 +28,9 @@
     <PackageVersion Include="Avalonia.Skia" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Native" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.HarfBuzz" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Labs.Notifications" Version="12.0.999" />
-    <PackageVersion Include="Avalonia.Controls.Maui.Essentials" Version="11.0.0-preview.5.26161.128" />
+    <PackageVersion Include="Avalonia.Labs.Notifications" Version="12.0.2" />
+    <PackageVersion Include="Avalonia.Controls.Maui.Essentials" Version="11.0.0-rc.1.26252.343" />
+    <PackageVersion Include="CommunityToolkit.Maui" Version="15.0.1" />
     <PackageVersion Include="HostInitActions" Version="1.3.1" />
     <PackageVersion Include="MessageBox.Avalonia" Version="12.0.0" />
     <PackageVersion Include="FluentAvaloniaUI" Version="3.1.0" />
@@ -38,7 +39,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="$(MicrosoftVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftVersion)" />
-    <PackageVersion Include="Microsoft.JSInterop" Version="$(MicrosoftVersion)" />
+    <PackageVersion Include="Microsoft.JSInterop" Version="11.0.0-rc.1.26425.128" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="$(MicrosoftVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(MicrosoftVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(MicrosoftVersion)" />
@@ -51,15 +52,15 @@
     <PackageVersion Include="Nito.AsyncEx.Context" Version="5.1.2" />
     <PackageVersion Include="Optris.Icons.Avalonia.FontAwesome" Version="12.0.7" />
     <PackageVersion Include="Projektanker.Icons.Avalonia.FontAwesome" Version="9.6.2" />
-    <PackageVersion Include="System.Text.Json" Version="11.0.0-preview.7.26381.103" />
+    <PackageVersion Include="System.Text.Json" Version="11.0.0-rc.1.26425.128" />
     <!-- MAUI -->
     <PackageVersion Include="UXDivers.Popups.Maui" Version="0.9.4" />
-    <PackageVersion Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+    <PackageVersion Include="Microsoft.Maui.Controls" Version="11.0.0-rc.1.26451.6" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="10.0.100" />
     <!-- ESSENTIALS -->
     <PackageVersion Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" />
     <PackageVersion Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" PrivateAssets="compile" />
-    <PackageVersion Include="Microsoft.WindowsAppSDK" Version="1.8.251106002" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.5.1" />
     <PackageVersion Include="Microsoft.Maui.Platforms.MacOS.Essentials" Version="0.1.0-preview.12.26368.2" />
     <PackageVersion Include="Microsoft.Maui.Platforms.Linux.Gtk4.Essentials" Version="0.1.0-preview.12.26421.1" />
     <!-- BLAZOR -->

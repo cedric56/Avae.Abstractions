@@ -3,7 +3,7 @@
   <ItemGroup Condition="$(AvaeFeatures.Contains(';Embedded;'))">
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Browser" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Embedded\**\*.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Embedded\**\*.cs">
       <Visible>false</Visible>
     </Compile>
   </ItemGroup>
@@ -11,16 +11,16 @@
   <ItemGroup Condition="$(AvaeFeatures.Contains(';Razor;'))">
     <PackageReference Update="Microsoft.AspNetCore.Components.Web" />
     <PackageReference Include="MudBlazor" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Razor\**\*.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Razor\**\*.cs">
       <Visible>false</Visible>
     </Compile>
-    <RazorComponent Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Components\**\*.css">
+    <RazorComponent Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Components\**\*.css">
       <Link>Components\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <TargetPath>Components\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
       <CssScope></CssScope>
       <Visible>false</Visible>
     </RazorComponent>
-    <Content Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Components\**\*.razor">
+    <Content Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Components\**\*.razor">
       <Link>Components\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <Visible>false</Visible>
     </Content>
@@ -29,10 +29,10 @@
   <ItemGroup Condition="$(AvaeFeatures.Contains(';Maui;'))">
     <PackageReference Include="UXDivers.Popups.Maui" />
     <PackageReference Update="Microsoft.Maui.Controls" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Maui\**\*.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Maui\**\*.cs">
       <Visible>false</Visible>
     </Compile>
-    <MauiXaml Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Maui\**\*.xaml">
+    <MauiXaml Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Maui\**\*.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
   </ItemGroup>
@@ -41,10 +41,10 @@
     <PackageReference Update="Avalonia" />
     <PackageReference Include="MessageBox.Avalonia" />
     <PackageReference Include="FluentAvaloniaUI" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Avalonia\**\*.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Avalonia\**\*.cs">
       <Visible>false</Visible>
     </Compile>
-    <AvaloniaResource Include="$(MSBuildThisFileDirectory)..\lib\net10.0\Avalonia\**\*.axaml">
+    <AvaloniaResource Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Avalonia\**\*.axaml">
       <Visible>false</Visible>
     </AvaloniaResource>
   </ItemGroup>

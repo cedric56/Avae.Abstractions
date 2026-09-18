@@ -27,9 +27,5 @@ HorizontalOptions="Center" />
         <Button Text="Theme" Command="{Binding ShowRequestedThemeCommand}" 
                 VerticalOptions="Center"
 HorizontalOptions="Center" />
-
-        <Button Text="Test" Clicked="Button_Clicked"
-                VerticalOptions="Center"
-HorizontalOptions="Center" />
     </VerticalStackLayout>
 </ContentPage>

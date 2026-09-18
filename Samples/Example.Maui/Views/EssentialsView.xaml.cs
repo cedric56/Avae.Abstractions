@@ -3,7 +3,7 @@ using Example.ViewModels;
 
 namespace Example.Maui.Views;
 
-public partial class EssentialsView : ContentView, IViewFor<EssentialsViewModel>
+public partial class EssentialsView : ContentPage, IViewFor<EssentialsViewModel>
 {
     public EssentialsView()
     {
