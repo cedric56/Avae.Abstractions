@@ -15,8 +15,6 @@
     <Content Include="buildTransitive\**" PackagePath="buildTransitive\" />
     <Compile Remove="Avalonia\**" />
     <None Remove="Avalonia\**" />
-    <Compile Remove="Maui\**" />
-    <None Remove="Maui\**" />
     <Compile Remove="Razor\**" />
     <None Remove="Razor\**" />
     <Content Remove="Razor\**" />
@@ -26,10 +24,6 @@
     <Compile Remove="Embedded\**" />
     <TfmSpecificPackageFile Include="Avalonia\**">
       <PackagePath>lib\$(TargetFramework)\Avalonia\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
-      <PackageCopyToOutput>true</PackageCopyToOutput>
-    </TfmSpecificPackageFile>
-    <TfmSpecificPackageFile Include="Maui\**">
-      <PackagePath>lib\$(TargetFramework)\Maui\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </TfmSpecificPackageFile>
     <TfmSpecificPackageFile Include="Razor\**">

@@ -26,17 +26,6 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup Condition="$(AvaeFeatures.Contains(';Maui;'))">
-    <PackageReference Include="UXDivers.Popups.Maui" />
-    <PackageReference Update="Microsoft.Maui.Controls" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Maui\**\*.cs">
-      <Visible>false</Visible>
-    </Compile>
-    <MauiXaml Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Maui\**\*.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-  </ItemGroup>
-
   <ItemGroup Condition="$(AvaeFeatures.Contains(';Avalonia;'))">
     <PackageReference Update="Avalonia" />
     <PackageReference Include="MessageBox.Avalonia" />

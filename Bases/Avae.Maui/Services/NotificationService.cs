@@ -16,53 +16,30 @@ internal class NotificationService : INotificationService
     /// <param name="onClose">Optional callback invoked once the notification has been dismissed.</param>
     public async void Show(string title, string message, NotificationType type = NotificationType.Information, TimeSpan? expiration = null, Action? onClick = null, Action? onClose = null)
     {
+#if WINDOWS
+
+        Microsoft.UI.Xaml.Controls.InfoBar? bar = null!;
+        var w = Application.Current?.Windows.FirstOrDefault();
+        if (w != null)
+        {
+            var winui = w.Handler.PlatformView as Microsoft.UI.Xaml.Window;
+            if (winui != null && winui.Content is Microsoft.UI.Xaml.Controls.Panel rootPanel)
+            {
+                var panel = rootPanel.Children.FirstOrDefault(c => c is Microsoft.UI.Xaml.Controls.StackPanel) as Microsoft.UI.Xaml.Controls.StackPanel;
+                if (panel == null)
+                    rootPanel.Children.Add(panel = new Microsoft.UI.Xaml.Controls.StackPanel() { Orientation = Microsoft.UI.Xaml.Controls.Orientation.Vertical,
+                        Margin = new Microsoft.UI.Xaml.Thickness(50),
+                    });
+                panel.Children.Add(bar = new Microsoft.UI.Xaml.Controls.InfoBar());
+            }
+        }
+        bar.Title = title;
+        bar.Message = message;
+        bar.IsOpen = true;
+#else
+
         throw new NotImplementedException();
-        //var pop = new FloaterPopup()
-        //{
-        //    Text = message,
-        //    Title = title
-        //};
 
-        //if (Application.Current?.RequestedTheme == AppTheme.Light)
-        //{
-        //    pop.PopupBackground = Colors.White;
-        //    //pop.Background = Color.FromArgb("#ffb2b2b2");
-        //}
-
-        //pop.IconColor = type switch
-        //{
-        //    NotificationType.Success => Colors.Green,
-        //    NotificationType.Warning => Colors.Orange,
-        //    NotificationType.Information => Colors.Blue,
-        //    NotificationType.Error => Colors.Red,
-        //    _ => Colors.Blue
-        //};
-
-        //var tapGesture = new TapGestureRecognizer();
-        //tapGesture.Tapped += Tapped;
-        //pop.GestureRecognizers.Add(tapGesture);
-
-        //bool isClosed = false;
-        //if (expiration.HasValue)
-        //{
-        //    _ = Task.Run(Delay);
-        //}
-
-        //await IPopupService.Current.PushAsync(pop);
-        //isClosed = true;
-        //onClose?.Invoke();
-
-        //async void Tapped(object? sender, TappedEventArgs e)
-        //{
-        //    onClick?.Invoke();
-        //    await IPopupService.Current.PopAsync(pop);
-        //}
-
-        //async Task Delay()
-        //{
-        //    await Task.Delay((int)expiration.Value.TotalMilliseconds);
-        //    if (!isClosed)
-        //        await IPopupService.Current.PopAsync(pop);
-        //}
+#endif
     }
 }
