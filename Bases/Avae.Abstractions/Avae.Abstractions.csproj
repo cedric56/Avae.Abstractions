@@ -13,8 +13,6 @@
 
   <ItemGroup>
     <Content Include="buildTransitive\**" PackagePath="buildTransitive\" />
-    <Compile Remove="Avalonia\**" />
-    <None Remove="Avalonia\**" />
     <Compile Remove="Razor\**" />
     <None Remove="Razor\**" />
     <Content Remove="Razor\**" />
@@ -22,10 +20,6 @@
     <None Remove="Components\**" />
     <Content Remove="Components\**" />
     <Compile Remove="Embedded\**" />
-    <TfmSpecificPackageFile Include="Avalonia\**">
-      <PackagePath>lib\$(TargetFramework)\Avalonia\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
-      <PackageCopyToOutput>true</PackageCopyToOutput>
-    </TfmSpecificPackageFile>
     <TfmSpecificPackageFile Include="Razor\**">
       <PackagePath>lib\$(TargetFramework)\Razor\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>

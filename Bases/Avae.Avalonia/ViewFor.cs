@@ -1,7 +1,7 @@
 ﻿using Avae.ViewModels;
 using Avalonia.Controls;
 
-namespace Avae.Abstractions;
+namespace Avae.Avalonia;
 
 public class ViewFor<TViewModel> : UserControl, IViewFor<TViewModel>
 {

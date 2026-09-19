@@ -2,11 +2,8 @@
 using Avae.ViewModels;
 using Avalonia.Controls;
 using MsBox.Avalonia;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Avae.Abstractions;
+namespace Avae.Avalonia;
 
 /// <summary>
 /// Non-generic base class for dialog views, allowing dialog controls to be referenced or

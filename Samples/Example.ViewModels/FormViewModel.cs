@@ -10,7 +10,8 @@ using Person = Example.Models.Person;
 namespace Example.ViewModels;
 
 public partial class FormViewModel(IDialogService dialogService, Router router, Person person) :
-    NavigableViewModel<Person>(router), IDataErrorInfo
+    NavigableViewModel<Person>(router), 
+    IDataErrorInfo
 {
     public const string KEY = "Page";
 
@@ -94,7 +95,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
         };
     }
 
-    protected override IViewFor GoTo(NavigableView value, out IViewModelBase viewModel)
+    protected override IViewFor GoTo(NavigableView value, out object viewModel)
     {
         //Possibility to set parameters on call
         if (value.ViewModelType == typeof(FormPage3ViewModel))

@@ -15,12 +15,12 @@ public class NavigableView(Type viewModelType, string displayName, string? path 
     /// <summary>
     /// Gets or sets a callback invoked when this page is launched, after its view model has been created.
     /// </summary>
-    public Func<IViewModelBase, Task>? Launched { get; set; }
+    public Func<object, Task>? Launched { get; set; }
 
     /// <summary>
     /// Gets the view model instance associated with this page, if one has been explicitly assigned.
     /// </summary>
-    public IViewModelBase? ViewModel { get; protected set; }
+    public object? ViewModel { get; protected set; }
 
     /// <summary>
     /// Gets the type of the view model associated with this page.
@@ -71,7 +71,7 @@ public class NavigableView(Type viewModelType, string displayName, string? path 
     /// </summary>
     /// <param name="viewModel">The view model created for this page.</param>
     /// <returns>The task returned by <see cref="Launched"/>, or a completed task if no callback is set.</returns>
-    public virtual Task OnLaunched(IViewModelBase viewModel)
+    public virtual Task OnLaunched(object viewModel)
     {
         if (Launched == null)
             return Task.CompletedTask;
@@ -84,7 +84,7 @@ public class NavigableView(Type viewModelType, string displayName, string? path 
 /// Strongly typed variant of <see cref="NavigableView"/> whose view model is known to be of type <typeparamref name="T"/>.
 /// </summary>
 /// <typeparam name="T">The view model type associated with this page.</typeparam>
-public class NavigableView<T> : NavigableView where T : IViewModelBase
+public class NavigableView<T> : NavigableView //where T : IViewModelBase
 {
     /// <summary>
     /// Gets or sets a callback invoked when this page is launched, after its view model has been created.
@@ -125,7 +125,7 @@ public class NavigableView<T> : NavigableView where T : IViewModelBase
     /// </summary>
     /// <param name="viewModel">The view model created for this page.</param>
     /// <returns>The task returned by <see cref="Launched"/>, or a completed task if no callback is set.</returns>
-    public override Task OnLaunched(IViewModelBase viewModel)
+    public override Task OnLaunched(object viewModel)
     {
         if (Launched == null)
             return Task.CompletedTask;

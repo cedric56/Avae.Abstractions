@@ -1,9 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using System;
 
-namespace Avae.Abstractions;
+namespace Avae.Avalonia;
 
 /// <summary>
 /// Manager object that manages top-level states on Windows.

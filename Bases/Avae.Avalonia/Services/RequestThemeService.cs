@@ -2,7 +2,7 @@
 using Avalonia;
 using Avalonia.Styling;
 
-namespace Avae.Abstractions;
+namespace Avae.Avalonia;
 
 public class RequestThemeService : IRequestedThemeService
 {

@@ -11,12 +11,11 @@ public partial class HomeViewModel(
     IDialogService dialogService,
     IContentDialogService contentDialogService,
     ITaskDialogService taskDialogService,
-    IIocConfiguration iocConfiguration,
+    IServiceProvider provider,
     INotificationService notificationService,
     ISystemNotificationService systemNotificationService,
     IRequestedThemeService requestedTheme) :
     ObservableObject,
-    IViewModelBase,
     IEquatable<HomeViewModel>
 {
     [RelayCommand]
@@ -52,11 +51,11 @@ public partial class HomeViewModel(
         await taskDialogService.ShowAsync(new TaskDialogParams()
         {
             Header = "Header",
-            Footer = iocConfiguration.GetView(TaskDialogKey, "Footer"),
-            IconSource = iocConfiguration.GetView(TaskDialogKey, "IconSource"),
+            Footer = provider.GetView(TaskDialogKey, ["Footer"]),
+            IconSource = provider.GetView(TaskDialogKey, ["IconSource"]),
             Title = "Title",
             SubHeader = "SubHeader",
-            Content = iocConfiguration.GetView(TaskDialogKey, "Content"),
+            Content = provider.GetView(TaskDialogKey, ["Content"]),
             FooterVisibility = TaskDialogFooterVisibility.Auto
         },
         TaskDialogStandardResult.OK,
@@ -70,7 +69,7 @@ public partial class HomeViewModel(
         {
             Title = "Title",
             CloseButtonText = "Close",
-            Content = iocConfiguration.GetView(TaskDialogKey, "Content"),
+            Content = provider.GetView(TaskDialogKey, ["Content"]),
         });
     }
 
@@ -98,7 +97,7 @@ public partial class HomeViewModel(
                 //notification.Vibrate = [200,100,200,100];
                 notification.Title = "Hello";
                 notification.Message = "World";
-                notification.Expiration = TimeSpan.FromSeconds(1);
+                //notification.Expiration = TimeSpan.FromSeconds(1);
                 notification.SetActions([new SystemNotificationAction("caption", "reply"), new SystemNotificationAction("Test", "test"),]);
                 notification.ReplyActionTag = "reply";//must match action tag for an input
                 notification.Show();

@@ -5,284 +5,283 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 
-namespace Example.Models
+namespace Example.Models;
+
+[Table(nameof(Person))]
+//[MessagePackObject]    
+public partial class Person : DBTransactional, INotifyPropertyChanged, IDataErrorInfo
 {
-    [Table(nameof(Person))]
-    //[MessagePackObject]    
-    public partial class Person : DBTransactional, INotifyPropertyChanged, IDataErrorInfo
+    private IList<Contact>? _contacts;
+    private string? _firstName;
+    private string? _lastName;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    [Dapper.Contrib.Extensions.Key]
+    public long Id { get; set; }
+
+    [Required(ErrorMessage = "FirstName must be set")]
+    public string? FirstName
     {
-        private IList<Contact>? _contacts;
-        private string? _firstName;
-        private string? _lastName;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        [Dapper.Contrib.Extensions.Key]
-        public long Id { get; set; }
-
-        [Required(ErrorMessage = "FirstName must be set")]
-        public string? FirstName
+        get => _firstName;
+        set
         {
-            get => _firstName;
-            set
+            _firstName = value;
+            OnPropertyChanged(nameof(FirstName));
+        }
+    }
+
+    [Required(ErrorMessage = "LastName must be set")]
+    public string? LastName
+    {
+        get => _lastName;
+        set
+        {
+            _lastName = value;
+            OnPropertyChanged(nameof(LastName));
+        }
+    }
+
+    [Computed]
+    public IList<Contact> Contacts
+    {
+        get
+        {
+            if (_contacts == null)
             {
-                _firstName = value;
-                OnPropertyChanged(nameof(FirstName));
+                if (Id == 0)
+                    _contacts = [];
+                else
+                {
+                    var contacts = DBBase.Instance.FindByAny<Contact>((nameof(Contact.IdContact), Id));
+                    AvoidReadings(contacts);
+                    _contacts = [.. contacts];
+                }
+            }
+            return _contacts;
+        }
+        //private this must be avoid but necessary now
+        set
+        {
+            _contacts = value;
+        }
+    }
+
+    private void AvoidReadings(IEnumerable<Contact> contacts)
+    {
+        foreach (var contact in contacts)
+        {
+            var person = Repository.Instance.Persons
+                .FirstOrDefault(p => p.Id == contact.IdPerson);
+
+            if (person != null)
+                contact.Person = person;
+
+            contact.PersonContact = this;
+        }
+    }
+
+    public async Task LoadContactsAsync()
+    {
+        if (_contacts != null || Id == 0)
+            return;
+
+        var contacts = await DBBase.Instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
+
+        AvoidReadings(contacts);
+
+        Contacts = [.. contacts];
+    }
+
+    public override async Task<DBResult> Save(IDBLayer instance, IDBFactory factory, int? commandTimeout = null)
+    {
+        bool isSuccessful = false;
+        string message = string.Empty;
+        using var connection = factory.CreateConnection()!;
+        connection.Open();
+        using (var transaction = connection.BeginTransaction())
+        {
+            try
+            {
+                if (Id == 0)
+                {
+                    connection.Insert(this, transaction, commandTimeout);
+                }
+                else
+                {
+                    connection.Update(this, transaction, commandTimeout);
+                }
+
+
+                var before = await instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
+
+                if (_contacts == null)
+                {
+                    Contacts = [.. before];
+                }
+
+                foreach (var contact in Contacts)
+                {
+                    contact.IdContact = Id;
+
+                    if (contact.Id == 0)
+                        connection.Insert(contact, transaction, commandTimeout);
+                    else
+                        connection.Update(contact, transaction, commandTimeout);
+                }
+
+                foreach (var contact in before.Where(c => !Contacts.Any(p => p.IdPerson == c.IdPerson)))
+                    connection.Delete(contact, transaction, commandTimeout);
+
+                //                    var before = await instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
+
+                //                    if (_contacts == null)
+                //                    {
+                //                        Contacts = [.. before];
+                //                    }
+
+                //                    var sql = new StringBuilder();
+                //                    var parameters = new DynamicParameters();
+                //                    var paramIndex = 0;
+
+                //                    foreach (var contact in Contacts)
+                //                    {
+                //                        contact.IdContact = Id;
+                //                        var prefix = $"c{paramIndex++}";
+
+                //                        if (contact.Id == 0)
+                //                        {
+                //                            sql.AppendLine($@"
+                //INSERT INTO Contact (IdContact, IdPerson)
+                //VALUES ({contact.IdContact}, {contact.IdPerson});");
+                //                            //parameters.Add($"IdContact{prefix}", contact.IdContact);
+                //                            //parameters.Add($"IdPerson{prefix}", contact.IdPerson);
+                //                        }
+                //                        else
+                //                        {
+                //                            sql.AppendLine($@"
+                //UPDATE Contact
+                //SET IdContact = {contact.IdContact}, IdPerson = {contact.IdPerson}
+                //WHERE Id = {contact.Id};");
+
+                //                            //parameters.Add($"IdContact{prefix}", contact.IdContact);
+                //                            //parameters.Add($"IdPerson{prefix}", contact.IdPerson);
+                //                            //parameters.Add($"Id{prefix}", contact.Id);
+                //                        }
+                //                    }
+
+                //                    var toDelete = before.Where(c => !Contacts.Any(p => p.IdPerson == c.IdPerson)).ToList();
+                //                    foreach (var contact in toDelete)
+                //                    {
+                //                        var prefix = $"d{paramIndex++}";
+                //                        sql.AppendLine($"DELETE FROM Contact WHERE Id = {contact.Id};");
+                //                        //parameters.Add($"Id{prefix}", contact.Id);
+                //                    }
+
+                //                    if (sql.Length > 0)
+                //                    {
+                //                        await connection.ExecuteAsync(sql.ToString(), parameters, transaction, commandTimeout);
+                //                    }
+
+                transaction.Commit();
+
+                isSuccessful = true;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                message = string.Join("\n", ex.Message, ex.InnerException?.Message);
             }
         }
 
-        [Required(ErrorMessage = "LastName must be set")]
-        public string? LastName
+        return new DBResult()
         {
-            get => _lastName;
-            set
-            {
-                _lastName = value;
-                OnPropertyChanged(nameof(LastName));
-            }
-        }
+            Exception = message,
+            Successful = isSuccessful
+        };
+    }
 
-        [Computed]
-        public IList<Contact> Contacts
+    public override async Task<DBResult> Remove(IDBLayer instance, IDBFactory factory, int? commandTimeout = null)
+    {
+        string message = string.Empty;
+
+        bool isSuccessful = false;
+
+        using var connection = factory.CreateConnection()!;
+        connection.Open();
+        using (var transaction = connection.BeginTransaction())
         {
-            get
+            try
             {
                 if (_contacts == null)
                 {
-                    if (Id == 0)
-                        _contacts = [];
-                    else
-                    {
-                        var contacts = DBBase.Instance.FindByAny<Contact>((nameof(Contact.IdContact), Id));
-                        AvoidReadings(contacts);
-                        _contacts = [.. contacts];
-                    }
+                    var contacts = await instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
+                    Contacts = [.. contacts];
                 }
-                return _contacts;
-            }
-            //private this must be avoid but necessary now
-            set
-            {
-                _contacts = value;
-            }
-        }
-
-        private void AvoidReadings(IEnumerable<Contact> contacts)
-        {
-            foreach (var contact in contacts)
-            {
-                var person = Repository.Instance.Persons
-                    .FirstOrDefault(p => p.Id == contact.IdPerson);
-
-                if (person != null)
-                    contact.Person = person;
-
-                contact.PersonContact = this;
-            }
-        }
-
-        public async Task LoadContactsAsync()
-        {
-            if (_contacts != null || Id == 0)
-                return;
-
-            var contacts = await DBBase.Instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
-
-            AvoidReadings(contacts);
-
-            Contacts = [.. contacts];
-        }
-
-        public override async Task<DBResult> Save(IDBLayer instance, IDBFactory factory, int? commandTimeout = null)
-        {
-            bool isSuccessful = false;
-            string message = string.Empty;
-            using var connection = factory.CreateConnection()!;
-            connection.Open();
-            using (var transaction = connection.BeginTransaction())
-            {
-                try
+                foreach (var contact in Contacts)
                 {
-                    if (Id == 0)
-                    {
-                        connection.Insert(this, transaction, commandTimeout);
-                    }
-                    else
-                    {
-                        connection.Update(this, transaction, commandTimeout);
-                    }
-
-
-                    var before = await instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
-
-                    if (_contacts == null)
-                    {
-                        Contacts = [.. before];
-                    }
-
-                    foreach (var contact in Contacts)
-                    {
-                        contact.IdContact = Id;
-
-                        if (contact.Id == 0)
-                            connection.Insert(contact, transaction, commandTimeout);
-                        else
-                            connection.Update(contact, transaction, commandTimeout);
-                    }
-
-                    foreach (var contact in before.Where(c => !Contacts.Any(p => p.IdPerson == c.IdPerson)))
-                        connection.Delete(contact, transaction, commandTimeout);
-
-                    //                    var before = await instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
-
-                    //                    if (_contacts == null)
-                    //                    {
-                    //                        Contacts = [.. before];
-                    //                    }
-
-                    //                    var sql = new StringBuilder();
-                    //                    var parameters = new DynamicParameters();
-                    //                    var paramIndex = 0;
-
-                    //                    foreach (var contact in Contacts)
-                    //                    {
-                    //                        contact.IdContact = Id;
-                    //                        var prefix = $"c{paramIndex++}";
-
-                    //                        if (contact.Id == 0)
-                    //                        {
-                    //                            sql.AppendLine($@"
-                    //INSERT INTO Contact (IdContact, IdPerson)
-                    //VALUES ({contact.IdContact}, {contact.IdPerson});");
-                    //                            //parameters.Add($"IdContact{prefix}", contact.IdContact);
-                    //                            //parameters.Add($"IdPerson{prefix}", contact.IdPerson);
-                    //                        }
-                    //                        else
-                    //                        {
-                    //                            sql.AppendLine($@"
-                    //UPDATE Contact
-                    //SET IdContact = {contact.IdContact}, IdPerson = {contact.IdPerson}
-                    //WHERE Id = {contact.Id};");
-
-                    //                            //parameters.Add($"IdContact{prefix}", contact.IdContact);
-                    //                            //parameters.Add($"IdPerson{prefix}", contact.IdPerson);
-                    //                            //parameters.Add($"Id{prefix}", contact.Id);
-                    //                        }
-                    //                    }
-
-                    //                    var toDelete = before.Where(c => !Contacts.Any(p => p.IdPerson == c.IdPerson)).ToList();
-                    //                    foreach (var contact in toDelete)
-                    //                    {
-                    //                        var prefix = $"d{paramIndex++}";
-                    //                        sql.AppendLine($"DELETE FROM Contact WHERE Id = {contact.Id};");
-                    //                        //parameters.Add($"Id{prefix}", contact.Id);
-                    //                    }
-
-                    //                    if (sql.Length > 0)
-                    //                    {
-                    //                        await connection.ExecuteAsync(sql.ToString(), parameters, transaction, commandTimeout);
-                    //                    }
-
-                    transaction.Commit();
-
-                    isSuccessful = true;
+                    connection.Delete(contact, transaction, commandTimeout);
                 }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    message = string.Join("\n", ex.Message, ex.InnerException?.Message);
-                }
+                connection.Delete(this, transaction, commandTimeout);
+
+                transaction.Commit();
+
+                isSuccessful = true;
             }
-
-            return new DBResult()
+            catch (Exception ex)
             {
-                Exception = message,
-                Successful = isSuccessful
-            };
-        }
-
-        public override async Task<DBResult> Remove(IDBLayer instance, IDBFactory factory, int? commandTimeout = null)
-        {
-            string message = string.Empty;
-
-            bool isSuccessful = false;
-
-            using var connection = factory.CreateConnection()!;
-            connection.Open();
-            using (var transaction = connection.BeginTransaction())
-            {
-                try
-                {
-                    if (_contacts == null)
-                    {
-                        var contacts = await instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
-                        Contacts = [.. contacts];
-                    }
-                    foreach (var contact in Contacts)
-                    {
-                        connection.Delete(contact, transaction, commandTimeout);
-                    }
-                    connection.Delete(this, transaction, commandTimeout);
-
-                    transaction.Commit();
-
-                    isSuccessful = true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    message = $"Suppression impossible, cette personne fait partie des contacts d'un autre usager." +
-                        "\n" + ex.Message;
-                }
-            }
-
-            return new DBResult()
-            {
-                Exception = message,
-                Successful = isSuccessful
-            };
-        }
-
-        public override bool Equals(object? obj)
-        {
-            return obj is Person person && person.Id == this.Id;
-        }
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
-
-        [Computed]
-        [IgnoreMember]
-        public string Error
-        {
-            get
-            {
-                return InputValidation<Person>.Error(this);
+                transaction.Rollback();
+                message = $"Suppression impossible, cette personne fait partie des contacts d'un autre usager." +
+                    "\n" + ex.Message;
             }
         }
 
-        [Computed]
-        [IgnoreMember]
-        public string this[string columnName]
+        return new DBResult()
         {
-            get
-            {
-                return InputValidation<Person>.Validate(this, columnName);
-            }
-        }
+            Exception = message,
+            Successful = isSuccessful
+        };
+    }
 
-        [Computed]
-        [IgnoreMember]
-        public string? FullName
-        {
-            get { return FirstName + " " + LastName; }
-        }
+    public override bool Equals(object? obj)
+    {
+        return obj is Person person && person.Id == this.Id;
+    }
 
-        private void OnPropertyChanged(string propertyName)
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
+
+    [Computed]
+    [IgnoreMember]
+    public string Error
+    {
+        get
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            return InputValidation<Person>.Error(this);
         }
+    }
+
+    [Computed]
+    [IgnoreMember]
+    public string this[string columnName]
+    {
+        get
+        {
+            return InputValidation<Person>.Validate(this, columnName);
+        }
+    }
+
+    [Computed]
+    [IgnoreMember]
+    public string? FullName
+    {
+        get { return FirstName + " " + LastName; }
+    }
+
+    private void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

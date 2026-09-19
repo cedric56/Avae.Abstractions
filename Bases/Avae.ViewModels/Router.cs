@@ -8,7 +8,7 @@ namespace Avae.ViewModels;
 public partial class Router(IServiceProvider provider)
 {
     private int _currentIndex = -1;
-    private List<IViewModelBase> _history = [];
+    private List<object> _history = [];
     private const uint MaxHistorySize = 20;
 
     /// <summary>
@@ -24,13 +24,13 @@ public partial class Router(IServiceProvider provider)
     /// <summary>
     /// Gets the view model currently at the front of navigation history, or <see langword="null"/> if history is empty.
     /// </summary>
-    public IViewModelBase? Current => _currentIndex < 0 ? null : _history[_currentIndex];
+    public object? Current => _currentIndex < 0 ? null : _history[_currentIndex];
 
     /// <summary>
     /// Occurs whenever the current view model changes, whether via <see cref="Back"/>, <see cref="Forward"/>,
     /// or one of the <c>GoTo</c> overloads.
     /// </summary>
-    public event Action<IViewModelBase>? CurrentViewModelChanged;
+    public event Action<object>? CurrentViewModelChanged;
 
     /// <summary>
     /// Clears all navigation history and resets the current position.
@@ -45,7 +45,7 @@ public partial class Router(IServiceProvider provider)
     /// Moves back one step in navigation history, if possible.
     /// </summary>
     /// <returns>The view model now current after moving back, or <see langword="null"/> if <see cref="CanGoBack"/> was <see langword="false"/>.</returns>
-    public IViewModelBase? Back()
+    public object? Back()
     {
         if (!CanGoBack)
         {
@@ -61,7 +61,7 @@ public partial class Router(IServiceProvider provider)
     /// Moves forward one step in navigation history, if possible.
     /// </summary>
     /// <returns>The view model now current after moving forward, or <see langword="null"/> if <see cref="CanGoForward"/> was <see langword="false"/>.</returns>
-    public IViewModelBase? Forward()
+    public object? Forward()
     {
         if (!CanGoForward)
         {
@@ -80,7 +80,7 @@ public partial class Router(IServiceProvider provider)
     /// <typeparam name="TBaseType">The base type of the view model.</typeparam>
     /// <param name="viewModelType">The view model type.</param>
     /// <returns>The created view model cast to the <typeparamref name="TBaseType"/>.</returns>        
-    public IViewFor GoTo(Type viewModelType, out IViewModelBase viewModel, NavigableContext? context = null)
+    public IViewFor GoTo(Type viewModelType, out object viewModel, NavigableContext? context = null)
     {
         viewModel = provider.GetViewModel(viewModelType, context);
         AddHistory(viewModel);
@@ -106,8 +106,11 @@ public partial class Router(IServiceProvider provider)
     /// <param name="viewModel">The existing view model instance to navigate to.</param>
     /// <param name="context">Optional navigation context supplying parameters for the view.</param>
     /// <returns>The view resolved for <paramref name="viewModel"/>.</returns>
-    public IViewFor GoTo<TViewModel>(TViewModel viewModel, NavigableContext? context = null) where TViewModel : IViewModelBase
+    public IViewFor GoTo<TViewModel>(TViewModel viewModel, NavigableContext? context = null)// where TViewModel : IViewModelBase
     {
+        if (viewModel == null)
+            return null!;
+
         AddHistory(viewModel);
         CurrentViewModelChanged?.Invoke(viewModel);
         return GetViewFor(viewModel, context);
@@ -118,9 +121,9 @@ public partial class Router(IServiceProvider provider)
     /// </summary>
     /// <typeparam name="TViewModel">The type of the view model.</typeparam>
     /// <returns>The created view model.</returns>
-    public IViewFor GoTo<TViewModel>(out TViewModel viewModel, NavigableContext? context = null) where TViewModel : class, IViewModelBase
+    public IViewFor GoTo<TViewModel>(out TViewModel viewModel, NavigableContext? context = null)// where TViewModel : class, IViewModelBase
     {
-        viewModel = provider.GetViewModel<TViewModel>(context);
+        viewModel = provider.GetViewModel<TViewModel>(context)!;
         AddHistory(viewModel);
         CurrentViewModelChanged?.Invoke(viewModel);
         return GetViewFor(viewModel, context);
@@ -131,7 +134,7 @@ public partial class Router(IServiceProvider provider)
     /// beyond the current position and trimming the oldest entry if <see cref="MaxHistorySize"/> is exceeded.
     /// </summary>
     /// <param name="item">The view model to add to history.</param>
-    public void AddHistory(IViewModelBase item)
+    public void AddHistory(object item)
     {
         // After navigating back the current index may not be the most forward position.
         // Delete all "forward" items in the history when this happens.
@@ -160,11 +163,10 @@ public partial class Router(IServiceProvider provider)
     /// <param name="context">Optional navigation context; an empty context is used if not supplied.</param>
     /// <returns>The resolved view, with <paramref name="viewModel"/> assigned as its context.</returns>
     /// <exception cref="NotImplementedException">Thrown if no view is registered for the view model's type.</exception>
-    private IViewFor GetViewFor(IViewModelBase viewModel, NavigableContext? context = null)
+    private IViewFor GetViewFor(object viewModel, NavigableContext? context = null)
     {
-        var name = viewModel.GetType().Name;
-        var configuration = provider.GetRequiredService<IIocConfiguration>();
-        var viewFor = configuration.GetContextFor(name, context ?? new NavigableContext());
+        var name = viewModel.GetType().Name;        
+        var viewFor = provider.GetContextFor(name, context ?? new NavigableContext());
         viewFor?.Context = viewModel;
         return viewFor ?? throw new NotImplementedException($"Unable to find view for {name}");
     }

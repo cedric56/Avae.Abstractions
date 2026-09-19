@@ -1,4 +1,4 @@
-using Avae.Abstractions;
+using Avae.Avalonia;
 using Example.Models;
 using Example.ViewModels;
 

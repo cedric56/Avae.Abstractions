@@ -66,7 +66,7 @@ public abstract class RouterViewModelBase
     /// The base implementation refreshes command availability.
     /// </summary>
     /// <param name="viewModel">The view model that has become active.</param>
-    protected virtual void OnViewModelChanged(IViewModelBase viewModel)
+    protected virtual void OnViewModelChanged(object viewModel)
     {
         RaiseCanExecutesChanged();
     }

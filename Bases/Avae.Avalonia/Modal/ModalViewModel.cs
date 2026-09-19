@@ -2,10 +2,8 @@
 using Avalonia.Controls;
 using MsBox.Avalonia.Base;
 using MsBox.Avalonia.ViewModels;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Avae.Abstractions;
+namespace Avae.Avalonia;
 
 /// <summary>
 /// Non-generic base for a boxed modal dialog's view model, exposing the button definitions,

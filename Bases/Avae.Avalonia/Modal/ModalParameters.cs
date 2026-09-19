@@ -3,12 +3,9 @@ using Avalonia.Controls;
 using Avalonia.Platform;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Input;
 
-namespace Avae.Abstractions;
+namespace Avae.Avalonia;
 
 /// <summary>
 /// A message-box button definition that also carries the <see cref="ICommand"/> to execute when

@@ -3,21 +3,18 @@ using Avae.ViewModels;
 
 namespace Avae.Maui;
 
-internal class DialogService(IServiceProvider provider, IIocConfiguration configuration) : IDialogService
+internal class DialogService(IServiceProvider provider) : IDialogService
 {
 #if WINDOWS
 
     class ContentDialogEx : Microsoft.UI.Xaml.Controls.ContentDialog
     {
-        public bool IsClosed { get; set; }        
+        public bool IsClosed { get; set; }
     }
 
     public Microsoft.UI.Xaml.Controls.ContentDialog? GetPrevious()
     {
-        var current = Current;
-        if (current == null)
-            throw new InvalidNavigationException($"{nameof(Current)} can not be null");
-
+        var current = Current ?? throw new InvalidNavigationException($"{nameof(Current)} can not be null");
         var xamlRoot = current.Handler?.PlatformView is Microsoft.UI.Xaml.UIElement page
             ? page.XamlRoot
             : null;
@@ -61,9 +58,41 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
                 previous = null;
         }
     }
+#elif ANDROID
+
+    class AlertDialogManager(Android.App.AlertDialog? alertDialog)
+    {
+        public Android.App.AlertDialog? Dialog { get; } = alertDialog;
+        public bool IsClosed { get; set; }
+    }
+
+    AlertDialogManager? manager;
+
+    private async Task<TResult> WithPreviousSuspendedAsync<TResult>(Func<Task<TResult>> action)
+    {
+        manager?.Dialog?.DismissEvent += Dismissed;
+
+        try
+        {
+            return await action();
+        }
+        finally
+        {
+            manager?.Dialog?.Show();
+        }
+
+        void Dismissed(
+            object? sender,
+            EventArgs e)
+        {
+            manager.Dialog?.DismissEvent -= Dismissed;
+            if (manager.IsClosed)
+                manager = null;
+        }
+    }
 #else
-// No-op passthrough on non-Windows platforms — nothing to suspend/restore.
-private Task<TResult> WithPreviousSuspendedAsync<TResult>(Func<Task<TResult>> action) => action();
+    // No-op passthrough on non-Windows platforms — nothing to suspend/restore.
+    private Task<TResult> WithPreviousSuspendedAsync<TResult>(Func<Task<TResult>> action) => action();
 #endif
 
 
@@ -158,7 +187,7 @@ private Task<TResult> WithPreviousSuspendedAsync<TResult>(Func<Task<TResult>> ac
     {
 
         var viewModel = provider.GetViewModel<TViewModel>(context);
-        var view = configuration.GetModalFor<TViewModel, TResult>(context ?? new NavigableContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
+        var view = provider.GetModalFor<TViewModel, TResult>(context ?? new NavigableContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
         view.Context = viewModel;
 
         var taskCompletionSource = new TaskCompletionSource<TResult?>();
@@ -189,14 +218,17 @@ private Task<TResult> WithPreviousSuspendedAsync<TResult>(Func<Task<TResult>> ac
                     viewModel.Commands[2].Command.Execute(null);
             });
 
-        var alertDialog = alertBuilder.Create();
-        alertDialog?.Show();
+        var dialog = alertBuilder.Create();
+        manager = new AlertDialogManager(dialog);
+        dialog?.Show();
 
         return await taskCompletionSource.Task;
 
         void CloseRequested(object? sender, TResult? result)
         {
             viewModel.CloseRequested -= CloseRequested;
+            manager?.IsClosed = true;
+            manager = null;
             taskCompletionSource.SetResult(result);
         }
 #elif MACCATALYST || IOS
@@ -268,10 +300,7 @@ private Task<TResult> WithPreviousSuspendedAsync<TResult>(Func<Task<TResult>> ac
 #elif WINDOWS
         return await WithPreviousSuspendedAsync(async () =>
         {
-            var current = Current;
-            if (current == null)
-                throw new InvalidNavigationException($"{nameof(Current)} can not be null");
-
+            var current = Current ?? throw new InvalidNavigationException($"{nameof(Current)} can not be null");
             var xamlRoot = current.Handler?.PlatformView is Microsoft.UI.Xaml.UIElement page
                 ? page.XamlRoot
                 : null;
@@ -362,17 +391,18 @@ private Task<TResult> WithPreviousSuspendedAsync<TResult>(Func<Task<TResult>> ac
                 taskCompletionSource.SetResult(closeResult);
             });
 
-        var alertDialog = alertBuilder.Create();
-        alertDialog?.Show();
+        var dialog = alertBuilder.Create();
+        manager = new AlertDialogManager(dialog);
+        dialog?.Show();
 
-        return await taskCompletionSource.Task;
+        var result = await taskCompletionSource.Task;
+        manager?.IsClosed = true;
+        manager = null;
+        return result;
 #elif WINDOWS
         return await WithPreviousSuspendedAsync(async () =>
         {
-            var current = Current;
-            if (current == null)
-                throw new InvalidNavigationException($"{nameof(Current)} can not be null");
-
+            var current = Current ?? throw new InvalidNavigationException($"{nameof(Current)} can not be null");
             var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
             {
                 RequestedTheme = Application.Current?.RequestedTheme ==

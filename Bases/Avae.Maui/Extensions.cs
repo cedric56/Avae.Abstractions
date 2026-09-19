@@ -10,26 +10,15 @@ namespace Avae.Maui;
 public static class Extensions
 {
     /// <summary>
-    /// Registers a shared <see cref="IocContainer"/> instance (as <see cref="IIocContainer"/>,
+    /// Registers a shared 
     /// <see cref="IDialogService"/>, <see cref="IContentDialogService"/>, <see cref="ITaskDialogService"/>,
-    /// <see cref="INotificationService"/>, and <see cref="IRequestedThemeService"/>), an <see cref="IIocContainer"/>,
+    /// <see cref="INotificationService"/>, and <see cref="IRequestedThemeService"/>),
     /// a transient <see cref="Router"/>,
-    /// and enables UXDivers popups support.
     /// </summary>
     /// <param name="builder">The MAUI app builder to configure.</param>
-    /// <param name="configure">Optional callback invoked to register additional views/components with the IoC container.</param>
     /// <returns>The same <paramref name="builder"/>, for chaining.</returns>
-    public static MauiAppBuilder UseAvaeContainer(this MauiAppBuilder builder,
-        Action<IIocContainer>? configure = null)
+    public static MauiAppBuilder UseAvaeContainer(this MauiAppBuilder builder)
     {
-        //builder.UseUXDiversPopups();
-        builder.Services.AddSingleton<IIocContainer>(sp =>
-        {
-            var container = new IocContainer(sp);
-            configure?.Invoke(container);
-            return container;
-        });
-        builder.Services.AddSingleton<IIocConfiguration>(sp => (IocContainer)sp.GetRequiredService<IIocContainer>());
         builder.Services.AddTransient<Router>();
         builder.Services.AddSingleton<IDialogService, DialogService>();
         builder.Services.AddSingleton<IContentDialogService, ContentDialogService>();

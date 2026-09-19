@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace Avae.ViewModels;
 
-public interface ICloseableViewModel<TResult> : IViewModelBase
+public interface ICloseableViewModel<TResult>
 {
     string Title { get; }
     ObservableCollection<NamedCommand> Commands { get; }

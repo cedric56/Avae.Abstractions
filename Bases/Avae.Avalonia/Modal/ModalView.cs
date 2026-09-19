@@ -1,10 +1,8 @@
 ﻿using Avae.ViewModels;
 using Avalonia.Controls;
 using MsBox.Avalonia.Base;
-using System;
-using System.Threading.Tasks;
 
-namespace Avae.Abstractions
+namespace Avae.Avalonia
 {
     /// <summary>
     /// The content view hosted inside a boxed message-box dialog, bridging the closeable view model's

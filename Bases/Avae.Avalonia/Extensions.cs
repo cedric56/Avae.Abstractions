@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace Avae.Abstractions;
+namespace Avae.Avalonia;
 
 internal static partial class Extensions
 {

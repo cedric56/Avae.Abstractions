@@ -4,7 +4,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using System.Windows.Input;
 
-namespace Avae.Abstractions;
+namespace Avae.Avalonia;
 
 public class DoubleClickBehavior : AvaloniaObject
 {

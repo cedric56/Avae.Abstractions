@@ -1,6 +1,5 @@
 ﻿using Avae.Essentials;
 using Avae.Services;
-using Avae.ViewModels;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Accessibility;
 using Microsoft.Maui.ApplicationModel;
@@ -53,7 +52,7 @@ public partial class EssentialsViewModel(
     IVibration vibration,
     IVersionTracking versionTracking,
     IWebAuthenticator webAuthenticator
-    ) : IViewModelBase
+    ) //: IViewModelBase
 {
     public bool IsSupportedInMauiPlatform()
     {

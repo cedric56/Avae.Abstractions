@@ -1,8 +1,7 @@
-﻿using Avae.Abstractions;
+﻿using Avae.Avalonia;
 using Avae.DAL;
 using Avae.Essentials;
 using Avae.Notifications;
-using Avae.Services;
 using Avae.ViewModels;
 using Avalonia;
 using Avalonia.Controls;
@@ -17,7 +16,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Optris.Icons.Avalonia;
 using Optris.Icons.Avalonia.FontAwesome;
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -38,7 +36,7 @@ public partial class App(IServiceProvider provider) : Application
           true,
            sp => new App(sp),
            configureExternalServices: services => ConfigureServices(services, configureServices),
-           configureContainer: container => ConfigureContainer(container),
+           //configureContainer: container => ConfigureContainer(container),
            afterBuild: async provider =>
            {
                DBBase.Initialize(provider.GetRequiredService<IDBLayer>());
@@ -66,9 +64,14 @@ public partial class App(IServiceProvider provider) : Application
            });
     }
 
-    private static void ConfigureContainer(IIocContainer container)
+    private static void ConfigureServices(IServiceCollection services, Action<IServiceCollection>? configureServices = null)
     {
-        container.Register(HomeViewModel.TaskDialogKey, (sp, parameters) =>
+        IconResolver.Register(new ExampleIconResolver());
+
+        services.UseEssentials();
+        services.UseNotifications();
+        services.AddTransient<Router>();
+        services.Register(HomeViewModel.TaskDialogKey, (sp, parameters) =>
         {
             return parameters[0] switch
             {
@@ -78,36 +81,14 @@ public partial class App(IServiceProvider provider) : Application
                 _ => throw new NotImplementedException()
             };
         });
-        container.Register<HomeView>((sp, context) => new HomeView(sp.GetRequiredService<IDialogService>()));
-        container.Register<MenuView>();
-        container.Register<EssentialsView>();
-        container.Register<FormViewModel>((sp, context) =>
-        {
-            if (context.FactoryParameters.OfType<string>().Any(p => p == FormViewModel.KEY))
-            {
-                return new FormPage1View();
-            }
-            return new FormView();
-        });
-        container.Register<FormPage2View>();
-        container.Register<FormPage3View, Person>((sp, person) => new FormPage3View(person));
-        container.Register<ModalWindow>((sp, context) => new ModalWindow(sp.GetRequiredService<IContentDialogService>()));
-    }
-
-    private static void ConfigureServices(IServiceCollection services, Action<IServiceCollection>? configureServices = null)
-    {
-        IconResolver.Register(new ExampleIconResolver());
-
-        services.UseEssentials();
-        services.UseNotifications();
-        services.AddTransient<Router>();
-        services.RegisterViewModel<HomeViewModel>();
-        services.RegisterViewModel<MenuViewModel>();
-        services.RegisterViewModel<EssentialsViewModel>();
-        services.RegisterViewModel<FormViewModel>(ServiceLifetime.Transient);
-        services.RegisterViewModel<FormPage2ViewModel>(ServiceLifetime.Transient);
-        services.RegisterViewModel<FormPage3ViewModel>(ServiceLifetime.Transient);
-        services.RegisterViewModel<ModalViewModel>(ServiceLifetime.Transient);
+        services.Register<HomeView, HomeViewModel>();
+        services.Register<MenuView, MenuViewModel>();
+        services.Register<EssentialsView, EssentialsViewModel>();
+        services.Register<FormView, FormViewModel>(ServiceLifetime.Transient);
+        services.Register<FormPage1View, FormViewModel>(ServiceLifetime.Transient, key: FormViewModel.KEY);
+        services.Register<FormPage2View, FormPage2ViewModel>(ServiceLifetime.Transient);
+        services.Register<FormPage3View, FormPage3ViewModel, Person>((sp, person) => new FormPage3View(person), ServiceLifetime.Transient);
+        services.Register<ModalWindow, ModalViewModel>(ServiceLifetime.Transient);
         configureServices?.Invoke(services);
     }
 

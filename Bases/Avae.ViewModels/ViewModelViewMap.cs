@@ -1,0 +1,44 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Avae.ViewModels;
+
+interface IViewModelViewMap
+{
+    void Map<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TView, TViewModel>(string key) where TViewModel : class where TView : class;
+
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    Type? GetViewType(string key);
+}
+
+class ViewModelViewMap : IViewModelViewMap
+{
+    private ViewModelViewMap()
+    {
+
+    }
+
+    static IViewModelViewMap? _instance;
+
+    public static IViewModelViewMap Initialize(IServiceCollection services)
+    {
+        if (_instance == null)
+        {
+            _instance = new ViewModelViewMap();
+            services.AddSingleton<IViewModelViewMap>(_instance);
+        }
+        return _instance;
+    }
+
+    private readonly Dictionary<string, KeyValuePair<Type, Type>> _map = new();
+    public void Map<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TView, TViewModel>(string key) where TViewModel : class where TView : class
+        => _map[key] = new KeyValuePair<Type, Type>(typeof(TView), typeof(TViewModel));
+
+    [UnconditionalSuppressMessage("Trimming", "IL2073",
+        Justification = "Les valeurs de _map proviennent uniquement de Map<TView>(), " +
+                         "dont le paramètre TView porte déjà [DynamicallyAccessedMembers(PublicConstructors)]. " +
+                         "L'invariant est donc garanti à l'écriture, mais non traçable par le linker à travers le Dictionary<Type,Type>.")]
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    public Type? GetViewType(string key)
+     => _map.GetValueOrDefault(key).Key;
+}

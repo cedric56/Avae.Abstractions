@@ -26,17 +26,4 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup Condition="$(AvaeFeatures.Contains(';Avalonia;'))">
-    <PackageReference Update="Avalonia" />
-    <PackageReference Include="MessageBox.Avalonia" />
-    <PackageReference Include="FluentAvaloniaUI" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Avalonia\**\*.cs">
-      <Visible>false</Visible>
-    </Compile>
-    <AvaloniaResource Include="$(MSBuildThisFileDirectory)..\lib\net11.0\Avalonia\**\*.axaml">
-      <Visible>false</Visible>
-    </AvaloniaResource>
-  </ItemGroup>
-
-
 </Project>

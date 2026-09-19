@@ -61,7 +61,7 @@ public abstract partial class NavigableViewModelBase<TResult>(Router router, boo
 /// Base class for a view model that manages navigation between a set of <see cref="NavigableView"/> items,
 /// caching the view/view-model pair for each one as it is visited.
 /// </summary>
-public abstract partial class NavigableViewModelBase : RouterViewModelBase, IViewModelBase
+public abstract partial class NavigableViewModelBase : RouterViewModelBase
 {
     /// <summary>
     /// Occurs when the currently displayed view changes.
@@ -73,7 +73,7 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IVie
     /// active view model, and raises the corresponding change notifications.
     /// </summary>
     /// <param name="viewModel">The view model that has become active.</param>
-    protected override void OnViewModelChanged(IViewModelBase viewModel)
+    protected override void OnViewModelChanged(object viewModel)
     {
         var type = viewModel.GetType();
         _selectedNavigable = Navigables.First(p => p.ViewModelType == type);
@@ -97,7 +97,7 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IVie
     /// Cache mapping each <see cref="NavigableView"/> to the view/view-model pair created for it,
     /// so that previously visited navigables are not recreated.
     /// </summary>
-    private readonly Dictionary<NavigableView, KeyValuePair<IViewFor, IViewModelBase>> dico = [];
+    private readonly Dictionary<NavigableView, KeyValuePair<IViewFor, object>> dico = [];
 
     private IViewFor _currentView = null!;
 
@@ -182,7 +182,7 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IVie
         else
         {
             var viewFor = GoTo(value, out var viewModel);
-            dico.Add(value, new KeyValuePair<IViewFor, IViewModelBase>(viewFor, viewModel));
+            dico.Add(value, new KeyValuePair<IViewFor, object>(viewFor, viewModel));
             await value.OnLaunched(viewModel);
             CurrentView = viewFor;
         }
@@ -200,7 +200,7 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IVie
     /// existing view model, or a newly created one.
     /// </param>
     /// <returns>The view resolved for the navigation target.</returns>
-    protected virtual IViewFor GoTo(NavigableView value, out IViewModelBase viewModel)
+    protected virtual IViewFor GoTo(NavigableView value, out object viewModel)
     {
         IViewFor viewFor;
         if (value.ViewModel != null)

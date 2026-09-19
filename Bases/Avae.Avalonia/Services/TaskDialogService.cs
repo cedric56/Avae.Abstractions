@@ -2,11 +2,8 @@
 using Avalonia.Threading;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Avae.Abstractions;
+namespace Avae.Avalonia;
 
 public class TaskDialogService : ITaskDialogService
 {

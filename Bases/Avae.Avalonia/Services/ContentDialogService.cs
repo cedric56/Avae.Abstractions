@@ -4,11 +4,9 @@ using Avalonia.Threading;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Threading.Tasks;
 using ContentDialogResult = Avae.Services.ContentDialogResult;
 
-namespace Avae.Abstractions;
+namespace Avae.Avalonia;
 
 public class ContentDialogService(IServiceProvider serviceProvider) : IContentDialogService, IDialogService
 {
@@ -176,8 +174,7 @@ public class ContentDialogService(IServiceProvider serviceProvider) : IContentDi
     Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigableContext? context) where TResult : default
     {
         var viewModel = serviceProvider.GetViewModel<TViewModel>(context);
-        var container = serviceProvider.GetRequiredService<IIocConfiguration>();
-        var view = container.GetModalFor<TViewModel, TResult>(context ?? new NavigableContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
+        var view = serviceProvider.GetModalFor<TViewModel, TResult>(context ?? new NavigableContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
         view.Context = viewModel;
         return view.ShowModalAsync();
     }

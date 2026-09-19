@@ -1,6 +1,6 @@
 using Avalonia.Styling;
 
-namespace Avae.Abstractions;
+namespace Avae.Avalonia;
 
 public partial class ErrorStyle : Styles
 {

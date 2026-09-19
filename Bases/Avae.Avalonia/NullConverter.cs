@@ -1,8 +1,7 @@
 ﻿using Avalonia.Data.Converters;
-using System;
 using System.Globalization;
 
-namespace Avae.Abstractions;
+namespace Avae.Avalonia;
 
 public class NullConverter : IValueConverter
 {

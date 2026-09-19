@@ -8,11 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Avae.Abstractions;
+namespace Avae.Avalonia;
 
 public class DialogService(IServiceProvider serviceProvider, string iconUrl) : IDialogService
 {
@@ -51,8 +48,6 @@ public class DialogService(IServiceProvider serviceProvider, string iconUrl) : I
         get
         {
             TopLevel? topLevel = TopLevelStateManager.Default.GetActive();
-            var dialogHost = topLevel?.GetVisualDescendants().OfType<DialogHostAvalonia.DialogHost>().LastOrDefault();
-            if (dialogHost != null) return dialogHost;
             var fluent = topLevel?.GetVisualDescendants().OfType<FluentAvalonia.UI.Controls.FADialogHost>().LastOrDefault();
             if (fluent != null) return fluent;
             return null;
@@ -128,8 +123,7 @@ public class DialogService(IServiceProvider serviceProvider, string iconUrl) : I
     Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigableContext? context) where TResult : default
     {
         var viewModel = serviceProvider.GetViewModel<TViewModel>(context);
-        var container = serviceProvider.GetRequiredService<IIocConfiguration>();
-        var view = container.GetModalFor<TViewModel, TResult>(context ?? new NavigableContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
+        var view = serviceProvider.GetModalFor<TViewModel, TResult>(context ?? new NavigableContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
         view.Context = viewModel;
         return view.ShowModalAsync();
     }
