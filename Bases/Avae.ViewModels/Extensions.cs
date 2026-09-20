@@ -5,6 +5,20 @@ namespace Avae.ViewModels;
 
 public static class Extensions
 {
+    static T GetOrAdd<T>(this IServiceCollection services) where T : class, new()
+    {
+        var existing = services
+            .FirstOrDefault(d => d.ServiceType == typeof(T))
+            ?.ImplementationInstance as T;
+
+        if (existing is not null)
+            return existing;
+
+        var map = new T();
+        services.AddSingleton<T>(map);
+        return map;
+    }
+
     public static Task<TResult?> ShowModalAsync<TViewModel, TResult>(
         this IServiceProvider provider,
         NavigableContext? context = null) where TViewModel : ICloseableViewModel<TResult>
@@ -34,6 +48,8 @@ public static class Extensions
         Func<IServiceProvider, object[], T> create)
         where T : class
     {
+        var cache = services.GetOrAdd<ScopedViewCache>();
+
         switch (lifetime)
         {
             case ServiceLifetime.Singleton:
@@ -51,7 +67,6 @@ public static class Extensions
             case ServiceLifetime.Scoped:
                 services.AddKeyedSingleton<Func<IServiceProvider, object[], object>>(key, (sp, parameters) =>
                 {
-                    var cache = sp.GetRequiredService<ScopedViewCache>();
                     return cache.GetOrCreate(key, () => create(sp, parameters));
                 });
                 break;
@@ -84,7 +99,7 @@ public static class Extensions
     {
         key ??= typeof(TViewModel).Name;
 
-        ViewModelViewMap.Initialize(services).Map<TView, TViewModel>(key);
+        services.GetOrAdd<ViewModelViewMap>().Map<TView, TViewModel>(key);
         services.RegisterViewModel<TViewModel>(viewModelLifetime);
         services.RegisterFactory(key, viewLifetime, createView);
     }
