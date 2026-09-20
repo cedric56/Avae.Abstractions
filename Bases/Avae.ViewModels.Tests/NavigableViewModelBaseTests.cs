@@ -65,7 +65,7 @@ public class NavigableViewModelBaseTests
         var sut = TestNavigableViewModel.Create(CreateRouter(), navigables, initialize: true);
         var firstView = sut.CurrentView;
 
-        IViewFor? raised = null;
+        IContext? raised = null;
         sut.CurrentViewChanged += (_, view) => raised = view;
 
         sut.SelectedNavigable = second;

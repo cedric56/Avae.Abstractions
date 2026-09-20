@@ -4,7 +4,7 @@ using MauiIcons.Core;
 
 namespace Example.Maui
 {
-    public partial class MainPage : FlyoutEx, IViewFor<MainViewModel>
+    public partial class MainPage : FlyoutEx, IContext
     {
         public MainPage()
         {

@@ -100,7 +100,14 @@ public static class Extensions
         string? key = null)
         where TView : class where TViewModel : class
         => services.RegisterPageCore<TView, TViewModel>(
-            key, (sp, args) => func(sp, (TArg1) args[0]), viewModelLifetime, viewLifetime);
+            key, (sp, args) => func(sp, args.Resolve<TView, TArg1>(0)), viewModelLifetime, viewLifetime);
+
+    private static T Resolve<TView, T>(this object[] args, int index)
+    {
+        return args.Length > 0
+        ? (T)args[0]
+        : throw new ArgumentException($"Expected {args.Length} arguments for {typeof(TView).Name}, got {args.Length}.");
+    }
 
     public static void RegisterWithLifetime<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TView,
@@ -113,7 +120,7 @@ public static class Extensions
         string? key = null)
         where TView : class where TViewModel : class
         => services.RegisterPageCore<TView, TViewModel>(
-            key, (sp, args) => func(sp, (TArg1) args[0], (TArg2) args[1]), viewModelLifetime, viewLifetime);
+            key, (sp, args) => func(sp, args.Resolve<TView, TArg1>(0), args.Resolve<TView, TArg2>(1)), viewModelLifetime, viewLifetime);
 
     public static void RegisterWithLifetime<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TView,
@@ -126,7 +133,7 @@ public static class Extensions
         string? key = null)
         where TView : class where TViewModel : class
         => services.RegisterPageCore<TView, TViewModel>(
-            key, (sp, args) => func(sp, (TArg1) args[0], (TArg2) args[1], (TArg3) args[2]),
+            key, (sp, args) => func(sp, args.Resolve<TView, TArg1>(0), args.Resolve<TView, TArg2>(1), args.Resolve<TView, TArg3>(2)),
             viewModelLifetime, viewLifetime);
 
     public static void RegisterWithLifetime<
@@ -140,7 +147,7 @@ public static class Extensions
         string? key = null)
         where TView : class where TViewModel : class
         => services.RegisterPageCore<TView, TViewModel>(
-            key, (sp, args) => func(sp, (TArg1) args[0], (TArg2) args[1], (TArg3) args[2], (TArg4) args[3]),
+            key, (sp, args) => func(sp, args.Resolve<TView, TArg1>(0), args.Resolve<TView, TArg2>(1), args.Resolve<TView, TArg3>(2), args.Resolve<TView, TArg4>(3)),
             viewModelLifetime, viewLifetime);
 
     public static void RegisterWithLifetime<
@@ -154,7 +161,7 @@ public static class Extensions
         string? key = null)
         where TView : class where TViewModel : class
         => services.RegisterPageCore<TView, TViewModel>(
-            key, (sp, args) => func(sp, (TArg1) args[0], (TArg2) args[1], (TArg3) args[2], (TArg4) args[3], (TArg5) args[4]),
+            key, (sp, args) => func(sp, args.Resolve<TView, TArg1>(0), args.Resolve<TView, TArg2>(1), args.Resolve<TView, TArg3>(2), args.Resolve<TView, TArg4>(3), args.Resolve<TView, TArg5>(4)),
             viewModelLifetime, viewLifetime);
 
     public static void RegisterWithLifetime<
@@ -166,7 +173,7 @@ public static class Extensions
         string? key = null)
         where TView : class where TViewModel : class
         => services.RegisterPageCore<TView, TViewModel>(
-            key, (sp, args) => ActivatorUtilities.CreateInstance<TView>(sp, args), viewModelLifetime, viewLifetime);
+            key, ActivatorUtilities.CreateInstance<TView>, viewModelLifetime, viewLifetime);
 
     public static void Register<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TView,
@@ -182,7 +189,7 @@ public static class Extensions
         ServiceLifetime lifetime = ServiceLifetime.Singleton)
         where TViewModel : class
         => services.RegisterFactory<TViewModel>(
-            typeof(TViewModel), lifetime, (sp, args) => ActivatorUtilities.CreateInstance<TViewModel>(sp, args));
+            typeof(TViewModel), lifetime, ActivatorUtilities.CreateInstance<TViewModel>);
 
     public static T GetViewModel<T>(this IServiceProvider provider, NavigableContext? context = null)
         => provider.GetViewModel<T>(typeof(T), context);
@@ -202,13 +209,13 @@ public static class Extensions
     public static object GetView(this IServiceProvider provider, string key, object[] context)
     {
         var factory = provider.GetKeyedService<Func<IServiceProvider, object[], object>>(key)
-            ?? throw new Exception($"No such view registered: {key}");
+            ?? throw new InvalidOperationException($"No such view registered: {key}");
 
         return factory(provider, [.. context ?? []])
             ?? throw new InvalidOperationException($"Unable to create view for {key}. Ensure that it is registered with the service provider.");
     }
 
-    public static IViewFor? GetContextFor(this IServiceProvider provider, object key, NavigableContext? context = null)
+    public static IContext? GetContextFor(this IServiceProvider provider, object key, NavigableContext? context = null)
     {
         context ??= new NavigableContext();
         var resolvedKey = context.Key ?? key;
@@ -217,12 +224,12 @@ public static class Extensions
             throw new InvalidOperationException($"GetContextFor requires a string key, got {resolvedKey?.GetType().Name ?? "null"}.");
 
         var view = provider.GetView(stringKey, [.. context.ViewParameters ?? []]);
-        return view as IViewFor
-            ?? throw new InvalidOperationException($"View must implement {nameof(IViewFor)}");
+        return view as IContext
+            ?? throw new InvalidOperationException($"View must implement {nameof(IContext)}");
     }
 
-    public static IViewFor<TViewModel>? GetContextFor<TViewModel>(this IServiceProvider provider, NavigableContext context)
-        => provider.GetContextFor(typeof(TViewModel).Name, context) as IViewFor<TViewModel>;
+    public static IContext? GetContextFor<TViewModel>(this IServiceProvider provider, NavigableContext context)
+        => provider.GetContextFor(typeof(TViewModel).Name, context) as IContext;
 
     [UnconditionalSuppressMessage("Trimming", "IL2075",
         Justification = "View types are always registered via explicit compile-time factories " +

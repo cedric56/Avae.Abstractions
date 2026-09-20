@@ -13,7 +13,7 @@ namespace Avae.ViewModels;
 /// </param>
 public abstract partial class NavigableViewModelBase<TResult>(Router router, bool initialize = true) :
     NavigableViewModelBase(router, initialize),
-    ICloseableViewModel<TResult>
+    ICloseableViewModel<TResult>    
 {
     /// <summary>
     /// Occurs when a close has been requested for this view model, carrying the resulting value, if any.
@@ -61,12 +61,12 @@ public abstract partial class NavigableViewModelBase<TResult>(Router router, boo
 /// Base class for a view model that manages navigation between a set of <see cref="NavigableView"/> items,
 /// caching the view/view-model pair for each one as it is visited.
 /// </summary>
-public abstract partial class NavigableViewModelBase : RouterViewModelBase
+public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDisposable
 {
     /// <summary>
     /// Occurs when the currently displayed view changes.
     /// </summary>
-    public EventHandler<IViewFor>? CurrentViewChanged;
+    public EventHandler<IContext>? CurrentViewChanged;
 
     /// <summary>
     /// Updates <see cref="SelectedNavigable"/> and <see cref="CurrentView"/> to reflect a change in the
@@ -97,15 +97,15 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase
     /// Cache mapping each <see cref="NavigableView"/> to the view/view-model pair created for it,
     /// so that previously visited navigables are not recreated.
     /// </summary>
-    private readonly Dictionary<NavigableView, KeyValuePair<IViewFor, object>> dico = [];
+    private readonly Dictionary<NavigableView, KeyValuePair<IContext, object>> dico = [];
 
-    private IViewFor _currentView = null!;
+    private IContext _currentView = null!;
 
     /// <summary>
     /// Gets or sets the view currently being displayed. Setting this property raises
     /// <see cref="CurrentViewChanged"/> and a property-changed notification.
     /// </summary>
-    public IViewFor CurrentView
+    public IContext CurrentView
     {
         get { return _currentView; }
         set
@@ -182,7 +182,7 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase
         else
         {
             var viewFor = GoTo(value, out var viewModel);
-            dico.Add(value, new KeyValuePair<IViewFor, object>(viewFor, viewModel));
+            dico.Add(value, new KeyValuePair<IContext, object>(viewFor, viewModel));
             await value.OnLaunched(viewModel);
             CurrentView = viewFor;
         }
@@ -200,19 +200,25 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase
     /// existing view model, or a newly created one.
     /// </param>
     /// <returns>The view resolved for the navigation target.</returns>
-    protected virtual IViewFor GoTo(NavigableView value, out object viewModel)
+    protected virtual IContext GoTo(NavigableView value, out object viewModel)
     {
-        IViewFor viewFor;
+        IContext viewFor;
         if (value.ViewModel != null)
         {
-            viewFor = _router.GoTo(viewModel = value.ViewModel, value.Context);
+            viewFor = _router.GoTo(viewModel = value.ViewModel, context: value.Context);
         }
         else
         {
-            viewFor = _router.GoToType(value.ViewModelType, out viewModel, value.Context);
+            viewFor = _router.GoToType(value.ViewModelType, out viewModel, context: value.Context);
         }
 
         return viewFor;
+    }
+
+    public void Dispose()
+    {
+        _navigables?.Clear();
+        _navigables = null;
     }
     //protected virtual IViewFor GoTo<T>(NavigableView<T> value, out T viewModel) where T : class, IViewModelBase
     //{

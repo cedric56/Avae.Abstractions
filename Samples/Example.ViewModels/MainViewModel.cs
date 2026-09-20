@@ -1,16 +1,15 @@
 ﻿using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Example.Models;
 using System.Collections.ObjectModel;
 
 namespace Example.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
-    private readonly Dictionary<NavigableView, IViewFor> dico = [];
+    private readonly Dictionary<NavigableView, IContext> dico = [];
 
     [ObservableProperty]
-    private IViewFor? currentView;
+    private IContext? currentView;
 
     [ObservableProperty]
     private NavigableView? selectedNavigable;

@@ -91,7 +91,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
         };
     }
 
-    protected override IViewFor GoTo(NavigableView value, out object viewModel)
+    protected override IContext GoTo(NavigableView value, out object viewModel)
     {
         //Possibility to set parameters on call
         if (value.ViewModelType == typeof(FormPage3ViewModel))

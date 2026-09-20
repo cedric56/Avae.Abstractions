@@ -41,7 +41,6 @@ public partial class App(IServiceProvider provider) : Application
 
                services.UseEssentials();
                services.UseNotifications();
-               services.AddTransient<Router>();
                services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, parameters) =>
                {
                    return parameters[0] switch

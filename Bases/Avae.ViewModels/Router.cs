@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace Avae.ViewModels;
+﻿namespace Avae.ViewModels;
 
 /// <summary>
 /// Class initially copied from https://github.com/eten-tech/bible-well/blob/main/src/BibleWell.App/Router.cs
@@ -80,14 +78,14 @@ public partial class Router(IServiceProvider provider)
     /// <typeparam name="TBaseType">The base type of the view model.</typeparam>
     /// <param name="viewModelType">The view model type.</param>
     /// <returns>The created view model cast to the <typeparamref name="TBaseType"/>.</returns>        
-    public IViewFor GoToType(Type viewModelType, out object viewModel, NavigableContext? context = null, string? key = null)
+    public IContext GoToType(Type viewModelType, out object viewModel, string? key = null, NavigableContext? context = null)
     {
         viewModel = provider.GetViewModel(viewModelType, context);
         AddHistory(viewModel);
         CurrentViewModelChanged?.Invoke(viewModel);
         var viewFor = provider.GetContextFor(key ?? viewModelType.Name, context);
         viewFor?.Context = viewModel;
-        return viewFor ?? throw new NotImplementedException($"Unable to find view for {key}");
+        return viewFor ?? throw new InvalidOperationException($"Unable to find view for {key ?? viewModelType.Name}");
     }
 
     /// <summary>
@@ -96,9 +94,9 @@ public partial class Router(IServiceProvider provider)
     /// <param name="viewModelType">The view model type to navigate to.</param>
     /// <param name="context">Optional navigation context supplying parameters for the view model, view, and factory.</param>
     /// <returns>The view resolved for the created view model.</returns>
-    public IViewFor GoToType(Type viewModelType, NavigableContext? context = null, string? key = null)
+    public IContext GoToType(Type viewModelType, string? key = null, NavigableContext? context = null)
     {
-        return GoToType(viewModelType, out var _, context, key);
+        return GoToType(viewModelType, out var _, key, context);
     }
 
     /// <summary>
@@ -108,16 +106,16 @@ public partial class Router(IServiceProvider provider)
     /// <param name="viewModel">The existing view model instance to navigate to.</param>
     /// <param name="context">Optional navigation context supplying parameters for the view.</param>
     /// <returns>The view resolved for <paramref name="viewModel"/>.</returns>
-    public IViewFor GoTo<TViewModel>(TViewModel viewModel, NavigableContext? context = null)// where TViewModel : class, new()
+    public IContext GoTo<TViewModel>(TViewModel viewModel, string? key = null, NavigableContext? context = null) where TViewModel : class
     {
         if (viewModel == null)
-            return null!;
+            throw new InvalidOperationException("Viewmodel must not be null");
 
         AddHistory(viewModel);
         CurrentViewModelChanged?.Invoke(viewModel);
-        var viewFor = provider.GetContextFor(typeof(TViewModel).Name, context);
+        var viewFor = provider.GetContextFor(key ?? typeof(TViewModel).Name, context);
         viewFor?.Context = viewModel;
-        return viewFor ?? throw new NotImplementedException($"Unable to find view for {typeof(TViewModel).Name}");
+        return viewFor ?? throw new InvalidOperationException($"Unable to find view for {typeof(TViewModel).Name}");
     }
 
     /// <summary>
@@ -125,14 +123,14 @@ public partial class Router(IServiceProvider provider)
     /// </summary>
     /// <typeparam name="TViewModel">The type of the view model.</typeparam>
     /// <returns>The created view model.</returns>
-    public IViewFor GoTo<TViewModel>(out TViewModel viewModel, NavigableContext? context = null)// where TViewModel : class, new()
+    public IContext GoTo<TViewModel>(out TViewModel viewModel, string? key = null, NavigableContext? context = null) where TViewModel : class
     {
         viewModel = provider.GetViewModel<TViewModel>(context)!;
         AddHistory(viewModel);
         CurrentViewModelChanged?.Invoke(viewModel);
-        var viewFor = provider.GetContextFor(typeof(TViewModel).Name, context);
+        var viewFor = provider.GetContextFor(key ?? typeof(TViewModel).Name, context);
         viewFor?.Context = viewModel;
-        return viewFor ?? throw new NotImplementedException($"Unable to find view for {typeof(TViewModel).Name}");
+        return viewFor ?? throw new InvalidOperationException($"Unable to find view for {typeof(TViewModel).Name}");
     }
 
     /// <summary>

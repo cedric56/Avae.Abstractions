@@ -40,6 +40,7 @@ public static class MauiProgram
             });
         builder.Services.UseNotifications();
         builder.Services.RegisterEssentials();
+        builder.Services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, args) => null!);
         builder.Services.Register<MainPage, MainViewModel>();
         builder.Services.Register<HomeView ,HomeViewModel>();
         builder.Services.Register<MenuView, MenuViewModel>();
@@ -60,7 +61,7 @@ public static class MauiProgram
     }
 }
 
-class DefaultView : ContentView, IViewFor<FormViewModel>
+class DefaultView : ContentView, IContext
 {
     public object? Context
     {

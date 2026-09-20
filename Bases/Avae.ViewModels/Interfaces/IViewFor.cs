@@ -1,13 +1,6 @@
 ﻿namespace Avae.ViewModels;
 
-public interface IViewFor
+public interface IContext
 {
     object? Context { get; set; }
-
-    static virtual string Name => throw new NotImplementedException();
-}
-
-public interface IViewFor<T> : IViewFor
-{
-    static string IViewFor.Name => typeof(T).Name;
 }
