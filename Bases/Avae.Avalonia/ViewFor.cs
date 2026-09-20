@@ -3,7 +3,7 @@ using Avalonia.Controls;
 
 namespace Avae.Avalonia;
 
-public class ViewFor<TViewModel> : UserControl, IContext
+public class ViewFor<TViewModel> : UserControl, IViewFor
 {
     public object? Context { get => DataContext; set => DataContext = value; }
 }

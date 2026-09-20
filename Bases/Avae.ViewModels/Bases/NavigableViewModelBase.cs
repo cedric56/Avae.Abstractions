@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace Avae.ViewModels;
@@ -66,15 +67,18 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDis
     /// <summary>
     /// Occurs when the currently displayed view changes.
     /// </summary>
-    public EventHandler<IContext>? CurrentViewChanged;
+    public EventHandler<IViewFor?>? CurrentViewChanged;
 
     /// <summary>
     /// Updates <see cref="SelectedNavigable"/> and <see cref="CurrentView"/> to reflect a change in the
     /// active view model, and raises the corresponding change notifications.
     /// </summary>
     /// <param name="viewModel">The view model that has become active.</param>
-    protected override void OnViewModelChanged(object viewModel)
+    protected override void OnViewModelChanged(object? viewModel)
     {
+        if (viewModel == null)
+            return;
+
         var type = viewModel.GetType();
         _selectedNavigable = Navigables.First(p => p.ViewModelType == type);
         if (dico.TryGetValue(_selectedNavigable, out var context))
@@ -97,15 +101,15 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDis
     /// Cache mapping each <see cref="NavigableView"/> to the view/view-model pair created for it,
     /// so that previously visited navigables are not recreated.
     /// </summary>
-    private readonly Dictionary<NavigableView, KeyValuePair<IContext, object>> dico = [];
+    private readonly Dictionary<NavigableView, KeyValuePair<IViewFor, object>> dico = [];
 
-    private IContext _currentView = null!;
+    private IViewFor? _currentView = null!;
 
     /// <summary>
     /// Gets or sets the view currently being displayed. Setting this property raises
     /// <see cref="CurrentViewChanged"/> and a property-changed notification.
     /// </summary>
-    public IContext CurrentView
+    public IViewFor? CurrentView
     {
         get { return _currentView; }
         set
@@ -127,9 +131,10 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDis
         get { return _selectedNavigable; }
         set
         {
+            var old = _selectedNavigable;
             _selectedNavigable = value;
-            OnSelectedNavigableChanged(value);
             NotifyPropertyChanged(nameof(SelectedNavigable));
+            _ = OnSelectedNavigableChangedAsync(value, old);
         }
     }
 
@@ -168,26 +173,50 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDis
     /// Handles a change to <see cref="SelectedNavigable"/> by resolving (or creating) the associated
     /// view/view-model pair, updating <see cref="CurrentView"/>, and recording navigation history.
     /// </summary>
-    /// <param name="value">The newly selected navigable item, or <see langword="null"/> if none is selected.</param>
-    protected async void OnSelectedNavigableChanged(NavigableView? value)
+    /// <param name="value">The newly selected navigable item, or <see langword="null"/> if none is selected.</param>    
+    private async Task OnSelectedNavigableChangedAsync(NavigableView? value, NavigableView? old)
     {
-        if (value == null)
-            return;
-
-        if (dico.TryGetValue(value, out var view))
+        try
         {
-            CurrentView = view.Key;
-            _router.AddHistory(view.Value);
-        }
-        else
-        {
-            var viewFor = GoTo(value, out var viewModel);
-            dico.Add(value, new KeyValuePair<IContext, object>(viewFor, viewModel));
-            await value.OnLaunched(viewModel);
-            CurrentView = viewFor;
-        }
+            if (value == null)
+                return;
 
-        RaiseCanExecutesChanged();
+            if (dico.TryGetValue(value, out var view))
+            {
+                var context = await _router.GoTo(view.Key, view.Value, value.Context);
+                if (context != null)
+                {
+                    CurrentView = context;
+                }
+                else
+                {
+                    var stillPresent = Navigables.Any(n => n.Equals(old));
+                    Debug.WriteLine($"revert target present in Navigables: {stillPresent}");
+                    _selectedNavigable = old;
+                }
+            }
+            else
+            {
+                (IViewFor? context, object viewmodel) result = await GoTo(value);
+                if (result.context != null)
+                {
+                    dico.Add(value, new KeyValuePair<IViewFor, object>(result.context, result.viewmodel));
+                    await value.OnLaunched(result.viewmodel);
+                    CurrentView = result.context;
+                }
+                else
+                {
+                    var stillPresent = Navigables.Any(n => n.Equals(old));
+                    Debug.WriteLine($"revert target present in Navigables: {stillPresent}");
+                    _selectedNavigable = old;
+                }
+            }
+        }
+        finally
+        {
+            RaiseCanExecutesChanged();
+            NotifyPropertyChanged(nameof(SelectedNavigable));
+        }
     }
 
     /// <summary>
@@ -200,22 +229,23 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDis
     /// existing view model, or a newly created one.
     /// </param>
     /// <returns>The view resolved for the navigation target.</returns>
-    protected virtual IContext GoTo(NavigableView value, out object viewModel)
+    protected virtual async Task<(IViewFor? view, object viewmodel)> GoTo(NavigableView value)
     {
-        IContext viewFor;
+        object viewModel;
+        IViewFor? viewFor;
         if (value.ViewModel != null)
         {
-            viewFor = _router.GoTo(viewModel = value.ViewModel, context: value.Context);
+            viewFor = await _router.GoTo(viewModel = value.ViewModel, context: value.Context);
         }
         else
         {
-            viewFor = _router.GoToType(value.ViewModelType, out viewModel, context: value.Context);
+            viewFor = await _router.GoToType(value.ViewModelType, out viewModel, context: value.Context);
         }
 
-        return viewFor;
+        return (viewFor, viewModel);
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _navigables?.Clear();
         _navigables = null;

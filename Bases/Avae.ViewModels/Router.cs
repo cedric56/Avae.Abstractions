@@ -6,7 +6,7 @@
 public partial class Router(IServiceProvider provider)
 {
     private int _currentIndex = -1;
-    private List<object> _history = [];
+    private List<(object viewmodel, object view, NavigableContext context)> _history = [];
     private const uint MaxHistorySize = 20;
 
     /// <summary>
@@ -22,7 +22,7 @@ public partial class Router(IServiceProvider provider)
     /// <summary>
     /// Gets the view model currently at the front of navigation history, or <see langword="null"/> if history is empty.
     /// </summary>
-    public object? Current => _currentIndex < 0 ? null : _history[_currentIndex];
+    public object? Current => _currentIndex < 0 ? null : _history[_currentIndex].viewmodel;
 
     /// <summary>
     /// Occurs whenever the current view model changes, whether via <see cref="Back"/>, <see cref="Forward"/>,
@@ -39,36 +39,69 @@ public partial class Router(IServiceProvider provider)
         _history.Clear();
     }
 
-    /// <summary>
-    /// Moves back one step in navigation history, if possible.
-    /// </summary>
-    /// <returns>The view model now current after moving back, or <see langword="null"/> if <see cref="CanGoBack"/> was <see langword="false"/>.</returns>
-    public object? Back()
+    public async Task<object?> BackAsync()
     {
-        if (!CanGoBack)
-        {
+        if (!CanGoBack) return null;
+
+        var leaving = _history[_currentIndex];
+        if (leaving.viewmodel is INavigable confirm && !await confirm.CanNavigateAsync())
             return null;
-        }
 
         _currentIndex--;
+        await TransitionTo(leaving, _history[_currentIndex]);
         CurrentViewModelChanged?.Invoke(Current!);
         return Current;
     }
 
-    /// <summary>
-    /// Moves forward one step in navigation history, if possible.
-    /// </summary>
-    /// <returns>The view model now current after moving forward, or <see langword="null"/> if <see cref="CanGoForward"/> was <see langword="false"/>.</returns>
-    public object? Forward()
+    public async Task<object?> ForwardAsync()
     {
-        if (!CanGoForward)
-        {
+        if (!CanGoForward) return null;
+
+        var leaving = _history[_currentIndex];
+        if (leaving.viewmodel is INavigable confirm && !await confirm.CanNavigateAsync())
             return null;
-        }
 
         _currentIndex++;
+        await TransitionTo(leaving, _history[_currentIndex]);
         CurrentViewModelChanged?.Invoke(Current!);
         return Current;
+    }
+
+    private async Task TransitionTo((object viewmodel, object view, NavigableContext context) leaving, (object viewmodel, object view, NavigableContext context) entering)
+    {        
+        if (leaving.viewmodel is INavigable lvm) await lvm.OnNavigatedFrom(leaving.context);
+        if (entering.viewmodel is INavigable evm) await evm.OnNavigatedTo(entering.context);
+        if (leaving.view is INavigable lv) await lv.OnNavigatedFrom(leaving.context);
+        if (entering.view is INavigable ev) await ev.OnNavigatedTo(entering.context);
+    }
+
+    async Task<IViewFor?> NavigateCore(object key, object viewModel, NavigableContext? context = null)
+    {
+        if (Current is INavigable confirm && !await confirm.CanNavigateAsync())
+            return null;
+
+        context ??= new NavigableContext();
+        var view = provider.GetContextFor(key, context) ?? throw new InvalidOperationException($"Unable to resolve view for {key}.");
+        var previous = _currentIndex >= 0 ? _history[_currentIndex] : default;        
+        await TransitionTo(previous, (viewModel, view, context));
+        AddHistory(viewModel, view, context);
+        CurrentViewModelChanged?.Invoke(viewModel);
+        view.Context = viewModel;
+        return view;
+    }
+
+    public async Task<IViewFor?> GoTo(IViewFor view, object viewModel, NavigableContext? context = null)
+    {
+        if (Current is INavigable confirm && !await confirm.CanNavigateAsync())
+            return null;
+
+        context ??= new NavigableContext();
+        var previous = _currentIndex >= 0 ? _history[_currentIndex] : default;
+        await TransitionTo(previous, (viewModel, view, context));
+        AddHistory(viewModel, view, context);
+        CurrentViewModelChanged?.Invoke(viewModel);
+        view.Context = viewModel;
+        return view;
     }
 
     /// <summary>
@@ -78,14 +111,10 @@ public partial class Router(IServiceProvider provider)
     /// <typeparam name="TBaseType">The base type of the view model.</typeparam>
     /// <param name="viewModelType">The view model type.</param>
     /// <returns>The created view model cast to the <typeparamref name="TBaseType"/>.</returns>        
-    public IContext GoToType(Type viewModelType, out object viewModel, string? key = null, NavigableContext? context = null)
+    public Task<IViewFor?> GoToType(Type viewModelType, out object viewModel, string? key = null, NavigableContext? context = null)
     {
         viewModel = provider.GetViewModel(viewModelType, context);
-        AddHistory(viewModel);
-        CurrentViewModelChanged?.Invoke(viewModel);
-        var viewFor = provider.GetContextFor(key ?? viewModelType.Name, context);
-        viewFor?.Context = viewModel;
-        return viewFor ?? throw new InvalidOperationException($"Unable to find view for {key ?? viewModelType.Name}");
+        return NavigateCore(key ?? viewModelType.Name, viewModel, context);
     }
 
     /// <summary>
@@ -94,7 +123,7 @@ public partial class Router(IServiceProvider provider)
     /// <param name="viewModelType">The view model type to navigate to.</param>
     /// <param name="context">Optional navigation context supplying parameters for the view model, view, and factory.</param>
     /// <returns>The view resolved for the created view model.</returns>
-    public IContext GoToType(Type viewModelType, string? key = null, NavigableContext? context = null)
+    public Task<IViewFor?> GoToType(Type viewModelType, string? key = null, NavigableContext? context = null)
     {
         return GoToType(viewModelType, out var _, key, context);
     }
@@ -106,16 +135,11 @@ public partial class Router(IServiceProvider provider)
     /// <param name="viewModel">The existing view model instance to navigate to.</param>
     /// <param name="context">Optional navigation context supplying parameters for the view.</param>
     /// <returns>The view resolved for <paramref name="viewModel"/>.</returns>
-    public IContext GoTo<TViewModel>(TViewModel viewModel, string? key = null, NavigableContext? context = null) where TViewModel : class
+    public Task<IViewFor?> GoTo<TViewModel>(TViewModel viewModel, string? key = null, NavigableContext? context = null) where TViewModel : class
     {
         if (viewModel == null)
             throw new InvalidOperationException("Viewmodel must not be null");
-
-        AddHistory(viewModel);
-        CurrentViewModelChanged?.Invoke(viewModel);
-        var viewFor = provider.GetContextFor(key ?? typeof(TViewModel).Name, context);
-        viewFor?.Context = viewModel;
-        return viewFor ?? throw new InvalidOperationException($"Unable to find view for {typeof(TViewModel).Name}");
+        return NavigateCore(key ?? typeof(TViewModel).Name, viewModel, context);
     }
 
     /// <summary>
@@ -123,14 +147,10 @@ public partial class Router(IServiceProvider provider)
     /// </summary>
     /// <typeparam name="TViewModel">The type of the view model.</typeparam>
     /// <returns>The created view model.</returns>
-    public IContext GoTo<TViewModel>(out TViewModel viewModel, string? key = null, NavigableContext? context = null) where TViewModel : class
+    public Task<IViewFor?> GoTo<TViewModel>(out TViewModel viewModel, string? key = null, NavigableContext? context = null) where TViewModel : class
     {
         viewModel = provider.GetViewModel<TViewModel>(context)!;
-        AddHistory(viewModel);
-        CurrentViewModelChanged?.Invoke(viewModel);
-        var viewFor = provider.GetContextFor(key ?? typeof(TViewModel).Name, context);
-        viewFor?.Context = viewModel;
-        return viewFor ?? throw new InvalidOperationException($"Unable to find view for {typeof(TViewModel).Name}");
+        return NavigateCore(key ?? typeof(TViewModel).Name, viewModel, context);
     }
 
     /// <summary>
@@ -138,7 +158,7 @@ public partial class Router(IServiceProvider provider)
     /// beyond the current position and trimming the oldest entry if <see cref="MaxHistorySize"/> is exceeded.
     /// </summary>
     /// <param name="item">The view model to add to history.</param>
-    public void AddHistory(object item)
+    public void AddHistory(object viewmodel, object view, NavigableContext context)
     {
         // After navigating back the current index may not be the most forward position.
         // Delete all "forward" items in the history when this happens.
@@ -148,7 +168,7 @@ public partial class Router(IServiceProvider provider)
         }
 
         // add the item and recalculate the index
-        _history.Add(item);
+        _history.Add((viewmodel,  view, context));
 
         // history exceeded the max size
         if (_history.Count > MaxHistorySize)

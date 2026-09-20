@@ -230,7 +230,7 @@ public static class Extensions
             ?? throw new InvalidOperationException($"Unable to create view for {key}. Ensure that it is registered with the service provider.");
     }
 
-    public static IContext? GetContextFor(this IServiceProvider provider, object key, NavigableContext? context = null)
+    public static IViewFor? GetContextFor(this IServiceProvider provider, object key, NavigableContext? context = null)
     {
         context ??= new NavigableContext();
         var resolvedKey = context.Key ?? key;
@@ -239,12 +239,12 @@ public static class Extensions
             throw new InvalidOperationException($"GetContextFor requires a string key, got {resolvedKey?.GetType().Name ?? "null"}.");
 
         var view = provider.GetView(stringKey, [.. context.ViewParameters ?? []]);
-        return view as IContext
-            ?? throw new InvalidOperationException($"View must implement {nameof(IContext)}");
+        return view as IViewFor
+            ?? throw new InvalidOperationException($"View must implement {nameof(IViewFor)}");
     }
 
-    public static IContext? GetContextFor<TViewModel>(this IServiceProvider provider, NavigableContext context)
-        => provider.GetContextFor(typeof(TViewModel).Name, context) as IContext;
+    public static IViewFor? GetContextFor<TViewModel>(this IServiceProvider provider, NavigableContext context)
+        => provider.GetContextFor(typeof(TViewModel).Name, context) as IViewFor;
 
     [UnconditionalSuppressMessage("Trimming", "IL2075",
         Justification = "View types are always registered via explicit compile-time factories " +

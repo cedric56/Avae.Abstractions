@@ -22,11 +22,11 @@ public abstract class RouterViewModelBase
     /// <summary>
     /// Navigates to the previous view model in the router's history, if available.
     /// </summary>
-    public virtual void GoBack()
+    public virtual async Task GoBack()
     {
         if (CanGoBack())
         {
-            var viewModel = _router.Back()!;
+            var viewModel = await _router.BackAsync();
             OnViewModelChanged(viewModel);
         }
     }
@@ -43,11 +43,11 @@ public abstract class RouterViewModelBase
     /// <summary>
     /// Navigates to the next view model in the router's history, if available.
     /// </summary>
-    public virtual void GoForward()
+    public virtual async Task GoForward()
     {
         if (CanGoForward())
         {
-            var viewModel = _router.Forward()!;
+            var viewModel = await _router.ForwardAsync();
             OnViewModelChanged(viewModel);
         }
     }
@@ -66,7 +66,7 @@ public abstract class RouterViewModelBase
     /// The base implementation refreshes command availability.
     /// </summary>
     /// <param name="viewModel">The view model that has become active.</param>
-    protected virtual void OnViewModelChanged(object viewModel)
+    protected virtual void OnViewModelChanged(object? viewModel)
     {
         RaiseCanExecutesChanged();
     }

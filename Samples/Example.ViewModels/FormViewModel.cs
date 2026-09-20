@@ -4,12 +4,17 @@ using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
+using Microsoft.Maui.Dispatching;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Person = Example.Models.Person;
 namespace Example.ViewModels;
 
-public partial class FormViewModel(IDialogService dialogService, Router router, Person person) :
+public partial class FormViewModel(
+    IDispatcher dispatcher,
+    IDialogService dialogService, 
+    Router router, 
+    Person person) :
     NavigableViewModel<Person>(router), 
     IDataErrorInfo
 {
@@ -91,7 +96,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
         };
     }
 
-    protected override IContext GoTo(NavigableView value, out object viewModel)
+    protected override Task<(IViewFor? view, object viewmodel)> GoTo(NavigableView value)
     {
         //Possibility to set parameters on call
         if (value.ViewModelType == typeof(FormPage3ViewModel))
@@ -100,7 +105,7 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
             value.Context.ViewParameters = [Person];
         }
 
-        return base.GoTo(value, out viewModel);
+        return base.GoTo(value);
     }
 
     public string Error => Person.Error;
@@ -110,5 +115,14 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
     public override Task<bool> CanClose()
     {
         return dialogService.ShowYesNoAsync("Are you sure you want to close ?", "Question");
+    }
+
+    protected override void NotifyPropertyChanged(string propertyName)
+    {
+        dispatcher.Dispatch(
+            () =>
+        {
+            base.NotifyPropertyChanged(propertyName);
+        });
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Avae.ViewModels;
 
-public interface IContext
+public interface IViewFor
 {
     object? Context { get; set; }
 }

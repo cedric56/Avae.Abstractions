@@ -209,7 +209,7 @@ public class RouterTests
     public void GoTo_throws_when_no_view_is_registered_for_the_viewmodel()
     {
         var router = CreateRouter(out var configuration);
-        configuration.GetContextFor(Arg.Any<string>(), Arg.Any<NavigableContext>()).Returns((IContext?)null);
+        configuration.GetContextFor(Arg.Any<string>(), Arg.Any<NavigableContext>()).Returns((IViewFor?)null);
 
         Assert.Throws<NotImplementedException>(() => router.GoTo(new FakeViewModel()));
     }

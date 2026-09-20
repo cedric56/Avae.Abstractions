@@ -6,10 +6,10 @@ namespace Example.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
-    private readonly Dictionary<NavigableView, IContext> dico = [];
+    private readonly Dictionary<NavigableView, IViewFor> dico = [];
 
     [ObservableProperty]
-    private IContext? currentView;
+    private IViewFor? currentView;
 
     [ObservableProperty]
     private NavigableView? selectedNavigable;
@@ -19,9 +19,9 @@ public partial class MainViewModel : ObservableObject
         new NavigableView<HomeViewModel>("Home", "fa-solid fa-house"),
         new NavigableView<MenuViewModel>("Menu", "fa-solid fa-gear"),
         new NavigableView<EssentialsViewModel>("Essentials", "fa-solid fa-gear")
-    ];   
+    ];
 
-    partial void OnSelectedNavigableChanged(NavigableView? value)
+    async partial void OnSelectedNavigableChanged(NavigableView? value)
     {
         if (value is null) return;
         if (dico.TryGetValue(value, out var view))
@@ -30,8 +30,9 @@ public partial class MainViewModel : ObservableObject
         }
         else
         {
-            CurrentView = router.GoToType(value.ViewModelType);
-            dico.Add(value, CurrentView);
+            CurrentView = await router.GoToType(value.ViewModelType);
+            if (CurrentView != null)
+                dico.Add(value, CurrentView);
         }
     }
 

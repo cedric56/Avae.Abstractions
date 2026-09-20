@@ -12,8 +12,10 @@ public static class Extensions
 {
     public static void UseDBOnionLayer(this IServiceCollection services)
     {
-        services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
-        services.AddSingleton<IXmlHttpRequest, XmlHttpRequest>();
+        if (OperatingSystem.IsBrowser())
+            services.AddSingleton<IXmlHttpRequest, XmlHttpRequest>();
+
+        services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());        
         services.AddSingleton(sp => sp.Create<IMagicOnionLayer>(Constants.ServerUrl));
         services.UseLayer(sp => new MagicCatchableLayer(sp, Constants.OnionUrl, 1000, sp.GetService<ILogger>()));
         services.AddSingleton<IDBFactory, Fake>();

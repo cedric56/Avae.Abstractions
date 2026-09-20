@@ -86,7 +86,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Controls.Maui.Essentials" />
-    <!--<PackageReference Include="System.Text.Json"/>-->
+    <PackageReference Include="System.Text.Json"/>
   </ItemGroup>
 
 </Project>

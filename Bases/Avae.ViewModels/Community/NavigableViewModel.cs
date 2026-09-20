@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Avae.ViewModels;
@@ -21,15 +22,15 @@ public abstract partial class NavigableViewModel(Router router, bool initialize 
 NavigableViewModelBase(router, initialize)
 {
     [RelayCommand]
-    public override void GoBack()
+    public override Task GoBack()
     {
-        base.GoBack();
+        return base.GoBack();
     }
 
     [RelayCommand]
-    public override void GoForward()
+    public override Task GoForward()
     {
-        base.GoForward();
+        return base.GoForward();
     }
 
     protected override void RaiseCanExecutesChanged()
@@ -56,15 +57,15 @@ public abstract partial class NavigableViewModel<TResult>(Router router, bool in
     });
 
     [RelayCommand]
-    public override void GoBack()
+    public override Task GoBack()
     {
-        base.GoBack();
+       return base.GoBack();
     }
 
     [RelayCommand]
-    public override void GoForward()
+    public override Task GoForward()
     {
-        base.GoForward();
+        return base.GoForward();
     }
 
     protected override void RaiseCanExecutesChanged()

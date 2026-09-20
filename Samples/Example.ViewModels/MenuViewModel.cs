@@ -5,20 +5,26 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Dispatching;
 using System.Collections.ObjectModel;
 using Person = Example.Models.Person;
 
 namespace Example.ViewModels;
 
-public partial class MenuViewModel : NavigableViewModel, IDisposable
+public partial class MenuViewModel : NavigableViewModel
 {
     IServiceProvider provider;
     IDialogService dialogService;
     IDBFactory factory;
 
-    public MenuViewModel(IServiceProvider provider, IDBFactory factory, IDialogService dialogService, Router router)
+    IDispatcher dispatcher;
+    public MenuViewModel(IServiceProvider provider, 
+        IDBFactory factory,
+        IDispatcher dispatcher,
+        IDialogService dialogService, Router router)
         : base(router, false)
     {
+        this.dispatcher = dispatcher;
         this.provider = provider;
         this.factory = factory;
         this.dialogService = dialogService;
@@ -54,9 +60,9 @@ public partial class MenuViewModel : NavigableViewModel, IDisposable
     }
 
     [RelayCommand]
-    public void Add()
+    public Task Add()
     {
-        OpenForm(new Person(), person =>
+        return OpenForm(new Person(), person =>
         {
             Persons.Add(person);
             SelectedPerson = person;
@@ -64,9 +70,9 @@ public partial class MenuViewModel : NavigableViewModel, IDisposable
     }
 
     [RelayCommand(CanExecute = nameof(CanExecute))]
-    public void Update()
+    public Task Update()
     {
-        OpenForm(SelectedPerson!, person =>
+        return OpenForm(SelectedPerson!, person =>
         {
             Persons[Persons.IndexOf(SelectedPerson!)] = person;
             SelectedPerson = person;
@@ -93,9 +99,9 @@ public partial class MenuViewModel : NavigableViewModel, IDisposable
         return SelectedPerson != null;
     }
 
-    public void OpenForm(Person person, Action<Person> action)
+    public async Task OpenForm(Person person, Action<Person> action)
     {
-        var viewModel = new FormViewModel(dialogService, provider.GetRequiredService<Router>(), person);
+        var viewModel = new FormViewModel(dispatcher, dialogService, provider.GetRequiredService<Router>(), person);
 
         EventHandler<Person?>? closeRequested = null!;
         viewModel.CloseRequested += closeRequested = (sender, e) =>
@@ -109,11 +115,12 @@ public partial class MenuViewModel : NavigableViewModel, IDisposable
             CurrentView = null!;
         };
 
-        CurrentView = _router.GoTo(viewModel);
+        CurrentView = await _router.GoTo(viewModel);
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
+        base.Dispose();
         Repository.Instance.PersonsChanged -= OnPersonsChanged;
     }
 }

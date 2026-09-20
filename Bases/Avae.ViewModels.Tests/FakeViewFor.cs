@@ -1,9 +1,9 @@
 ﻿namespace Avae.ViewModels.Tests.TestDoubles;
 
 /// <summary>
-/// A trivial <see cref="IContext"/> used to stand in for a resolved view in tests.
+/// A trivial <see cref="IViewFor"/> used to stand in for a resolved view in tests.
 /// </summary>
-public class FakeViewFor : IContext
+public class FakeViewFor : IViewFor
 {
     public object? Context { get; set; }
 }
