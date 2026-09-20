@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 
-namespace Avae.Abstractions;
+namespace Avae.Razor;
 
 public abstract class ViewFor
 {
@@ -30,7 +30,7 @@ public class ViewFor<TView> : ViewFor
     public override Type Type => typeof(TView);
 }
 
-public class ViewFor<TView, TViewModel> : ViewFor, IViewFor<TViewModel> where TViewModel : class, IViewModelBase
+public class ViewFor<TView, TViewModel> : ViewFor, IViewFor<TViewModel> where TViewModel : class
 {
     private object? _context;
     public object? Context { get => _context; set { _context = value; OnContextChanged(_context); } }

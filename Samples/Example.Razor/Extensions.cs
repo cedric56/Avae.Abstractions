@@ -1,4 +1,4 @@
-﻿using Avae.Abstractions;
+﻿using Avae.Razor;
 using Avae.Services;
 using Avae.ViewModels;
 using Example.DAL;
@@ -9,7 +9,6 @@ using Example.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using MudBlazor;
 
 namespace Example.Razor;
@@ -21,14 +20,36 @@ public static class Extensions
         RenderFragment? extras = null,
         Action<IServiceProvider>? initialize = null)
     {
-        
-        services.TryAdd(ServiceDescriptor.Describe(typeof(HomeViewModel), typeof(HomeViewModel), lifetime));
-        services.TryAdd(ServiceDescriptor.Describe(typeof(MenuViewModel), typeof(MenuViewModel), lifetime));
-        services.TryAdd(ServiceDescriptor.Describe(typeof(EssentialsViewModel), typeof(EssentialsViewModel), lifetime));
-        
-        services.AddTransient<ModalViewModel>();
-        services.AddTransient<FormPage2ViewModel>();
-        services.AddTransient<FormPage3ViewModel>();
+        services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, parameters) =>
+        {
+            return parameters[0] switch
+            {
+                "Footer" => new ViewFor<MudText>("Footer"),
+                "IconSource" => new ViewFor<MudImage>()
+                {
+                    Parameters = new Dictionary<string, object> { { nameof(MudImage.Src), "avalonia-logo.ico" } }
+                },
+                "Content" => new ViewFor<MudText>("Here is my content") { Class = "center" },
+                _ => throw new NotImplementedException()
+            };
+        });
+
+        services.RegisterViewFor((sp) => new ViewFor<Home, HomeViewModel>(), lifetime);
+        services.RegisterViewFor((sp) => new ViewFor<MenuView, MenuViewModel>(), lifetime);
+        services.RegisterViewFor((sp) => new ViewFor<EssentialsView, EssentialsViewModel>(), lifetime);
+        services.RegisterViewFor((sp) => new ViewFor<ModalView, ModalViewModel> { Class = "center" });
+        services.RegisterViewFor((sp) => new ViewFor<FormPage2, FormPage2ViewModel> { Class = "center" });
+        services.RegisterViewFor<FormPage3, FormPage3ViewModel, Person>(
+            (sp, person) => new ViewFor<FormPage3, FormPage3ViewModel>(sp, null, new Dictionary<string, object>()
+               {
+                   { nameof(Person), person }
+               })
+            {
+                Class = "center"
+            });
+        services.RegisterViewFor((sp) => new ViewFor<FormPage1, FormViewModel>(), key: FormViewModel.KEY);
+        services.RegisterViewFor((sp) => new ViewFor<FormView, FormViewModel>());
+
         if (!OperatingSystem.IsBrowser())
         {
             services.UseDBSqlLayer<SqliteConnection>();
@@ -39,57 +60,10 @@ public static class Extensions
         }
 
         var navMenu = new ViewFor<NavMenu>();
-        services.UseAvaeContainer(navMenu,
+        services.UseAvae(navMenu,
             NotificationPosition.BottomLeft, 
-            5, 
-            container =>
-            {
-                container.Register(HomeViewModel.TaskDialogKey, (sp, parameters) =>
-                {
-                    return parameters[0] switch
-                    {
-                        "Footer" => new ViewFor<MudText>("Footer"),
-                        "IconSource" => new ViewFor<MudImage>() { Parameters = new Dictionary<string, object>() { { nameof(MudImage.Src), "avalonia-logo.ico" } } },
-                        "Content" => new ViewFor<MudText>("Here is my content") { Class = "center" },
-                        _ => throw new NotImplementedException()
-                    };
-                });
-
-                container.Register((sp, ctx) => new ViewFor<ModalView, ModalViewModel>() { Class = "center" });
-                container.Register((sp, ctx) => new ViewFor<EssentialsView, EssentialsViewModel>() { Class = "center" });
-                container.Register(typeof(FormViewModel).Name, (sp, parameters) =>
-                {
-                    if (parameters.FirstOrDefault() is NavigableContext context)
-                    {
-                        if (context.FactoryParameters.OfType<string>().Any(p => p == FormViewModel.KEY))
-                        {
-                            return new ViewFor<FormPage1, FormViewModel>();
-                        }
-                    }
-
-                    return new ViewFor<FormView, FormViewModel>();
-                });
-
-                container.Register((sp, ctx) => new ViewFor<FormPage2, FormPage2ViewModel>() { Class = "center" });
-                container.Register(typeof(FormPage3ViewModel).Name, (sp, parameters) =>
-                {
-                    if (parameters.FirstOrDefault() is NavigableContext context)
-                    {
-                        return new ViewFor<FormPage3, FormPage3ViewModel>(sp, context, new Dictionary<string, object>()
-                    {
-                        { nameof(Person), context.ViewParameters[0] }
-                    })
-                        {
-                            Class = "center"
-                        };
-                    }
-
-                    throw new InvalidOperationException();
-                });
-            }, 
+            5,            
             extras,
             initialize);
-
-        
     }
 }

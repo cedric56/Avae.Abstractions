@@ -1,7 +1,8 @@
-﻿using Avae.Services;
+﻿using Avae.Razor.Components;
+using Avae.Services;
 using System.Threading.Tasks;
 
-namespace Avae.Abstractions;
+namespace Avae.Razor;
 
 internal class TaskDialogService : ITaskDialogService
 {

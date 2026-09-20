@@ -1,6 +1,4 @@
-﻿using Avae.ViewModels;
-
-namespace Avae.Services;
+﻿namespace Avae.Services;
 
 /// <summary>
 /// Displays common, platform-agnostic dialog prompts (errors, confirmations,
@@ -74,26 +72,4 @@ public interface IDialogService
     /// for the authoritative mapping before relying on specific values here.
     /// </returns>
     Task<int> ShowYesNoAbortAsync(string message, string title = "Title");
-
-    /// <summary>
-    /// Shows <typeparamref name="TViewModel"/> as a modal dialog and awaits
-    /// its result.
-    /// </summary>
-    /// <typeparam name="TViewModel">
-    /// The ViewModel type to host in the dialog. Must implement
-    /// <see cref="ICloseableViewModel{TResult}"/> so the dialog knows how
-    /// to close itself and produce a result.
-    /// </typeparam>
-    /// <typeparam name="TResult">The type of value the ViewModel closes with.</typeparam>
-    /// <param name="context">
-    /// Optional navigation context passed through to the ViewModel/view
-    /// resolution, e.g. for parameterizing which instance/data the dialog
-    /// should operate on. If <see langword="null"/>, a default context is used.
-    /// </param>
-    /// <returns>
-    /// The result the ViewModel closed with, or <see langword="null"/> if
-    /// the dialog was dismissed without producing a result (e.g. cancelled).
-    /// </returns>
-    Task<TResult?> ShowModalAsync<TViewModel, TResult>(NavigableContext? context = null)
-        where TViewModel : class, ICloseableViewModel<TResult>;
 }

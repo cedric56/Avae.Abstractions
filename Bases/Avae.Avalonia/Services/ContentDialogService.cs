@@ -170,12 +170,4 @@ public class ContentDialogService(IServiceProvider serviceProvider) : IContentDi
             _ => 2
         };
     }
-
-    Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigableContext? context) where TResult : default
-    {
-        var viewModel = serviceProvider.GetViewModel<TViewModel>(context);
-        var view = serviceProvider.GetModalFor<TViewModel, TResult>(context ?? new NavigableContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
-        view.Context = viewModel;
-        return view.ShowModalAsync();
-    }
 }

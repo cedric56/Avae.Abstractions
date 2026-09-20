@@ -1,10 +1,8 @@
 ﻿using Avae.Services;
-using Avae.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
-using Microsoft.Extensions.DependencyInjection;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
@@ -118,13 +116,5 @@ public class DialogService(IServiceProvider serviceProvider, string iconUrl) : I
     public Task<int> ShowYesNoAbortAsync(string message, string title = "Title")
     {
         return ShowMessage(message, title, "YesNoAbort");
-    }
-
-    Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigableContext? context) where TResult : default
-    {
-        var viewModel = serviceProvider.GetViewModel<TViewModel>(context);
-        var view = serviceProvider.GetModalFor<TViewModel, TResult>(context ?? new NavigableContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
-        view.Context = viewModel;
-        return view.ShowModalAsync();
     }
 }

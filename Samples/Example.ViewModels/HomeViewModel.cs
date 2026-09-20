@@ -31,7 +31,7 @@ public partial class HomeViewModel(
         string? result = string.Empty;
         try
         {
-            result = await dialogService.ShowModalAsync<ModalViewModel, string?>();
+            result = await provider.ShowModalAsync<ModalViewModel, string?>();
         }
         catch (Exception ex)
         {

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
-using System;
+using System.Diagnostics.CodeAnalysis;
 
-namespace Avae.Abstractions;
+namespace Avae.Razor;
 
 public static class Extensions
 {
@@ -15,11 +15,35 @@ public static class Extensions
         public IServiceProvider Provider { get => null!; set => initialize(value); }
     }
 
-    public static void UseAvaeContainer(this IServiceCollection services,
+    public static void RegisterViewFor<
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TComponent,
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TViewModel>(
+    this IServiceCollection services,
+    Func<IServiceProvider, ViewFor<TComponent, TViewModel>> func,
+    ServiceLifetime viewModelLifetime = ServiceLifetime.Transient,
+    ServiceLifetime viewLifetime = ServiceLifetime.Transient,
+    string? key = null)
+    where TComponent : class where TViewModel : class
+    => services.RegisterWithLifetime<ViewFor<TComponent, TViewModel>, TViewModel>(
+        func, key: key);
+
+    public static void RegisterViewFor<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TComponent,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TViewModel,
+        TArg1>(
+        this IServiceCollection services,
+        Func<IServiceProvider, TArg1, ViewFor<TComponent, TViewModel>> func,
+        ServiceLifetime viewModelLifetime = ServiceLifetime.Transient,
+        ServiceLifetime viewLifetime = ServiceLifetime.Transient,
+        string? key = null)
+        where TComponent : class where TViewModel : class
+        => services.RegisterWithLifetime<ViewFor<TComponent, TViewModel>, TViewModel, TArg1>(
+            func, key: key);
+
+    public static void UseAvae(this IServiceCollection services,
         ViewFor navMenu,
         NotificationPosition position = NotificationPosition.BottomLeft,
         int maxDispayments = 5,
-        Action<IIocContainer>? configure = null,
         RenderFragment? extras = null,
         Action<IServiceProvider>? initialize = null)
     {
@@ -44,13 +68,6 @@ public static class Extensions
             };
         });
         services.AddSingleton<ICircuitProvider>(circuitProvider);
-        services.AddSingleton<IIocContainer>(sp =>
-        {
-            var container = new IocContainer(sp);
-            configure?.Invoke(container);
-            return container;
-        });
-        services.AddSingleton<IIocConfiguration>(sp => (IocContainer)sp.GetRequiredService<IIocContainer>());
         services.AddSingleton<RenderFragment>(_ => extras ?? new RenderFragment(_ => { }));
         services.AddTransient<Router>();
         services.AddSingleton<Avae.Services.IDialogService, DialogService>();

@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avae.Abstractions" />
+    <!--<PackageReference Include="Avae.Abstractions" />-->
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
   </ItemGroup>
 
@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Bases\Avae.Razor\Avae.Razor.csproj" />
     <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
     <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />

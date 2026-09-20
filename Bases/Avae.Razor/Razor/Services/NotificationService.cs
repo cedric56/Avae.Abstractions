@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using System;
 using System.Threading.Tasks;
 
-namespace Avae.Abstractions;
+namespace Avae.Razor;
 
 internal class NotificationService : INotificationService
 {

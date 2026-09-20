@@ -76,10 +76,6 @@ public partial class FormViewModel(IDialogService dialogService, Router router, 
             new NavigableView<FormViewModel>(this, "Page One", "fa-solid fa-gear")
             {
                     Context = NavigableContext.Create().WithKey(KEY),
-                    //Context = new NavigableContext
-                    //{
-                    //    FactoryParameters = [KEY]
-                    //},
                     Launched = async (viewModel) =>
                     {
                     await Person.LoadContactsAsync();

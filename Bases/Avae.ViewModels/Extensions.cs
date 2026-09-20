@@ -5,6 +5,28 @@ namespace Avae.ViewModels;
 
 public static class Extensions
 {
+    public static Task<TResult?> ShowModalAsync<TViewModel, TResult>(
+        this IServiceProvider provider,
+        NavigableContext? context = null) where TViewModel : ICloseableViewModel<TResult>
+    {
+        var viewModel = provider.GetViewModel<TViewModel>(context);
+        var view = provider.GetModalFor<TViewModel, TResult>(context ?? new NavigableContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
+        view.Context = viewModel;
+        return view.ShowModalAsync();
+    }
+
+    public static void RegisterWithLifetime<
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TView,
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TViewModel>(
+    this IServiceCollection services,
+    Func<IServiceProvider, TView> func,
+    ServiceLifetime viewModelLifetime = ServiceLifetime.Transient,
+    ServiceLifetime viewLifetime = ServiceLifetime.Transient,
+    string? key = null)
+    where TView : class where TViewModel : class
+    => services.RegisterPageCore<TView, TViewModel>(
+        key, (sp, args) => func(sp), viewModelLifetime, viewLifetime);
+
     private static void RegisterFactory<T>(
         this IServiceCollection services,
         object key,

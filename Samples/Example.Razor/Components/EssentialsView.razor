@@ -1,6 +1,8 @@
 ﻿@page "/essentials"
+@using Avae.ViewModels
+@using Example.ViewModels
 @using MudBlazor
-@inject Example.ViewModels.EssentialsViewModel viewModel
+@inject IServiceProvider provider
 
 <MudExpansionPanels MultiExpansion="true">
     <MudExpansionPanel Text="Dialogs">
@@ -62,4 +64,5 @@
     </MudExpansionPanel>
 </MudExpansionPanels>
 @code {
+    EssentialsViewModel viewModel => provider.GetViewModel<EssentialsViewModel>();
 }

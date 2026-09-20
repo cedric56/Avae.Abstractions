@@ -4,9 +4,9 @@ using System;
 using System.Threading.Tasks;
 using IDialogService = Avae.Services.IDialogService;
 
-namespace Avae.Abstractions;
+namespace Avae.Razor;
 
-internal class DialogService(IServiceProvider provider, IIocConfiguration configuration) : IDialogService
+internal class DialogService(IServiceProvider provider) : IDialogService
 {
     public static MudBlazor.IDialogService MudDialogService { get; set; } = default!;    
 
@@ -86,7 +86,7 @@ internal class DialogService(IServiceProvider provider, IIocConfiguration config
     {
         var tcs = new TaskCompletionSource<TResult?>();
         var viewModel = provider.GetViewModel<TViewModel>(context);
-        var contextFor = configuration.GetContextFor(typeof(TViewModel).Name, context ?? new NavigableContext());
+        var contextFor = provider.GetContextFor(typeof(TViewModel).Name, context ?? new NavigableContext());
         if (contextFor is ViewFor view)
         {
             var dialog = await MudDialogService.ShowAsync(view.Type, viewModel.Title, new MudBlazor.DialogParameters()

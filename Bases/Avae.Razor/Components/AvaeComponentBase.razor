@@ -1,4 +1,4 @@
-﻿@using Avae.Abstractions
+﻿@using Avae.Razor
 @using MudBlazor
 @inject ISnackbar Snackbar
 @inject MudBlazor.IDialogService dialogService
@@ -10,6 +10,6 @@
         TaskDialogService.MudDialogService = dialogService;
         ContentDialogService.MudDialogService = dialogService;
         NotificationService.SnackbarService = Snackbar;
-        Avae.Abstractions.DialogService.MudDialogService = dialogService;
+        Avae.Razor.DialogService.MudDialogService = dialogService;
     }
 }

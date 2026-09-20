@@ -9,8 +9,4 @@
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Avae.ViewModels" />
-  </ItemGroup>
-
 </Project>

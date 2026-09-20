@@ -55,11 +55,11 @@ public partial class App(IServiceProvider provider) : Application
                services.Register<HomeView, HomeViewModel>();
                services.Register<MenuView, MenuViewModel>();
                services.Register<EssentialsView, EssentialsViewModel>();
-               services.RegisterWithLifetime<FormView, FormViewModel>(ServiceLifetime.Transient);
-               services.RegisterWithLifetime<FormPage1View, FormViewModel>(ServiceLifetime.Transient, key: FormViewModel.KEY);
-               services.RegisterWithLifetime<FormPage2View, FormPage2ViewModel>(ServiceLifetime.Transient);
-               services.RegisterWithLifetime<FormPage3View, FormPage3ViewModel, Person>((sp, person) => new FormPage3View(person), ServiceLifetime.Transient);
-               services.RegisterWithLifetime<ModalWindow, ModalViewModel>(ServiceLifetime.Transient);
+               services.RegisterWithLifetime<FormView, FormViewModel>();
+               services.RegisterWithLifetime<FormPage1View, FormViewModel>(key: FormViewModel.KEY);
+               services.RegisterWithLifetime<FormPage2View, FormPage2ViewModel>();
+               services.RegisterWithLifetime<FormPage3View, FormPage3ViewModel, Person>((sp, person) => new FormPage3View(person));
+               services.RegisterWithLifetime<ModalWindow, ModalViewModel>();
                configureServices?.Invoke(services);
            },
            afterBuild: async provider =>

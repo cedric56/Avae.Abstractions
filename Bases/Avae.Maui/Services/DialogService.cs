@@ -7,12 +7,12 @@ internal class DialogService(IServiceProvider provider) : IDialogService
 {
 #if WINDOWS
 
-    class ContentDialogEx : Microsoft.UI.Xaml.Controls.ContentDialog
+    internal class ContentDialogEx : Microsoft.UI.Xaml.Controls.ContentDialog
     {
         public bool IsClosed { get; set; }
     }
 
-    public Microsoft.UI.Xaml.Controls.ContentDialog? GetPrevious()
+    public static Microsoft.UI.Xaml.Controls.ContentDialog? GetPrevious()
     {
         var current = Current ?? throw new InvalidNavigationException($"{nameof(Current)} can not be null");
         var xamlRoot = current.Handler?.PlatformView is Microsoft.UI.Xaml.UIElement page
@@ -30,7 +30,7 @@ internal class DialogService(IServiceProvider provider) : IDialogService
     /// Hides any currently-open ContentDialog, runs <paramref name="action"/>, then restores
     /// the previous dialog afterward (unless it was itself explicitly closed in the meantime).
     /// </summary>
-    private async Task<TResult> WithPreviousSuspendedAsync<TResult>(Func<Task<TResult>> action)
+    internal static async Task<TResult> WithPreviousSuspendedAsync<TResult>(Func<Task<TResult>> action)
     {
         var previous = GetPrevious();
         if (previous != null)
@@ -60,15 +60,15 @@ internal class DialogService(IServiceProvider provider) : IDialogService
     }
 #elif ANDROID
 
-    class AlertDialogManager(Android.App.AlertDialog? alertDialog)
+    internal class AlertDialogManager(Android.App.AlertDialog? alertDialog)
     {
         public Android.App.AlertDialog? Dialog { get; } = alertDialog;
         public bool IsClosed { get; set; }
     }
 
-    AlertDialogManager? manager;
+    internal static AlertDialogManager? manager;
 
-    private async Task<TResult> WithPreviousSuspendedAsync<TResult>(Func<Task<TResult>> action)
+    internal static async Task<TResult> WithPreviousSuspendedAsync<TResult>(Func<Task<TResult>> action)
     {
         manager?.Dialog?.DismissEvent += Dismissed;
 
@@ -100,7 +100,7 @@ internal class DialogService(IServiceProvider provider) : IDialogService
     /// Gets the currently active MAUI page: the page of the activated window if one exists,
     /// otherwise the first available window's page, otherwise <see cref="Shell.Current"/>.
     /// </summary>
-    public Page Current => Application.Current?.Windows.FirstOrDefault(w => w.IsActivated)?.Page ?? Application.Current?.Windows.FirstOrDefault()?.Page ?? Shell.Current;
+    public static Page Current => Application.Current?.Windows.FirstOrDefault(w => w.IsActivated)?.Page ?? Application.Current?.Windows.FirstOrDefault()?.Page ?? Shell.Current;
 
     /// <summary>
     /// Displays an alert showing the specified exception's message.
@@ -172,172 +172,7 @@ internal class DialogService(IServiceProvider provider) : IDialogService
     /// <returns>0 if "Yes" was selected, 1 if "No" was selected, or 2 if "Abort" was selected.</returns>
     public Task<int> ShowYesNoAbortAsync(string message, string title = "Title") =>
         DisplayThreeButtons(title, message, "Yes", "No", "Abort", 0, 1, 2);
-
-    /// <summary>
-    /// Resolves the view model of type <typeparamref name="TViewModel"/>, wraps its associated modal
-    /// view in a popup page, and pushes it, resolving the returned task when the view model requests a close.
-    /// </summary>
-    /// <typeparam name="TViewModel">The closeable view model type to show.</typeparam>
-    /// <typeparam name="TResult">The result type produced when the modal is closed.</typeparam>
-    /// <param name="context">Optional navigation context; an empty context is used if not supplied.</param>
-    /// <returns>The result value supplied when the view model requested a close.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if no modal view is registered for <typeparamref name="TViewModel"/>.</exception>
-    async Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigableContext? context)
-        where TResult : default
-    {
-
-        var viewModel = provider.GetViewModel<TViewModel>(context);
-        var view = provider.GetModalFor<TViewModel, TResult>(context ?? new NavigableContext()) ?? throw new InvalidOperationException($"Unable to create view for {typeof(TViewModel).Name}.  Ensure that it is registered in the container.");
-        view.Context = viewModel;
-
-        var taskCompletionSource = new TaskCompletionSource<TResult?>();
-#if ANDROID
-        viewModel.CloseRequested += CloseRequested;
-
-        var alertBuilder = new Android.App.AlertDialog.Builder(Platform.CurrentActivity);
-
-        alertBuilder.SetTitle(viewModel.Title);
-        alertBuilder.SetView(Microsoft.Maui.Platform.ElementExtensions.ToPlatform((View)view, Current?.Handler?.MauiContext ?? new MauiContext(provider)));
-
-        if (viewModel.Commands.Count > 0)
-            alertBuilder.SetPositiveButton(viewModel.Commands[0].Name, (senderAlert, args) =>
-            {
-                if (viewModel.Commands[0].Command.CanExecute(null))
-                    viewModel.Commands[0].Command.Execute(null);
-            });
-        if (viewModel.Commands.Count > 1)
-            alertBuilder.SetNegativeButton(viewModel.Commands[1].Name, (senderAlert, args) =>
-            {
-                if (viewModel.Commands[1].Command.CanExecute(null))
-                    viewModel.Commands[1].Command.Execute(null);
-            });
-        if (viewModel.Commands.Count > 2)
-            alertBuilder.SetNeutralButton(viewModel.Commands[2].Name, (senderAlery, args) =>
-            {
-                if (viewModel.Commands[2].Command.CanExecute(null))
-                    viewModel.Commands[2].Command.Execute(null);
-            });
-
-        var dialog = alertBuilder.Create();
-        manager = new AlertDialogManager(dialog);
-        dialog?.Show();
-
-        return await taskCompletionSource.Task;
-
-        void CloseRequested(object? sender, TResult? result)
-        {
-            viewModel.CloseRequested -= CloseRequested;
-            manager?.IsClosed = true;
-            manager = null;
-            taskCompletionSource.SetResult(result);
-        }
-#elif MACCATALYST || IOS
-        var vc = new UIKit.UIViewController { ModalPresentationStyle = UIKit.UIModalPresentationStyle.FormSheet };
-        vc.PreferredContentSize = new CoreGraphics.CGSize(320, 360);
-        viewModel.CloseRequested += CloseRequested;
-        var stack = new UIKit.UIStackView { Axis = UIKit.UILayoutConstraintAxis.Vertical, Spacing = 12 };
-        stack.TranslatesAutoresizingMaskIntoConstraints = false;
-
-        if (!string.IsNullOrEmpty(viewModel.Title))
-        {
-            var label = new UIKit.UILabel
-            {
-                Text = viewModel.Title
-            };
-            if (UIKit.UIFont.BoldSystemFontOfSize(17) is { } font)
-            {
-                label.Font = font;
-            }
-            else if (UIKit.UIFont.SystemFontOfSize(17) is { } font2)
-            {
-                label.Font = font2;
-            }
-            stack.AddArrangedSubview(label);
-        }
-        //contentView.TranslatesAutoresizingMaskIntoConstraints = false;
-        stack.AddArrangedSubview(Microsoft.Maui.Platform.ElementExtensions.ToPlatform((View)view, Current?.Handler?.MauiContext ?? new MauiContext(provider)));
-
-        var buttons = new UIKit.UIStackView
-        {
-            Axis = UIKit.UILayoutConstraintAxis.Horizontal,
-            Spacing = 8,
-            Distribution = UIKit.UIStackViewDistribution.FillEqually
-        };
-
-        void AddButton(NamedCommand? command)
-        {
-            if (string.IsNullOrEmpty(command?.Name)) return;
-            var button = UIKit.UIButton.FromType(UIKit.UIButtonType.System);
-            button.SetTitle(command.Name, UIKit.UIControlState.Normal);
-            button.TouchUpInside += (_, _) =>
-            {
-                if (command.Command.CanExecute(null))
-                    command.Command.Execute(null);
-            };
-            buttons.AddArrangedSubview(button);
-        }
-        AddButton(viewModel.Commands.ElementAtOrDefault(0));
-        AddButton(viewModel.Commands.ElementAtOrDefault(1));
-        AddButton(viewModel.Commands.ElementAtOrDefault(2));
-        stack.AddArrangedSubview(buttons);
-
-        vc.View!.AddSubview(stack);
-        UIKit.NSLayoutConstraint.ActivateConstraints(new[]
-        {
-                stack.LeadingAnchor.ConstraintEqualTo(vc.View.LeadingAnchor, 16),
-                stack.TrailingAnchor.ConstraintEqualTo(vc.View.TrailingAnchor, -16),
-                stack.TopAnchor.ConstraintEqualTo(vc.View.TopAnchor, 16),
-                stack.BottomAnchor.ConstraintEqualTo(vc.View.BottomAnchor, -16),
-            });
-        return await taskCompletionSource.Task;
-
-        void CloseRequested(object? sender, TResult? result)
-        {
-            viewModel.CloseRequested -= CloseRequested;
-            taskCompletionSource.SetResult(result);
-            vc.DismissViewController(true, null);
-        }
-#elif WINDOWS
-        return await WithPreviousSuspendedAsync(async () =>
-        {
-            var current = Current ?? throw new InvalidNavigationException($"{nameof(Current)} can not be null");
-            var xamlRoot = current.Handler?.PlatformView is Microsoft.UI.Xaml.UIElement page
-                ? page.XamlRoot
-                : null;
-
-            var dialog = new ContentDialogEx
-            {
-                RequestedTheme = Application.Current?.RequestedTheme == AppTheme.Dark
-                    ? Microsoft.UI.Xaml.ElementTheme.Dark
-                    : Application.Current?.RequestedTheme == AppTheme.Light
-                        ? Microsoft.UI.Xaml.ElementTheme.Light
-                        : Microsoft.UI.Xaml.ElementTheme.Default,
-                Title = viewModel.Title,
-                Content = Microsoft.Maui.Platform.ElementExtensions.ToPlatform((View)view, Current?.Handler?.MauiContext ?? new MauiContext(provider)),
-                PrimaryButtonCommand = viewModel.Commands.ElementAtOrDefault(0)?.Command,
-                PrimaryButtonText = viewModel.Commands.ElementAtOrDefault(0)?.Name,
-                SecondaryButtonCommand = viewModel.Commands.ElementAtOrDefault(1)?.Command,
-                SecondaryButtonText = viewModel.Commands.ElementAtOrDefault(1)?.Name,
-                CloseButtonCommand = viewModel.Commands.ElementAtOrDefault(2)?.Command,
-                CloseButtonText = viewModel.Commands.ElementAtOrDefault(2)?.Name,
-                XamlRoot = xamlRoot
-            };
-
-            viewModel.CloseRequested += CloseRequested;
-            await dialog.ShowAsync();
-            return await taskCompletionSource.Task;
-
-            void CloseRequested(object? sender, TResult? result)
-            {
-                viewModel.CloseRequested -= CloseRequested;
-                dialog.IsClosed = true;
-                taskCompletionSource.SetResult(result);
-            }
-        });        
-#endif
-        throw new NotImplementedException();
-    }
-
+    
     /// <summary>
     /// Displays a platform-native dialog with up to three buttons, using the appropriate native API
     /// for the current platform (Android alert dialog, WinUI content dialog, or an iOS/Mac Catalyst

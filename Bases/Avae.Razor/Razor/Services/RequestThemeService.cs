@@ -1,7 +1,7 @@
 ﻿using Avae.Services;
 using System;
 
-namespace Avae.Abstractions;
+namespace Avae.Razor;
 
 internal class RequestThemeService : IRequestedThemeService
 {

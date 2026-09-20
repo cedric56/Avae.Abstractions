@@ -29,6 +29,7 @@ public static class MauiProgram
                 AppName = "Maui example"
 #endif
             })
+            .UseAvae()
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
             .UseFontAwesomeSolidMauiIcons()
@@ -36,17 +37,16 @@ public static class MauiProgram
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-            })
-            .UseAvae();
+            });
         builder.Services.UseNotifications();
         builder.Services.RegisterEssentials();
         builder.Services.Register<MainPage, MainViewModel>();
         builder.Services.Register<HomeView ,HomeViewModel>();
         builder.Services.Register<MenuView, MenuViewModel>();
         builder.Services.Register<EssentialsView, EssentialsViewModel>();
-        builder.Services.RegisterWithLifetime<ModalView, ModalViewModel>(ServiceLifetime.Transient);
-        builder.Services.Register<FormView, FormViewModel>();
-        builder.Services.Register<DefaultView, FormViewModel>(key: FormViewModel.KEY);
+        builder.Services.RegisterWithLifetime<ModalView, ModalViewModel>();
+        builder.Services.RegisterWithLifetime<FormView, FormViewModel>();
+        builder.Services.RegisterWithLifetime<DefaultView, FormViewModel>(key: FormViewModel.KEY);
         builder.Services.UseDBSqlLayer<SqliteConnection>();
 #if DEBUG
         builder.Logging.AddDebug();

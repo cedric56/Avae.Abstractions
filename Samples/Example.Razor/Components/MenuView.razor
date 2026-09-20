@@ -1,12 +1,13 @@
 ﻿@using System.ComponentModel
-@using Avae.Abstractions
 @using Avae.DAL
+@using Avae.Razor
 @using Example.Models
+@using Avae.ViewModels
 @using Example.ViewModels
 @using MudBlazor
-@inherits AvaeComponentBase
+@inherits Avae.Razor.Components.AvaeComponentBase
 @page "/menu"
-@inject MenuViewModel ViewModel
+@inject IServiceProvider provider
 @if (CurrentView != null)
 {
     <DynamicComponent Type="@CurrentView.Type" Parameters="@CurrentView.Parameters"/>
@@ -28,6 +29,8 @@ else
 }
 
 @code {
+
+    MenuViewModel ViewModel => provider.GetViewModel<MenuViewModel>();
     
     private bool IsEnabled => ViewModel.SelectedPerson == null;
 

@@ -1,11 +1,8 @@
-using Avae.Abstractions;
 using Avae.DAL;
 using Avae.Essentials;
 using Avae.Notifications;
-using Avalonia.Labs.Notifications;
 using Example.BlazorApp.Components;
 using Example.Razor;
-using MagicOnion;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(sp => new HttpClient
@@ -41,6 +38,7 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddAdditionalAssemblies(
-        typeof(Example.Razor.Components.MainLayout).Assembly
+        typeof(Avae.Razor.Components.MainLayout).Assembly,
+        typeof(Example.Razor.Components.Home).Assembly
     );
 app.Run();
