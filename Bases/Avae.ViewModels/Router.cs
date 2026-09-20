@@ -80,12 +80,14 @@ public partial class Router(IServiceProvider provider)
     /// <typeparam name="TBaseType">The base type of the view model.</typeparam>
     /// <param name="viewModelType">The view model type.</param>
     /// <returns>The created view model cast to the <typeparamref name="TBaseType"/>.</returns>        
-    public IViewFor GoTo(Type viewModelType, out object viewModel, NavigableContext? context = null)
+    public IViewFor GoToType(Type viewModelType, out object viewModel, NavigableContext? context = null, string? key = null)
     {
         viewModel = provider.GetViewModel(viewModelType, context);
         AddHistory(viewModel);
         CurrentViewModelChanged?.Invoke(viewModel);
-        return GetViewFor(viewModel, context);
+        var viewFor = provider.GetContextFor(key ?? viewModelType.Name, context);
+        viewFor?.Context = viewModel;
+        return viewFor ?? throw new NotImplementedException($"Unable to find view for {key}");
     }
 
     /// <summary>
@@ -94,9 +96,9 @@ public partial class Router(IServiceProvider provider)
     /// <param name="viewModelType">The view model type to navigate to.</param>
     /// <param name="context">Optional navigation context supplying parameters for the view model, view, and factory.</param>
     /// <returns>The view resolved for the created view model.</returns>
-    public IViewFor GoTo(Type viewModelType, NavigableContext? context = null)
+    public IViewFor GoToType(Type viewModelType, NavigableContext? context = null, string? key = null)
     {
-        return GoTo(viewModelType, out var _, context);
+        return GoToType(viewModelType, out var _, context, key);
     }
 
     /// <summary>
@@ -106,14 +108,16 @@ public partial class Router(IServiceProvider provider)
     /// <param name="viewModel">The existing view model instance to navigate to.</param>
     /// <param name="context">Optional navigation context supplying parameters for the view.</param>
     /// <returns>The view resolved for <paramref name="viewModel"/>.</returns>
-    public IViewFor GoTo<TViewModel>(TViewModel viewModel, NavigableContext? context = null)// where TViewModel : IViewModelBase
+    public IViewFor GoTo<TViewModel>(TViewModel viewModel, NavigableContext? context = null)// where TViewModel : class, new()
     {
         if (viewModel == null)
             return null!;
 
         AddHistory(viewModel);
         CurrentViewModelChanged?.Invoke(viewModel);
-        return GetViewFor(viewModel, context);
+        var viewFor = provider.GetContextFor(typeof(TViewModel).Name, context);
+        viewFor?.Context = viewModel;
+        return viewFor ?? throw new NotImplementedException($"Unable to find view for {typeof(TViewModel).Name}");
     }
 
     /// <summary>
@@ -121,12 +125,14 @@ public partial class Router(IServiceProvider provider)
     /// </summary>
     /// <typeparam name="TViewModel">The type of the view model.</typeparam>
     /// <returns>The created view model.</returns>
-    public IViewFor GoTo<TViewModel>(out TViewModel viewModel, NavigableContext? context = null)// where TViewModel : class, IViewModelBase
+    public IViewFor GoTo<TViewModel>(out TViewModel viewModel, NavigableContext? context = null)// where TViewModel : class, new()
     {
         viewModel = provider.GetViewModel<TViewModel>(context)!;
         AddHistory(viewModel);
         CurrentViewModelChanged?.Invoke(viewModel);
-        return GetViewFor(viewModel, context);
+        var viewFor = provider.GetContextFor(typeof(TViewModel).Name, context);
+        viewFor?.Context = viewModel;
+        return viewFor ?? throw new NotImplementedException($"Unable to find view for {typeof(TViewModel).Name}");
     }
 
     /// <summary>
@@ -153,21 +159,5 @@ public partial class Router(IServiceProvider provider)
         }
 
         _currentIndex = _history.Count - 1;
-    }
-
-    /// <summary>
-    /// Resolves the view associated with the specified view model via the registered <see cref="IIocConfiguration"/>,
-    /// and assigns the view model as the view's context.
-    /// </summary>
-    /// <param name="viewModel">The view model to resolve a view for.</param>
-    /// <param name="context">Optional navigation context; an empty context is used if not supplied.</param>
-    /// <returns>The resolved view, with <paramref name="viewModel"/> assigned as its context.</returns>
-    /// <exception cref="NotImplementedException">Thrown if no view is registered for the view model's type.</exception>
-    private IViewFor GetViewFor(object viewModel, NavigableContext? context = null)
-    {
-        var name = viewModel.GetType().Name;        
-        var viewFor = provider.GetContextFor(name, context ?? new NavigableContext());
-        viewFor?.Context = viewModel;
-        return viewFor ?? throw new NotImplementedException($"Unable to find view for {name}");
     }
 }

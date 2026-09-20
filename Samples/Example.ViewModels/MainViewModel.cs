@@ -1,11 +1,14 @@
 ﻿using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Example.Models;
 using System.Collections.ObjectModel;
 
 namespace Example.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
+    private readonly Dictionary<NavigableView, IViewFor> dico = [];
+
     [ObservableProperty]
     private IViewFor? currentView;
 
@@ -17,12 +20,20 @@ public partial class MainViewModel : ObservableObject
         new NavigableView<HomeViewModel>("Home", "fa-solid fa-house"),
         new NavigableView<MenuViewModel>("Menu", "fa-solid fa-gear"),
         new NavigableView<EssentialsViewModel>("Essentials", "fa-solid fa-gear")
-    ];
+    ];   
 
     partial void OnSelectedNavigableChanged(NavigableView? value)
     {
         if (value is null) return;
-        CurrentView = router.GoTo(value.ViewModelType, out var wm);
+        if (dico.TryGetValue(value, out var view))
+        {
+            CurrentView = view;
+        }
+        else
+        {
+            CurrentView = router.GoToType(value.ViewModelType);
+            dico.Add(value, CurrentView);
+        }
     }
 
     Router router;
@@ -30,6 +41,7 @@ public partial class MainViewModel : ObservableObject
     public MainViewModel(Router router)
     {
         this.router = router;
-        CurrentView = router.GoTo(Navigables[0].ViewModelType);
+
+        OnSelectedNavigableChanged(Navigables[0]);
     }
 }

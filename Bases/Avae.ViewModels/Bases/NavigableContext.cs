@@ -7,25 +7,20 @@
 public class NavigableContext
 {
     /// <summary>
-    /// Gets the combined set of all parameters, in order: <see cref="FactoryParameters"/>,
-    /// followed by <see cref="ViewParameters"/>, followed by <see cref="ViewModelParameters"/>.
+    /// Gets the combined set of all parameters, in order: <see cref="ViewParameters"/>, followed by <see cref="ViewModelParameters"/>.
     /// </summary>
     public object[] Parameters
     {
         get
         {
             var parameters = new List<object>();
-            parameters.AddRange(FactoryParameters);
             parameters.AddRange(ViewParameters);
             parameters.AddRange(ViewModelParameters);
             return [.. parameters];
         }
     }
 
-    /// <summary>
-    /// Gets or sets the parameters passed to the view factory.
-    /// </summary>
-    public object[] FactoryParameters { get; set; } = [];
+    public string? Key { get; set; }
 
     /// <summary>
     /// Gets or sets the parameters passed to the view.
@@ -65,14 +60,9 @@ public class NavigableContext
     /// <returns>A new <see cref="NavigableContext"/> instance.</returns>
     public static NavigableContext Create() => new();
 
-    /// <summary>
-    /// Sets <see cref="FactoryParameters"/> and returns this instance, for fluent chaining.
-    /// </summary>
-    /// <param name="parameters">The parameters to pass to the view factory.</param>
-    /// <returns>This <see cref="NavigableContext"/> instance.</returns>
-    public NavigableContext WithFactoryParameters(params object[] parameters)
+    public NavigableContext WithKey(string key)
     {
-        FactoryParameters = parameters;
+        Key = key;
         return this;
     }
 

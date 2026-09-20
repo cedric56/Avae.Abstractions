@@ -37,42 +37,14 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             })
-            .UseAvaeContainer()
-            //container =>
-            //{
-            //    //container.Register(HomeViewModel.TaskDialogKey, (sp, parameters) =>
-            //    //{
-            //    //    return parameters[0] switch
-            //    //    {
-            //    //        "Footer" => new Label() { Text = "This is a footer" },
-            //    //        "IconSource" => ImageSource.FromFile("dotnet_bot.png"),
-            //    //        "Content" => new Label() { Text = "Here is content", FontSize = 27 },
-            //    //        _ => throw new NotImplementedException()
-            //    //    };
-            //    //});
-            //    //container.Register<MainPage>();
-            //    //container.Register<HomeView>();
-            //    //container.Register<MenuView>();
-            //    //container.Register<>();
-            //    //container.Register<EssentialsView>();
-            //    ////container.Register<FormView>();
-            //    //container.Register<FormViewModel>((sp, context) =>
-            //    //{
-            //    //    if (context.FactoryParameters.OfType<string>().Any(p => p == FormViewModel.KEY))
-            //    //    {
-            //    //        return new DefaultView();
-            //    //    }
-            //    //    return new FormView();
-            //    //});
-            //})
-            ;
+            .UseAvae();
         builder.Services.UseNotifications();
         builder.Services.RegisterEssentials();
         builder.Services.Register<MainPage, MainViewModel>();
         builder.Services.Register<HomeView ,HomeViewModel>();
         builder.Services.Register<MenuView, MenuViewModel>();
         builder.Services.Register<EssentialsView, EssentialsViewModel>();
-        builder.Services.Register<ModalView, ModalViewModel>(ServiceLifetime.Transient);
+        builder.Services.RegisterWithLifetime<ModalView, ModalViewModel>(ServiceLifetime.Transient);
         builder.Services.Register<FormView, FormViewModel>();
         builder.Services.Register<DefaultView, FormViewModel>(key: FormViewModel.KEY);
         builder.Services.UseDBSqlLayer<SqliteConnection>();

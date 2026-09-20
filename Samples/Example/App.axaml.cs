@@ -35,8 +35,33 @@ public partial class App(IServiceProvider provider) : Application
           Icon,
           true,
            sp => new App(sp),
-           configureExternalServices: services => ConfigureServices(services, configureServices),
-           //configureContainer: container => ConfigureContainer(container),
+           configureExternalServices: services =>
+           {
+               IconResolver.Register(new ExampleIconResolver());
+
+               services.UseEssentials();
+               services.UseNotifications();
+               services.AddTransient<Router>();
+               services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, parameters) =>
+               {
+                   return parameters[0] switch
+                   {
+                       "Footer" => new TextBlock() { Text = "This is a footer" },
+                       "IconSource" => new FABitmapIconSource() { UriSource = new Uri(Icon) },
+                       "Content" => new TextBlock() { Text = "Here is content", FontSize = 27 },
+                       _ => throw new NotImplementedException()
+                   };
+               });
+               services.Register<HomeView, HomeViewModel>();
+               services.Register<MenuView, MenuViewModel>();
+               services.Register<EssentialsView, EssentialsViewModel>();
+               services.RegisterWithLifetime<FormView, FormViewModel>(ServiceLifetime.Transient);
+               services.RegisterWithLifetime<FormPage1View, FormViewModel>(ServiceLifetime.Transient, key: FormViewModel.KEY);
+               services.RegisterWithLifetime<FormPage2View, FormPage2ViewModel>(ServiceLifetime.Transient);
+               services.RegisterWithLifetime<FormPage3View, FormPage3ViewModel, Person>((sp, person) => new FormPage3View(person), ServiceLifetime.Transient);
+               services.RegisterWithLifetime<ModalWindow, ModalViewModel>(ServiceLifetime.Transient);
+               configureServices?.Invoke(services);
+           },
            afterBuild: async provider =>
            {
                DBBase.Initialize(provider.GetRequiredService<IDBLayer>());
@@ -62,34 +87,6 @@ public partial class App(IServiceProvider provider) : Application
                await unsuscribe.Invoke();
                onAppDispose?.Invoke();
            });
-    }
-
-    private static void ConfigureServices(IServiceCollection services, Action<IServiceCollection>? configureServices = null)
-    {
-        IconResolver.Register(new ExampleIconResolver());
-
-        services.UseEssentials();
-        services.UseNotifications();
-        services.AddTransient<Router>();
-        services.Register(HomeViewModel.TaskDialogKey, (sp, parameters) =>
-        {
-            return parameters[0] switch
-            {
-                "Footer" => new TextBlock() { Text = "This is a footer" },
-                "IconSource" => new FABitmapIconSource() { UriSource = new Uri(Icon) },
-                "Content" => new TextBlock() { Text = "Here is content", FontSize = 27 },
-                _ => throw new NotImplementedException()
-            };
-        });
-        services.Register<HomeView, HomeViewModel>();
-        services.Register<MenuView, MenuViewModel>();
-        services.Register<EssentialsView, EssentialsViewModel>();
-        services.Register<FormView, FormViewModel>(ServiceLifetime.Transient);
-        services.Register<FormPage1View, FormViewModel>(ServiceLifetime.Transient, key: FormViewModel.KEY);
-        services.Register<FormPage2View, FormPage2ViewModel>(ServiceLifetime.Transient);
-        services.Register<FormPage3View, FormPage3ViewModel, Person>((sp, person) => new FormPage3View(person), ServiceLifetime.Transient);
-        services.Register<ModalWindow, ModalViewModel>(ServiceLifetime.Transient);
-        configureServices?.Invoke(services);
     }
 
     public override void OnFrameworkInitializationCompleted()

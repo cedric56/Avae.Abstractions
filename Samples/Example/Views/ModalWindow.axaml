@@ -7,5 +7,8 @@
         x:Class="Example.ModalWindow"
         Width="200" Height="80"
         x:DataType="{x:Type vm:ModalViewModel}">
-    <TextBox Text="{Binding Message, Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>      
+  <StackPanel Orientation="Vertical">
+    <TextBox x:Name="tb" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+    <TextBox Text="{Binding Message, Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+  </StackPanel>
 </UserControl>

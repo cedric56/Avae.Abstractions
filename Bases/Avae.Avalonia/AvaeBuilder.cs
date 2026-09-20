@@ -28,20 +28,12 @@ public static class AvaeBuilder
        bool isFluent,
        Func<IServiceProvider, TApp> appFactory,
        Action<IServiceCollection>? configureExternalServices = null,
-       //Action<IIocContainer>? configureContainer = null,
        Action<IServiceProvider>? afterBuild = null,
        Action? onDispose = null) where TApp : Application
     {
         var services = new ServiceCollection();
         services.AddTransient<Router>();
         services.AddSingleton<IBrokerService, BrokerService>();
-        //services.AddSingleton<IIocContainer>(sp =>
-        //{
-        //    var container = new IocContainer(sp);
-        //    configureContainer?.Invoke(container);
-        //    return container;
-        //});
-        //services.AddSingleton<IIocConfiguration>(sp => (IocContainer)sp.GetRequiredService<IIocContainer>());
         services.AddTransient<INotificationService, NotificationService>();
         services.AddSingleton<IContentDialogService, ContentDialogService>();
         services.AddSingleton<ITaskDialogService, TaskDialogService>();
@@ -54,7 +46,6 @@ public static class AvaeBuilder
         });
         configureExternalServices?.Invoke(services);
         var provider = services.BuildServiceProvider();
-        //_ = provider.GetRequiredService<IIocContainer>();   // <- forces the factory, and configure, to run now
         afterBuild?.Invoke(provider);
         
         return AppBuilder

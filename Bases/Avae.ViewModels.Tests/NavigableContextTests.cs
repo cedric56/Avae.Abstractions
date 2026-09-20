@@ -8,7 +8,7 @@ public class NavigableContextTests
         var context = NavigableContext.Create();
 
         Assert.Empty(context.Parameters);
-        Assert.Empty(context.FactoryParameters);
+        Assert.Null(context.Key);
         Assert.Empty(context.ViewParameters);
         Assert.Empty(context.ViewModelParameters);
     }
@@ -17,7 +17,7 @@ public class NavigableContextTests
     public void Parameters_combines_factory_view_and_viewmodel_parameters_in_order()
     {
         var context = NavigableContext.Create()
-            .WithFactoryParameters("factory1")
+            .WithKey("factory1")
             .WithViewParameters("view1", "view2")
             .WithViewModelParameters(42);
 
@@ -29,7 +29,7 @@ public class NavigableContextTests
     {
         var context = new NavigableContext();
 
-        var afterFactory = context.WithFactoryParameters("a");
+        var afterFactory = context.WithKey("a");
         var afterView = afterFactory.WithViewParameters("b");
         var afterViewModel = afterView.WithViewModelParameters("c");
 
@@ -62,7 +62,7 @@ public class NavigableContextTests
     public void Get_reads_across_factory_view_and_viewmodel_parameters_by_combined_index()
     {
         var context = NavigableContext.Create()
-            .WithFactoryParameters("factory")
+            .WithKey("factory")
             .WithViewParameters("view")
             .WithViewModelParameters("viewmodel");
 

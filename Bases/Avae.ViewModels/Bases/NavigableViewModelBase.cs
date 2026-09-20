@@ -209,7 +209,7 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase
         }
         else
         {
-            viewFor = _router.GoTo(value.ViewModelType, out viewModel, value.Context);
+            viewFor = _router.GoToType(value.ViewModelType, out viewModel, value.Context);
         }
 
         return viewFor;
