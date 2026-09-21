@@ -58,7 +58,6 @@
     <PackageVersion Include="Microsoft.Maui.Controls" Version="11.0.0-rc.1.26451.6" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="10.0.100" />
     <!-- ESSENTIALS -->
-    <PackageVersion Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" />
     <PackageVersion Include="WindowsContracts.Net.Foundation.UniversalApiContract" Version="5.19041.10" PrivateAssets="compile" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.5.1" />
     <PackageVersion Include="Microsoft.Maui.Platforms.MacOS.Essentials" Version="0.1.0-preview.12.26368.2" />
