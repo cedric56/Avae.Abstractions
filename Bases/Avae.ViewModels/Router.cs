@@ -89,10 +89,10 @@ public partial class Router(IServiceProvider provider)
             return null;
 
         context ??= new NavigableContext();
-        view.Context = viewModel;
-        AddHistory(viewModel, view, context);
+        view.Context = viewModel;       
         var previous = _currentIndex >= 0 ? _history[_currentIndex] : default;        
-        await TransitionTo(previous, (viewModel, view, context));   
+        await TransitionTo(previous, (viewModel, view, context));
+        AddHistory(viewModel, view, context);
         CurrentViewModelChanged?.Invoke(viewModel);        
         return view;
     }
