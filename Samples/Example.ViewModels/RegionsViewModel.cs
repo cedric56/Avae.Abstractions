@@ -44,14 +44,14 @@ public partial class RegionsViewModel : ObservableObject, INavigable
         return Task.FromResult(true);
     }
 
-    public Task OnNavigatedTo(NavigableContext context)
-    {
-        return Task.CompletedTask;
-    }
-
-    public async Task OnNavigatedFrom(NavigableContext context)
+    public async Task OnNavigatedTo(NavigableContext context)
     {
         await OpenHomeAsync();
-        await OpenEssentialsAsync();
+        await OpenEssentialsAsync();        
+    }
+
+    public Task OnNavigatedFrom(NavigableContext context)
+    {
+        return Task.CompletedTask;
     }
 }

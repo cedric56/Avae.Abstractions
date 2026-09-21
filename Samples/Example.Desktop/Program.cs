@@ -22,8 +22,8 @@ class Program
         return App.CreateApp(
             services =>
             {
-                //services.UseDBSqlLayer<SqliteConnection>();
-                services.UseDBOnionLayer();
+                services.UseDBSqlLayer<SqliteConnection>();
+                //services.UseDBOnionLayer();
                 services.AddSingleton<ILogger>(LoggerFactory.Create(b => b.AddDebug()).CreateLogger<App>());
             })
             .WithAppNotifications(new AppNotificationOptions()
