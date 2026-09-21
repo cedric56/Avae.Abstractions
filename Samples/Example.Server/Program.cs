@@ -31,7 +31,7 @@ app.MapMagicOnionService().EnableGrpcWeb();
 app.MapHub<SignalRHub<Person>>("/PersonHub");
 
 DBBase.Initialize(app.Services.GetRequiredService<IDBLayer>());
-
+_ = app.Services.GetRequiredService<RecordHubRepository<Person>>();
 app.Run();
 
 void AddLoggers(ILoggingBuilder builder)

@@ -50,14 +50,14 @@ public static class Extensions
         services.RegisterViewFor((sp) => new ViewFor<FormPage1, FormViewModel>(), key: FormViewModel.KEY);
         services.RegisterViewFor((sp) => new ViewFor<FormView, FormViewModel>());
 
-        if (!OperatingSystem.IsBrowser())
-        {
-            services.UseDBSqlLayer<SqliteConnection>();
-        }
-        else
-        {
+        //if (!OperatingSystem.IsBrowser())
+        //{
+        //    services.UseDBSqlLayer<SqliteConnection>();
+        //}
+        //else
+        //{
             services.UseDBOnionLayer();
-        }
+        //}
 
         var navMenu = new ViewFor<NavMenu>();
         services.UseAvae(navMenu,
