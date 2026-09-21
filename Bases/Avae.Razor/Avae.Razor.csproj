@@ -9,11 +9,8 @@
   <ItemGroup>
     <PackageReference Update="Microsoft.AspNetCore.Components.Web" />
     <PackageReference Include="MudBlazor" />
+    <PackageReference Include="Avae.Services" />
+    <PackageReference Include="Avae.ViewModels" />
   </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Avae.Services\Avae.Services.csproj" />
-      <ProjectReference Include="..\Avae.ViewModels\Avae.ViewModels.csproj" />
-    </ItemGroup>
   
 </Project>

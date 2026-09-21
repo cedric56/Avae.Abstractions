@@ -2,6 +2,7 @@
 @using Avae.ViewModels
 @using MudBlazor
 @inherits AvaeComponentBase
+@implements IDisposable
 
 <div class="split">
     <MudOverlay Visible="@IsBusy" DarkBackground="true" Absolute="true" ZIndex="9999">
@@ -64,8 +65,13 @@
         }
     }
 
-    private async void OnViewChanged(object? sender, IViewFor view)
+    private async void OnViewChanged(object? sender, IViewFor? view)
     {
         await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ViewModel.CurrentViewChanged -= OnViewChanged;
     }
 }

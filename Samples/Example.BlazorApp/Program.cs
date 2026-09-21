@@ -1,6 +1,7 @@
 using Avae.DAL;
 using Avae.Essentials;
 using Avae.Notifications;
+using Avalonia.Labs.Notifications;
 using Example.BlazorApp.Components;
 using Example.Razor;
 
@@ -10,18 +11,20 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri(builder.Environment.WebRootPath)
 });
 builder.Services.UseBlazorEssentials();
-builder.Services.UseNotifications();
-//builder.Services.UseBlazorNotifications(
-//    [
-//        new NotificationChannel("actions", "Send Notification with Predefined Actions", NotificationPriority.High)
-//        {
-//            Actions =
-//            [
-//                new("Hello", "hello"),
-//                new("world", "world")
-//            ]
-//        }]
-//    );
+builder.Services.WithAppNotifications(new AppNotificationOptions()
+{
+    Channels = new[]
+    {
+        new NotificationChannel("actions", "Send Notification with Predefined Actions", NotificationPriority.High)
+        {
+            Actions =
+            [
+                new("Hello", "hello"),
+                new("world", "world")
+            ]
+        }
+    }
+});
 builder.Services.UseSharedLibrary(ServiceLifetime.Scoped, initialize: provider => CircuitServiceAccessor.Provider = provider);
 builder.Services
     .AddRazorComponents()

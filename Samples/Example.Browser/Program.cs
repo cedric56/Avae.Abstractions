@@ -7,15 +7,10 @@ using System.Threading.Tasks;
 
 internal sealed partial class Program
 {
-    private static Task Main(string[] args)
-    {
-            return BuildAvaloniaApp().StartBrowserAppAsync("out");
-    }
-    public static AppBuilder BuildAvaloniaApp()
-    {
-        return App.CreateApp(
-    services => services.UseDBOnionLayer())
-        .WithAppNotifications();
-    }
+    private static Task Main(string[] args) =>
+            BuildAvaloniaApp().StartBrowserAppAsync("out");
+    public static AppBuilder BuildAvaloniaApp() =>
+        App.CreateApp(services => services.UseDBOnionLayer())
+                  .WithAppNotifications();
 }
 

@@ -10,12 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="VideoCapture.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Avae.Notifications" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+    <PackageReference Include="Microsoft.Maui.Essentials" />
   </ItemGroup>
 
   <ItemGroup>

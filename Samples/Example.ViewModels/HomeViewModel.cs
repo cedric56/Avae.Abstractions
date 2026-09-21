@@ -104,7 +104,7 @@ public partial class HomeViewModel(
                 //notification.Expiration = TimeSpan.FromSeconds(1);
                 notification.SetActions([new SystemNotificationAction("caption", "reply"), new SystemNotificationAction("Test", "test"),]);
                 notification.ReplyActionTag = "reply";//must match action tag for an input
-                notification.Show();
+                await notification.Show();
             }
             void OnNotificationCompleted(object? sender, SystemNotificationEventArgs e)
             {
