@@ -167,7 +167,6 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDis
     /// <returns>The collection of available <see cref="NavigableView"/> items.</returns>
     protected abstract ObservableCollection<NavigableView> GetNavigables();
 
-    NavigableView? old = null;
     /// <summary>
     /// Handles a change to <see cref="SelectedNavigable"/> by resolving (or creating) the associated
     /// view/view-model pair, updating <see cref="CurrentView"/>, and recording navigation history.
