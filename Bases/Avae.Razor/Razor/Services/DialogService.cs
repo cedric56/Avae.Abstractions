@@ -80,29 +80,4 @@ internal class DialogService(IServiceProvider provider) : IDialogService
             _ => 2
         };
     }
-
-    async Task<TResult?> IDialogService.ShowModalAsync<TViewModel, TResult>(NavigableContext? context)
-        where TResult : default
-    {
-        var tcs = new TaskCompletionSource<TResult?>();
-        var viewModel = provider.GetViewModel<TViewModel>(context);
-        var contextFor = provider.GetContextFor(typeof(TViewModel).Name, context ?? new NavigableContext());
-        if (contextFor is ViewFor view)
-        {
-            var dialog = await MudDialogService.ShowAsync(view.Type, viewModel.Title, new MudBlazor.DialogParameters()
-        {
-            { "ViewModel", viewModel }
-        });
-            viewModel.CloseRequested += CloseRequestedHandler;
-            void CloseRequestedHandler(object? sender, TResult? e)
-            {
-                viewModel.CloseRequested -= CloseRequestedHandler;
-                tcs.SetResult(e);
-                MudDialogService.Close(dialog);
-            }
-            return await tcs.Task;
-        }
-
-        throw new InvalidOperationException("View must be ComponentView");
-    }
 }

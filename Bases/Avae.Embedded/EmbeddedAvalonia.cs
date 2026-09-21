@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using Application = Avalonia.Application;
 
-namespace Avae.Abstractions;
+namespace Avae.Embedded;
 
 [SupportedOSPlatform("browser")]
 class EmbeddedAvalonia : Application

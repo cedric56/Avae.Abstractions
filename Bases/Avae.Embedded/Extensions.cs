@@ -1,11 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Browser;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Runtime.Versioning;
-using System.Threading.Tasks;
 
-namespace Avae.Abstractions;
+namespace Avae.Embedded;
 
 public static class EmbeddedExtensions
 {
