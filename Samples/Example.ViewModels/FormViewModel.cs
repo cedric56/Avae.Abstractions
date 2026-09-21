@@ -81,7 +81,7 @@ public partial class FormViewModel(
             new NavigableView<FormViewModel>(this, "Page One", "fa-solid fa-gear")
             {
                     Context = NavigableContext.Create().WithKey(KEY),
-                    Launched = async (viewModel) =>
+                    FirstAppearance = async (viewModel) =>
                     {
                     await Person.LoadContactsAsync();
                     SelectedItems = [.. Person.Contacts.Select(c => c.Person)];

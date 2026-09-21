@@ -15,7 +15,7 @@ public class NavigableView(Type viewModelType, string displayName, string? path 
     /// <summary>
     /// Gets or sets a callback invoked when this page is launched, after its view model has been created.
     /// </summary>
-    public Func<object, Task>? Launched { get; set; }
+    public Func<object, Task>? FirstAppearance { get; set; }
 
     /// <summary>
     /// Gets the view model instance associated with this page, if one has been explicitly assigned.
@@ -71,12 +71,12 @@ public class NavigableView(Type viewModelType, string displayName, string? path 
     /// </summary>
     /// <param name="viewModel">The view model created for this page.</param>
     /// <returns>The task returned by <see cref="Launched"/>, or a completed task if no callback is set.</returns>
-    public virtual Task OnLaunched(object viewModel)
+    public virtual Task OnFirstAppearance(object viewModel)
     {
-        if (Launched == null)
+        if (FirstAppearance == null)
             return Task.CompletedTask;
 
-        return Launched(viewModel);
+        return FirstAppearance(viewModel);
     }
 }
 
@@ -90,7 +90,7 @@ public class NavigableView<T> : NavigableView //where T : IViewModelBase
     /// Gets or sets a callback invoked when this page is launched, after its view model has been created.
     /// Shadows <see cref="NavigableView.Launched"/> with a strongly typed parameter.
     /// </summary>
-    public new Func<T, Task>? Launched { get; set; }
+    public new Func<T, Task>? FirstAppearance { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NavigableView{T}"/> class with no pre-existing view model.
@@ -120,16 +120,16 @@ public class NavigableView<T> : NavigableView //where T : IViewModelBase
     }
 
     /// <summary>
-    /// Invokes the strongly typed <see cref="Launched"/> callback, if set, casting
+    /// Invokes the strongly typed <see cref="FirstAppearance"/> callback, if set, casting
     /// <paramref name="viewModel"/> to <typeparamref name="T"/>.
     /// </summary>
     /// <param name="viewModel">The view model created for this page.</param>
-    /// <returns>The task returned by <see cref="Launched"/>, or a completed task if no callback is set.</returns>
-    public override Task OnLaunched(object viewModel)
+    /// <returns>The task returned by <see cref="FirstAppearance"/>, or a completed task if no callback is set.</returns>
+    public override Task OnFirstAppearance(object viewModel)
     {
-        if (Launched == null)
+        if (FirstAppearance == null)
             return Task.CompletedTask;
 
-        return Launched((T)viewModel);
+        return FirstAppearance((T)viewModel);
     }
 }

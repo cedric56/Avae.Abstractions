@@ -275,7 +275,7 @@ public static class Extensions
 
         return view as IModalFor<TViewModel, TResult>
             ?? throw new InvalidOperationException(
-                $"The view associated with the view model {typeof(TViewModel).Name} is not a modal view.");
+                $"The view associated with the view model {typeof(TViewModel).Name} is not a {nameof(IModalFor<TViewModel, TResult>)}.");
     }
 
     public static void Update<X, Y>(this IList<Y> items, IEnumerable<X> selectedItems, Func<X, Y, bool> predicate, Func<X, Y> add)

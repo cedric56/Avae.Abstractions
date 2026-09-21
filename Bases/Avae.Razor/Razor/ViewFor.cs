@@ -63,3 +63,26 @@ public class ViewFor<TView, TViewModel> : ViewFor, IViewFor where TViewModel : c
         };
     }
 }
+
+public class ModalFor<TView, TViewModel, TResult> : 
+    ViewFor<TView, TViewModel>, IViewFor, IModalFor<TViewModel, TResult> where TViewModel : class, ICloseableViewModel<TResult>
+{
+    public ModalFor()
+    {
+
+    }
+
+    public ModalFor(IServiceProvider sp, NavigableContext? context = null, Dictionary<string, object>? parameters = null)
+    {
+        var viewModel = sp.GetViewModel<TViewModel>(context);
+        Parameters = new Dictionary<string, object>(parameters ?? [])
+        {
+            { "ViewModel", viewModel }
+        };
+    }
+
+    public Task<TResult?> ShowModalAsync()
+    {
+        return ModalService.ShowModalAsync<TViewModel, TResult>(this, (TViewModel)Context!, null);
+    }
+}

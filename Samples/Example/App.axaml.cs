@@ -52,6 +52,7 @@ public partial class App(IServiceProvider provider) : Application
                services.Register<HomeView, HomeViewModel>();
                services.Register<MenuView, MenuViewModel>();
                services.Register<EssentialsView, EssentialsViewModel>();
+               services.Register<RegionsView, RegionsViewModel>();
                services.RegisterWithLifetime<FormView, FormViewModel>();
                services.RegisterWithLifetime<FormPage1View, FormViewModel>(key: FormViewModel.KEY);
                services.RegisterWithLifetime<FormPage2View, FormPage2ViewModel>();

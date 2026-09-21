@@ -42,7 +42,7 @@ public class RouterViewModelBaseTests
         sut.GoBack();
 
         Assert.Same(vm1, sut.LastViewModelChanged);
-        Assert.Same(vm1, router.Current);
+        Assert.Same(vm1, router.CurrentViewModel);
         Assert.Equal(1, sut.RaiseCanExecutesChangedCallCount);
     }
 
@@ -72,7 +72,7 @@ public class RouterViewModelBaseTests
         sut.GoForward();
 
         Assert.Same(vm2, sut.LastViewModelChanged);
-        Assert.Same(vm2, router.Current);
+        Assert.Same(vm2, router.CurrentViewModel);
         Assert.Equal(1, sut.RaiseCanExecutesChangedCallCount);
     }
 

@@ -64,5 +64,6 @@
     </MudExpansionPanel>
 </MudExpansionPanels>
 @code {
-    EssentialsViewModel viewModel => provider.GetViewModel<EssentialsViewModel>();
+    EssentialsViewModel? _viewModel;
+    EssentialsViewModel viewModel => _viewModel??= provider.GetViewModel<EssentialsViewModel>();
 }

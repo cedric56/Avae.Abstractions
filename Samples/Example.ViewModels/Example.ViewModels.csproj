@@ -4,7 +4,7 @@
     <TargetFrameworks>net11.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <LangVersion>preview</LangVersion>
+    <!--<LangVersion>preview</LangVersion>-->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AvaeFeatures>;CommunityToolkit;</AvaeFeatures>
   </PropertyGroup>

@@ -6,7 +6,7 @@
 public partial class Router(IServiceProvider provider)
 {
     private int _currentIndex = -1;
-    private List<(object viewmodel, object view, NavigableContext context)> _history = [];
+    private List<(object viewmodel, IViewFor view, NavigableContext context)> _history = [];
     private const uint MaxHistorySize = 20;
 
     /// <summary>
@@ -22,7 +22,9 @@ public partial class Router(IServiceProvider provider)
     /// <summary>
     /// Gets the view model currently at the front of navigation history, or <see langword="null"/> if history is empty.
     /// </summary>
-    public object? Current => _currentIndex < 0 ? null : _history[_currentIndex].viewmodel;
+    public object? CurrentViewModel => _currentIndex < 0 ? null : _history[_currentIndex].viewmodel;
+
+    public IViewFor? CurrentView => _currentIndex < 0 ? null : _history[_currentIndex].view;
 
     /// <summary>
     /// Occurs whenever the current view model changes, whether via <see cref="Back"/>, <see cref="Forward"/>,
@@ -49,8 +51,8 @@ public partial class Router(IServiceProvider provider)
 
         _currentIndex--;
         await TransitionTo(leaving, _history[_currentIndex]);
-        CurrentViewModelChanged?.Invoke(Current!);
-        return Current;
+        CurrentViewModelChanged?.Invoke(CurrentViewModel!);
+        return CurrentViewModel;
     }
 
     public async Task<object?> ForwardAsync()
@@ -63,8 +65,8 @@ public partial class Router(IServiceProvider provider)
 
         _currentIndex++;
         await TransitionTo(leaving, _history[_currentIndex]);
-        CurrentViewModelChanged?.Invoke(Current!);
-        return Current;
+        CurrentViewModelChanged?.Invoke(CurrentViewModel!);
+        return CurrentViewModel;
     }
 
     private async Task TransitionTo((object viewmodel, object view, NavigableContext context) leaving, (object viewmodel, object view, NavigableContext context) entering)
@@ -83,7 +85,7 @@ public partial class Router(IServiceProvider provider)
 
     public async Task<IViewFor?> GoTo(IViewFor view, object viewModel, NavigableContext? context = null)
     {
-        if (Current is INavigable confirm && !await confirm.CanNavigateAsync())
+        if (CurrentViewModel is INavigable confirm && !await confirm.CanNavigateAsync())
             return null;
 
         context ??= new NavigableContext();
@@ -149,7 +151,7 @@ public partial class Router(IServiceProvider provider)
     /// beyond the current position and trimming the oldest entry if <see cref="MaxHistorySize"/> is exceeded.
     /// </summary>
     /// <param name="item">The view model to add to history.</param>
-    public void AddHistory(object viewmodel, object view, NavigableContext context)
+    public void AddHistory(object viewmodel, IViewFor view, NavigableContext context)
     {
         // After navigating back the current index may not be the most forward position.
         // Delete all "forward" items in the history when this happens.

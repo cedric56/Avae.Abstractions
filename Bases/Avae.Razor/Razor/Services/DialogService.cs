@@ -1,12 +1,9 @@
-﻿using Avae.ViewModels;
-using Microsoft.AspNetCore.Components;
-using System;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Components;
 using IDialogService = Avae.Services.IDialogService;
 
 namespace Avae.Razor;
 
-internal class DialogService(IServiceProvider provider) : IDialogService
+internal class DialogService : IDialogService
 {
     public static MudBlazor.IDialogService MudDialogService { get; set; } = default!;    
 

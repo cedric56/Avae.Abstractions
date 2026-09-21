@@ -15,8 +15,8 @@
 else
 {
     <MudButton OnClick="ViewModel.Add">Add</MudButton>
-    <MudButton OnClick="ViewModel.Update" Disabled="@IsEnabled">Update</MudButton>
-    <MudButton OnClick="ViewModel.Remove" Disabled="@IsEnabled">Remove</MudButton>
+    <MudButton OnClick="ViewModel.Update" Disabled="@IsDisabled">Update</MudButton>
+    <MudButton OnClick="ViewModel.Remove" Disabled="@IsDisabled">Remove</MudButton>
 
     <MudList T="Person" 
         @bind-SelectedValue="@ViewModel.SelectedPerson"
@@ -30,9 +30,10 @@ else
 
 @code {
 
-    MenuViewModel ViewModel => provider.GetViewModel<MenuViewModel>();
+    MenuViewModel? _viewModel = null;
+    MenuViewModel ViewModel => _viewModel ??= provider.GetViewModel<MenuViewModel>();
     
-    private bool IsEnabled => ViewModel.SelectedPerson == null;
+    private bool IsDisabled => ViewModel.SelectedPerson == null;
 
     private ViewFor? CurrentView => ViewModel.CurrentView as ViewFor;
 

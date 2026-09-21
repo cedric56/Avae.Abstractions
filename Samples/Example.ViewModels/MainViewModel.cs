@@ -18,7 +18,8 @@ public partial class MainViewModel : ObservableObject
     [
         new NavigableView<HomeViewModel>("Home", "fa-solid fa-house"),
         new NavigableView<MenuViewModel>("Menu", "fa-solid fa-gear"),
-        new NavigableView<EssentialsViewModel>("Essentials", "fa-solid fa-gear")
+        new NavigableView<EssentialsViewModel>("Essentials", "fa-solid fa-gear"),
+        new NavigableView<RegionsViewModel>("Regions", "fa-solid fa-gear")
     ];
 
     async partial void OnSelectedNavigableChanged(NavigableView? value)

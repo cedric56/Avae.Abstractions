@@ -37,7 +37,7 @@ public static class Extensions
         services.RegisterViewFor((sp) => new ViewFor<Home, HomeViewModel>(), lifetime);
         services.RegisterViewFor((sp) => new ViewFor<MenuView, MenuViewModel>(), lifetime);
         services.RegisterViewFor((sp) => new ViewFor<EssentialsView, EssentialsViewModel>(), lifetime);
-        services.RegisterViewFor((sp) => new ViewFor<ModalView, ModalViewModel> { Class = "center" });
+        services.RegisterViewFor((sp) => new ModalFor<ModalView, ModalViewModel, string?> { Class = "center" });
         services.RegisterViewFor((sp) => new ViewFor<FormPage2, FormPage2ViewModel> { Class = "center" });
         services.RegisterViewFor<FormPage3, FormPage3ViewModel, Person>(
             (sp, person) => new ViewFor<FormPage3, FormPage3ViewModel>(sp, null, new Dictionary<string, object>()

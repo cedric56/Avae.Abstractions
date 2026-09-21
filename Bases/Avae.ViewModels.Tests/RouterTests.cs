@@ -23,7 +23,7 @@ public class RouterTests
 
         Assert.False(router.CanGoBack);
         Assert.False(router.CanGoForward);
-        Assert.Null(router.Current);
+        Assert.Null(router.CurrentViewModel);
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class RouterTests
 
         router.AddHistory(vm1);
 
-        Assert.Same(vm1, router.Current);
+        Assert.Same(vm1, router.CurrentViewModel);
         Assert.False(router.CanGoBack);
         Assert.False(router.CanGoForward);
     }
@@ -48,7 +48,7 @@ public class RouterTests
 
         router.AddHistory(vm2);
 
-        Assert.Same(vm2, router.Current);
+        Assert.Same(vm2, router.CurrentViewModel);
         Assert.True(router.CanGoBack);
         Assert.False(router.CanGoForward);
     }
@@ -68,7 +68,7 @@ public class RouterTests
         var result = router.Back();
 
         Assert.Same(vm1, result);
-        Assert.Same(vm1, router.Current);
+        Assert.Same(vm1, router.CurrentViewModel);
         Assert.Same(vm1, raised);
         Assert.True(router.CanGoForward);
         Assert.False(router.CanGoBack);
@@ -102,7 +102,7 @@ public class RouterTests
         var result = router.Forward();
 
         Assert.Same(vm2, result);
-        Assert.Same(vm2, router.Current);
+        Assert.Same(vm2, router.CurrentViewModel);
         Assert.False(router.CanGoForward);
         Assert.True(router.CanGoBack);
     }
@@ -129,12 +129,12 @@ public class RouterTests
 
         router.AddHistory(vm3);
 
-        Assert.Same(vm3, router.Current);
+        Assert.Same(vm3, router.CurrentViewModel);
         Assert.False(router.CanGoForward);
         Assert.True(router.CanGoBack);
 
         router.Back();
-        Assert.Same(vm1, router.Current);
+        Assert.Same(vm1, router.CurrentViewModel);
     }
 
     [Fact]
@@ -146,7 +146,7 @@ public class RouterTests
         foreach (var item in items)
             router.AddHistory(item);
 
-        Assert.Same(items[^1], router.Current);
+        Assert.Same(items[^1], router.CurrentViewModel);
 
         var backCount = 0;
         while (router.CanGoBack)
@@ -158,7 +158,7 @@ public class RouterTests
         // 25 additions into a 20-item ring buffer trims the oldest 5, leaving 20 entries
         // (indices 5..24), so going all the way back takes 19 steps and lands on items[5].
         Assert.Equal(19, backCount);
-        Assert.Same(items[5], router.Current);
+        Assert.Same(items[5], router.CurrentViewModel);
     }
 
     [Fact]
@@ -170,7 +170,7 @@ public class RouterTests
 
         router.EraseHistory();
 
-        Assert.Null(router.Current);
+        Assert.Null(router.CurrentViewModel);
         Assert.False(router.CanGoBack);
         Assert.False(router.CanGoForward);
     }
@@ -187,7 +187,7 @@ public class RouterTests
 
         Assert.Same(viewFor, result);
         Assert.Same(viewModel, viewFor.Context);
-        Assert.Same(viewModel, router.Current);
+        Assert.Same(viewModel, router.CurrentViewModel);
     }
 
     [Fact]
@@ -225,7 +225,7 @@ public class RouterTests
 
         Assert.IsType<FakeViewModel>(viewModel);
         Assert.Same(viewFor, result);
-        Assert.Same(viewModel, router.Current);
+        Assert.Same(viewModel, router.CurrentViewModel);
     }
 
     [Fact]
@@ -238,6 +238,6 @@ public class RouterTests
         var result = router.GoTo(typeof(FakeViewModel));
 
         Assert.Same(viewFor, result);
-        Assert.IsType<FakeViewModel>(router.Current);
+        Assert.IsType<FakeViewModel>(router.CurrentViewModel);
     }
 }

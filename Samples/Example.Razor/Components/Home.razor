@@ -1,10 +1,10 @@
 ﻿@page "/"
 @inherits Avae.Razor.Components.AvaeComponentBase
-@using Avae.ViewModels
 @using Avae.Services
+@using Avae.ViewModels
 @using Example.ViewModels
 @using Microsoft.AspNetCore.Components.Web
-@inject ISystemNotificationService service;
+@using Microsoft.Extensions.DependencyInjection
 @using MudBlazor
 
 @inject IServiceProvider provider
@@ -30,11 +30,13 @@
 
 @code
 {
-    HomeViewModel HomeViewModel => provider.GetViewModel<HomeViewModel>();
+    HomeViewModel? _homeViewModel;
+    HomeViewModel HomeViewModel => _homeViewModel??= provider.GetViewModel<HomeViewModel>();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        var service = provider.GetService<ISystemNotificationService>();
+        if (firstRender && service != null)
             await service.InitializeAsync();
         await base.OnAfterRenderAsync(firstRender);
     }

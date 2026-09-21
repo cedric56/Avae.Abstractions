@@ -186,7 +186,7 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDis
                 if (context != null)
                 {
                     CurrentView = context;
-                    await value.OnLaunched(view.Value);
+                    await value.OnFirstAppearance(view.Value);
                 }
                 else
                 {
@@ -199,7 +199,7 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDis
                 if (result.context != null)
                 {
                     dico.Add(value, new KeyValuePair<IViewFor, object>(result.context, result.viewmodel));
-                    await value.OnLaunched(result.viewmodel);
+                    await value.OnFirstAppearance(result.viewmodel);
                     CurrentView = result.context;
                 }
                 else

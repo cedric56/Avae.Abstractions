@@ -3,6 +3,7 @@ using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 
 namespace Example.ViewModels;
@@ -13,7 +14,6 @@ public partial class HomeViewModel(
     ITaskDialogService taskDialogService,
     IServiceProvider provider,
     INotificationService notificationService,
-    ISystemNotificationService systemNotificationService,
     IRequestedThemeService requestedTheme) :
     ObservableObject,
     IEquatable<HomeViewModel>
@@ -88,6 +88,10 @@ public partial class HomeViewModel(
     {
         try
         {
+            var systemNotificationService = provider.GetService<ISystemNotificationService>();
+            if (systemNotificationService == null)
+                return;
+
             systemNotificationService.NotificationCompleted -= OnNotificationCompleted;
             systemNotificationService.NotificationCompleted += OnNotificationCompleted;
 
