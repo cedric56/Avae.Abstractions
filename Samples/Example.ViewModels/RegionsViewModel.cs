@@ -33,11 +33,11 @@ public partial class RegionsViewModel : ObservableObject, INavigable
         => MainView = await _main.GoTo<HomeViewModel>(out _);
 
     public async Task OpenEssentialsAsync()
-        => SideView = await _main.GoToType(
+        => SideView = await _side.GoToType(
             typeof(EssentialsViewModel));
 
     public async Task OpenMenuAsync()
-        => MainView = await _side.GoTo<MenuViewModel>(out _);
+        => MainView = await _main.GoTo<MenuViewModel>(out _);
 
     public Task<bool> CanNavigateAsync()
     {
