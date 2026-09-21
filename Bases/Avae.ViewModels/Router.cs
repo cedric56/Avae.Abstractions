@@ -75,19 +75,10 @@ public partial class Router(IServiceProvider provider)
         if (entering.view is INavigable ev) await ev.OnNavigatedTo(entering.context);
     }
 
-    async Task<IViewFor?> NavigateCore(object key, object viewModel, NavigableContext? context = null)
+    async Task<IViewFor?> GoToCore(object key, object viewModel, NavigableContext? context = null)
     {
-        if (Current is INavigable confirm && !await confirm.CanNavigateAsync())
-            return null;
-
-        context ??= new NavigableContext();
         var view = provider.GetContextFor(key, context) ?? throw new InvalidOperationException($"Unable to resolve view for {key}.");
-        var previous = _currentIndex >= 0 ? _history[_currentIndex] : default;        
-        await TransitionTo(previous, (viewModel, view, context));
-        AddHistory(viewModel, view, context);
-        CurrentViewModelChanged?.Invoke(viewModel);
-        view.Context = viewModel;
-        return view;
+        return await GoTo(view, viewModel, context);
     }
 
     public async Task<IViewFor?> GoTo(IViewFor view, object viewModel, NavigableContext? context = null)
@@ -96,11 +87,11 @@ public partial class Router(IServiceProvider provider)
             return null;
 
         context ??= new NavigableContext();
-        var previous = _currentIndex >= 0 ? _history[_currentIndex] : default;
-        await TransitionTo(previous, (viewModel, view, context));
-        AddHistory(viewModel, view, context);
-        CurrentViewModelChanged?.Invoke(viewModel);
         view.Context = viewModel;
+        AddHistory(viewModel, view, context);
+        var previous = _currentIndex >= 0 ? _history[_currentIndex] : default;        
+        await TransitionTo(previous, (viewModel, view, context));   
+        CurrentViewModelChanged?.Invoke(viewModel);        
         return view;
     }
 
@@ -114,7 +105,7 @@ public partial class Router(IServiceProvider provider)
     public Task<IViewFor?> GoToType(Type viewModelType, out object viewModel, string? key = null, NavigableContext? context = null)
     {
         viewModel = provider.GetViewModel(viewModelType, context);
-        return NavigateCore(key ?? viewModelType.Name, viewModel, context);
+        return GoToCore(key ?? viewModelType.Name, viewModel, context);
     }
 
     /// <summary>
@@ -139,7 +130,7 @@ public partial class Router(IServiceProvider provider)
     {
         if (viewModel == null)
             throw new InvalidOperationException("Viewmodel must not be null");
-        return NavigateCore(key ?? typeof(TViewModel).Name, viewModel, context);
+        return GoToCore(key ?? typeof(TViewModel).Name, viewModel, context);
     }
 
     /// <summary>
@@ -150,7 +141,7 @@ public partial class Router(IServiceProvider provider)
     public Task<IViewFor?> GoTo<TViewModel>(out TViewModel viewModel, string? key = null, NavigableContext? context = null) where TViewModel : class
     {
         viewModel = provider.GetViewModel<TViewModel>(context)!;
-        return NavigateCore(key ?? typeof(TViewModel).Name, viewModel, context);
+        return GoToCore(key ?? typeof(TViewModel).Name, viewModel, context);
     }
 
     /// <summary>

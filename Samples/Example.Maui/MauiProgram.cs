@@ -61,7 +61,7 @@ public static class MauiProgram
     }
 }
 
-class DefaultView : ContentView, IContext
+class DefaultView : ContentView, IViewFor
 {
     public object? Context
     {

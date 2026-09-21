@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows.Input;
 
 namespace Avae.ViewModels;
@@ -131,10 +130,9 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDis
         get { return _selectedNavigable; }
         set
         {
-            var old = _selectedNavigable;
             _selectedNavigable = value;
-            NotifyPropertyChanged(nameof(SelectedNavigable));
-            _ = OnSelectedNavigableChangedAsync(value, old);
+            //NotifyPropertyChanged(nameof(SelectedNavigable));
+            _ = OnSelectedNavigableChangedAsync(value);
         }
     }
 
@@ -169,12 +167,13 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDis
     /// <returns>The collection of available <see cref="NavigableView"/> items.</returns>
     protected abstract ObservableCollection<NavigableView> GetNavigables();
 
+    NavigableView? old = null;   
     /// <summary>
     /// Handles a change to <see cref="SelectedNavigable"/> by resolving (or creating) the associated
     /// view/view-model pair, updating <see cref="CurrentView"/>, and recording navigation history.
     /// </summary>
     /// <param name="value">The newly selected navigable item, or <see langword="null"/> if none is selected.</param>    
-    private async Task OnSelectedNavigableChangedAsync(NavigableView? value, NavigableView? old)
+    private async Task OnSelectedNavigableChangedAsync(NavigableView? value)
     {
         try
         {
@@ -187,11 +186,10 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDis
                 if (context != null)
                 {
                     CurrentView = context;
+                    await value.OnLaunched(view.Value);
                 }
                 else
                 {
-                    var stillPresent = Navigables.Any(n => n.Equals(old));
-                    Debug.WriteLine($"revert target present in Navigables: {stillPresent}");
                     _selectedNavigable = old;
                 }
             }
@@ -206,11 +204,11 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDis
                 }
                 else
                 {
-                    var stillPresent = Navigables.Any(n => n.Equals(old));
-                    Debug.WriteLine($"revert target present in Navigables: {stillPresent}");
                     _selectedNavigable = old;
                 }
             }
+
+            old = _selectedNavigable;
         }
         finally
         {
@@ -247,21 +245,9 @@ public abstract partial class NavigableViewModelBase : RouterViewModelBase, IDis
 
     public virtual void Dispose()
     {
+        dico.Clear();
+
         _navigables?.Clear();
         _navigables = null;
     }
-    //protected virtual IViewFor GoTo<T>(NavigableView<T> value, out T viewModel) where T : class, IViewModelBase
-    //{
-    //    IViewFor viewFor;
-    //    if (value.ViewModel is T t)
-    //    {
-    //        viewFor = _router.GoTo<T>(viewModel = t, value.Context);
-    //    }
-    //    else
-    //    {
-    //        viewFor = _router.GoTo<T>(out viewModel, value.Context);
-    //    }
-
-    //    return viewFor;
-    //}
 }

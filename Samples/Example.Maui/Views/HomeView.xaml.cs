@@ -2,7 +2,7 @@ using Avae.ViewModels;
 
 namespace Example.Maui.Views;
 
-public partial class HomeView : ContentPage, IContext
+public partial class HomeView : ContentPage, IViewFor
 {
     public HomeView()
     {

@@ -119,9 +119,11 @@ public static class Extensions
 
     private static T Resolve<TView, T>(this object[] args, int index)
     {
-        return args.Length > 0
-        ? (T)args[0]
-        : throw new ArgumentException($"Expected {args.Length} arguments for {typeof(TView).Name}, got {args.Length}.");
+        if (index < 0 || index >= args.Length)
+            throw new ArgumentException($"Invalid index : {index} but length is : {args.Length}");
+        var value = args[index];
+        return value is T t ? t : 
+            throw new InvalidCastException($"Excepted argument is type of : {typeof(T)} but resolved : {value.GetType()}");
     }
 
     public static void RegisterWithLifetime<

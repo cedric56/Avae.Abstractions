@@ -3,7 +3,7 @@ using Example.ViewModels;
 
 namespace Example.Maui.Views;
 
-public partial class FormView : ContentView, IContext
+public partial class FormView : ContentView, IViewFor
 {
     public FormView()
     {

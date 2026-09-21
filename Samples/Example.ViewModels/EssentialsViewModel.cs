@@ -52,7 +52,7 @@ public partial class EssentialsViewModel(
     IVibration vibration,
     IVersionTracking versionTracking,
     IWebAuthenticator webAuthenticator
-    ) //: IViewModelBase
+    )
 {
     public bool IsSupportedInMauiPlatform()
     {

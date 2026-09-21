@@ -13,8 +13,6 @@ using Example.ViewModels;
 using Example.Views;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
-using Optris.Icons.Avalonia;
-using Optris.Icons.Avalonia.FontAwesome;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -117,23 +115,5 @@ public partial class App(IServiceProvider provider) : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-    }
-
-    class ExampleIconResolver : IIconResolver
-    {
-        static ExampleIconResolver()
-        {
-            IconProvider.Current.Register<FontAwesomeIconProvider>();
-        }
-
-        public object? GetIcon(string key)
-        {
-            return new Icon() { Value = key };
-        }
-
-        public object? GetSource(string key)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

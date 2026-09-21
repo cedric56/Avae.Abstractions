@@ -11,11 +11,11 @@ using Person = Example.Models.Person;
 namespace Example.ViewModels;
 
 public partial class FormViewModel(
-    IDispatcher dispatcher,
-    IDialogService dialogService, 
-    Router router, 
+    //IDispatcher dispatcher,
+    IDialogService dialogService,
+    Router router,
     Person person) :
-    NavigableViewModel<Person>(router), 
+    NavigableViewModel<Person>(router),
     IDataErrorInfo
 {
     public const string KEY = "Page";
@@ -115,14 +115,5 @@ public partial class FormViewModel(
     public override Task<bool> CanClose()
     {
         return dialogService.ShowYesNoAsync("Are you sure you want to close ?", "Question");
-    }
-
-    protected override void NotifyPropertyChanged(string propertyName)
-    {
-        dispatcher.Dispatch(
-            () =>
-        {
-            base.NotifyPropertyChanged(propertyName);
-        });
     }
 }

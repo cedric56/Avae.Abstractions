@@ -17,14 +17,14 @@ public partial class MenuViewModel : NavigableViewModel
     IDialogService dialogService;
     IDBFactory factory;
 
-    IDispatcher dispatcher;
+    //IDispatcher dispatcher;
     public MenuViewModel(IServiceProvider provider, 
         IDBFactory factory,
-        IDispatcher dispatcher,
+        //IDispatcher dispatcher,
         IDialogService dialogService, Router router)
         : base(router, false)
     {
-        this.dispatcher = dispatcher;
+        //this.dispatcher = dispatcher;
         this.provider = provider;
         this.factory = factory;
         this.dialogService = dialogService;
@@ -101,7 +101,8 @@ public partial class MenuViewModel : NavigableViewModel
 
     public async Task OpenForm(Person person, Action<Person> action)
     {
-        var viewModel = new FormViewModel(dispatcher, dialogService, provider.GetRequiredService<Router>(), person);
+        var viewModel = new FormViewModel(//dispatcher, 
+            dialogService, provider.GetRequiredService<Router>(), person);
 
         EventHandler<Person?>? closeRequested = null!;
         viewModel.CloseRequested += closeRequested = (sender, e) =>
