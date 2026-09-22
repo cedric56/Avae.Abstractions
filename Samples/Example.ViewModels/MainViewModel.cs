@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace Example.ViewModels;
 
-public partial class MainViewModel : ObservableObject
+public partial class MainViewModel : ObservableObject, IDisposable
 {
     private readonly Dictionary<NavigableView, IViewFor> dico = [];
 
@@ -35,6 +35,11 @@ public partial class MainViewModel : ObservableObject
             if (CurrentView != null)
                 dico.Add(value, CurrentView);
         }
+    }
+
+    public void Dispose()
+    {
+        dico.Clear();
     }
 
     Router router;

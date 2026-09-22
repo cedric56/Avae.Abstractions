@@ -22,6 +22,7 @@ public partial class AppShell : Shell
                 ContentTemplate = new DataTemplate(() =>
                 {
                     vm.SelectedNavigable = navigable;
+                    //Title = navigable.DisplayName;
                     return vm.CurrentView;
                 })
             });

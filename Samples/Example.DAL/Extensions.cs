@@ -15,10 +15,16 @@ public static class Extensions
         if (OperatingSystem.IsBrowser())
             services.AddSingleton<IXmlHttpRequest, XmlHttpRequest>();
 
-        services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());        
-        services.AddSingleton(sp => sp.Create<IMagicOnionLayer>(Constants.ServerUrl));
-        services.UseLayer(sp => new MagicCatchableLayer(sp, Constants.OnionUrl, 1000, sp.GetService<ILogger>()));
         services.AddSingleton<IDBFactory, Fake>();
+        services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());        
+        services.AddSingleton(sp => sp.Create<IMagicOnionLayer>(
+            Constants.ServerUrl));
+        services.UseLayer(sp => new MagicCatchableLayer(
+            sp.GetRequiredService<IMagicOnionLayer>(), 
+            Constants.OnionUrl, 
+            1000, 
+            sp.GetService<IXmlHttpRequest>(),
+            sp.GetService<ILogger>()));        
     }
 
     class Fake : IDBFactory
@@ -33,7 +39,6 @@ public static class Extensions
         where TDBConnection : DbConnection, new()
     {
         var type = typeof(TDBConnection);
-
         services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
 
         if (type == typeof(SqliteConnection))

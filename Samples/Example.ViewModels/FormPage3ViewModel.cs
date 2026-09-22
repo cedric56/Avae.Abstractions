@@ -20,14 +20,4 @@ public partial class FormPage3ViewModel(IDialogService dialog)
 
         return true;
     }
-
-    public Task OnNavigatedFrom(NavigableContext context)
-    {
-        return Task.CompletedTask;
-    }
-
-    public Task OnNavigatedTo(NavigableContext context)
-    {
-        return Task.CompletedTask;
-    }
 }

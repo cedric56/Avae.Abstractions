@@ -16,7 +16,7 @@ public partial class FormViewModel(
     Router router,
     Person person) :
     NavigableViewModel<Person>(router),
-    IDataErrorInfo
+    IDataErrorInfo, INavigable
 {
     public const string KEY = "Page";
 
@@ -43,6 +43,15 @@ public partial class FormViewModel(
         set
         {
             SetProperty(ref _selectedItems, value);
+        }
+    }
+
+    public async Task OnNavigatedTo(NavigableContext context)
+    {
+        if (context.Key == KEY)
+        {
+            await Person.LoadContactsAsync();
+            SelectedItems = [.. Person.Contacts.Select(c => c.Person)];
         }
     }
 
@@ -80,12 +89,7 @@ public partial class FormViewModel(
         {
             new NavigableView<FormViewModel>(this, "Page One", "fa-solid fa-gear")
             {
-                    Context = NavigableContext.Create().WithKey(KEY),
-                    FirstAppearance = async (viewModel) =>
-                    {
-                    await Person.LoadContactsAsync();
-                    SelectedItems = [.. Person.Contacts.Select(c => c.Person)];
-                    }
+                Context = NavigableContext.Create().WithKey(KEY)
             },
             new NavigableView<FormPage2ViewModel>("Page Two", "fa-solid fa-gear"),
             new NavigableView<FormPage3ViewModel>("Page Three", "fa-solid fa-gear")

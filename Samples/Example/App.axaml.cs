@@ -39,6 +39,8 @@ public partial class App(IServiceProvider provider) : Application
 
                services.UseEssentials();
                services.UseNotifications();
+               services.AddNavigationRegion("main"); 
+               services.AddNavigationRegion("side");
                services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, parameters) =>
                {
                    return parameters[0] switch
@@ -62,7 +64,9 @@ public partial class App(IServiceProvider provider) : Application
            },
            afterBuild: async provider =>
            {
-               DBBase.Initialize(provider.GetRequiredService<IDBLayer>());
+               var layer = provider.GetRequiredService<IDBLayer>();
+
+               DBBase.Initialize(layer);
 
                var monitor = provider.GetRequiredService<IDBMonitor<Person>>();
 
@@ -70,7 +74,7 @@ public partial class App(IServiceProvider provider) : Application
 
                var http = provider.GetService<HttpMessageHandler>();
 
-               unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl, http);
+               unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl, layer, http);
 
                //Func<HttpMessageHandler, HttpMessageHandler> factory = null!;
                //if (http != null)

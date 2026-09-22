@@ -8,10 +8,14 @@ namespace Example;
 
 public partial class HomeView : ViewFor<HomeViewModel>
 {
-    public HomeView(IDialogService dialogService)
+    public HomeView()
     {
         InitializeComponent();
+    }
 
+    public HomeView(IDialogService dialogService)
+        : this()
+    {
         Loaded += OnLoaded;
 
         void OnLoaded(object? sender, RoutedEventArgs e)

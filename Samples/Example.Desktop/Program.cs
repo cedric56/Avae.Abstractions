@@ -19,8 +19,7 @@ class Program
     {
         //var logs = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Example"), "logs");
 
-        return App.CreateApp(
-            services =>
+        return App.CreateApp(services =>
             {
                 services.UseDBSqlLayer<SqliteConnection>();
                 //services.UseDBOnionLayer();

@@ -80,7 +80,15 @@ public partial class HomeViewModel(
             "Hello",
             "World",
             NotificationType.Success,
-            TimeSpan.FromSeconds(2));
+            TimeSpan.FromSeconds(2),
+            () =>
+            {
+                notificationService.Show("Clicked", "Click", NotificationType.Information);
+            },
+            () =>
+            {
+                notificationService.Show("Closed", "Close", NotificationType.Information);
+            });
     }
 
     [RelayCommand]

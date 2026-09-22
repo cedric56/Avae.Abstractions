@@ -1,5 +1,4 @@
 ﻿using Avae.Services;
-using Avae.ViewModels;
 
 namespace Avae.Maui;
 
@@ -237,25 +236,61 @@ internal class DialogService(IServiceProvider provider) : IDialogService
 #elif WINDOWS
         return await WithPreviousSuspendedAsync(async () =>
         {
-            var current = Current ?? throw new InvalidNavigationException($"{nameof(Current)} can not be null");
+            var current = Current
+                ?? throw new InvalidNavigationException($"{nameof(Current)} cannot be null");
+
+            var xamlRoot = (current.Handler?.PlatformView as Microsoft.UI.Xaml.UIElement)?.XamlRoot
+                ?? throw new InvalidOperationException("XamlRoot is not available.");
+
+            var theme = Application.Current?.RequestedTheme switch
+            {
+                AppTheme.Dark => Microsoft.UI.Xaml.ElementTheme.Dark,
+                AppTheme.Light => Microsoft.UI.Xaml.ElementTheme.Light,
+                _ => Microsoft.UI.Xaml.ElementTheme.Default
+            };
+
             var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
             {
-                RequestedTheme = Application.Current?.RequestedTheme ==
-             AppTheme.Dark ? Microsoft.UI.Xaml.ElementTheme.Dark :
-             Application.Current?.RequestedTheme == AppTheme.Light ?
-             Microsoft.UI.Xaml.ElementTheme.Light : Microsoft.UI.Xaml.ElementTheme.Default,
+                RequestedTheme = theme,
                 Title = title,
                 Content = content,
                 PrimaryButtonText = primaryButtonText,
                 SecondaryButtonText = secondaryButtonText,
                 CloseButtonText = closeButtonText,
-                XamlRoot = current.Handler?.PlatformView is Microsoft.UI.Xaml.UIElement page ? page.XamlRoot : null
+                XamlRoot = xamlRoot
             };
-            dialog.PrimaryButtonClick += (s, e) => taskCompletionSource.SetResult(primaryResult);
-            dialog.SecondaryButtonClick += (s, e) => taskCompletionSource.SetResult(secondaryResult);
-            dialog.CloseButtonClick += (s, e) => taskCompletionSource.SetResult(closeResult);
-            await dialog.ShowAsync();
-            return await taskCompletionSource.Task;
+
+            var tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            void Complete(T result)
+            {
+                tcs.TrySetResult(result);
+            }
+
+            void OnPrimary(Microsoft.UI.Xaml.Controls.ContentDialog s, Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs e)
+                => Complete(primaryResult);
+
+            void OnSecondary(Microsoft.UI.Xaml.Controls.ContentDialog s, Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs e)
+                => Complete(secondaryResult);
+
+            void OnClose(Microsoft.UI.Xaml.Controls.ContentDialog s, Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs e)
+                => Complete(closeResult);
+
+            dialog.PrimaryButtonClick += OnPrimary;
+            dialog.SecondaryButtonClick += OnSecondary;
+            dialog.CloseButtonClick += OnClose;
+
+            try
+            {
+                await dialog.ShowAsync();
+                return await tcs.Task;
+            }
+            finally
+            {
+                dialog.PrimaryButtonClick -= OnPrimary;
+                dialog.SecondaryButtonClick -= OnSecondary;
+                dialog.CloseButtonClick -= OnClose;
+            }
         });
 #elif MACCATALYST || IOS
         if (content is string message)

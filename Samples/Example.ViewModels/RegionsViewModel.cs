@@ -1,7 +1,6 @@
 ﻿using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Example.ViewModels;
 
@@ -12,8 +11,8 @@ public partial class RegionsViewModel : ObservableObject, INavigable
 
     public RegionsViewModel(IServiceProvider sp)
     {
-        _main = sp.GetRequiredService<Router>();
-        _side = sp.GetRequiredService<Router>();
+        _main = sp.GetRegion("main");
+        _side = sp.GetRegion("side");
     }
 
     [ObservableProperty] private IViewFor? mainView;
@@ -39,19 +38,9 @@ public partial class RegionsViewModel : ObservableObject, INavigable
     public async Task OpenMenuAsync()
         => MainView = await _main.GoTo<MenuViewModel>(out _);
 
-    public Task<bool> CanNavigateAsync()
-    {
-        return Task.FromResult(true);
-    }
-
     public async Task OnNavigatedTo(NavigableContext context)
     {
         await OpenHomeAsync();
         await OpenEssentialsAsync();        
-    }
-
-    public Task OnNavigatedFrom(NavigableContext context)
-    {
-        return Task.CompletedTask;
     }
 }

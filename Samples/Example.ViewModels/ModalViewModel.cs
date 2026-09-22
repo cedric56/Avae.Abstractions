@@ -1,5 +1,4 @@
-﻿using Avae.DAL;
-using Avae.Services;
+﻿using Avae.Services;
 using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -13,11 +12,6 @@ public partial class ModalViewModel(IDialogService dialogService) : ObservableVa
     ICloseableViewModel<string?>,
     IViewModelErrorInfo
 {
-    static ModalViewModel()
-    {
-        InputValidation<ModalViewModel>.Init();
-    }
-
     [ObservableProperty]
     [Required(ErrorMessage = "You have to enter a value.")]
     public partial string? Message { get; set; }
@@ -28,7 +22,7 @@ public partial class ModalViewModel(IDialogService dialogService) : ObservableVa
     {
         get
         {
-            return InputValidation<ModalViewModel>.Error(this);
+            return EntityValidator.Error(this) ?? string.Empty;
         }
     }
 
@@ -36,8 +30,8 @@ public partial class ModalViewModel(IDialogService dialogService) : ObservableVa
 
     public ObservableCollection<NamedCommand> Commands =>
         [
-            new() { Command = ValidateCommand, Name = "Valider"},
-            new() { Command = CancelCommand, Name="Annuler"}
+            new() { Command = ValidateCommand, Name = "Validate"},
+            new() { Command = CancelCommand, Name="Cancel"}
         ];
 
     public string Title => "Modal";
@@ -47,7 +41,7 @@ public partial class ModalViewModel(IDialogService dialogService) : ObservableVa
 
         get
         {
-            return InputValidation<ModalViewModel>.Validate(this, columnName);
+            return EntityValidator.ValidateProperty(this, columnName) ?? string.Empty;
         }
     }
 

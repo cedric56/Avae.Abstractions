@@ -40,10 +40,22 @@ public static class MauiProgram
             });
         builder.Services.UseNotifications();
         builder.Services.RegisterEssentials();
-        builder.Services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, args) => null!);
+        builder.Services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, args) =>
+        {
+            return args[0] switch
+            {
+                "Footer" => new Label() { Text = "This is a footer" },
+                "IconSource" => new UriImageSource { Uri = new Uri(Path.Combine(AppContext.BaseDirectory, "appicon.ico")) },
+                "Content" => new Label() { Text = "Here is content", FontSize = 27 },
+                _ => throw new NotImplementedException()
+            };
+        });
+        builder.Services.AddNavigationRegion("main");
+        builder.Services.AddNavigationRegion("side");
         builder.Services.Register<MainPage, MainViewModel>();
         builder.Services.Register<HomeView ,HomeViewModel>();
         builder.Services.Register<MenuView, MenuViewModel>();
+        builder.Services.Register<DefaultPage, RegionsViewModel>();
         builder.Services.Register<EssentialsView, EssentialsViewModel>();
         builder.Services.RegisterWithLifetime<ModalView, ModalViewModel>();
         builder.Services.RegisterWithLifetime<FormView, FormViewModel>();
@@ -70,7 +82,21 @@ class DefaultView : ContentView, IViewFor
         {
             BindingContext = value;
             if (value is FormViewModel viewModel)
-                this.Content = new Label() { Text = "Form" };
+                this.Content = new Label() { Text = "Form" };          
+        }
+    }
+}
+
+class DefaultPage : ContentPage, IViewFor
+{
+    public object? Context
+    {
+        get => BindingContext;
+        set
+        {
+            BindingContext = value;
+            if (value is RegionsViewModel viewModel)
+                this.Content = new Label() { Text = "Regions" };
         }
     }
 }

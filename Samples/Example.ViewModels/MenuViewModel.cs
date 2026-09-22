@@ -101,9 +101,7 @@ public partial class MenuViewModel : NavigableViewModel
 
     public async Task OpenForm(Person person, Action<Person> action)
     {
-        var viewModel = new FormViewModel(//dispatcher, 
-            dialogService, provider.GetRequiredService<Router>(), person);
-
+        CurrentView = await _router.GoTo<FormViewModel>(out var viewModel, context: NavigableContext.Create().WithViewModelParameters(person));
         EventHandler<Person?>? closeRequested = null!;
         viewModel.CloseRequested += closeRequested = (sender, e) =>
         {
@@ -115,8 +113,6 @@ public partial class MenuViewModel : NavigableViewModel
 
             CurrentView = null!;
         };
-
-        CurrentView = await _router.GoTo(viewModel);
     }
 
     public override void Dispose()

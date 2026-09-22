@@ -4,6 +4,7 @@ using MessagePack;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Runtime.CompilerServices;
 
 namespace Example.Models;
 
@@ -28,6 +29,7 @@ public partial class Person : DBTransactional, INotifyPropertyChanged, IDataErro
         {
             _firstName = value;
             OnPropertyChanged(nameof(FirstName));
+            OnPropertyChanged(nameof(FullName));
         }
     }
 
@@ -39,6 +41,7 @@ public partial class Person : DBTransactional, INotifyPropertyChanged, IDataErro
         {
             _lastName = value;
             OnPropertyChanged(nameof(LastName));
+            OnPropertyChanged(nameof(FullName));
         }
     }
 
@@ -133,56 +136,6 @@ public partial class Person : DBTransactional, INotifyPropertyChanged, IDataErro
                 foreach (var contact in before.Where(c => !Contacts.Any(p => p.IdPerson == c.IdPerson)))
                     connection.Delete(contact, transaction, commandTimeout);
 
-                //                    var before = await instance.FindByAnyAsync<Contact>((nameof(Contact.IdContact), Id));
-
-                //                    if (_contacts == null)
-                //                    {
-                //                        Contacts = [.. before];
-                //                    }
-
-                //                    var sql = new StringBuilder();
-                //                    var parameters = new DynamicParameters();
-                //                    var paramIndex = 0;
-
-                //                    foreach (var contact in Contacts)
-                //                    {
-                //                        contact.IdContact = Id;
-                //                        var prefix = $"c{paramIndex++}";
-
-                //                        if (contact.Id == 0)
-                //                        {
-                //                            sql.AppendLine($@"
-                //INSERT INTO Contact (IdContact, IdPerson)
-                //VALUES ({contact.IdContact}, {contact.IdPerson});");
-                //                            //parameters.Add($"IdContact{prefix}", contact.IdContact);
-                //                            //parameters.Add($"IdPerson{prefix}", contact.IdPerson);
-                //                        }
-                //                        else
-                //                        {
-                //                            sql.AppendLine($@"
-                //UPDATE Contact
-                //SET IdContact = {contact.IdContact}, IdPerson = {contact.IdPerson}
-                //WHERE Id = {contact.Id};");
-
-                //                            //parameters.Add($"IdContact{prefix}", contact.IdContact);
-                //                            //parameters.Add($"IdPerson{prefix}", contact.IdPerson);
-                //                            //parameters.Add($"Id{prefix}", contact.Id);
-                //                        }
-                //                    }
-
-                //                    var toDelete = before.Where(c => !Contacts.Any(p => p.IdPerson == c.IdPerson)).ToList();
-                //                    foreach (var contact in toDelete)
-                //                    {
-                //                        var prefix = $"d{paramIndex++}";
-                //                        sql.AppendLine($"DELETE FROM Contact WHERE Id = {contact.Id};");
-                //                        //parameters.Add($"Id{prefix}", contact.Id);
-                //                    }
-
-                //                    if (sql.Length > 0)
-                //                    {
-                //                        await connection.ExecuteAsync(sql.ToString(), parameters, transaction, commandTimeout);
-                //                    }
-
                 transaction.Commit();
 
                 isSuccessful = true;
@@ -231,8 +184,8 @@ public partial class Person : DBTransactional, INotifyPropertyChanged, IDataErro
             catch (Exception ex)
             {
                 transaction.Rollback();
-                message = $"Suppression impossible, cette personne fait partie des contacts d'un autre usager." +
-                    "\n" + ex.Message;
+                message = $"Suppression impossible.\n{ex.GetType().Name}: {ex.Message}" +
+                    (ex.InnerException != null ? $"\n{ex.InnerException.Message}" : string.Empty);
             }
         }
 
@@ -245,12 +198,18 @@ public partial class Person : DBTransactional, INotifyPropertyChanged, IDataErro
 
     public override bool Equals(object? obj)
     {
-        return obj is Person person && person.Id == this.Id;
+        if (obj is not Person other)
+            return false;
+
+        if (ReferenceEquals(this, other))
+            return true;
+
+        return Id != 0 && other.Id != 0 && Id == other.Id;
     }
 
     public override int GetHashCode()
     {
-        return Id.GetHashCode();
+        return Id != 0 ? Id.GetHashCode() : RuntimeHelpers.GetHashCode(this);
     }
 
     [Computed]
@@ -259,7 +218,7 @@ public partial class Person : DBTransactional, INotifyPropertyChanged, IDataErro
     {
         get
         {
-            return InputValidation<Person>.Error(this);
+            return EntityValidator.Error(this) ?? string.Empty;
         }
     }
 
@@ -269,7 +228,7 @@ public partial class Person : DBTransactional, INotifyPropertyChanged, IDataErro
     {
         get
         {
-            return InputValidation<Person>.Validate(this, columnName);
+            return EntityValidator.ValidateProperty(this, columnName) ?? string.Empty;
         }
     }
 
