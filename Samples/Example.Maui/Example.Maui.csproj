@@ -62,8 +62,7 @@
 
 	<ItemGroup>
     <PackageReference Include="AathifMahir.Maui.MauiIcons.FontAwesome.Solid" />
-    <!--<PackageReference Include="Avae.Abstractions" />-->
-    <PackageReference Include="Avae.Notifications" />
+    <!--<PackageReference Include="Avae.Notifications" />-->
     <PackageReference Include="Avae.ViewModels" />
     <PackageReference Include="CommunityToolkit.Maui" />
     <PackageReference Include="Microsoft.Maui.Controls" />

@@ -105,7 +105,6 @@ public partial class FormViewModel(
         //Possibility to set parameters on call
         if (value.ViewModelType == typeof(FormPage3ViewModel))
         {
-            //value.Context.WithViewParameters(Person);
             value.Context.ViewParameters = [Person];
         }
 

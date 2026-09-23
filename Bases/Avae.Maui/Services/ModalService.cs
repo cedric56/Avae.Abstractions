@@ -124,7 +124,7 @@ public static class ModalService
                 ? page.XamlRoot
                 : null;
 
-            var dialog = new DialogService.ContentDialogEx
+            var dialog = new DialogService.ContentDialogEx   
             {
                 RequestedTheme = Application.Current?.RequestedTheme == AppTheme.Dark
                     ? Microsoft.UI.Xaml.ElementTheme.Dark
@@ -143,18 +143,30 @@ public static class ModalService
             };
 
             viewModel.CloseRequested += CloseRequested;
+            dialog.Closed += Closed;
             await dialog.ShowAsync();
             return await taskCompletionSource.Task;
 
             void CloseRequested(object? sender, TResult? result)
             {
                 viewModel.CloseRequested -= CloseRequested;
+                dialog.IsSelfHiding = false;
                 dialog.IsClosed = true;
-                taskCompletionSource.SetResult(result);
+                dialog.Closed -= Closed;
+                taskCompletionSource.TrySetResult(result);
+            }
+
+            void Closed(Microsoft.UI.Xaml.Controls.ContentDialog sender, Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs args)
+            {
+                if (dialog.IsSelfHiding)
+                    return;
+                viewModel.CloseRequested -= CloseRequested;
+                dialog.IsClosed = true;
+                dialog.Closed -= Closed;
+                taskCompletionSource.TrySetResult(default);
             }
         });
 #endif
         throw new NotImplementedException();
     }
-
 }

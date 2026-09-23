@@ -1,9 +1,7 @@
 ﻿using Avae.DAL;
 using Avae.Essentials;
 using Avae.Maui;
-using Avae.Notifications;
 using Avae.ViewModels;
-using Avalonia.Labs.Notifications;
 using CommunityToolkit.Maui;
 using Example.DAL;
 using Example.Maui.Views;
@@ -22,13 +20,13 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-            .WithAppNotifications(new AppNotificationOptions()
-            {
-#if WINDOWS
-                AppIcon = Path.Combine(AppContext.BaseDirectory, "appicon.ico"),
-                AppName = "Maui example"
-#endif
-            })
+//            .WithAppNotifications(new AppNotificationOptions()
+//            {
+//#if WINDOWS
+//                AppIcon = Path.Combine(AppContext.BaseDirectory, "appicon.ico"),
+//                AppName = "Maui example"
+//#endif
+//            })
             .UseAvae()
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
@@ -38,7 +36,6 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
-        builder.Services.UseNotifications();
         builder.Services.RegisterEssentials();
         builder.Services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, args) =>
         {
