@@ -1,4 +1,3 @@
-using Avae.DAL;
 using Avae.Embedded;
 using Avae.Essentials;
 using Avae.Notifications;
@@ -23,7 +22,6 @@ try
     builder.Services.UseSharedLibrary(ServiceLifetime.Scoped);
     //await builder.Services.UseEmbeddedAvaloniaApp("avalonia", b => b.WithAppNotifications());
     var app = builder.Build();
-    DBBase.Initialize(app.Services.GetRequiredService<IDBLayer>());
     await app.RunAsync();
 }
 catch (Exception ex)

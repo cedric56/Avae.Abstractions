@@ -5,6 +5,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AvaeFeatures>
+      ;MagicClient;
+      ;MagicOnion;
+      ;PostgreSQL;
+      ;Sqlite;
+      ;SignalR;
+    </AvaeFeatures>
   </PropertyGroup>
 
   <ItemGroup>

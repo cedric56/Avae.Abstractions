@@ -44,7 +44,6 @@ public static class Extensions
         ViewFor navMenu,
         NotificationPosition position = NotificationPosition.BottomLeft,
         int maxDispayments = 5,
-        RenderFragment? extras = null,
         Action<IServiceProvider>? initialize = null)
     {
         var circuitProvider = new CircuitProvider(initialize ?? (sp => { }));
@@ -68,7 +67,6 @@ public static class Extensions
             };
         });
         services.AddSingleton<ICircuitProvider>(circuitProvider);
-        services.AddSingleton<RenderFragment>(_ => extras ?? new RenderFragment(_ => { }));
         services.AddTransient<Router>();
         services.AddSingleton<Avae.Services.IDialogService, DialogService>();
         services.AddSingleton<IContentDialogService, ContentDialogService>();

@@ -1,46 +1,50 @@
-﻿using Avae.DAL;
-using Avae.Services;
+﻿using Avae.Services;
 using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui.Dispatching;
 using System.Collections.ObjectModel;
 using Person = Example.Models.Person;
 
 namespace Example.ViewModels;
 
-public partial class MenuViewModel : NavigableViewModel
+public partial class MenuViewModel : NavigableViewModel, INavigable
 {
-    IServiceProvider provider;
     IDialogService dialogService;
-    IDBFactory factory;
-
+    IPersonService personService;
+    IEntityCache<Person> inMemoryEntityCache;
     //IDispatcher dispatcher;
-    public MenuViewModel(IServiceProvider provider, 
-        IDBFactory factory,
+    public MenuViewModel(
+        IPersonService personService,
+        IEntityCache<Person> inMemoryEntityCache,
         //IDispatcher dispatcher,
         IDialogService dialogService, Router router)
         : base(router, false)
     {
         //this.dispatcher = dispatcher;
-        this.provider = provider;
-        this.factory = factory;
+        this.inMemoryEntityCache = inMemoryEntityCache;
+        this.personService = personService;
         this.dialogService = dialogService;
+        this._persons = new(inMemoryEntityCache.Entities);
 
-        Repository.Instance.PersonsChanged += OnPersonsChanged;
+        inMemoryEntityCache.EntitiesChanged += OnPersonsChanged;
+    }
+
+    public async Task OnNavigatedTo(NavigableContext context)
+    {
+        await inMemoryEntityCache.LoadEntities();
+        Persons = new(inMemoryEntityCache.Entities);
     }
 
     private void OnPersonsChanged(object? sender, EventArgs e)
     {
-        Persons = new(Repository.Instance.Persons);
+        Persons = new(inMemoryEntityCache.Entities);
     }
 
     public string Title { get; set; } = "Persons";
 
     [ObservableProperty]
-    private ObservableCollection<Person> _persons = new(Repository.Instance.Persons);
+    private ObservableCollection<Person> _persons;
 
     [ObservableProperty]
     private Person? _selectedPerson;
@@ -82,15 +86,11 @@ public partial class MenuViewModel : NavigableViewModel
     [RelayCommand(CanExecute = nameof(CanExecute))]
     public async Task Remove()
     {
-        await SelectedPerson!.LoadContactsAsync();
-        var result = await SelectedPerson.Remove(DBBase.Instance, factory);//.Remove(SelectedPerson);
+        await personService.LoadContactsAsync(SelectedPerson!);
+        var result = await personService.RemoveAsync(SelectedPerson!);
         if (!result.Successful)
         {
             await dialogService.ShowOkAsync(result.Exception!, "Error");
-        }
-        else
-        {
-            Persons.Remove(SelectedPerson);
         }
     }
 
@@ -101,11 +101,11 @@ public partial class MenuViewModel : NavigableViewModel
 
     public async Task OpenForm(Person person, Action<Person> action)
     {
-        CurrentView = await _router.GoTo<FormViewModel>(out var viewModel, context: NavigableContext.Create().WithViewModelParameters(person));
+        var context = await _router.GoTo<FormViewModel>(context: NavigableContext.Create().WithViewModelParameters(person));
         EventHandler<Person?>? closeRequested = null!;
-        viewModel.CloseRequested += closeRequested = (sender, e) =>
+        context.viewmodel.CloseRequested += closeRequested = (sender, e) =>
         {
-            viewModel.CloseRequested -= closeRequested;
+            context.viewmodel.CloseRequested -= closeRequested;
             if (e is not null)
             {
                 action(e);
@@ -113,11 +113,12 @@ public partial class MenuViewModel : NavigableViewModel
 
             CurrentView = null!;
         };
+        CurrentView = context.view;
     }
 
     public override void Dispose()
     {
         base.Dispose();
-        Repository.Instance.PersonsChanged -= OnPersonsChanged;
+        inMemoryEntityCache.EntitiesChanged -= OnPersonsChanged;
     }
 }

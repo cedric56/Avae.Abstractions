@@ -4,12 +4,10 @@
 @inherits LayoutComponentBase
 @* @implements IDisposable *@
 @inject IRequestedThemeService themeService
-@inject RenderFragment fragment
 @inject IServiceProvider Provider
 @inject ICircuitProvider CircuitProvider 
 @inject ViewFor NavMenu
 
-@fragment
 @* Required *@
 <MudThemeProvider IsDarkMode="Service.IsDarkMode" />
 <MudPopoverProvider />

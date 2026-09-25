@@ -5,24 +5,13 @@ namespace Example.Server;
 
 public class ExampleLayerService : MagicOnionService
 {
-    DBTransactionalSerializerOptions options;
-
-    public ExampleLayerService(IDBLayer layer, IDBFactory factory)
-        : base(layer, factory)
+    public ExampleLayerService(IDBFactory factory, IServiceProvider provider)
+        : base(factory)
     {
-        options = new DBTransactionalSerializerOptions(DBTransactionalResolver.Instance);
-
         EntityHandler.Handlers = new Dictionary<string, EntityHandler>()
         {
-             { nameof(Person), new EntityHandler<Person>(layer) },
-             { nameof(Contact), new EntityHandler<Contact>(layer) }
+             { nameof(Person), new EntityHandler<Person>(factory, provider.GetRequiredService<IDbTransaction<Person>>()) },
+             { nameof(Contact), new EntityHandler<Contact>(factory) }
         };
-    }
-
-    protected override DBTransactionalSerializerOptions? GetOptions(string type)
-    {
-        if (type == typeof(Person).Name)
-            return options;
-        return null;
     }
 }

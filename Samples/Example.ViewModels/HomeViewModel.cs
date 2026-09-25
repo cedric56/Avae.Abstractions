@@ -1,9 +1,9 @@
 ﻿using Avae.Services;
 using Avae.ViewModels;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 using System.Diagnostics;
 
 namespace Example.ViewModels;
@@ -15,17 +15,19 @@ public partial class HomeViewModel(
     IServiceProvider provider,
     INotificationService notificationService,
     IRequestedThemeService requestedTheme) :
-    ObservableObject,
+    ReactiveUI.ReactiveObject,
+    //IRoutableViewModel,
+    //ObservableObject,
     IEquatable<HomeViewModel>
 {
-    [RelayCommand]
+    [ReactiveCommand]
     public void Messenger()
     {
         WeakReferenceMessenger.Default.Send("Hello from HomeViewModel", this);
     }
 
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task ShowModal()
     {
         string? result = string.Empty;
@@ -45,7 +47,7 @@ public partial class HomeViewModel(
 
     public const string TaskDialogKey = "TaskDialog";
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task ShowTaskDialog()
     {
         await taskDialogService.ShowAsync(new TaskDialogParams()
@@ -62,7 +64,7 @@ public partial class HomeViewModel(
         TaskDialogStandardResult.Cancel);
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task ShowContentDialog()
     {
         await contentDialogService.ShowAsync(new ContentDialogParams()
@@ -73,7 +75,7 @@ public partial class HomeViewModel(
         });
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task ShowNotification()
     {
         notificationService.Show(
@@ -91,7 +93,7 @@ public partial class HomeViewModel(
             });
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task ShowSystemNotification()
     {
         try
@@ -134,7 +136,7 @@ public partial class HomeViewModel(
 
     RequestedTheme? actual = null;
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task ShowRequestedTheme()
     {
         var theme = actual switch

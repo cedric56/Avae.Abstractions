@@ -1,13 +1,12 @@
-﻿using Avae.Razor;
+﻿using Avae.DAL;
+using Avae.Razor;
 using Avae.Services;
 using Avae.ViewModels;
-using Example.DAL;
 using Example.Models;
 using Example.Razor.Components;
 using Example.Razor.Layout;
 using Example.ViewModels;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 
@@ -17,7 +16,6 @@ public static class Extensions
 {
     public static void UseSharedLibrary(this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Singleton,
-        RenderFragment? extras = null,
         Action<IServiceProvider>? initialize = null)
     {
         services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, parameters) =>
@@ -56,14 +54,14 @@ public static class Extensions
         //}
         //else
         //{
-            services.UseDBOnionLayer();
+        services.AddPersonServiceRemote();
+        services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
         //}
 
         var navMenu = new ViewFor<NavMenu>();
         services.UseAvae(navMenu,
             NotificationPosition.BottomLeft, 
-            5,            
-            extras,
+            5,     
             initialize);
     }
 }

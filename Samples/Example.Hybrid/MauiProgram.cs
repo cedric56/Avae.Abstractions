@@ -1,5 +1,4 @@
-﻿using Avae.DAL;
-using Avae.Essentials;
+﻿using Avae.Essentials;
 using Avae.Notifications;
 using Example.Razor;
 using Microsoft.Extensions.Logging;
@@ -27,7 +26,6 @@ public static class MauiProgram
 #endif
 
         var app = builder.Build();
-        DBBase.Initialize(app.Services.GetRequiredService<IDBLayer>());
         return app;
     }
 }

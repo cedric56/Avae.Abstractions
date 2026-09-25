@@ -8,6 +8,7 @@
 @inherits Avae.Razor.Components.AvaeComponentBase
 @page "/menu"
 @inject IServiceProvider provider
+@inject IEntityCache<Person> cache
 @if (CurrentView != null)
 {
     <DynamicComponent Type="@CurrentView.Type" Parameters="@CurrentView.Parameters"/>
@@ -46,7 +47,7 @@ else
         {
             ViewModel.PropertyChanged -= PropertyChanged;
             ViewModel.PropertyChanged += PropertyChanged;
-            ViewModel.Persons = new(await DBBase.Instance.GetAllAsync<Person>());
+            ViewModel.Persons = new(cache.Entities);
         }
     }
 

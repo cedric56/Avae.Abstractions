@@ -7,7 +7,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Example.DAL;
 using Example.Models;
 using Example.ViewModels;
 using Example.Views;
@@ -16,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using ReactiveUI.Avalonia;
 
 namespace Example;
 
@@ -37,6 +37,8 @@ public partial class App(IServiceProvider provider) : Application
            {
                IconResolver.Register(new ExampleIconResolver());
 
+               services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
+               
                services.UseEssentials();
                services.UseNotifications();
                services.AddNavigationRegion("main"); 
@@ -64,17 +66,12 @@ public partial class App(IServiceProvider provider) : Application
            },
            afterBuild: async provider =>
            {
-               var layer = provider.GetRequiredService<IDBLayer>();
-
-               DBBase.Initialize(layer);
-
                var monitor = provider.GetRequiredService<IDBMonitor<Person>>();
-
-               Repository.Initialize(monitor);
+               var factory = provider.GetRequiredService<IDBFactory>();
 
                var http = provider.GetService<HttpMessageHandler>();
 
-               unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl, layer, http);
+               unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl, factory, http);
 
                //Func<HttpMessageHandler, HttpMessageHandler> factory = null!;
                //if (http != null)

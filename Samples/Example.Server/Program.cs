@@ -1,10 +1,10 @@
 ﻿using Avae.DAL;
-using Example.DAL;
 using Example.Models;
 using Grpc.AspNetCore.Server;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddLogging(AddLoggers);
@@ -14,10 +14,12 @@ builder.Services.AddGrpc(AddGrpcOptions);
 builder.Services.AddCors(AddCorsOptions);
 builder.WebHost.ConfigureKestrel(AddKestrelsOptions);
 
+builder.Services.AddSingleton<IDBMonitor<Person>, DBMonitor<Person>>();
+builder.Services.AddSingleton<IDbTransaction<Person>, PersonServiceLocal>();
 builder.Services.AddSingleton<ConnectionTracker<Person>>();
 builder.Services.AddSingleton<RecordHubRepository<Person>>();
 builder.Services.AddSingleton<SignalRHub<Person>>();
-builder.Services.UseDBSqlLayer<SqliteConnection>();
+builder.Services.AddPersonServiceLocal<SqliteConnection>();
 
 var app = builder.Build();
 
@@ -30,7 +32,6 @@ app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });//required for Xm
 app.MapMagicOnionService().EnableGrpcWeb();
 app.MapHub<SignalRHub<Person>>("/PersonHub");
 
-DBBase.Initialize(app.Services.GetRequiredService<IDBLayer>());
 _ = app.Services.GetRequiredService<RecordHubRepository<Person>>();
 app.Run();
 

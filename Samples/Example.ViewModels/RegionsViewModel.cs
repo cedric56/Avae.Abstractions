@@ -29,14 +29,14 @@ public partial class RegionsViewModel : ObservableObject, INavigable
     }
 
     public async Task OpenHomeAsync()
-        => MainView = await _main.GoTo<HomeViewModel>(out _);
+        => MainView = (await _main.GoTo<HomeViewModel>()).view;
 
     public async Task OpenEssentialsAsync()
-        => SideView = await _side.GoToType(
-            typeof(EssentialsViewModel));
+        => SideView = (await _side.GoToType(
+            typeof(EssentialsViewModel))).view;
 
     public async Task OpenMenuAsync()
-        => MainView = await _main.GoTo<MenuViewModel>(out _);
+        => MainView = (await _main.GoTo<MenuViewModel>()).view;
 
     public async Task OnNavigatedTo(NavigableContext context)
     {

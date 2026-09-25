@@ -1,8 +1,8 @@
-﻿using Avae.DAL;
-using Avae.Services;
+﻿using Avae.Services;
 using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Dommel;
 using Example.Models;
 using Microsoft.Maui.Dispatching;
 using System.Collections.ObjectModel;
@@ -14,7 +14,11 @@ public partial class FormViewModel(
     //IDispatcher dispatcher,
     IDialogService dialogService,
     Router router,
-    Person person) :
+    Person person,
+    IEntityCache<Person> entityCache,
+    IPersonService personService,
+    IPersonGraph personGraph
+    ) :
     NavigableViewModel<Person>(router),
     IDataErrorInfo, INavigable
 {
@@ -29,7 +33,7 @@ public partial class FormViewModel(
     {
         get
         {
-            return [.. Repository.Instance.Persons.Where(p => p.Id != Person.Id)];
+            return [.. entityCache.Entities.Where(p => p.Id != Person.Id)];
         }
     }
 
@@ -50,8 +54,9 @@ public partial class FormViewModel(
     {
         if (context.Key == KEY)
         {
-            await Person.LoadContactsAsync();
-            SelectedItems = [.. Person.Contacts.Select(c => c.Person)];
+            await personService.LoadContactsAsync(Person);
+            personGraph.AttachContacts(Person, Person.Contacts);
+            SelectedItems = [.. Person.Contacts.Select(c => c.Person!)];            
         }
     }
 
@@ -72,7 +77,7 @@ public partial class FormViewModel(
                 Person = person,
                 PersonContact = Person
             });
-            var result = await DBBase.Instance.Save(Person);
+            var result = await personService.SaveAsync(Person);
             IsBusy = false;
             if (!string.IsNullOrWhiteSpace(result.Exception))
                 await dialogService.ShowOkAsync(result.Exception, "Error");
@@ -95,20 +100,20 @@ public partial class FormViewModel(
             new NavigableView<FormPage3ViewModel>("Page Three", "fa-solid fa-gear")
             {
                 //Possibility to set parameters on ctor
-                //ViewParameters = [Person]
+                //ViewParameters = [(nameof(Person), Person)]
             }
         };
     }
 
-    protected override Task<(IViewFor? view, object viewmodel)> GoTo(NavigableView value)
+    protected override Task<IViewFor?> GetView(NavigableView value)
     {
         //Possibility to set parameters on call
         if (value.ViewModelType == typeof(FormPage3ViewModel))
         {
-            value.Context.ViewParameters = [Person];
+            value.Context.ViewParameters = [(nameof(Person), Person)];
         }
 
-        return base.GoTo(value);
+        return base.GetView(value);
     }
 
     public string Error => Person.Error;

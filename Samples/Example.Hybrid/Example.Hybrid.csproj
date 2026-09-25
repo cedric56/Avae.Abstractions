@@ -71,6 +71,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Maui.Controls" />
         <PackageReference Include="Avae.Notifications" />
+        <PackageReference Include="Avae.Essentials" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
     </ItemGroup>

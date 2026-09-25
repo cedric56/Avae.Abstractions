@@ -31,6 +31,8 @@
     <PackageVersion Include="Avalonia.Skia" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Native" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.HarfBuzz" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Dapper.Contrib" Version="2.0.78" />
+    <PackageVersion Include="Dommel" Version="3.5.3" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="$(MicrosoftVersion)" />
     <!--<PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftVersion)" />-->
     <PackageVersion Include="Microsoft.JSInterop" Version="11.0.0-rc.1.26425.128" />
@@ -42,6 +44,10 @@
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="$(MicrosoftVersion)" />
     <PackageVersion Include="Microsoft.Maui.Essentials" Version="11.0.0-rc.1.26451.6" />
     <PackageVersion Include="Optris.Icons.Avalonia.FontAwesome" Version="12.0.7" />
+    <PackageVersion Include="ReactiveUI" Version="24.3.0" />
+    <PackageVersion Include="ReactiveUI.Avalonia" Version="12.1.2" />
+    <PackageVersion Include="ReactiveUI.SourceGenerators" Version="3.2.0" />
+    <PackageVersion Include="Splat.Microsoft.Extensions.DependencyInjection" Version="21.0.0" />
     <PackageVersion Include="System.Text.Json" Version="11.0.0-rc.1.26425.128" />
     <PackageVersion Include="Microsoft.Maui.Controls" Version="11.0.0-rc.1.26451.6" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="10.0.100" />
@@ -60,7 +66,7 @@
     <PackageVersion Include="Toolbelt.Blazor.SpeechSynthesis" Version="11.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.12" />
     <PackageVersion Include="MagicOnion.Serialization.MessagePack" Version="$(MagicOnionVersion)" />
-    <PackageVersion Include="MagicOnion.Abstractions" Version="$(MagicOnionVersion)" />
+    <PackageVersion Include="MagicOnion.Abstractions" Version="7.11.0" />
     <PackageVersion Include="MagicOnion.Client" Version="$(MagicOnionVersion)" />
     <PackageVersion Include="MagicOnion.Server" Version="$(MagicOnionVersion)" />
     <PackageVersion Include="Grpc.AspNetCore.Web" Version="$(GrpcVersion)" />

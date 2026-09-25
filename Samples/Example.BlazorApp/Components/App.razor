@@ -1,6 +1,5 @@
 ﻿@using Avae.DAL
 @using Avae.Essentials
-@using Example.DAL
 @using Example.Models
 @using Example.Razor.Layout
 @using Microsoft.AspNetCore.Components.Web
@@ -40,7 +39,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl);
+        unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl, provider.GetRequiredService<IDBFactory>());
         await base.OnInitializedAsync();
     }
 

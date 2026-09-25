@@ -3,7 +3,6 @@ using Avae.Essentials;
 using Avae.Maui;
 using Avae.ViewModels;
 using CommunityToolkit.Maui;
-using Example.DAL;
 using Example.Maui.Views;
 using Example.Models;
 using Example.ViewModels;
@@ -57,15 +56,13 @@ public static class MauiProgram
         builder.Services.RegisterWithLifetime<ModalView, ModalViewModel>();
         builder.Services.RegisterWithLifetime<FormView, FormViewModel>();
         builder.Services.RegisterWithLifetime<DefaultView, FormViewModel>(key: FormViewModel.KEY);
-        builder.Services.UseDBSqlLayer<SqliteConnection>();
+        builder.Services.AddPersonServiceLocal<SqliteConnection>();
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
 
         var app = builder.Build();
         IconResolver.Register(new ExampleIconResolver());
-        Repository.Initialize(app.Services.GetRequiredService<IDBMonitor<Person>>());
-        DBBase.Initialize(app.Services.GetRequiredService<IDBLayer>());
         return app;
     }
 }

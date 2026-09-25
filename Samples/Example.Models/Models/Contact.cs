@@ -1,65 +1,47 @@
-﻿using Avae.DAL;
-using Dapper.Contrib.Extensions;
+﻿//using Dapper.Contrib.Extensions;
 using MessagePack;
 using System.ComponentModel;
 
 namespace Example.Models;
 
-[Table(nameof(Contact))]
+//[Dapper.Contrib.Extensions.Table(nameof(Contact))]
+[System.ComponentModel.DataAnnotations.Schema.Table(nameof(Contact))]
 [MessagePackObject]
 public partial class Contact : INotifyPropertyChanged
 {
-    private Person? person;
-    private Person? contact;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-    [Dapper.Contrib.Extensions.Key]
+    //[Dapper.Contrib.Extensions.Key]
     [MessagePack.Key(0)]
     public long Id { get; set; }
 
-    [Computed]
-    [IgnoreMember]
-    public Person Person
-    {
-        get { return person ??= DBBase.Instance.Get<Person>(IdPerson)!; }
-        set
-        {
-            person = value;
-            OnPropertyChanged(nameof(Person));
-        }
-    }
-
     [MessagePack.Key(1)]
-    public long IdPerson { get; set; }
-
-    [MessagePack.Key(2)]
     public long IdContact { get; set; }
 
-    [Computed]
-    [IgnoreMember]
-    public Person PersonContact
-    {
-        get { return contact ??= DBBase.Instance.Get<Person>(IdContact)!; }
-        set
-        {
-            contact = value;
-            OnPropertyChanged(nameof(PersonContact));
-        }
-    }
+    [MessagePack.Key(2)]
+    public long IdPerson { get; set; }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+    private Person? _person;
+    private Person? _personContact;
+
+    //[Computed]
+    [IgnoreMember]
+    public Person? Person { get => _person; set { _person = value; OnPropertyChanged(nameof(Person)); } }
+
+    //[Computed]
+    [IgnoreMember]
+    public Person? PersonContact { get => _personContact; set { _personContact = value; OnPropertyChanged(nameof(PersonContact)); } }
 
     public override bool Equals(object? obj)
     {
-        return obj is Contact contact && contact.Id == this.Id;
+        if (obj is not Contact other) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Id != 0 && other.Id != 0 && Id == other.Id;
     }
 
-    public override int GetHashCode()
-    {
-        return Id.GetHashCode();
-    }
+    public override int GetHashCode() =>
+        Id != 0 ? Id.GetHashCode() : System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this);
 
-    private void OnPropertyChanged(string propertyName)
-    {
+    private void OnPropertyChanged(string propertyName) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
 }

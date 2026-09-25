@@ -31,9 +31,12 @@ public partial class MainViewModel : ObservableObject, IDisposable
         }
         else
         {
-            CurrentView = await router.GoToType(value.ViewModelType);
-            if (CurrentView != null)
-                dico.Add(value, CurrentView);
+            var context = await router.GoToType(value.ViewModelType, context:NavigableContext.Create().WithAdditionalParameters(("Test", "This is a value pass as parameter")));
+            if (context.view != null)
+            {
+                CurrentView = context.view;
+                dico.Add(value, context.view);
+            }
         }
     }
 

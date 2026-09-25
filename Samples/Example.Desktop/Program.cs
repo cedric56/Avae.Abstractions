@@ -1,6 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Labs.Notifications;
-using Example.DAL;
+using Example.Models;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -21,8 +21,8 @@ class Program
 
         return App.CreateApp(services =>
             {
-                services.UseDBSqlLayer<SqliteConnection>();
-                //services.UseDBOnionLayer();
+                services.AddPersonServiceLocal<SqliteConnection>();
+                //services.AddPersonServiceRemote();
                 services.AddSingleton<ILogger>(LoggerFactory.Create(b => b.AddDebug()).CreateLogger<App>());
             })
             .WithAppNotifications(new AppNotificationOptions()

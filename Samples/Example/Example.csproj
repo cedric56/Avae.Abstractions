@@ -26,10 +26,11 @@
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
     <PackageReference Include="Optris.Icons.Avalonia.FontAwesome" />
+    <PackageReference Include="ReactiveUI.Avalonia" />
+    <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
     <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
     <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
   </ItemGroup>

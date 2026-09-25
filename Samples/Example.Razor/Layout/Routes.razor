@@ -1,6 +1,5 @@
 ﻿@using Avae.DAL
 @using Avae.Razor.Components
-@using Example.DAL
 @using Example.Models
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.Extensions.DependencyInjection
@@ -25,10 +24,9 @@
     {
         if (OperatingSystem.IsBrowser())
         {
-            unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl, provider.GetRequiredService<IDBLayer>());
+            unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl, provider.GetRequiredService<IDBFactory>());
             //unsuscribe = await provider.AddSignalR(monitor);
         }
-        Repository.Initialize(monitor);
         await base.OnInitializedAsync();
     }
 

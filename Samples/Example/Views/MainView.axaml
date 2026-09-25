@@ -5,6 +5,7 @@
              xmlns:vm="using:Example.ViewModels"
 			 xmlns:behavior="using:Example"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:rxui="http://reactiveui.net"
              x:Class="Example.Views.MainView"
              x:DataType="vm:MainViewModel">
 	<!--xmlns:i="https://github.com/projektanker/icons.avalonia"-->
@@ -18,11 +19,13 @@
 			 Header="Application">
 		 <DrawerPage.Drawer>
 			<StackPanel Spacing="5" Margin="5">
-				<ListBox
+				<ListBox 
 					x:Name="MenuItemsListBox"
 					ItemsSource="{Binding Navigables}"
-					SelectedItem="{Binding SelectedNavigable}">
-					<ListBox.Styles>
+          SelectedItem="{Binding SelectedNavigable}"
+					>
+          <!---->
+          <ListBox.Styles>
 						<Style Selector="ListBoxItem">
 							<Setter Property="Padding" Value="10" />
 						</Style>

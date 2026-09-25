@@ -70,9 +70,8 @@
 	</ItemGroup>
 
 	<ItemGroup>    
-	  <ProjectReference Include="..\..\Bases\Avae.Maui\Avae.Maui.csproj" />    
-	  <ProjectReference Include="..\Example.DAL\Example.DAL.csproj" />
-	  <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
+	  <ProjectReference Include="..\..\Bases\Avae.Maui\Avae.Maui.csproj" />
+    <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

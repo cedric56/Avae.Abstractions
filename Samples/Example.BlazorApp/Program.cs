@@ -34,7 +34,6 @@ builder.Services
         options.DetailedErrors = true;
     });
 var app = builder.Build();
-DBBase.Initialize(app.Services.GetRequiredService<IDBLayer>());
 app.UseRouting();
 app.UseAntiforgery();
 app.MapStaticAssets();
