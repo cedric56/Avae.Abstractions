@@ -6,7 +6,7 @@ namespace Example.ViewModels;
 
 public partial class MainViewModel : ObservableObject, IDisposable, IMvvmManager
 {
-    private readonly Dictionary<NavigableView, IViewFor> dico = [];
+    private readonly Dictionary<NavigableView, (IViewFor view, object viewmodel)> dico = [];
 
     [ObservableProperty]
     private IViewFor? currentView;
@@ -41,15 +41,22 @@ public partial class MainViewModel : ObservableObject, IDisposable, IMvvmManager
 
     public void Dispose()
     {
+        foreach (var pair in dico)
+        {
+            (pair.Key as IDisposable)?.Dispose();
+            (pair.Value.view as IDisposable)?.Dispose();
+            (pair.Value.viewmodel as IDisposable)?.Dispose();
+        }
+
         dico.Clear();
     }
 
     async public Task OnNavigableChanged(NavigableView? value)
     {
         if (value is null) return;
-        if (dico.TryGetValue(value, out var view))
+        if (dico.TryGetValue(value, out var tuple))
         {
-            CurrentView = view;
+            CurrentView = tuple.view;
         }
         else
         {
@@ -57,7 +64,7 @@ public partial class MainViewModel : ObservableObject, IDisposable, IMvvmManager
             if (context.view != null)
             {
                 CurrentView = context.view;
-                dico.Add(value, context.view);
+                dico.TryAdd(value, (context.view, context.viewmodel));
             }
         }
     }
@@ -68,6 +75,6 @@ public partial class MainViewModel : ObservableObject, IDisposable, IMvvmManager
     {
         this.router = router;
 
-        OnSelectedNavigableChanged(Navigables[0]);
+        _ = OnNavigableChanged(Navigables[0]);
     }
 }

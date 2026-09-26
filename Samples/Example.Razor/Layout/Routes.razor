@@ -1,11 +1,9 @@
-﻿@using Avae.DAL
-@using Avae.Razor.Components
-@using Example.Models
+﻿@using Avae.Razor.Components
 @using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.Extensions.DependencyInjection
+@* @using Microsoft.Extensions.DependencyInjection
 @inject IServiceProvider provider;
 @inject IDBMonitor<Person> monitor;
-@implements IAsyncDisposable
+@implements IAsyncDisposable *@
 
 <Router AppAssembly="typeof(Example.Razor.Components.Home).Assembly"
         AdditionalAssemblies="new[] { typeof(MainLayout).Assembly }"
@@ -16,7 +14,7 @@
     </Found>
 </Router>
 
-@code
+@* @code
 {
     Func<Task>? unsuscribe;
 
@@ -35,5 +33,5 @@
         if (unsuscribe != null)
             await unsuscribe();
     }
-}
+} *@
 

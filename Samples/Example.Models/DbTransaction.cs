@@ -32,29 +32,29 @@ public static class DbTransaction
     }
 }
 
-//public static class ChildSync
-//{
-//    public static void Sync<TChild>(
-//        IDbConnection connection, IDbTransaction transaction,
-//        IEnumerable<TChild> before, IEnumerable<TChild> current,
-//        Func<TChild, bool> isNew,
-//        Func<TChild, TChild, bool> matches)
-//        where TChild : class
-//    {
-//        var currentList = current as IReadOnlyCollection<TChild> ?? current.ToList();
+public static class ChildSync
+{
+    public static void Sync<TChild>(
+        IDbConnection connection, IDbTransaction transaction,
+        IEnumerable<TChild> before, IEnumerable<TChild> current,
+        Func<TChild, bool> isNew,
+        Func<TChild, TChild, bool> matches)
+        where TChild : class
+    {
+        var currentList = current as IReadOnlyCollection<TChild> ?? current.ToList();
 
-//        foreach (var child in currentList)
-//        {
-//            if (isNew(child))
-//                connection.Insert(child, transaction);
-//            else
-//                connection.Update(child, transaction);
-//        }
+        foreach (var child in currentList)
+        {
+            if (isNew(child))
+                connection.Insert(child, transaction);
+            else
+                connection.Update(child, transaction);
+        }
 
-//        foreach (var old in before)
-//            if (!currentList.Any(c => matches(c, old)))
-//                connection.Delete(old, transaction);
-//    }
-//}
+        foreach (var old in before)
+            if (!currentList.Any(c => matches(c, old)))
+                connection.Delete(old, transaction);
+    }
+}
 
 

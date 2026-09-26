@@ -8,7 +8,7 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
 
-        var vm = new MainViewModel(new Avae.ViewModels.Router(provider));
+        var vm = provider.GetRequiredService<MainViewModel>();
 
         BindingContext = vm;
 
@@ -21,9 +21,14 @@ public partial class AppShell : Shell
                 Title = navigable.DisplayName,
                 ContentTemplate = new DataTemplate(() =>
                 {
-                    vm.SelectedNavigable = navigable;
-                    //Title = navigable.DisplayName;
-                    return vm.CurrentView;
+                    //TODO Two instances created
+
+                    //if (navigable.ViewModelType != typeof(HomeViewModel))
+                    //{
+                        //vm.OnNavigableChanged(navigable).ConfigureAwait(false).GetAwaiter().GetResult();
+                        vm.SelectedNavigable = navigable;
+                    //}
+                    return vm.CurrentView as ContentPage ?? new ContentPage() { Content = new Label() { Text = "Not found" } };
                 })
             });
         }

@@ -1,10 +1,10 @@
 ﻿using Avae.Services;
 using Avae.ViewModels;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Dommel;
 using Example.Models;
-//using Microsoft.Maui.Dispatching;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Person = Example.Models.Person;
@@ -54,9 +54,9 @@ public partial class FormViewModel(
     {
         if (context.Key == KEY)
         {
-            await personService.LoadContactsAsync(Person);
+            await personService.LoadContactsAsync(Person).ConfigureAwait(false);
             personGraph.AttachContacts(Person, Person.Contacts);
-            SelectedItems = [.. Person.Contacts.Select(c => c.Person!)];            
+            SelectedItems = [.. Person.Contacts.Select(c => c.Person!)];
         }
     }
 

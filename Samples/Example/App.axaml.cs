@@ -13,9 +13,6 @@ using Example.Views;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using ReactiveUI.Avalonia;
 
 namespace Example;
 
@@ -28,7 +25,6 @@ public partial class App(IServiceProvider provider) : Application
         Action<IServiceProvider>? afterBuildProvider = null,
          Action? onAppDispose = null)
     {
-        Func<Task> unsuscribe = () => Task.CompletedTask;
         return AvaeBuilder.CreateAvaloniaApp(
           Icon,
           true,
@@ -53,6 +49,7 @@ public partial class App(IServiceProvider provider) : Application
                        _ => throw new NotImplementedException()
                    };
                });
+               services.AddSingleton<MainViewModel>();
                services.Register<HomeView, HomeViewModel>();
                services.Register<MenuView, MenuViewModel>();
                services.Register<EssentialsView, EssentialsViewModel>();
@@ -64,28 +61,12 @@ public partial class App(IServiceProvider provider) : Application
                services.RegisterWithLifetime<ModalWindow, ModalViewModel>();
                configureServices?.Invoke(services);
            },
-           afterBuild: async provider =>
+           afterBuild: afterBuildProvider,
+           onDispose: 
+           () =>
            {
-               var monitor = provider.GetRequiredService<IDBMonitor<Person>>();
-               var factory = provider.GetRequiredService<IDBFactory>();
-
-               var http = provider.GetService<HttpMessageHandler>();
-
-               unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl, factory, http);
-
-               //Func<HttpMessageHandler, HttpMessageHandler> factory = null!;
-               //if (http != null)
-               //    factory = _ => http;
-
-               //unsuscribe = await monitor.AddSignalR(Constants.SignalHubUrl, factory: factory);
-
-               afterBuildProvider?.Invoke(provider);
-           },
-           onDispose: async () =>
-           {
-               await unsuscribe.Invoke();
                onAppDispose?.Invoke();
-           });
+        });
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -94,7 +75,7 @@ public partial class App(IServiceProvider provider) : Application
 
         var mainView = new MainView()
         {
-            DataContext = new MainViewModel(new Router(provider))
+            DataContext = provider.GetRequiredService<MainViewModel>()
         };
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

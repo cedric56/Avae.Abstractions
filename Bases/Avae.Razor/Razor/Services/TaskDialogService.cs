@@ -1,6 +1,5 @@
 ﻿using Avae.Razor.Components;
 using Avae.Services;
-using System.Threading.Tasks;
 
 namespace Avae.Razor;
 
@@ -10,10 +9,8 @@ internal class TaskDialogService : ITaskDialogService
     public async Task<TaskDialogStandardResult> ShowAsync(TaskDialogParams @params, params TaskDialogStandardResult[] results)
     {
         var dialog = await MudDialogService.ShowAsync<TaskDialog>(@params.Title,
-        new MudBlazor.DialogOptions()
-        {
-            BackdropClick = true
-        });
+        new MudBlazor.DialogParameters() { { nameof(TaskDialog.Parameters), @params } },
+        new MudBlazor.DialogOptions() { BackdropClick = true });
         var result = await dialog.Result;
         return result?.Data is TaskDialogStandardResult cdr ? cdr : TaskDialogStandardResult.None;
     }

@@ -24,27 +24,11 @@
     }
 </MudList>
 
-    @code {
+@code {
 
     public IReadOnlyCollection<Person> SelectedPersons
     {
         get => ViewModel.SelectedItems;
         set => ViewModel.SelectedItems = new(value);
     }
-
-    // protected async override Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     if (firstRender)
-    //     {
-    //         ViewModel.PropertyChanged += OnPropertyChanged;
-    //         async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    //         {
-    //             if (e.PropertyName == nameof(FormViewModel.CurrentView))
-    //             {
-    //                 ViewModel.PropertyChanged -= OnPropertyChanged;
-    //                 await InvokeAsync(StateHasChanged);
-    //             }
-    //         }
-    //     }
-    // }
 }

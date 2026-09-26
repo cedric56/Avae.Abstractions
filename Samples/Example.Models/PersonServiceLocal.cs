@@ -20,7 +20,7 @@ IPersonGraph graph) : IPersonService
         using var connection = factory.CreateConnection()!;
         connection.Open();
 
-        var contacts = (await connection.SelectAsync<Contact>(c => c.IdContact == person.Id)).ToList();
+        var contacts = (await connection.SelectAsync<Contact>(c => c.IdContact == person.Id).ConfigureAwait(false)).ToList();
         graph.AttachContacts(person, contacts);
         person.Contacts = contacts;
     }
@@ -32,12 +32,21 @@ IPersonGraph graph) : IPersonService
 
         async Task Save(IDbConnection dbConnection, IDbTransaction dbTransaction)
         {
+            var before = (await dbConnection.SelectAsync<Contact>(c => c.IdContact == person.Id, dbTransaction)).ToList();
+
+            //ChildSync.Sync(dbConnection, dbTransaction, before, person.Contacts,
+            //    contact =>
+            //    {
+            //        contact.IdContact = person.Id;
+            //        return contact.Id == 0;
+            //    },
+            //    (first, second) => first.IdPerson != second.IdPerson);
+
             if (person.Id == 0)
                 dbConnection.Insert(person, dbTransaction);
             else
                 dbConnection.Update(person, dbTransaction);
 
-            var before = (await dbConnection.SelectAsync<Contact>(c => c.IdContact == person.Id, dbTransaction)).ToList();
 
             foreach (var contact in person.Contacts)
             {

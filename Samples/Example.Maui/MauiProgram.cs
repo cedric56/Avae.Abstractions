@@ -48,7 +48,8 @@ public static class MauiProgram
         });
         builder.Services.AddNavigationRegion("main");
         builder.Services.AddNavigationRegion("side");
-        builder.Services.Register<MainPage, MainViewModel>();
+        builder.Services.AddSingleton<MainViewModel>();
+        //builder.Services.Register<MainPage, MainViewModel>();
         builder.Services.Register<HomeView ,HomeViewModel>();
         builder.Services.Register<MenuView, MenuViewModel>();
         builder.Services.Register<DefaultPage, RegionsViewModel>();
@@ -57,6 +58,7 @@ public static class MauiProgram
         builder.Services.RegisterWithLifetime<FormView, FormViewModel>();
         builder.Services.RegisterWithLifetime<DefaultView, FormViewModel>(key: FormViewModel.KEY);
         builder.Services.AddPersonServiceLocal<SqliteConnection>();
+        builder.Services.AddSingleton<IDBMonitor<Person>, DBMonitor<Person>>();
 #if DEBUG
         builder.Logging.AddDebug();
 #endif

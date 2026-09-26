@@ -1,5 +1,63 @@
-﻿<h3>ToDo</h3>
+﻿@using Avae.Services
+@using MudBlazor
+@inject IRequestedThemeService themeService
+<MudDialog Class="@($"wui-dialog {(Service.IsDarkMode ? "mud-theme-dark" : "")}")">
+    <TitleContent>
+        @if (!string.IsNullOrWhiteSpace(Parameters.Title))
+        {
+            <MudText Typo="Typo.h6">@Parameters.Title</MudText>
+        }
+    </TitleContent>
 
+    <DialogContent>
+        @if (ComponentView != null)
+        {
+            <DynamicComponent Type="@ComponentView.Type" Parameters="@ComponentView.Parameters" />
+        }
+    </DialogContent>
+
+    <DialogActions>
+        @* Order matters: WinUI's default/secondary action sits on the LEFT,
+           the accented primary action on the RIGHT *@
+        <MudButton class="dialog-action"
+                   OnClick="Ok">
+            Ok
+        </MudButton>
+        <MudButton class="dialog-action"
+                    Color="Color.Primary"
+                   OnClick="Cancel">
+            Cancel
+        </MudButton>
+    </DialogActions>
+</MudDialog>
 @code {
+    private RequestThemeService Service => ((RequestThemeService)themeService);
 
+    [CascadingParameter]
+    public required IMudDialogInstance Instance { get; set; }
+
+    [Parameter]
+    public required TaskDialogParams Parameters { get; set; }
+
+    private ViewFor? ComponentView => Parameters.Content as ViewFor;
+
+    private void Ok()
+    {
+        SetResult(TaskDialogStandardResult.OK);
+    }
+
+    private void Cancel()
+    {
+        SetResult(TaskDialogStandardResult.Cancel);
+    }
+
+    private void SetResult(TaskDialogStandardResult result)
+    {
+        if (true == Parameters.Closing?.Invoke())
+            return;
+
+        Instance.Close(result);
+
+        Parameters.Closed?.Invoke();
+    }
 }

@@ -1,8 +1,22 @@
 ﻿@inherits AvaeComponentBase<ModalViewModel>
 @using Avae.Razor
+@using Avae.Services
 @using Example.ViewModels
 @using MudBlazor
-<MudTextField label="Message" @bind-Value="ViewModel.Message" />
-<MudButton onclick="@(() => ViewModel.Validate())">Validate</MudButton>
-<MudButton onclick="@(() => ViewModel.Cancel())">Cancel</MudButton>
+@inject IRequestedThemeService themeService
+<MudDialog Class="@($"wui-dialog {(Service.IsDarkMode ? "mud-theme-dark" : "")}")">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@ViewModel.Title</MudText>        
+    </TitleContent>
 
+    <DialogContent>
+        <MudTextField label="Message" @bind-Value="ViewModel.Message" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" onclick="@(() => ViewModel.Validate())">Validate</MudButton>
+        <MudButton onclick="@(() => ViewModel.Cancel())">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    private RequestThemeService Service => (RequestThemeService)themeService;
+}

@@ -3,7 +3,7 @@ using System;
 
 namespace Avae.Razor;
 
-internal class RequestThemeService : IRequestedThemeService
+public class RequestThemeService : IRequestedThemeService
 {
     public EventHandler<RequestedTheme>? RequestedThemeChanged;
     public bool IsDarkMode { get; set; } = true;

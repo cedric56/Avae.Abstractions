@@ -2,53 +2,50 @@
 @using Avae.Razor
 @using Avae.Services
 @using MudBlazor
-@* <div class="dialog-container form">
-    <div></div>
-    <div class="@ComponentView?.Class">
-        @if (ComponentView != null)
+@inject IRequestedThemeService themeService
+<MudDialog Class="@($"wui-dialog {(Service.IsDarkMode ? "mud-theme-dark" : "")}")" >
+    <TitleContent>
+        @if (!string.IsNullOrWhiteSpace(Parameters.Title))
         {
-            <DynamicComponent  Type="@ComponentView.Type" Parameters="@ComponentView.Parameters"/>
+            <MudText Typo="Typo.h6">@Parameters.Title</MudText>
         }
-    </div>
-    <div class="columns center">
-        <MudButton Disabled="@Parameters.IsPrimaryButtonEnabled" style="@Style(@Parameters.PrimaryButtonText)" OnClick="Primary">@Parameters.PrimaryButtonText</MudButton>
-        <MudButton Disabled="@Parameters.IsSecondaryButtonEnabled" style="@Style(@Parameters.SecondaryButtonText)" OnClick="Secondary">@Parameters.SecondaryButtonText</MudButton>
-        <MudButton style="@Style(@Parameters.CloseButtonText)" OnClick="Close">@Parameters.CloseButtonText</MudButton>
-    </div>
-</div> *@
-<div class="dialog-container modal @ComponentView?.Class">
-    @if (!string.IsNullOrWhiteSpace(Parameters.Title))
-    {
-        <div class="dialog-title">@Parameters.Title</div>
-    }
+        
+    </TitleContent>
 
-    <div class="dialog-body @ComponentView?.Class">
+    <DialogContent>
         @if (ComponentView != null)
         {
             <DynamicComponent Type="@ComponentView.Type" Parameters="@ComponentView.Parameters" />
         }
-    </div>
+    </DialogContent>
 
-    <div class="dialog-actions">
+    <DialogActions>
+        @* Order matters: WinUI's default/secondary action sits on the LEFT,
+           the accented primary action on the RIGHT *@
         @if (!string.IsNullOrWhiteSpace(Parameters.PrimaryButtonText))
         {
-            <button class="dialog-action"
+            <MudButton class="dialog-action"
                     disabled="@Parameters.IsPrimaryButtonEnabled"
-                    @onclick="Primary">@Parameters.PrimaryButtonText</button>
+                       OnClick="Primary">
+                @Parameters.PrimaryButtonText
+            </MudButton>
         }
         @if (!string.IsNullOrWhiteSpace(Parameters.SecondaryButtonText))
         {
-            <button class="dialog-action"
+            <MudButton class="dialog-action"
                     disabled="@Parameters.IsSecondaryButtonEnabled"
-                    @onclick="Secondary">@Parameters.SecondaryButtonText</button>
+                       OnClick="Secondary">
+                @Parameters.SecondaryButtonText
+            </MudButton>
         }
         @if (!string.IsNullOrWhiteSpace(Parameters.CloseButtonText))
         {
-            <button class="dialog-action" @onclick="Close">@Parameters.CloseButtonText</button>
+            <MudButton class="dialog-action" OnClick="Close">@Parameters.CloseButtonText</MudButton>
         }
-    </div>
-</div>
+    </DialogActions>
+</MudDialog>
 @code {
+    private RequestThemeService Service => ((RequestThemeService)themeService);
 
     protected override void OnAfterRender(bool firstRender)
     {

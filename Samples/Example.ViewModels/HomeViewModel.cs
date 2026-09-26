@@ -1,6 +1,8 @@
-﻿using Avae.Services;
+﻿using Avae.DAL;
+using Avae.Services;
 using Avae.ViewModels;
 using CommunityToolkit.Mvvm.Messaging;
+using Example.Models;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -14,11 +16,14 @@ public partial class HomeViewModel(
     ITaskDialogService taskDialogService,
     IServiceProvider provider,
     INotificationService notificationService,
-    IRequestedThemeService requestedTheme) :
+    IRequestedThemeService requestedTheme,
+    IDBMonitor<Person> monitor) :
     ReactiveUI.ReactiveObject,
     //IRoutableViewModel,
     //ObservableObject,
-    IEquatable<HomeViewModel>
+    IEquatable<HomeViewModel>,
+    IDisposable,
+    INavigable
 {
     [ReactiveCommand]
     public void Messenger()
@@ -152,5 +157,28 @@ public partial class HomeViewModel(
     public bool Equals(HomeViewModel? other)
     {
         return this == other;
+    }
+
+    public void Dispose()
+    {
+        unsuscribe?.Invoke();
+    }
+
+    private bool _isfirstLoad = true;
+    Func<Task>? unsuscribe;
+    public async Task OnNavigatedTo(NavigableContext context)
+    {
+        if(_isfirstLoad)
+        {
+            _isfirstLoad = false;
+            var http = provider.GetService<HttpMessageHandler>();
+            unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl, provider.GetRequiredService<IDBFactory>(), http);
+
+            //Func<HttpMessageHandler, HttpMessageHandler> factory = null!;
+            //if (http != null)
+            //    factory = _ => http;
+
+            //unsuscribe = await monitor.AddSignalR(Constants.SignalHubUrl, factory: factory);
+        }
     }
 }

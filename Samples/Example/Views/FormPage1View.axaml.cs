@@ -15,6 +15,6 @@ public partial class FormPage1View : ViewFor<FormViewModel>
     {
         base.OnLoaded(e);
 
-        tb.Focus();
+        //tb.Focus();
     }
 }

@@ -1,7 +1,4 @@
-using Avae.Embedded;
 using Avae.Essentials;
-using Avae.Notifications;
-using Avalonia.Labs.Notifications;
 using Example.Razor;
 using Example.Razor.Layout;
 using Microsoft.AspNetCore.Components.Web;
@@ -19,7 +16,7 @@ try
     });
     builder.Services.UseEssentials();
     //builder.Services.UseNotifications();
-    builder.Services.UseSharedLibrary(Avae.Razor.TypeRazorProject.Wasm, ServiceLifetime.Scoped);
+    builder.Services.UseSharedLibrary(ServiceLifetime.Scoped);
     //await builder.Services.UseEmbeddedAvaloniaApp("avalonia", b => b.WithAppNotifications());
     var app = builder.Build();
     await app.RunAsync();
