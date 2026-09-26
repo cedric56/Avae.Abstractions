@@ -1,69 +1,64 @@
 ﻿@page "/essentials"
-@using Avae.ViewModels
+@inherits Avae.Razor.Components.AvaeComponentBase<EssentialsViewModel>
 @using Example.ViewModels
 @using MudBlazor
-@inject IServiceProvider provider
 
 <MudExpansionPanels MultiExpansion="true">
     <MudExpansionPanel Text="Dialogs">
-        <MudButton OnClick="() => viewModel.PickPhotoCmd()">Pick a Photo</MudButton>
-        <MudButton OnClick="() => viewModel.PickVideoCmd()">Pick a Video</MudButton>
-        <MudButton OnClick="() => viewModel.PickFileCmd()">File</MudButton>
-        <MudButton Disabled="@viewModel.IsSupportedInMauiPlatformInverted()" OnClick="() => viewModel.PickImageCmd()">Image</MudButton>
-        <MudButton Disabled="@viewModel.IsSupportedInMauiPlatformInverted()" OnClick="() => viewModel.PickPdfCmd()">Pdf</MudButton>
-        <MudButton OnClick="() => viewModel.PickCustomTypeCmd()">Custom</MudButton>
-        <MudButton OnClick="() => viewModel.PickMultipleFilesCmd()">Multiple</MudButton>
+        <MudButton OnClick="() => ViewModel.PickPhotoCmd()">Pick a Photo</MudButton>
+        <MudButton OnClick="() => ViewModel.PickVideoCmd()">Pick a Video</MudButton>
+        <MudButton OnClick="() => ViewModel.PickFileCmd()">File</MudButton>
+        <MudButton Disabled="@ViewModel.IsSupportedInMauiPlatformInverted()" OnClick="() => ViewModel.PickImageCmd()">Image</MudButton>
+        <MudButton Disabled="@ViewModel.IsSupportedInMauiPlatformInverted()" OnClick="() => ViewModel.PickPdfCmd()">Pdf</MudButton>
+        <MudButton OnClick="() => ViewModel.PickCustomTypeCmd()">Custom</MudButton>
+        <MudButton OnClick="() => ViewModel.PickMultipleFilesCmd()">Multiple</MudButton>
     </MudExpansionPanel>
     <MudExpansionPanel Text="Medias">
-        <MudButton OnClick="() => viewModel.DialCmd()">Dial</MudButton>
-        <MudButton OnClick="() => viewModel.SmsCmdAsync()">Sms</MudButton>
-        <MudButton OnClick="() => viewModel.ContactsCmd()">Contacts</MudButton>
-        <MudButton OnClick="() => viewModel.EmailCmd()">Email</MudButton>
-        <MudButton OnClick="() => viewModel.ShareCmdAsync()">Share</MudButton>
-        <MudButton OnClick="() => viewModel.CapturePhotoCmd()">CapturePhoto</MudButton>
-        <MudButton OnClick="() => viewModel.CaptureVideoCmd()">CaptureVideo</MudButton>
-        <MudButton OnClick="() => viewModel.ScreenshotCmd()">Screenshot</MudButton>
-        <MudButton OnClick="() => viewModel.BrowserCmdAsync()">Browser</MudButton>
-        <MudButton OnClick="() => viewModel.MapCmdAsync()">Map</MudButton>
-        <MudButton OnClick="() => viewModel.LaunchCmd()">Launch</MudButton>
-        <MudButton OnClick="() => viewModel.AppInfoCmd()">AppInfo</MudButton>
-        <MudButton OnClick="() => viewModel.DeviceDisplayCmd()">DeviceInfo</MudButton>
+        <MudButton OnClick="() => ViewModel.DialCmd()">Dial</MudButton>
+        <MudButton OnClick="() => ViewModel.SmsCmdAsync()">Sms</MudButton>
+        <MudButton OnClick="() => ViewModel.ContactsCmd()">Contacts</MudButton>
+        <MudButton OnClick="() => ViewModel.EmailCmd()">Email</MudButton>
+        <MudButton OnClick="() => ViewModel.ShareCmdAsync()">Share</MudButton>
+        <MudButton OnClick="() => ViewModel.CapturePhotoCmd()">CapturePhoto</MudButton>
+        <MudButton OnClick="() => ViewModel.CaptureVideoCmd()">CaptureVideo</MudButton>
+        <MudButton OnClick="() => ViewModel.ScreenshotCmd()">Screenshot</MudButton>
+        <MudButton OnClick="() => ViewModel.BrowserCmdAsync()">Browser</MudButton>
+        <MudButton OnClick="() => ViewModel.MapCmdAsync()">Map</MudButton>
+        <MudButton OnClick="() => ViewModel.LaunchCmd()">Launch</MudButton>
+        <MudButton OnClick="() => ViewModel.AppInfoCmd()">AppInfo</MudButton>
+        <MudButton OnClick="() => ViewModel.DeviceDisplayCmd()">DeviceInfo</MudButton>
     </MudExpansionPanel>
     <MudExpansionPanel Text="Sensors">
-        <MudButton OnClick="() => viewModel.AccelerometerCmd()">Accelerometer</MudButton>
-        <MudButton OnClick="() => viewModel.MagnetometerCmd()">Magnetometer</MudButton>
-        <MudButton OnClick="() => viewModel.BarometerCmd()">Barometer</MudButton>
-        <MudButton OnClick="() => viewModel.OrientationSensorCmd()">OrientationSensor</MudButton>
-        <MudButton OnClick="() => viewModel.VibrationCmdAsync()">Vibration</MudButton>
-        <MudButton OnClick="() => viewModel.CompassCmdAsync()">Compass</MudButton>
-        <MudButton OnClick="() => viewModel.GyroscopeCmd()">Gyroscope</MudButton>
-        <MudButton OnClick="() => viewModel.FlashOnCmd()">Flash On</MudButton>
-        <MudButton OnClick="() => viewModel.FlashOffCmd()">Flash Off</MudButton>
+        <MudButton OnClick="() => ViewModel.AccelerometerCmd()">Accelerometer</MudButton>
+        <MudButton OnClick="() => ViewModel.MagnetometerCmd()">Magnetometer</MudButton>
+        <MudButton OnClick="() => ViewModel.BarometerCmd()">Barometer</MudButton>
+        <MudButton OnClick="() => ViewModel.OrientationSensorCmd()">OrientationSensor</MudButton>
+        <MudButton OnClick="() => ViewModel.VibrationCmdAsync()">Vibration</MudButton>
+        <MudButton OnClick="() => ViewModel.CompassCmdAsync()">Compass</MudButton>
+        <MudButton OnClick="() => ViewModel.GyroscopeCmd()">Gyroscope</MudButton>
+        <MudButton OnClick="() => ViewModel.FlashOnCmd()">Flash On</MudButton>
+        <MudButton OnClick="() => ViewModel.FlashOffCmd()">Flash Off</MudButton>
     </MudExpansionPanel>
     <MudExpansionPanel Text="Others">
-        <MudButton OnClick="() => viewModel.ConnectivityCmdAsync()">Connectivity</MudButton>
-        <MudButton OnClick="() => viewModel.VersionCmd()">Version</MudButton>
-        <MudButton OnClick="() => viewModel.SpeechCmdAsync()">Speech</MudButton>
-        <MudButton OnClick="() => viewModel.BatteryCmd()">Battery</MudButton>
-        <MudButton OnClick="() => viewModel.DeviceDisplayCmd()">DeviceDisplay</MudButton>
-        <MudButton OnClick="() => viewModel.SecureStorageCmd()">SecureStorage</MudButton>
-        <MudButton OnClick="() => viewModel.FileSystemCmd()">FileSystem</MudButton>
-        <MudButton OnClick="() => viewModel.HapticCmd()">Haptic</MudButton>
-        <MudButton OnClick="() => viewModel.SemanticCmd()">Semantic</MudButton>
+        <MudButton OnClick="() => ViewModel.ConnectivityCmdAsync()">Connectivity</MudButton>
+        <MudButton OnClick="() => ViewModel.VersionCmd()">Version</MudButton>
+        <MudButton OnClick="() => ViewModel.SpeechCmdAsync()">Speech</MudButton>
+        <MudButton OnClick="() => ViewModel.BatteryCmd()">Battery</MudButton>
+        <MudButton OnClick="() => ViewModel.DeviceDisplayCmd()">DeviceDisplay</MudButton>
+        <MudButton OnClick="() => ViewModel.SecureStorageCmd()">SecureStorage</MudButton>
+        <MudButton OnClick="() => ViewModel.FileSystemCmd()">FileSystem</MudButton>
+        <MudButton OnClick="() => ViewModel.HapticCmd()">Haptic</MudButton>
+        <MudButton OnClick="() => ViewModel.SemanticCmd()">Semantic</MudButton>
     </MudExpansionPanel>
 
     <MudExpansionPanel Text="Geo">
-        <MudButton OnClick="() => viewModel.GeocodeCmd()">Geocode</MudButton>
-        <MudButton OnClick="() => viewModel.GeolocationCmd()">Geolocation</MudButton>
+        <MudButton OnClick="() => ViewModel.GeocodeCmd()">Geocode</MudButton>
+        <MudButton OnClick="() => ViewModel.GeolocationCmd()">Geolocation</MudButton>
     </MudExpansionPanel>
 
     <MudExpansionPanel Text="Authentification">
-        <MudButton OnClick="() => viewModel.GoogleCmd()">Google</MudButton>
+        <MudButton OnClick="() => ViewModel.GoogleCmd()">Google</MudButton>
         <MudText>Auth token :</MudText> 
-        <MudText>@viewModel.AuthToken</MudText>
+        <MudText>@ViewModel.AuthToken</MudText>
     </MudExpansionPanel>
 </MudExpansionPanels>
-@code {
-    EssentialsViewModel? _viewModel;
-    EssentialsViewModel viewModel => _viewModel??= provider.GetViewModel<EssentialsViewModel>();
-}

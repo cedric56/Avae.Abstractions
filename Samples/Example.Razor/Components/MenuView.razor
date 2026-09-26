@@ -1,19 +1,17 @@
 ﻿@using System.ComponentModel
-@using Avae.DAL
 @using Avae.Razor
-@using Example.Models
 @using Avae.ViewModels
+@using Example.Models
 @using Example.ViewModels
 @using MudBlazor
-@inherits Avae.Razor.Components.AvaeComponentBase
+@inherits Avae.Razor.Components.AvaeComponentBase<MenuViewModel>
+@implements IAsyncDisposable
 @page "/menu"
-@inject IServiceProvider provider
-@inject IEntityCache<Person> cache
 @if (CurrentView != null)
 {
     <DynamicComponent Type="@CurrentView.Type" Parameters="@CurrentView.Parameters"/>
 }
-else
+else if(ViewModel != null)
 {
     <MudButton OnClick="ViewModel.Add">Add</MudButton>
     <MudButton OnClick="ViewModel.Update" Disabled="@IsDisabled">Update</MudButton>
@@ -31,28 +29,27 @@ else
 
 @code {
 
-    MenuViewModel? _viewModel = null;
-    MenuViewModel ViewModel => _viewModel ??= provider.GetViewModel<MenuViewModel>();
-    
-    private bool IsDisabled => ViewModel.SelectedPerson == null;
+    private bool IsDisabled => ViewModel?.SelectedPerson == null;
 
-    private ViewFor? CurrentView => ViewModel.CurrentView as ViewFor;
+    private ViewFor? CurrentView => ViewModel?.CurrentView as ViewFor;
 
-
-    protected async override Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnParametersSet()
     {
-        await base.OnAfterRenderAsync(firstRender);
+        ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+        ViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-        if (firstRender)
-        {
-            ViewModel.PropertyChanged -= PropertyChanged;
-            ViewModel.PropertyChanged += PropertyChanged;
-            ViewModel.Persons = new(cache.Entities);
-        }
+        base.OnParametersSet();
     }
 
-    async void PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private async void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        await InvokeAsync(StateHasChanged);
+        if (e.PropertyName == nameof(MenuViewModel.CurrentView))
+            await InvokeAsync(StateHasChanged);
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+        return ValueTask.CompletedTask;
     }
 }

@@ -42,7 +42,7 @@ public class ViewFor<TView, TViewModel> : ViewFor, IViewFor where TViewModel : c
     }
 
     public ViewFor(IServiceProvider sp, NavigableContext? context = null, Dictionary<string, object>? parameters = null)
-    {
+    {        
         var viewModel = sp.GetViewModel<TViewModel>(context);
         Parameters = new Dictionary<string, object>(parameters ?? [])
         {

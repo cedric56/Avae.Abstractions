@@ -4,9 +4,7 @@ using Avae.Services;
 using Avae.ViewModels;
 using Example.Models;
 using Example.Razor.Components;
-using Example.Razor.Layout;
 using Example.ViewModels;
-using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 
@@ -15,6 +13,7 @@ namespace Example.Razor;
 public static class Extensions
 {
     public static void UseSharedLibrary(this IServiceCollection services,
+        TypeRazorProject typeRazorProject,
         ServiceLifetime lifetime = ServiceLifetime.Singleton,
         Action<IServiceProvider>? initialize = null)
     {
@@ -32,9 +31,10 @@ public static class Extensions
             };
         });
 
-        services.RegisterViewFor((sp) => new ViewFor<Home, HomeViewModel>(), lifetime);
-        services.RegisterViewFor((sp) => new ViewFor<MenuView, MenuViewModel>(), lifetime);
-        services.RegisterViewFor((sp) => new ViewFor<EssentialsView, EssentialsViewModel>(), lifetime);
+        services.AddSingleton<IMvvmManager, MainViewModel>();
+        services.RegisterViewFor<Home, HomeViewModel>(lifetime);
+        services.RegisterViewFor<MenuView, MenuViewModel>(lifetime);
+        services.RegisterViewFor<EssentialsView, EssentialsViewModel>(lifetime);
         services.RegisterViewFor((sp) => new ModalFor<ModalView, ModalViewModel, string?> { Class = "center" });
         services.RegisterViewFor((sp) => new ViewFor<FormPage2, FormPage2ViewModel> { Class = "center" });
         services.RegisterViewFor<FormPage3, FormPage3ViewModel, Person>(
@@ -45,21 +45,13 @@ public static class Extensions
             {
                 Class = "center"
             });
-        services.RegisterViewFor((sp) => new ViewFor<FormPage1, FormViewModel>(), key: FormViewModel.KEY);
-        services.RegisterViewFor((sp) => new ViewFor<FormView, FormViewModel>());
-
-        //if (!OperatingSystem.IsBrowser())
-        //{
-        //    services.UseDBSqlLayer<SqliteConnection>();
-        //}
-        //else
-        //{
+        services.RegisterViewFor<FormPage1, FormViewModel>(key: FormViewModel.KEY);
+        services.RegisterViewFor<FormView, FormViewModel>();
         services.AddPersonServiceRemote();
         services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
-        //}
-
-        var navMenu = new ViewFor<NavMenu>();
-        services.UseAvae(navMenu,
+        
+        services.UseAvae(
+            typeRazorProject,
             NotificationPosition.BottomLeft, 
             5,     
             initialize);

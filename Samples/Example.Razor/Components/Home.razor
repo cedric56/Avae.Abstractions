@@ -1,14 +1,11 @@
-﻿@page "/"
-@inherits Avae.Razor.Components.AvaeComponentBase
-@using Avae.Services
-@using Avae.ViewModels
+﻿@using Avae.Services
 @using Example.ViewModels
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.Extensions.DependencyInjection
 @using MudBlazor
-
+@inherits Avae.Razor.Components.AvaeComponentBase<HomeViewModel>
+@page "/"
 @inject IServiceProvider provider
-
 <style>
     .rows
     {
@@ -20,19 +17,16 @@
 <PageTitle>Home</PageTitle>
 
 <div class="rows center">
-    <MudButton OnClick="() => HomeViewModel.ShowModal()">Show Modal</MudButton>
-    <MudButton OnClick="() => HomeViewModel.ShowContentDialog()">Show ContentDialog</MudButton>
-    <MudButton OnClick="() => HomeViewModel.ShowTaskDialog()">Show TaskDialog</MudButton>
-    <MudButton OnClick="() => HomeViewModel.ShowNotification()">Show Snack</MudButton>
-    <MudButton OnClick="() => HomeViewModel.ShowRequestedTheme()">Theme</MudButton>
-    <MudButton OnClick="() => HomeViewModel.ShowSystemNotification()">Notification</MudButton>
+    <MudButton OnClick="() => ViewModel.ShowModal()">Show Modal</MudButton>
+    <MudButton OnClick="() => ViewModel.ShowContentDialog()">Show ContentDialog</MudButton>
+    <MudButton OnClick="() => ViewModel.ShowTaskDialog()">Show TaskDialog</MudButton>
+    <MudButton OnClick="() => ViewModel.ShowNotification()">Show Snack</MudButton>
+    <MudButton OnClick="() => ViewModel.ShowRequestedTheme()">Theme</MudButton>
+    <MudButton OnClick="() => ViewModel.ShowSystemNotification()">Notification</MudButton>
 </div>
 
 @code
-{
-    HomeViewModel? _homeViewModel;
-    HomeViewModel HomeViewModel => _homeViewModel??= provider.GetViewModel<HomeViewModel>();
-
+{    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         var service = provider.GetService<ISystemNotificationService>();

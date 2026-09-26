@@ -1,9 +1,5 @@
-﻿@using Example.ViewModels
+﻿@inherits AvaeComponentBase<FormPage2ViewModel>
+@using Avae.Razor.Components
+@using Example.ViewModels
 
 <h3 class="center">FormPage2</h3>
-
-@code
-{
-    [Parameter]
-    public required FormPage2ViewModel ViewModel { get; set; }
-}

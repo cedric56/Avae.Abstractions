@@ -1,4 +1,5 @@
-﻿@using Avae.Razor.Components
+﻿@inherits AvaeComponentBase<FormViewModel>
+@using Avae.Razor.Components
 @using Example.ViewModels
 @using MudBlazor
 <style>
@@ -29,9 +30,6 @@
 </AvaeForm>
 @code
 {
-    [Parameter]
-    public required FormViewModel ViewModel { get; set; }
-
     private async Task Close()
     {
         if (await ViewModel.CanClose())

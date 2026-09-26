@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AvaeFeatures>;Razor;</AvaeFeatures>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,23 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!--<PackageReference Include="Avae.Abstractions" />-->
-    <!--<PackageReference Include="Microsoft.AspNetCore.Components.Web" />-->
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
-  <Target Name="AllowUsingAspNetCoreInBlazorWasm" AfterTargets="ProcessFrameworkReferences" >
-    <ItemGroup>
-      <UnavailableRuntimePack Remove="Microsoft.AspNetCore.App" />
-    </ItemGroup>
-  </Target>
-
   <ItemGroup>
     <ProjectReference Include="..\..\Bases\Avae.Razor\Avae.Razor.csproj" />
-    <ProjectReference Include="..\Example.Models\Example.Models.csproj" />
     <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
   </ItemGroup>
 </Project>

@@ -1,11 +1,8 @@
-﻿@using Example.ViewModels
+﻿@inherits AvaeComponentBase<ModalViewModel>
+@using Avae.Razor.Components
+@using Example.ViewModels
 @using MudBlazor
 <MudTextField label="Message" @bind-Value="ViewModel.Message" />
 <MudButton onclick="@(() => ViewModel.Validate())">Validate</MudButton>
 <MudButton onclick="@(() => ViewModel.Cancel())">Cancel</MudButton>
-@code
-{
-    [Parameter]
-    public required ModalViewModel ViewModel { get; set; }
-}
 

@@ -1,12 +1,15 @@
 ﻿@using Avae.Razor
 @using Avae.Services
+@using Avae.ViewModels
 @using MudBlazor
 @inherits LayoutComponentBase
 @* @implements IDisposable *@
 @inject IRequestedThemeService themeService
 @inject IServiceProvider Provider
 @inject ICircuitProvider CircuitProvider 
-@inject ViewFor NavMenu
+@inject IManagerReload reload
+@inject IMvvmManager mvvmmanager
+@inject NavigationManager manager
 
 @* Required *@
 <MudThemeProvider IsDarkMode="Service.IsDarkMode" />
@@ -23,10 +26,23 @@
         @Title
     </MudAppBar>
     <MudDrawer @bind-Open="@_drawerOpen">
-        <DynamicComponent Type="@NavMenu.Type" />
+        <MudNavMenu>
+            @foreach (var item in mvvmmanager.Navigables)
+            {
+                <MudNavLink OnClick="@(async () => await OnNavClick(item))">
+                    @item.DisplayName
+                </MudNavLink>
+            }
+        </MudNavMenu>
     </MudDrawer>
     <MudMainContent>
-        @Body
+        @if(mvvmmanager.CurrentView is ViewFor viewFor)
+        {
+            <DynamicComponent              
+                Type="@viewFor.Type" 
+                Parameters="@viewFor.Parameters"
+                />
+        }
     </MudMainContent>
 </MudLayout>
 
@@ -39,6 +55,13 @@
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    private async Task OnNavClick(NavigableView item)
+    {
+        await mvvmmanager.OnNavigableChanged(item);        
+        manager.NavigateTo(item.Href, reload.Reload);
+        await InvokeAsync(StateHasChanged);
     }
 
     private RequestThemeService Service => ((RequestThemeService)themeService);

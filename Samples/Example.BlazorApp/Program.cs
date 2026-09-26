@@ -11,21 +11,23 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri(builder.Environment.WebRootPath)
 });
 builder.Services.UseBlazorEssentials();
-builder.Services.WithAppNotifications(new AppNotificationOptions()
-{
-    Channels = new[]
-    {
-        new NotificationChannel("actions", "Send Notification with Predefined Actions", NotificationPriority.High)
-        {
-            Actions =
-            [
-                new("Hello", "hello"),
-                new("world", "world")
-            ]
-        }
-    }
-});
-builder.Services.UseSharedLibrary(ServiceLifetime.Scoped, initialize: provider => CircuitServiceAccessor.Provider = provider);
+//builder.Services.WithAppNotifications(new AppNotificationOptions()
+//{
+//    Channels = new[]
+//    {
+//        new NotificationChannel("actions", "Send Notification with Predefined Actions", NotificationPriority.High)
+//        {
+//            Actions =
+//            [
+//                new("Hello", "hello"),
+//                new("world", "world")
+//            ]
+//        }
+//    }
+//});
+builder.Services.UseSharedLibrary(Avae.Razor.TypeRazorProject.Wasm, 
+    ServiceLifetime.Scoped, 
+    initialize: provider => CircuitServiceAccessor.Provider = provider);
 builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents()

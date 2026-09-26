@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Dommel;
 using Example.Models;
-using Microsoft.Maui.Dispatching;
+//using Microsoft.Maui.Dispatching;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Person = Example.Models.Person;
