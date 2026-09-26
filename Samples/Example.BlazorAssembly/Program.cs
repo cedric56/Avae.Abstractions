@@ -19,7 +19,7 @@ try
     });
     builder.Services.UseEssentials();
     //builder.Services.UseNotifications();
-    builder.Services.UseSharedLibrary(ServiceLifetime.Scoped);
+    builder.Services.UseSharedLibrary(Avae.Razor.TypeRazorProject.Wasm, ServiceLifetime.Scoped);
     //await builder.Services.UseEmbeddedAvaloniaApp("avalonia", b => b.WithAppNotifications());
     var app = builder.Build();
     await app.RunAsync();

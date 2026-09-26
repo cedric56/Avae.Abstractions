@@ -25,8 +25,9 @@ builder.Services.UseBlazorEssentials();
 //        }
 //    }
 //});
-builder.Services.UseSharedLibrary(Avae.Razor.TypeRazorProject.Wasm, 
-    ServiceLifetime.Scoped, 
+builder.Services.UseSharedLibrary(
+    ServiceLifetime.Scoped,
+     Avae.Razor.TypeRazorProject.Server,
     initialize: provider => CircuitServiceAccessor.Provider = provider);
 builder.Services
     .AddRazorComponents()

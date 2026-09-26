@@ -5,8 +5,6 @@
 @inherits LayoutComponentBase
 @* @implements IDisposable *@
 @inject IRequestedThemeService themeService
-@inject IServiceProvider Provider
-@inject ICircuitProvider CircuitProvider 
 @inject IManagerReload reload
 @inject IMvvmManager mvvmmanager
 @inject NavigationManager manager
@@ -69,9 +67,6 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-
-        CircuitProvider.Provider = Provider;
-
         Service.RequestedThemeChanged += ThemeChanged;
     }
 

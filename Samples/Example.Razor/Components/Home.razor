@@ -1,11 +1,11 @@
-﻿@using Avae.Services
+﻿@using Avae.Razor
+@using Avae.Services
 @using Example.ViewModels
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.Extensions.DependencyInjection
 @using MudBlazor
-@inherits Avae.Razor.Components.AvaeComponentBase<HomeViewModel>
+@inherits AvaeComponentBase<HomeViewModel>
 @page "/"
-@inject IServiceProvider provider
 <style>
     .rows
     {
@@ -29,7 +29,7 @@
 {    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var service = provider.GetService<ISystemNotificationService>();
+        var service = Provider.GetService<ISystemNotificationService>();
         if (firstRender && service != null)
             await service.InitializeAsync();
         await base.OnAfterRenderAsync(firstRender);

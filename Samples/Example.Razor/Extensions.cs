@@ -13,8 +13,8 @@ namespace Example.Razor;
 public static class Extensions
 {
     public static void UseSharedLibrary(this IServiceCollection services,
-        TypeRazorProject typeRazorProject,
         ServiceLifetime lifetime = ServiceLifetime.Singleton,
+        TypeRazorProject typeRazorProject = TypeRazorProject.Wasm,
         Action<IServiceProvider>? initialize = null)
     {
         services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, parameters) =>

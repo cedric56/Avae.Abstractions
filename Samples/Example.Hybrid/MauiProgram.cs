@@ -18,7 +18,7 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             });
         builder.Services.RegisterEssentials();
-        builder.Services.UseSharedLibrary(Avae.Razor.TypeRazorProject.Wasm);
+        builder.Services.UseSharedLibrary();
         builder.Services.AddMauiBlazorWebView();
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
