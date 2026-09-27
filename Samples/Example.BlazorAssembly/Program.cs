@@ -14,7 +14,7 @@ try
     {
         BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
     });
-    builder.Services.UseEssentials();
+    builder.Services.UseBlazorEssentials();
     //builder.Services.UseNotifications();
     builder.Services.UseSharedLibrary(ServiceLifetime.Scoped);
     //await builder.Services.UseEmbeddedAvaloniaApp("avalonia", b => b.WithAppNotifications());

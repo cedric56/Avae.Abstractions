@@ -65,6 +65,18 @@
         }
     }
 
+    protected async override Task OnInitializedAsync()
+    {
+        await Task.Run(async () =>
+        {
+            while (ViewModel.CurrentView == null)
+            {
+                await Task.Delay(100);
+            }
+        });
+        await InvokeAsync(StateHasChanged);
+    }
+
     private async void OnViewChanged(object? sender, IViewFor? view)
     {
         await InvokeAsync(StateHasChanged);

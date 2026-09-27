@@ -3,7 +3,7 @@
 @using Avae.ViewModels
 @using MudBlazor
 @inherits LayoutComponentBase
-@* @implements IDisposable *@
+@implements IDisposable
 @inject IRequestedThemeService themeService
 @inject IManagerReload reload
 @inject IMvvmManager mvvmmanager
@@ -68,6 +68,18 @@
     {
         base.OnInitialized();
         Service.RequestedThemeChanged += ThemeChanged;
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Task.Run(async () =>
+        {
+            while (mvvmmanager.CurrentView == null)
+            {
+                await Task.Delay(100);
+            }
+        });
+        await InvokeAsync(StateHasChanged);
     }
 
     async void ThemeChanged(object? sender, RequestedTheme theme)
