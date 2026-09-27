@@ -15,11 +15,8 @@ class Program
     public static void Main(string[] args) =>
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
 
-    public static AppBuilder BuildAvaloniaApp()
-    {
-        //var logs = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Example"), "logs");
-
-        return App.CreateApp(services =>
+    public static AppBuilder BuildAvaloniaApp() =>
+        App.CreateApp(services =>
             {
                 services.AddPersonServiceLocal<SqliteConnection>();
                 //services.AddPersonServiceRemote();
@@ -33,5 +30,4 @@ class Program
             .WithDataAnnotationsValidation()
             .UsePlatformDetect()
             .LogToTrace();
-    }
 }

@@ -1,17 +1,15 @@
-﻿//using Dapper.Contrib.Extensions;
-using MessagePack;
+﻿using MessagePack;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Example.Models;
 
-//[Dapper.Contrib.Extensions.Table(nameof(Contact))]
-[System.ComponentModel.DataAnnotations.Schema.Table(nameof(Contact))]
+[Table(nameof(Contact))]
 [MessagePackObject]
 public partial class Contact : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    //[Dapper.Contrib.Extensions.Key]
     [MessagePack.Key(0)]
     public long Id { get; set; }
 
@@ -24,12 +22,12 @@ public partial class Contact : INotifyPropertyChanged
     private Person? _person;
     private Person? _personContact;
 
-    //[Computed]
     [IgnoreMember]
+    [NotMapped]
     public Person? Person { get => _person; set { _person = value; OnPropertyChanged(nameof(Person)); } }
 
-    //[Computed]
     [IgnoreMember]
+    [NotMapped]
     public Person? PersonContact { get => _personContact; set { _personContact = value; OnPropertyChanged(nameof(PersonContact)); } }
 
     public override bool Equals(object? obj)

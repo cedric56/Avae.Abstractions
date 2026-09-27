@@ -84,7 +84,6 @@ public partial class App(IServiceProvider provider) : Application
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
         {
             singleView.MainView = mainView;
-
         }
     }
 

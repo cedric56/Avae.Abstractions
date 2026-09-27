@@ -1,5 +1,4 @@
-﻿//using Dapper.Contrib.Extensions;
-using MessagePack;
+﻿using MessagePack;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,8 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace Example.Models;
 
-//[Dapper.Contrib.Extensions.Table(nameof(Person))]
-[System.ComponentModel.DataAnnotations.Schema.Table(nameof(Person))]
+[Table(nameof(Person))]
 [MessagePackObject]
 public partial class Person : INotifyPropertyChanged, IDataErrorInfo
 {
@@ -17,7 +15,6 @@ public partial class Person : INotifyPropertyChanged, IDataErrorInfo
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    //[Dapper.Contrib.Extensions.Key]
     [MessagePack.Key(0)]
     public long Id { get; set; }
 
@@ -37,9 +34,7 @@ public partial class Person : INotifyPropertyChanged, IDataErrorInfo
         set { _lastName = value; OnPropertyChanged(nameof(LastName)); OnPropertyChanged(nameof(FullName)); }
     }
 
-    //[Computed]
     [MessagePack.Key(3)]
-    //[IgnoreMember]
     public IList<Contact> Contacts { get; set; } = [];
 
     public override bool Equals(object? obj)
@@ -51,17 +46,14 @@ public partial class Person : INotifyPropertyChanged, IDataErrorInfo
 
     public override int GetHashCode() => Id != 0 ? Id.GetHashCode() : RuntimeHelpers.GetHashCode(this);
 
-    //[Computed]
     [IgnoreMember]
     [NotMapped]
     public string Error => EntityValidator.Error(this) ?? string.Empty;
 
-    //[Computed]
     [IgnoreMember]
     [NotMapped]
     public string this[string columnName] => EntityValidator.ValidateProperty(this, columnName) ?? string.Empty;
 
-    //[Computed]
     [IgnoreMember]
     [NotMapped]
     public string? FullName => FirstName + " " + LastName;
