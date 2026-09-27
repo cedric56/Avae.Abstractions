@@ -21,10 +21,15 @@ public static class Extensions
         {
             return parameters[0] switch
             {
-                "Footer" => new ViewFor<MudText>("Footer"),
+                "Footer" => new ViewFor<MudText>("This is my footer"),
                 "IconSource" => new ViewFor<MudImage>()
                 {
-                    Parameters = new Dictionary<string, object> { { nameof(MudImage.Src), "avalonia-logo.ico" } }
+                    Parameters = new Dictionary<string, object>
+                    {
+                        { nameof(MudImage.Src), "avalonia-logo.ico" },
+                        { nameof(MudImage.Height), 30 },
+                        { nameof(MudImage.Width), 30 }
+                    }
                 },
                 "Content" => new ViewFor<MudText>("Here is my content") { Class = "center" },
                 _ => throw new NotImplementedException()

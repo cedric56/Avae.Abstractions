@@ -6,31 +6,103 @@
         @if (!string.IsNullOrWhiteSpace(Parameters.Title))
         {
             <MudText Typo="Typo.h6">@Parameters.Title</MudText>
-        }
+        }        
     </TitleContent>
 
     <DialogContent>
+        <div class="dialog-header-row">
+            @if (Parameters.IconSource is ViewFor viewFor)
+            {
+                <div class="dialog-header-icon">
+                    <DynamicComponent
+                        Type="@viewFor.Type" 
+                        Parameters="@viewFor.Parameters" />
+                </div>
+            }
+            @if (!string.IsNullOrWhiteSpace(Parameters.Header))
+            {
+                <MudText Typo="Typo.h5" class="dialog-header-title">@Parameters.Header</MudText>
+            }
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Parameters.SubHeader))
+        {
+            <div class="dialog-subheader">@Parameters.SubHeader</div>
+        }
         @if (ComponentView != null)
         {
             <DynamicComponent Type="@ComponentView.Type" Parameters="@ComponentView.Parameters" />
         }
+        @if (Parameters.ShowProgressBar)
+        {
+            <div class="dialog-progress"><div class="dialog-progress-indeterminate"></div></div>
+        }
+        @if (Parameters.FooterVisibility != TaskDialogFooterVisibility.Never && Parameters.Footer != null)
+        {
+            @if (Parameters.FooterVisibility == TaskDialogFooterVisibility.Auto)
+            {
+                <MudButton class="dialog-footer-toggle" onclick="ToggleFooter">
+                    @(_footerExpanded ? "Less details" : "More details")
+                </MudButton>
+            }
+            @if (_footerExpanded && Parameters.Footer is ViewFor viewFor1)
+            {
+                <DynamicComponent Type="@viewFor1.Type" Parameters="@viewFor1.Parameters" />
+            }
+        }
+
     </DialogContent>
 
     <DialogActions>
-        @* Order matters: WinUI's default/secondary action sits on the LEFT,
-           the accented primary action on the RIGHT *@
-        <MudButton class="dialog-action"
-                   OnClick="Ok">
-            Ok
-        </MudButton>
-        <MudButton class="dialog-action"
-                    Color="Color.Primary"
-                   OnClick="Cancel">
-            Cancel
-        </MudButton>
+        @foreach (var result in Results)
+        {
+@*             Color = "@(result == Parameters.DefaultResult ? Color.Primary : Color.Default)"
+ *@
+            <MudButton class="dialog-action"
+                       Color="Color.Default"
+                       OnClick="@(() => SetResult(result))">
+                @Label(result)
+            </MudButton>
+        }
     </DialogActions>
 </MudDialog>
+
+<style>
+    .dialog-header-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .dialog-header-icon {
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dialog-header-title {
+        flex: 1 1 auto;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
 @code {
+
+    private bool _footerExpanded;
+
+    protected override void OnInitialized()
+    {
+        _footerExpanded = Parameters.FooterVisibility == TaskDialogFooterVisibility.Always
+            || Parameters.IsFooterExpanded;
+        Parameters.Opened?.Invoke();
+    }
+
+    private void ToggleFooter() => _footerExpanded = !_footerExpanded;
+
+
     private RequestThemeService Service => ((RequestThemeService)themeService);
 
     [CascadingParameter]
@@ -41,15 +113,19 @@
 
     private ViewFor? ComponentView => Parameters.Content as ViewFor;
 
-    private void Ok()
-    {
-        SetResult(TaskDialogStandardResult.OK);
-    }
+    [Parameter]
+    public required TaskDialogStandardResult[] Results { get; set; }
 
-    private void Cancel()
+    private static string Label(TaskDialogStandardResult r) => r switch
     {
-        SetResult(TaskDialogStandardResult.Cancel);
-    }
+        TaskDialogStandardResult.OK => "Ok",
+        TaskDialogStandardResult.Cancel => "Cancel",
+        TaskDialogStandardResult.Yes => "Yes",
+        TaskDialogStandardResult.No => "No",
+        TaskDialogStandardResult.Retry => "Retry",
+        TaskDialogStandardResult.Close => "Close",
+        _ => r.ToString()
+    };
 
     private void SetResult(TaskDialogStandardResult result)
     {
