@@ -1,17 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net11.0-browser</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <PublishTrimmed>false</PublishTrimmed>
-    <WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>
-    <WasmEnableSIMD>false</WasmEnableSIMD>
-    <RunAOTCompilation>false</RunAOTCompilation>
-    <!-- force rebuild du runtime natif -->
-    <WasmBuildNative>true</WasmBuildNative>
+    <!--<WasmBuildNative>true</WasmBuildNative>
+    <WasmEnableExceptionHandling>true</WasmEnableExceptionHandling>
+    <EmccExtraLDFlags>-sSUPPORT_LONGJMP=wasm</EmccExtraLDFlags>-->
   </PropertyGroup>
 
   <ItemGroup>

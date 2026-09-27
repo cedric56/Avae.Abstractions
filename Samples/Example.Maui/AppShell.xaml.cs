@@ -1,4 +1,5 @@
-﻿using Example.ViewModels;
+﻿using Avae.ViewModels;
+using Example.ViewModels;
 
 namespace Example.Maui;
 
@@ -9,9 +10,15 @@ public partial class AppShell : Shell
         InitializeComponent();
 
         var vm = provider.GetRequiredService<MainViewModel>();
+        
+        BindingContext = vm;       
+    }
 
-        BindingContext = vm;
-
+    protected override void OnAppearing()
+    {
+        var vm = (MainViewModel)BindingContext;
+        var dico = new Dictionary<Type, IViewFor>();
+        dico.Add(typeof(HomeViewModel), vm.CurrentView!);
         foreach (var navigable in vm.Navigables)
         {
             this.Items.Add(
@@ -21,16 +28,12 @@ public partial class AppShell : Shell
                 Title = navigable.DisplayName,
                 ContentTemplate = new DataTemplate(() =>
                 {
-                    //TODO Two instances created
-
-                    //if (navigable.ViewModelType != typeof(HomeViewModel))
-                    //{
-                        //vm.OnNavigableChanged(navigable).ConfigureAwait(false).GetAwaiter().GetResult();
-                        vm.SelectedNavigable = navigable;
-                    //}
+                    vm.SelectedNavigable = navigable;
                     return vm.CurrentView as ContentPage ?? new ContentPage() { Content = new Label() { Text = "Not found" } };
                 })
             });
         }
+
+        base.OnAppearing();
     }
 }

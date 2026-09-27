@@ -14,9 +14,6 @@ public partial class AvaeComponentBase<TViewModel>
     [Inject]
     public required IServiceProvider Provider { get; set; }
 
-    [Inject]
-    public required ICircuitProvider CircuitProvider { get; set; }
-
     [Parameter, EditorRequired]
     public required TViewModel ViewModel { get; set; }
 
@@ -29,6 +26,5 @@ public partial class AvaeComponentBase<TViewModel>
         NotificationService.SnackbarService = Snackbar;
         DialogService.MudDialogService = MudDialogService;
         ModalService.MudDialogService = MudDialogService;
-        CircuitProvider.Provider = Provider;
     }
 }

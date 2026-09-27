@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <!--<LangVersion>preview</LangVersion>-->
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
     <AvaeFeatures>;CommunityToolkit;</AvaeFeatures>
   </PropertyGroup>
 
@@ -13,11 +13,11 @@
     <PackageReference Include="Avae.Essentials" />
     <PackageReference Include="Avae.Services" />
     <PackageReference Include="Avae.ViewModels" />
-    <PackageReference Include="ReactiveUI" />
+    <!--<PackageReference Include="ReactiveUI" />
     <PackageReference Include="ReactiveUI.SourceGenerators">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    </PackageReference>-->
   </ItemGroup>
   
   <ItemGroup>

@@ -6,7 +6,8 @@
 @inject IRequestedThemeService themeService
 <MudDialog Class="@($"wui-dialog {(Service.IsDarkMode ? "mud-theme-dark" : "")}")">
     <TitleContent>
-        <MudText Typo="Typo.h6">@ViewModel.Title</MudText>        
+        <h6>@ViewModel.Title</h6>
+        @* <MudTextField T="string" Typo="Typo.h6" @bind-Value="ViewModel.Title"/> *@
     </TitleContent>
 
     <DialogContent>

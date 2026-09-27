@@ -1,6 +1,5 @@
 ﻿using Avae.Services;
 using Avae.ViewModels;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Dommel;

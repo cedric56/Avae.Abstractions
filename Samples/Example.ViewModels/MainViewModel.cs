@@ -75,6 +75,7 @@ public partial class MainViewModel : ObservableObject, IDisposable, IMvvmManager
     {
         this.router = router;
 
+        //SelectedNavigable = Navigables[0];
         _ = OnNavigableChanged(Navigables[0]);
     }
 }

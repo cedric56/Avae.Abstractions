@@ -46,7 +46,7 @@ public class ViewFor<TView, TViewModel> : ViewFor, IViewFor where TViewModel : c
         var viewModel = sp.GetViewModel<TViewModel>(context);
         Parameters = new Dictionary<string, object>(parameters ?? [])
         {
-            { "ViewModel", viewModel }
+            { nameof(AvaeComponentBase<TViewModel>.ViewModel), viewModel }
         };
     }
 
@@ -59,7 +59,7 @@ public class ViewFor<TView, TViewModel> : ViewFor, IViewFor where TViewModel : c
 
         Parameters = new Dictionary<string, object>()
         {
-            { "ViewModel", (TViewModel)context! }
+            { nameof(AvaeComponentBase<TViewModel>.ViewModel), (TViewModel)context! }
         };
     }
 }
@@ -77,7 +77,7 @@ public class ModalFor<TView, TViewModel, TResult> :
         var viewModel = sp.GetViewModel<TViewModel>(context);
         Parameters = new Dictionary<string, object>(parameters ?? [])
         {
-            { "ViewModel", viewModel }
+            { nameof(AvaeComponentBase<TViewModel>.ViewModel), viewModel }
         };
     }
 
