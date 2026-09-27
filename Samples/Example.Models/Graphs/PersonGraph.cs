@@ -1,10 +1,5 @@
 ﻿namespace Example.Models;
 
-public interface IPersonGraph
-{
-    void AttachContacts(Person person, IEnumerable<Contact> contacts);
-}
-
 public sealed class PersonGraph(IEntityCache<Person> cache) : IPersonGraph
 {
     public void AttachContacts(Person person, IEnumerable<Contact> contacts)
