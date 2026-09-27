@@ -19,4 +19,10 @@
     <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\avalonia-logo.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
