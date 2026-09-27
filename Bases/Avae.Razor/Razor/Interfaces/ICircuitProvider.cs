@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Avae.Razor;
+﻿namespace Avae.Razor;
 
 public interface ICircuitProvider
 {

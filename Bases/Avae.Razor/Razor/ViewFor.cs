@@ -1,7 +1,5 @@
 ﻿using Avae.ViewModels;
 using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
 
 namespace Avae.Razor;
 

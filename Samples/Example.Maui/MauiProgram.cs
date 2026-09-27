@@ -58,7 +58,6 @@ public static class MauiProgram
         builder.Services.RegisterWithLifetime<FormView, FormViewModel>();
         builder.Services.RegisterWithLifetime<DefaultView, FormViewModel>(key: FormViewModel.KEY);
         builder.Services.AddPersonServiceLocal<SqliteConnection>();
-        builder.Services.AddSingleton<IDBMonitor<Person>, DBMonitor<Person>>();
 #if DEBUG
         builder.Logging.AddDebug();
 #endif

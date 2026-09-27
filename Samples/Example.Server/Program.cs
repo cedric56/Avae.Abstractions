@@ -14,7 +14,6 @@ builder.Services.AddGrpc(AddGrpcOptions);
 builder.Services.AddCors(AddCorsOptions);
 builder.WebHost.ConfigureKestrel(AddKestrelsOptions);
 
-builder.Services.AddSingleton<IDBMonitor<Person>, DBMonitor<Person>>();
 builder.Services.AddSingleton<IDbTransaction<Person>, PersonServiceLocal>();
 builder.Services.AddSingleton<ConnectionTracker<Person>>();
 builder.Services.AddSingleton<RecordHubRepository<Person>>();

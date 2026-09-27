@@ -51,7 +51,8 @@ public static class ServiceCollectionExtensions
                     sp.GetService<IDBMonitor<Person>>());
             })
             .AddSingleton<IPersonGraph, PersonGraph>()
-            .AddSingleton<IPersonService, PersonServiceLocal>();
+            .AddSingleton<IPersonService, PersonServiceLocal>()
+            .AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
     }
 
     public static IServiceCollection AddPersonServiceRemote(this IServiceCollection services)
@@ -68,6 +69,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton(sp => sp.Create<IMagicOnionLayer>(Constants.ServerUrl))
             .AddSingleton<IPersonGraph, PersonGraph>()
             .AddSingleton<IPersonService, PersonServiceRemote>()
+            .AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>())
             .AddSingleton<MagicOnionLayer>(sp => new MagicOnionLayer(
                 sp.GetRequiredService<IMagicOnionLayer>(),
                 1000));

@@ -52,8 +52,7 @@ public static class Extensions
             });
         services.RegisterViewFor<FormPage1, FormViewModel>(key: FormViewModel.KEY);
         services.RegisterViewFor<FormView, FormViewModel>();
-        services.AddPersonServiceRemote();
-        services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
+        services.AddPersonServiceRemote();        
         
         services.UseAvae(
             typeRazorProject,

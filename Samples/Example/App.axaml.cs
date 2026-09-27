@@ -33,8 +33,6 @@ public partial class App(IServiceProvider provider) : Application
            {
                IconResolver.Register(new ExampleIconResolver());
 
-               services.AddSingleton<IDBMonitor<Person>>(new DBMonitor<Person>());
-               
                services.UseEssentials();
                services.UseNotifications();
                services.AddNavigationRegion("main"); 
