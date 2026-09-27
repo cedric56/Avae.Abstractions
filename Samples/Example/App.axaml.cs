@@ -59,11 +59,7 @@ public partial class App(IServiceProvider provider) : Application
                configureServices?.Invoke(services);
            },
            afterBuild: afterBuildProvider,
-           onDispose:
-           () =>
-           {
-               onAppDispose?.Invoke();
-           });
+           onDispose: onAppDispose);
     }
 
     public override void OnFrameworkInitializationCompleted()
