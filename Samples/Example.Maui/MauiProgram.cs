@@ -41,7 +41,7 @@ public static class MauiProgram
             return args[0] switch
             {
                 "Footer" => new Label() { Text = "This is a footer" },
-                "IconSource" => new UriImageSource { Uri = new Uri(Path.Combine(AppContext.BaseDirectory, "appicon.ico")) },
+                "IconSource" => ImageSource.FromFile("dotnet_bot.png"),
                 "Content" => new Label() { Text = "Here is content", FontSize = 27 },
                 _ => throw new NotImplementedException()
             };

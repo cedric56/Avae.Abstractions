@@ -1,5 +1,4 @@
-﻿using Avae.DAL;
-using Avae.Razor;
+﻿using Avae.Razor;
 using Avae.Services;
 using Avae.ViewModels;
 using Example.Models;

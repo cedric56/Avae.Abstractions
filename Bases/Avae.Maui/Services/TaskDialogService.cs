@@ -44,8 +44,8 @@ internal class TaskDialogService(IDialogService service) : ITaskDialogService
         //};
         var iconElement = new Image
         {
-            HeightRequest = 10,
-            WidthRequest = 10,
+            HeightRequest = 30,
+            WidthRequest = 30,
             Source = @params.IconSource as ImageSource,
             AutomationId = "IconElement"
         };

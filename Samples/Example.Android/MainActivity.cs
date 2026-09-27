@@ -6,7 +6,7 @@ using Avae.Notifications;
 using Avalonia;
 using Avalonia.Android;
 using Avalonia.Labs.Notifications;
-using Example.DAL;
+using Example.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 
@@ -41,7 +41,7 @@ public class MainApplication : AvaloniaAndroidApplication<Avalonia.Application>
         return App.CreateApp(
              services =>
              {
-                 services.UseDBOnionLayer();
+                 services.AddPersonServiceRemote();
                  services.AddSingleton<HttpMessageHandler>(_ =>
                  {
                      return new SocketsHttpHandler()

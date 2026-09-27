@@ -4,7 +4,6 @@ using Grpc.AspNetCore.Server;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
-using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddLogging(AddLoggers);

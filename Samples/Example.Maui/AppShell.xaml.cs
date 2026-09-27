@@ -1,5 +1,4 @@
-﻿using Avae.ViewModels;
-using Example.ViewModels;
+﻿using Example.ViewModels;
 
 namespace Example.Maui;
 
@@ -17,8 +16,6 @@ public partial class AppShell : Shell
     protected override void OnAppearing()
     {
         var vm = (MainViewModel)BindingContext;
-        var dico = new Dictionary<Type, IViewFor>();
-        dico.Add(typeof(HomeViewModel), vm.CurrentView!);
         foreach (var navigable in vm.Navigables)
         {
             this.Items.Add(

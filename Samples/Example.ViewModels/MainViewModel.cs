@@ -52,8 +52,9 @@ public partial class MainViewModel : ObservableObject, IDisposable, IMvvmManager
     }
 
     async public Task OnNavigableChanged(NavigableView? value)
-    {
-        if (value is null) return;
+    {       
+        if (value is null) 
+            return;
         if (dico.TryGetValue(value, out var tuple))
         {
             CurrentView = tuple.view;
@@ -74,7 +75,6 @@ public partial class MainViewModel : ObservableObject, IDisposable, IMvvmManager
     public MainViewModel(Router router)
     {
         this.router = router;
-
         //SelectedNavigable = Navigables[0];
         _ = OnNavigableChanged(Navigables[0]);
     }
