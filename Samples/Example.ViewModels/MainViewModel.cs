@@ -52,8 +52,8 @@ public partial class MainViewModel : ObservableObject, IDisposable, IMvvmManager
     }
 
     async public Task OnNavigableChanged(NavigableView? value)
-    {       
-        if (value is null) 
+    {
+        if (value is null)
             return;
         if (dico.TryGetValue(value, out var tuple))
         {

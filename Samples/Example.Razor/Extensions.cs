@@ -51,12 +51,12 @@ public static class Extensions
             });
         services.RegisterViewFor<FormPage1, FormViewModel>(key: FormViewModel.KEY);
         services.RegisterViewFor<FormView, FormViewModel>();
-        services.AddPersonServiceRemote();        
-        
+        services.AddPersonServiceRemote();
+
         services.UseAvae(
             typeRazorProject,
-            NotificationPosition.BottomLeft, 
-            5,     
+            NotificationPosition.BottomLeft,
+            5,
             initialize);
     }
 }

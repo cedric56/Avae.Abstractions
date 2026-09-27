@@ -9,8 +9,8 @@ public partial class AppShell : Shell
         InitializeComponent();
 
         var vm = provider.GetRequiredService<MainViewModel>();
-        
-        BindingContext = vm;       
+
+        BindingContext = vm;
     }
 
     protected override void OnAppearing()

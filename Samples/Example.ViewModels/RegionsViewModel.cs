@@ -41,6 +41,6 @@ public partial class RegionsViewModel : ObservableObject, INavigable
     public async Task OnNavigatedTo(NavigableContext context)
     {
         await OpenHomeAsync();
-        await OpenEssentialsAsync();        
+        await OpenEssentialsAsync();
     }
 }

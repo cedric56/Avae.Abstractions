@@ -6,7 +6,7 @@ namespace Avae.Razor;
 
 internal class DialogService : IDialogService
 {
-    public static MudBlazor.IDialogService MudDialogService { get; set; } = default!;    
+    public static MudBlazor.IDialogService MudDialogService { get; set; } = default!;
 
     public async Task ShowErrorAsync(Exception ex, string title = "Error")
     {

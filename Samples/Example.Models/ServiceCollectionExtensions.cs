@@ -73,7 +73,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<MagicOnionLayer>(sp => new MagicOnionLayer(
                 sp.GetRequiredService<IMagicOnionLayer>(),
                 1000));
-                //logger: sp.GetService<ILogger>()));
+        //logger: sp.GetService<ILogger>()));
     }
 
     class RemoveFactory : IDBFactory

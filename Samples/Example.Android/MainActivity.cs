@@ -52,11 +52,11 @@ public class MainApplication : AvaloniaAndroidApplication<Avalonia.Application>
                         }
                      };
 
-                //      new Xamarin.Android.Net.AndroidMessageHandler
-                //    {
-                //        ServerCertificateCustomValidationCallback = Avae.DAL.MagicOnionClientExtensions.ValidateCertificates2,
-                //        AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate,
-                //    }
+                     //      new Xamarin.Android.Net.AndroidMessageHandler
+                     //    {
+                     //        ServerCertificateCustomValidationCallback = Avae.DAL.MagicOnionClientExtensions.ValidateCertificates2,
+                     //        AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate,
+                     //    }
                  });
              })
             .WithAppNotifications(ApplicationContext!)

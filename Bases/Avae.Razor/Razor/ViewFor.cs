@@ -40,7 +40,7 @@ public class ViewFor<TView, TViewModel> : ViewFor, IViewFor where TViewModel : c
     }
 
     public ViewFor(IServiceProvider sp, NavigableContext? context = null, Dictionary<string, object>? parameters = null)
-    {        
+    {
         var viewModel = sp.GetViewModel<TViewModel>(context);
         Parameters = new Dictionary<string, object>(parameters ?? [])
         {
@@ -62,7 +62,7 @@ public class ViewFor<TView, TViewModel> : ViewFor, IViewFor where TViewModel : c
     }
 }
 
-public class ModalFor<TView, TViewModel, TResult> : 
+public class ModalFor<TView, TViewModel, TResult> :
     ViewFor<TView, TViewModel>, IViewFor, IModalFor<TViewModel, TResult> where TViewModel : class, ICloseableViewModel<TResult>
 {
     public ModalFor()

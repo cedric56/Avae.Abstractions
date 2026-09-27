@@ -1,5 +1,4 @@
 ﻿using Avae.Avalonia;
-using Avae.DAL;
 using Avae.Essentials;
 using Avae.Notifications;
 using Avae.ViewModels;
@@ -35,7 +34,7 @@ public partial class App(IServiceProvider provider) : Application
 
                services.UseEssentials();
                services.UseNotifications();
-               services.AddNavigationRegion("main"); 
+               services.AddNavigationRegion("main");
                services.AddNavigationRegion("side");
                services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, parameters) =>
                {
@@ -60,11 +59,11 @@ public partial class App(IServiceProvider provider) : Application
                configureServices?.Invoke(services);
            },
            afterBuild: afterBuildProvider,
-           onDispose: 
+           onDispose:
            () =>
            {
                onAppDispose?.Invoke();
-        });
+           });
     }
 
     public override void OnFrameworkInitializationCompleted()

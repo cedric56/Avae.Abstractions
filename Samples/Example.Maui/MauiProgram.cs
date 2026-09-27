@@ -1,12 +1,10 @@
-﻿using Avae.DAL;
-using Avae.Essentials;
+﻿using Avae.Essentials;
 using Avae.Maui;
 using Avae.ViewModels;
 using CommunityToolkit.Maui;
 using Example.Maui.Views;
 using Example.Models;
 using Example.ViewModels;
-using MauiIcons.Core;
 using MauiIcons.FontAwesome.Solid;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
@@ -19,13 +17,13 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-//            .WithAppNotifications(new AppNotificationOptions()
-//            {
-//#if WINDOWS
-//                AppIcon = Path.Combine(AppContext.BaseDirectory, "appicon.ico"),
-//                AppName = "Maui example"
-//#endif
-//            })
+            //            .WithAppNotifications(new AppNotificationOptions()
+            //            {
+            //#if WINDOWS
+            //                AppIcon = Path.Combine(AppContext.BaseDirectory, "appicon.ico"),
+            //                AppName = "Maui example"
+            //#endif
+            //            })
             .UseAvae()
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
@@ -50,7 +48,7 @@ public static class MauiProgram
         builder.Services.AddNavigationRegion("side");
         builder.Services.AddSingleton<MainViewModel>();
         //builder.Services.Register<MainPage, MainViewModel>();
-        builder.Services.Register<HomeView ,HomeViewModel>();
+        builder.Services.Register<HomeView, HomeViewModel>();
         builder.Services.Register<MenuView, MenuViewModel>();
         builder.Services.Register<DefaultPage, RegionsViewModel>();
         builder.Services.Register<EssentialsView, EssentialsViewModel>();
@@ -68,59 +66,3 @@ public static class MauiProgram
     }
 }
 
-class DefaultView : ContentView, IViewFor
-{
-    public object? Context
-    {
-        get => BindingContext;
-        set
-        {
-            BindingContext = value;
-            if (value is FormViewModel viewModel)
-                this.Content = new Label() { Text = "Form" };          
-        }
-    }
-}
-
-class DefaultPage : ContentPage, IViewFor
-{
-    public object? Context
-    {
-        get => BindingContext;
-        set
-        {
-            BindingContext = value;
-            if (value is RegionsViewModel viewModel)
-                this.Content = new Label() { Text = "Regions" };
-        }
-    }
-}
-
-class ExampleIconResolver : IIconResolver
-{
-    public object? GetIcon(string path)
-    {
-        if (path.StartsWith("fa-solid fa-"))
-        {
-            var name = path["fa-solid fa-".Length..].Replace("-", "");
-            if (Enum.TryParse<FontAwesomeSolidIcons>(name, true, out var icon))
-            {
-                return icon;
-            }
-        }
-        return null;
-    }
-
-    public object? GetSource(string key)
-    {
-        if (key.StartsWith("fa-solid fa-"))
-        {
-            var name = key["fa-solid fa-".Length..].Replace("-", "");
-            if (Enum.TryParse<FontAwesomeSolidIcons>(name, true, out var icon))
-            {
-                return icon.ToImageSource();
-            }
-        }
-        return null;
-    }
-}

@@ -3,11 +3,10 @@ using Avae.Services;
 using Avalonia.Interactivity;
 using CommunityToolkit.Mvvm.Messaging;
 using Example.ViewModels;
-using ReactiveUI.Avalonia;
 
 namespace Example;
 
-public partial class HomeView : 
+public partial class HomeView :
     ViewFor<HomeViewModel>
 {
     public HomeView()

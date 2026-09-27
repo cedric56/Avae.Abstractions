@@ -3,7 +3,7 @@ using Avae.ViewModels;
 
 namespace Example.ViewModels;
 
-public partial class FormPage3ViewModel(IDialogService dialog) 
+public partial class FormPage3ViewModel(IDialogService dialog)
     : INavigable
 {
     public static string Title => "Go Back";

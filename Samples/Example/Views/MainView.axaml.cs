@@ -10,7 +10,7 @@ public partial class MainView : UserControl
 
         MenuItemsListBox.SelectionChanged += (sender, e) =>
         {
-            
+
 
 
         };

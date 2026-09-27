@@ -3,21 +3,12 @@ using Avae.ViewModels;
 
 namespace Avae.Maui;
 
-//public interface IMauiFor<TViewModel, TResult> : IModalFor<TViewModel, TResult>
-//    where TViewModel : ICloseableViewModel<TResult>
-//{
-//    new Task<TResult?> ShowModalAsync()
-//    {
-//        return ModalService.ShowModalAsync<TViewModel, TResult>(Context, this);
-//    }
-//}
-
 /// <summary>
 /// Extension methods for wiring up the Avae IoC container and its associated services
 /// into a MAUI application's <see cref="MauiAppBuilder"/>.
 /// </summary>
 public static class Extensions
-{ 
+{
     /// <summary>
     /// Registers a shared 
     /// <see cref="IDialogService"/>, <see cref="IContentDialogService"/>, <see cref="ITaskDialogService"/>,

@@ -1,5 +1,4 @@
 ﻿using Avae.Services;
-using Avae.ViewModels;
 
 namespace Avae.Maui;
 
@@ -38,7 +37,7 @@ internal class DialogService(IServiceProvider provider) : IDialogService
         if (previous != null)
         {
             if (previous is ContentDialogEx ex)
-                ex.IsSelfHiding = true;           
+                ex.IsSelfHiding = true;
             previous.Hide();
             previous.Closed += Closed;
         }

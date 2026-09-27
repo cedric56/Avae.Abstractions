@@ -124,7 +124,7 @@ public static class ModalService
                 ? page.XamlRoot
                 : null;
 
-            var dialog = new DialogService.ContentDialogEx   
+            var dialog = new DialogService.ContentDialogEx
             {
                 RequestedTheme = Application.Current?.RequestedTheme == AppTheme.Dark
                     ? Microsoft.UI.Xaml.ElementTheme.Dark

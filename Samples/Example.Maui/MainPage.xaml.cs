@@ -1,5 +1,4 @@
 ﻿using Avae.ViewModels;
-using Example.ViewModels;
 using MauiIcons.Core;
 
 namespace Example.Maui

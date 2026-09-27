@@ -1,5 +1,4 @@
 using Avae.ViewModels;
-using Example.ViewModels;
 
 namespace Example.Maui.Views;
 

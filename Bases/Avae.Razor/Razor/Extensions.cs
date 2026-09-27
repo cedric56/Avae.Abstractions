@@ -1,6 +1,5 @@
 ﻿using Avae.Services;
 using Avae.ViewModels;
-using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
@@ -18,7 +17,7 @@ class ManagerReload(TypeRazorProject typeRazorProject) : IManagerReload
     public bool Reload { get => typeRazorProject == TypeRazorProject.Server; }
 }
 
-public enum  TypeRazorProject
+public enum TypeRazorProject
 {
     Server,
     Wasm

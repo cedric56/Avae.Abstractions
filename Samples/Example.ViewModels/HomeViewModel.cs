@@ -168,7 +168,7 @@ public partial class HomeViewModel(
     Func<Task>? unsuscribe;
     public async Task OnNavigatedTo(NavigableContext context)
     {
-        if(_isfirstLoad)
+        if (_isfirstLoad)
         {
             _isfirstLoad = false;
             var http = provider.GetService<HttpMessageHandler>();
