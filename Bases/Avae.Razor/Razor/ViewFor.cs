@@ -28,7 +28,8 @@ public class ViewFor<TView> : ViewFor
     public override Type Type => typeof(TView);
 }
 
-public class ViewFor<TView, TViewModel> : ViewFor, IViewFor where TViewModel : class
+public class ViewFor<TView, TViewModel> : ViewFor, IViewFor 
+    where TViewModel : class
 {
     private object? _context;
     public object? Context { get => _context; set { _context = value; OnContextChanged(_context); } }
@@ -63,7 +64,8 @@ public class ViewFor<TView, TViewModel> : ViewFor, IViewFor where TViewModel : c
 }
 
 public class ModalFor<TView, TViewModel, TResult> :
-    ViewFor<TView, TViewModel>, IViewFor, IModalFor<TViewModel, TResult> where TViewModel : class, ICloseableViewModel<TResult>
+    ViewFor<TView, TViewModel>, IViewFor, IModalFor<TViewModel, TResult> 
+    where TViewModel : class, ICloseableViewModel<TResult>
 {
     public ModalFor()
     {

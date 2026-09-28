@@ -1,9 +1,7 @@
 ﻿@using Avae.Razor.Components
 @using Microsoft.AspNetCore.Components.Routing
-@* @using Microsoft.Extensions.DependencyInjection
-@inject IServiceProvider provider;
-@inject IDBMonitor<Person> monitor;
-@implements IAsyncDisposable *@
+@inject IServiceProvider provider
+@inject Func<IServiceProvider, Task> initialize
 
 <Router AppAssembly="typeof(Example.Razor.Components.Home).Assembly"
         AdditionalAssemblies="new[] { typeof(MainLayout).Assembly }"
@@ -14,24 +12,13 @@
     </Found>
 </Router>
 
-@* @code
+@code
 {
-    Func<Task>? unsuscribe;
-
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (OperatingSystem.IsBrowser())
-        {
-            unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl, provider.GetRequiredService<IDBFactory>());
-            //unsuscribe = await provider.AddSignalR(monitor);
-        }
-        await base.OnInitializedAsync();
+        if(firstRender)
+            await initialize(provider);
+        await base.OnAfterRenderAsync(firstRender);
     }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (unsuscribe != null)
-            await unsuscribe();
-    }
-} *@
+}
 

@@ -3,6 +3,9 @@ using Example.Razor;
 using Example.Razor.Layout;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Hosting;
+using Microsoft.JSInterop;
+using Microsoft.Maui.Platforms.Browser.Essentials;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<Routes>("#app");
@@ -17,4 +20,7 @@ builder.Services.UseBlazorEssentials();
 builder.Services.UseSharedLibrary(ServiceLifetime.Scoped);
 //await builder.Services.UseEmbeddedAvaloniaApp("avalonia", b => b.WithAppNotifications());
 var app = builder.Build();
+
+var js = app.Services.GetRequiredService<IJSRuntime>();
+await BrowserEssentials.InitializeAsync(js, true, "./BrowserEssentials.js");
 await app.RunAsync();

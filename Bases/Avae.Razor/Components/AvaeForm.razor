@@ -2,39 +2,35 @@
 @using Avae.ViewModels
 @using MudBlazor
 @implements IDisposable
-
 <div class="split">
     <MudOverlay Visible="@IsBusy" DarkBackground="true" Absolute="true" ZIndex="9999">
         <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
     </MudOverlay>
-    <div>
-        <MudList T="NavigableView"
-                 @bind-SelectedValue="@ViewModel.SelectedNavigable">
+
+    <nav class="split-nav">
+        <MudList T="NavigableView" @bind-SelectedValue="@ViewModel.SelectedNavigable">
             @foreach (var page in ViewModel.Navigables)
             {
                 var name = page.DisplayName;
                 <MudListItem Text="@name" Value="page" />
             }
         </MudList>
-    </div>
-        
+    </nav>
+
     <div class="form">
-        <div>
-            @ChildContent
-        </div>
-        
-        <div class="@CurrentView?.Class">
-            @if (CurrentView != null)
+        <div class="form-header">@ChildContent</div>
+
+        <div class="form-body">
+            @if (ViewModel.CurrentView is ViewFor viewFor)
             {
-                <DynamicComponent Type="@CurrentView.Type"
-                                Parameters="@CurrentView.Parameters" />
-            }   
+                <DynamicComponent Type="@viewFor.Type" Parameters="@viewFor.Parameters" />
+            }
         </div>
-        <div>
-            @Buttons
-        </div>
+
+        <div class="form-footer">@Buttons</div>
     </div>
 </div>
+
 @code {
     [Parameter]
     [EditorRequired]
@@ -48,8 +44,6 @@
 
     [Parameter]
     public required NavigableViewModelBase ViewModel { get; set; }
-
-    private ViewFor? CurrentView => ViewModel.CurrentView as ViewFor;
 
     private bool isDone = false;
 

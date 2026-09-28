@@ -69,11 +69,8 @@ public static class Extensions
     public static void UseAvae(this IServiceCollection services,
         TypeRazorProject typeRazorProject,
         NotificationPosition position = NotificationPosition.BottomLeft,
-        int maxDispayments = 5,
-        Action<IServiceProvider>? initialize = null)
-    {
-        var circuitProvider = new CircuitProvider(initialize ?? (sp => { }));
-
+        int maxDispayments = 5)
+    {        
         services.AddMudServices(config =>
         {
             config.SnackbarConfiguration = new SnackbarConfiguration()
@@ -92,7 +89,6 @@ public static class Extensions
             };
         });
         services.AddSingleton<IManagerReload>(new ManagerReload(typeRazorProject));
-        services.AddSingleton<ICircuitProvider>(circuitProvider);
         services.AddTransient<Router>();
         services.AddSingleton<Avae.Services.IDialogService, DialogService>();
         services.AddSingleton<IContentDialogService, ContentDialogService>();

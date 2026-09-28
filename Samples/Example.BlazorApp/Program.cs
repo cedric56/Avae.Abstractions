@@ -1,13 +1,15 @@
 using Avae.Essentials;
 using Example.BlazorApp.Components;
 using Example.Razor;
+using Microsoft.JSInterop;
+using Microsoft.Maui.Platforms.Browser.Essentials;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.Environment.WebRootPath)
 });
-builder.Services.UseBlazorEssentials();
+builder.Services.UseBlazorEssentials(ServiceLifetime.Singleton);
 //builder.Services.WithAppNotifications(new AppNotificationOptions()
 //{
 //    Channels = new[]
@@ -25,7 +27,15 @@ builder.Services.UseBlazorEssentials();
 builder.Services.UseSharedLibrary(
     ServiceLifetime.Scoped,
      Avae.Razor.TypeRazorProject.Server,
-    initialize: provider => CircuitServiceAccessor.Provider = provider);
+    initialize: async provider =>
+    {
+        CircuitServiceAccessor.Provider = provider;
+        var js = provider.GetRequiredService<IJSRuntime>();
+        //CircuitServiceAccessor.Runtime = js;
+        //BrowserEssentials.SetModules(js, BrowserEssentials.InitializeAsync(js, false, "./BrowserEssentials.js"));
+        await BrowserEssentials.InitializeAsync(js, false, "./BrowserEssentials.js");
+    }
+    );
 builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents()

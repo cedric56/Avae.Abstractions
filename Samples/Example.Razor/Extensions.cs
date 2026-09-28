@@ -14,7 +14,7 @@ public static class Extensions
     public static void UseSharedLibrary(this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Singleton,
         TypeRazorProject typeRazorProject = TypeRazorProject.Wasm,
-        Action<IServiceProvider>? initialize = null)
+        Func<IServiceProvider, Task>? initialize = null)
     {
         services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, parameters) =>
         {
@@ -34,7 +34,7 @@ public static class Extensions
                 _ => throw new NotImplementedException()
             };
         });
-
+        services.AddSingleton<Func<IServiceProvider, Task>>(initialize ?? (_ => Task.CompletedTask));
         services.AddSingleton<IMvvmManager, MainViewModel>();
         services.RegisterViewFor<Home, HomeViewModel>(lifetime);
         services.RegisterViewFor<MenuView, MenuViewModel>(lifetime);
@@ -56,7 +56,6 @@ public static class Extensions
         services.UseAvae(
             typeRazorProject,
             NotificationPosition.BottomLeft,
-            5,
-            initialize);
+            5);
     }
 }
