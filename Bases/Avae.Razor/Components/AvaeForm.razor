@@ -19,14 +19,12 @@
 
     <div class="form">
         <div class="form-header">@ChildContent</div>
-
-        <div class="form-body">
-            @if (ViewModel.CurrentView is ViewFor viewFor)
-            {
+        @if (ViewModel.CurrentView is ViewFor viewFor)
+        {
+            <div class="form-body @viewFor.Class">
                 <DynamicComponent Type="@viewFor.Type" Parameters="@viewFor.Parameters" />
-            }
-        </div>
-
+            </div>
+        }
         <div class="form-footer">@Buttons</div>
     </div>
 </div>

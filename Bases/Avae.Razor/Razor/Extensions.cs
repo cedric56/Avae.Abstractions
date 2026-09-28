@@ -25,11 +25,6 @@ public enum TypeRazorProject
 
 public static class Extensions
 {
-    class CircuitProvider(Action<IServiceProvider> initialize) : ICircuitProvider
-    {
-        public IServiceProvider Provider { get => null!; set => initialize(value); }
-    }
-
     public static void RegisterViewFor<
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TComponent,
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TViewModel>(

@@ -9,16 +9,13 @@
         {
             <MudText Typo="Typo.h6">@Parameters.Title</MudText>
         }
-        
     </TitleContent>
-
     <DialogContent>
-        @if (ComponentView != null)
+        @if (Parameters.Content is ViewFor viewFor)
         {
-            <DynamicComponent Type="@ComponentView.Type" Parameters="@ComponentView.Parameters" />
+            <DynamicComponent Type="@viewFor.Type" Parameters="@viewFor.Parameters" />
         }
     </DialogContent>
-
     <DialogActions>
         @* Order matters: WinUI's default/secondary action sits on the LEFT,
            the accented primary action on the RIGHT *@
@@ -66,14 +63,6 @@
 
     [Parameter]
     public required ContentDialogParams Parameters{ get; set; }
-
-    private ViewFor? ComponentView => Parameters.Content as ViewFor;
-
-    private string Style(string? text)
-    {
-        var style = string.IsNullOrWhiteSpace(text) ? "none" : "block";
-        return $@"display:{style}";
-    }
 
     private void Close()
     {        

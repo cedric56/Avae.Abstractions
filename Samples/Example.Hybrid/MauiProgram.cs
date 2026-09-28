@@ -2,7 +2,6 @@
 using Avae.Notifications;
 using Example.Razor;
 using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
 
 namespace Example.Hybrid;
 
