@@ -13,133 +13,121 @@ internal class TaskDialogService(IDialogService service) : ITaskDialogService
     /// <returns>The result value associated with the button the user selected.</returns>
     public async Task<TaskDialogStandardResult> ShowAsync(TaskDialogParams @params, params TaskDialogStandardResult[] results)
     {
-        // Main Grid
+        var accent = new AppThemeBinding
+        {
+            Light = Color.FromArgb("#5B3FD6"),
+            Dark = Color.FromArgb("#B39DFF")
+        };
+
         var mainGrid = new Grid
         {
-            RowDefinitions = new RowDefinitionCollection
+            RowSpacing = 12,
+            RowDefinitions =
         {
-            new RowDefinition { Height = GridLength.Auto },
-            new RowDefinition { Height = GridLength.Auto },
-            new RowDefinition { Height = GridLength.Star },
-            new RowDefinition { Height = GridLength.Auto }
+            new RowDefinition(GridLength.Auto),  // header
+            new RowDefinition(GridLength.Auto),  // subheader
+            new RowDefinition(GridLength.Star),  // content
         }
         };
 
-        // ============ HEADER HOST ============
+        // ===== HEADER: icon + text side by side =====
         var headerHost = new Grid
         {
+            ColumnSpacing = 12,
+            ColumnDefinitions =
+        {
+            new ColumnDefinition(GridLength.Auto),
+            new ColumnDefinition(GridLength.Star)
+        },
             IsVisible = @params.Header is not null || @params.IconSource is not null
         };
-        Grid.SetRow(headerHost, 0);
 
-        // Icon Host (Viewbox)
-        //var iconHost = new Viewbox
-        //{
-        //    WidthRequest = (double)Application.Current.Resources["TaskDialogIconSize"],
-        //    HeightRequest = (double)Application.Current.Resources["TaskDialogIconSize"],
-        //    VerticalOptions = LayoutOptions.Center,
-        //    HorizontalOptions = LayoutOptions.Start,
-        //    Margin = (Thickness)Application.Current.Resources["TaskDialogIconMargin"],
-        //    IsVisible = false
-        //};
         var iconElement = new Image
         {
-            HeightRequest = 30,
-            WidthRequest = 30,
+            WidthRequest = 32,
+            HeightRequest = 32,
             Source = @params.IconSource as ImageSource,
+            VerticalOptions = LayoutOptions.Center,
+            IsVisible = @params.IconSource is not null,
             AutomationId = "IconElement"
         };
-        //iconHost.Child = iconElement;
-        Grid.SetRow(iconElement, 0);
-        // Header Text
+        headerHost.Add(iconElement, 0, 0);
+
         var headerText = new Label
         {
             Text = @params.Header,
-            LineBreakMode = LineBreakMode.WordWrap,
+            FontSize = 20,
             FontAttributes = FontAttributes.Bold,
+            LineBreakMode = LineBreakMode.WordWrap,
             VerticalOptions = LayoutOptions.Center,
-            HorizontalOptions = LayoutOptions.Start,
             IsVisible = @params.Header is not null
         };
+        headerHost.Add(headerText, 1, 0);
+        mainGrid.Add(headerHost, 0, 0);
 
-        headerHost.Children.Add(iconElement);
-        headerHost.Children.Add(headerText);
-        mainGrid.Children.Add(headerHost);
-
-        // ============ SUBHEADER TEXT ============
+        // ===== SUBHEADER =====
         var subHeaderText = new Label
         {
             Text = @params.SubHeader,
-            FontSize = 9,
-            FontAttributes = FontAttributes.Bold,
-            HorizontalOptions = LayoutOptions.Start,
-            VerticalOptions = LayoutOptions.Center,
+            FontSize = 14,
             LineBreakMode = LineBreakMode.WordWrap,
             IsVisible = @params.SubHeader is not null
         };
-        Grid.SetRow(subHeaderText, 1);
-        mainGrid.Children.Add(subHeaderText);
+        mainGrid.Add(subHeaderText, 0, 1);
 
-        // ============ CONTENT AREA ============
+        // ===== CONTENT + PROGRESS + MORE DETAILS =====
+        var contentStack = new VerticalStackLayout { Spacing = 18 };
+
+        contentStack.Add(new ContentView
+        {
+            Content = @params.Content as View,
+            HorizontalOptions = LayoutOptions.Fill
+        });
+
+        contentStack.Add(new ProgressBar { IsVisible = @params.ShowProgressBar });
+
+        if (@params.Footer is not null)
+        {
+            var footerHost = new VerticalStackLayout
+            {
+                Spacing = 12,
+                IsVisible = false,
+                Children =
+            {
+                new BoxView { HeightRequest = 1, Opacity = 0.2, Color = Colors.Gray },
+                new ContentView { Content = @params.Footer as View }
+            }
+            };
+
+            var moreDetailsButton = new Button
+            {
+                Text = "More Details",
+                //BackgroundColor = Colors.Transparent,
+                BorderWidth = 0,
+                Padding = 0,
+                HorizontalOptions = LayoutOptions.Start,
+                MinimumHeightRequest = 0,
+                MinimumWidthRequest = 0,
+                FontSize = 14
+            };
+            moreDetailsButton.SetBinding(Button.TextColorProperty, new Binding { Source = accent });
+            moreDetailsButton.Clicked += (_, _) =>
+            {
+                footerHost.IsVisible = !footerHost.IsVisible;
+                moreDetailsButton.Text = footerHost.IsVisible ? "Fewer Details" : "More Details";
+            };
+
+            contentStack.Add(moreDetailsButton);
+            contentStack.Add(footerHost);
+        }
+
         var scrollView = new ScrollView
         {
-            //Margin = (Thickness)Application.Current.Resources["TaskDialogContentMargin"],
             HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
-            VerticalScrollBarVisibility = ScrollBarVisibility.Default
+            VerticalScrollBarVisibility = ScrollBarVisibility.Default,
+            Content = contentStack
         };
-        Grid.SetRow(scrollView, 2);
-
-        var contentStack = new StackLayout
-        {
-            //Spacing = 18
-        };
-
-        // Content Presenter
-        var contentPresenter = new Microsoft.Maui.Controls.ContentView
-        {
-            Content = @params.Content as Microsoft.Maui.Controls.View,
-            HorizontalOptions = LayoutOptions.Fill,
-            VerticalOptions = LayoutOptions.Fill
-        };
-        contentStack.Children.Add(contentPresenter);
-
-        // Progress Bar
-        var progressBar = new ProgressBar
-        {
-            IsVisible = @params.ShowProgressBar
-        };
-        contentStack.Children.Add(progressBar);
-
-        // More Details Panel
-        var moreDetailsPanel = new StackLayout
-        {
-            IsVisible = false,
-            Spacing = 0
-        };
-
-        var moreDetailsButton = new Button
-        {
-            Text = "Footer",// (string)Application.Current.Resources["TaskDialogFooterButtonNormalText"],
-            IsVisible = @params.Footer is not null,
-            //Style = (Style)Application.Current.Resources["TaskDialogMoreDetailsButton"]
-        };
-        moreDetailsPanel.Children.Add(moreDetailsButton);
-
-        var footerHost = new Microsoft.Maui.Controls.ContentView
-        {
-            VerticalOptions = LayoutOptions.Start,
-            HorizontalOptions = LayoutOptions.Fill,
-            Content = @params.Footer as Microsoft.Maui.Controls.View,
-            IsVisible = @params.Footer is not null
-        };
-        moreDetailsPanel.Children.Add(footerHost);
-
-        contentStack.Children.Add(moreDetailsPanel);
-        scrollView.Content = contentStack;
-        mainGrid.Children.Add(scrollView);
-
-        // Return or set the main grid as your content
-        // this.Content = mainGrid;
+        mainGrid.Add(scrollView, 0, 2);
 
         return await ((DialogService)service).DisplayThreeButtons<TaskDialogStandardResult>(
             @params.Title,
