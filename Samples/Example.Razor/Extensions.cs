@@ -16,6 +16,8 @@ public static class Extensions
         TypeRazorProject typeRazorProject = TypeRazorProject.Wasm,
         Func<IServiceProvider, Task>? initialize = null)
     {
+        services.AddNavigationRegion("main");
+        services.AddNavigationRegion("side");
         services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, parameters) =>
         {
             return parameters[0] switch
@@ -39,6 +41,7 @@ public static class Extensions
         services.RegisterViewFor<Home, HomeViewModel>(lifetime);
         services.RegisterViewFor<MenuView, MenuViewModel>(lifetime);
         services.RegisterViewFor<EssentialsView, EssentialsViewModel>(lifetime);
+        services.RegisterViewFor<RegionsView, RegionsViewModel>(lifetime);
         services.RegisterViewFor((sp) => new ModalFor<ModalView, ModalViewModel, string?> { Class = "center" });
         services.RegisterViewFor((sp) => new ViewFor<FormPage2, FormPage2ViewModel> { Class = "center" });
         services.RegisterViewFor<FormPage3, FormPage3ViewModel, Person>(

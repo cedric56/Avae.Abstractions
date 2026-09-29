@@ -10,8 +10,8 @@
     <StackPanel Grid.Row="0" >
       <ContentControl Content="{Binding MainView}" />
       <StackPanel Orientation="Horizontal">
-        <!--<Button Content="Back" Command="{Binding Back}"/>
-        <Button Content="Next" Command="{Binding Next}"/>-->
+        <Button Content="Back" Command="{Binding Back}"/>
+        <Button Content="Next" Command="{Binding Next}"/>
       </StackPanel>
     </StackPanel>
     <ContentControl Grid.Row="1" Content="{Binding SideView}" />

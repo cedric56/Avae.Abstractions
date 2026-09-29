@@ -2,13 +2,16 @@ using Avae.Essentials;
 using Example.BlazorApp.Components;
 using Example.Razor;
 using Microsoft.JSInterop;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Networking;
+using Microsoft.Maui.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.Environment.WebRootPath)
 });
-builder.Services.UseBlazorEssentials(ServiceLifetime.Singleton);
+builder.Services.UseBlazorEssentials();
 //builder.Services.WithAppNotifications(new AppNotificationOptions()
 //{
 //    Channels = new[]
@@ -30,12 +33,18 @@ builder.Services.UseSharedLibrary(
     {
         CircuitServiceAccessor.Provider = provider;
         var js = provider.GetRequiredService<IJSRuntime>();
-        //CircuitServiceAccessor.Runtime = js;
+        CircuitServiceAccessor.Runtime = js;
         //BrowserEssentials.SetModules(js, BrowserEssentials.InitializeAsync(js, false, "./BrowserEssentials.js"));
         await BrowserEssentials.InitializeAsync(js, false, "./BrowserEssentials.js");
 
-        var connectivity = provider.GetRequiredService<BlazorConnectivity>();
+        var connectivity = (BlazorConnectivity)provider.GetRequiredService<IConnectivity>();
         await connectivity.InitializeAsync("./BlazorEssentials.js");
+
+        var appInfo = (BlazorAppInfo)provider.GetRequiredService<IAppInfo>();
+        await appInfo.InitializeAsync("./BlazorEssentials.js");
+
+        var filePicker = (BlazorFilePicker) provider.GetRequiredService<IFilePicker>();
+        await filePicker.InitializeAsync("./BlazorEssentials.js");
     }
     );
 builder.Services

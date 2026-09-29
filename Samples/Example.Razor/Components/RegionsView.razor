@@ -1,0 +1,13 @@
+﻿@inherits AvaeComponentBase<RegionsViewModel>
+@page "/regions"
+@using Avae.Razor
+@using Example.ViewModels
+@if(ViewModel.MainView is ViewFor main)
+{
+    <DynamicComponent Type="@main.Type" Parameters="@main.Parameters" />
+}
+@if(ViewModel.SideView is ViewFor side)
+{
+    <DynamicComponent Type="@side.Type" Parameters="@side.Parameters" />
+}
+

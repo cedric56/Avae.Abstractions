@@ -11,6 +11,7 @@ using Microsoft.Maui.Devices.Sensors;
 using Microsoft.Maui.Media;
 using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
+using System.Numerics.Colors;
 
 namespace Example.ViewModels;
 
@@ -298,7 +299,15 @@ public partial class EssentialsViewModel(
     [RelayCommand]
     public void AppInfoCmd()
     {
-        appInfo.ShowSettingsUI();
+        service.Show(appInfo.RequestedTheme.ToString(), "Current theme");
+        try
+        {
+            appInfo.ShowSettingsUI();
+        }
+        catch
+        {
+
+        }
     }
 
 
