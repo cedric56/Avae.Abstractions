@@ -1,5 +1,6 @@
 ﻿using Avae.Services;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace Avae.Razor;
 
@@ -27,9 +28,15 @@ internal class NotificationService : INotificationService
                 return Task.CompletedTask;
             };
         });
-        snack?.OnClose += (snackbar) =>
+        if (snack is not null)
         {
-            onClose?.Invoke();
-        };
+            Action<Snackbar>? closeHandler = null;
+            closeHandler = (snackbar) =>
+            {
+                snack.OnClose -= closeHandler;   // detach immediately, fire-once
+                onClose?.Invoke();
+            };
+            snack.OnClose += closeHandler;
+        }
     }
 }
