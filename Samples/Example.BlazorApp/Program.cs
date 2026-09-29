@@ -2,7 +2,6 @@ using Avae.Essentials;
 using Example.BlazorApp.Components;
 using Example.Razor;
 using Microsoft.JSInterop;
-using Microsoft.Maui.Platforms.Browser.Essentials;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(sp => new HttpClient
@@ -34,6 +33,9 @@ builder.Services.UseSharedLibrary(
         //CircuitServiceAccessor.Runtime = js;
         //BrowserEssentials.SetModules(js, BrowserEssentials.InitializeAsync(js, false, "./BrowserEssentials.js"));
         await BrowserEssentials.InitializeAsync(js, false, "./BrowserEssentials.js");
+
+        var connectivity = provider.GetRequiredService<BlazorConnectivity>();
+        await connectivity.InitializeAsync("./BlazorEssentials.js");
     }
     );
 builder.Services

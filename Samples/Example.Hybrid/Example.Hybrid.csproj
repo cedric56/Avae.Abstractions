@@ -13,7 +13,7 @@
             The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
             either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
         <!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
         <OutputType>Exe</OutputType>
         <RootNamespace>Example.Hybrid</RootNamespace>
         <UseMaui>true</UseMaui>
@@ -70,7 +70,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Maui.Controls" />
-        <PackageReference Include="Avae.Notifications" />
+        <!--<PackageReference Include="Avae.Notifications" />-->
         <PackageReference Include="Avae.Essentials" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" />

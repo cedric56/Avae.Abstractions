@@ -13,6 +13,9 @@ internal class TaskDialogService(IDialogService service) : ITaskDialogService
     /// <returns>The result value associated with the button the user selected.</returns>
     public async Task<TaskDialogStandardResult> ShowAsync(TaskDialogParams @params, params TaskDialogStandardResult[] results)
     {
+        if (results.Count() > 3)
+            throw new NotImplementedException("Only three buttons are supported");
+
         var accent = new AppThemeBinding
         {
             Light = Color.FromArgb("#5B3FD6"),

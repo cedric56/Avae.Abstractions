@@ -65,7 +65,7 @@ public static class Extensions
         TypeRazorProject typeRazorProject,
         NotificationPosition position = NotificationPosition.BottomLeft,
         int maxDispayments = 5)
-    {        
+    {    
         services.AddMudServices(config =>
         {
             config.SnackbarConfiguration = new SnackbarConfiguration()

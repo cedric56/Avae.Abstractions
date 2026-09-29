@@ -3,9 +3,7 @@ using Example.Razor;
 using Example.Razor.Layout;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Hosting;
 using Microsoft.JSInterop;
-using Microsoft.Maui.Platforms.Browser.Essentials;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<Routes>("#app");

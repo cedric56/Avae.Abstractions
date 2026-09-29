@@ -1,5 +1,4 @@
 ﻿using Avae.Essentials;
-using Avae.Notifications;
 using Example.Razor;
 using Microsoft.Extensions.Logging;
 
@@ -11,7 +10,7 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-            .WithAppNotifications()
+            //.WithAppNotifications()
             .UseMauiApp<App>()
             .ConfigureFonts(fonts =>
             {
