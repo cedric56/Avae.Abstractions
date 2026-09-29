@@ -9,7 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bases\Avae.Razor\Avae.Razor.csproj" />
+    <PackageReference Include="Avae.Razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
   </ItemGroup>
 
