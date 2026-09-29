@@ -70,6 +70,7 @@ public static class Extensions
         {
             config.SnackbarConfiguration = new SnackbarConfiguration()
             {
+                PreventDuplicates = false,
                 PositionClass = position switch
                 {
                     NotificationPosition.TopLeft => Defaults.Classes.Position.TopLeft,
