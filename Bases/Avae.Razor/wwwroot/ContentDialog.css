@@ -1,11 +1,26 @@
 ﻿/* ==========================================================================
    winui-content-dialog.css
    Restyles MudBlazor's MudDialog to resemble WinUI 3's ContentDialog.
-   Import this after MudBlazor's CSS in index.html / App.razor:
-     <link href="winui-content-dialog.css" rel="stylesheet" />
+
+   Usage:
+   1. Import this after MudBlazor's CSS in index.html / App.razor:
+        <link href="winui-content-dialog.css" rel="stylesheet" />
+
+   2. In your root layout, set a data attribute next to <MudThemeProvider>
+      using the SAME flag that drives IsDarkMode, so the two never disagree:
+
+        <MudThemeProvider IsDarkMode="Service.IsDarkMode" />
+
+        <div data-wui-theme="@(Service.IsDarkMode ? "dark" : "light")">
+            @Body
+        </div>
+
+      MudThemeProvider does not add a class or attribute to the DOM itself,
+      so this wrapper is what lets these rules react to IsDarkMode.
    ========================================================================== */
 
-:root {
+:root,
+[data-wui-theme="light"] {
     --wui-corner-radius: 8px;
     --wui-dialog-bg: #FFFFFF;
     --wui-dialog-border: rgba(0, 0, 0, 0.08);
@@ -20,11 +35,8 @@
     --wui-font: "Segoe UI Variable", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Dark theme (pair with MudBlazor's dark palette / prefers-color-scheme) */
-.wui-dialog.mud-theme-dark,
-[data-mud-theme="dark"] .wui-dialog
-[data-mud-theme="dark"] .mud-dialog,
-.mud-theme-dark {
+/* Dark theme: driven by data-wui-theme="dark", set alongside IsDarkMode */
+[data-wui-theme="dark"] {
     --wui-dialog-bg: #2C2C2C;
     --wui-dialog-border: rgba(255, 255, 255, 0.08);
     --wui-divider: rgba(255, 255, 255, 0.08);
@@ -41,7 +53,6 @@
 
 /* The dialog "paper" itself */
 .wui-dialog.mud-dialog,
-/*[data-mud-theme="light"] */
 .mud-dialog {
     border-radius: var(--wui-corner-radius) !important;
     background-color: var(--wui-dialog-bg) !important;

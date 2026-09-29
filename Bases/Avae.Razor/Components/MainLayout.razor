@@ -1,6 +1,7 @@
 ﻿@using Avae.Razor
 @using Avae.Services
 @using Avae.ViewModels
+@using Microsoft.JSInterop
 @using MudBlazor
 @inherits LayoutComponentBase
 @implements IDisposable
@@ -8,6 +9,7 @@
 @inject IManagerReload reload
 @inject IMvvmManager mvvmmanager
 @inject NavigationManager manager
+@inject IJSRuntime js
 
 @* Required *@
 <MudThemeProvider IsDarkMode="Service.IsDarkMode" />
@@ -33,6 +35,7 @@
             }
         </MudNavMenu>
     </MudDrawer>
+   
     <MudMainContent>
         @if(mvvmmanager.CurrentView is ViewFor viewFor)
         {
@@ -82,9 +85,30 @@
         await InvokeAsync(StateHasChanged);
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ApplyThemeAsync();
+        }
+    }
+
     async void ThemeChanged(object? sender, RequestedTheme theme)
     {
+        await ApplyThemeAsync();
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ApplyThemeAsync()
+    {
+        try
+        {
+            await js.InvokeVoidAsync(
+                "document.documentElement.setAttribute",
+                "data-wui-theme",
+                Service.IsDarkMode ? "dark" : "light");
+        }
+        catch (JSDisconnectedException) { }
     }
 
     public void Dispose()
