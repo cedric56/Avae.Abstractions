@@ -12,7 +12,7 @@ namespace Example.ViewModels;
 public partial class FormViewModel(
     //IDispatcher dispatcher,
     IDialogService dialogService,
-    Router router,
+    IRouter router,
     Person person,
     IEntityCache<Person> entityCache,
     IPersonService personService,

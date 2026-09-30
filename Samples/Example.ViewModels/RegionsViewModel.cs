@@ -6,8 +6,8 @@ namespace Example.ViewModels;
 
 public partial class RegionsViewModel : ObservableObject, INavigable
 {
-    private readonly Router _main;
-    private readonly Router _side;
+    private readonly IRouter _main;
+    private readonly IRouter _side;
 
     public RegionsViewModel(IServiceProvider sp)
     {
@@ -25,7 +25,8 @@ public partial class RegionsViewModel : ObservableObject, INavigable
     public async Task Back()
     {
         await _main.BackAsync();
-        MainView = _main.CurrentView;
+        throw new Exception("TODO");
+        //MainView = _main.CurrentView;
     }
 
     public async Task OpenHomeAsync()

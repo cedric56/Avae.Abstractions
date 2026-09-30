@@ -25,6 +25,7 @@ public partial class App(IServiceProvider provider) : Application
          Action? onAppDispose = null)
     {
         return AvaeBuilder.CreateAvaloniaApp(
+            Runtime.Avalonia,
           Icon,
           true,
            sp => new App(sp),

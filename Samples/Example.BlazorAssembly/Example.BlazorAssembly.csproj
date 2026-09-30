@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <AvaeEnvironment>BLAZOR</AvaeEnvironment>
+
     <!--<WasmBuildNative>true</WasmBuildNative>
     <WasmEnableExceptionHandling>true</WasmEnableExceptionHandling>
     <EmccExtraLDFlags>-sSUPPORT_LONGJMP=wasm</EmccExtraLDFlags>-->

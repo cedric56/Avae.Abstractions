@@ -1,7 +1,5 @@
 ﻿@using Avae.Razor.Components
 @using Microsoft.AspNetCore.Components.Routing
-@inject IServiceProvider provider
-@inject Func<IServiceProvider, Task> initialize
 
 <Router AppAssembly="typeof(Example.Razor.Components.Home).Assembly"
         AdditionalAssemblies="new[] { typeof(MainLayout).Assembly }"
@@ -11,14 +9,4 @@
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
 </Router>
-
-@code
-{
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if(firstRender)
-            await initialize(provider);
-        await base.OnAfterRenderAsync(firstRender);
-    }
-}
 

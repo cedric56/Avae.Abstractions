@@ -18,7 +18,7 @@ public partial class MenuViewModel : NavigableViewModel, INavigable
         IPersonService personService,
         IEntityCache<Person> inMemoryEntityCache,
         //IDispatcher dispatcher,
-        IDialogService dialogService, Router router)
+        IDialogService dialogService, IRouter router)
         : base(router, false)
     {
         //this.dispatcher = dispatcher;

@@ -3,7 +3,6 @@
 @using Avae.Razor
 @using Example.ViewModels
 @using MudBlazor
-
 <MudExpansionPanels MultiExpansion="true">
     <MudExpansionPanel Text="Dialogs">
         <MudButton OnClick="() => ViewModel.PickPhotoCmd()">Pick a Photo</MudButton>
@@ -20,7 +19,7 @@
         <MudButton OnClick="() => ViewModel.ContactsCmd()">Contacts</MudButton>
         <MudButton OnClick="() => ViewModel.EmailCmd()">Email</MudButton>
         <MudButton OnClick="() => ViewModel.ShareCmdAsync()">Share</MudButton>
-        <MudButton OnClick="() => ViewModel.CapturePhotoCmd()">CapturePhoto</MudButton>
+ <MudButton OnClick="() => ViewModel.CapturePhotoCmd()">CapturePhoto</MudButton>
         <MudButton OnClick="() => ViewModel.CaptureVideoCmd()">CaptureVideo</MudButton>
         <MudButton OnClick="() => ViewModel.ScreenshotCmd()">Screenshot</MudButton>
         <MudButton OnClick="() => ViewModel.BrowserCmdAsync()">Browser</MudButton>

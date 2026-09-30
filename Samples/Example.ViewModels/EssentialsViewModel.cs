@@ -1,5 +1,6 @@
 ﻿using Avae.Essentials;
 using Avae.Services;
+using Avae.ViewModels;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Accessibility;
 using Microsoft.Maui.ApplicationModel;
@@ -12,8 +13,19 @@ using Microsoft.Maui.Media;
 using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
 using System.Numerics.Colors;
+using System.Reflection;
 
 namespace Example.ViewModels;
+
+[System.AttributeUsage(System.AttributeTargets.Assembly, Inherited = false, AllowMultiple = false)]
+public sealed class ConfigurationLocationAttribute : System.Attribute
+{
+    public string ConfigurationLocation { get; }
+    public ConfigurationLocationAttribute(string configurationLocation)
+    {
+        this.ConfigurationLocation = configurationLocation;
+    }
+}
 
 public partial class EssentialsViewModel(
     INotificationService service,
@@ -52,7 +64,8 @@ public partial class EssentialsViewModel(
     ITextToSpeech textToSpeech,
     IVibration vibration,
     IVersionTracking versionTracking,
-    IWebAuthenticator webAuthenticator
+    IWebAuthenticator webAuthenticator,
+    IRuntime runtime
     )
 {
     public bool IsSupportedInMauiPlatform()
@@ -533,12 +546,22 @@ public partial class EssentialsViewModel(
         });
     }
 
-
+    IEnumerable<FileResult>? results = null;
     [RelayCommand]
     public async Task ShareCmdAsync()
     {
-        var results = await filePicker.PickMultipleAsync();
+        if (results == null)
+        {
+            results = await filePicker.PickMultipleAsync();
+            if (runtime.Current == Runtime.BlazorServer ||
+                runtime.Current == Runtime.BlazorWebAssembly)
+            {
+                service.Show("Blazor environment", "Need to select files and then click again");
+                return;
+            }
+        }
         await share.RequestAsync("title", results ?? []);
+        results = null;
     }
 
     [RelayCommand]

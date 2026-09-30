@@ -1,4 +1,5 @@
 ﻿using Avae.Essentials;
+using Avae.ViewModels;
 using Example.Razor;
 using Microsoft.Extensions.Logging;
 
@@ -17,7 +18,7 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             });
         builder.Services.RegisterEssentials();
-        builder.Services.UseSharedLibrary();
+        builder.Services.UseSharedLibrary(Runtime.MauiHybrid);
         builder.Services.AddMauiBlazorWebView();
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();

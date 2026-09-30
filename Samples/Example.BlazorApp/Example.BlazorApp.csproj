@@ -16,6 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AssemblyAttribute Include="Avae.ViewModels.AvaeEnvironmentAttribute">
+      <_Parameter1>BLAZOR</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Example.Razor\Example.Razor.csproj" />
   </ItemGroup>
 

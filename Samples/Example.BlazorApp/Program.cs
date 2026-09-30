@@ -1,10 +1,7 @@
 using Avae.Essentials;
+using Avae.ViewModels;
 using Example.BlazorApp.Components;
 using Example.Razor;
-using Microsoft.JSInterop;
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Networking;
-using Microsoft.Maui.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(sp => new HttpClient
@@ -27,32 +24,22 @@ builder.Services.UseBlazorEssentials();
 //    }
 //});
 builder.Services.UseSharedLibrary(
+    Runtime.BlazorServer,
     ServiceLifetime.Scoped,
-     Avae.Razor.TypeRazorProject.Server,
-    initialize: async provider =>
-    {
-        CircuitServiceAccessor.Provider = provider;
-        var js = provider.GetRequiredService<IJSRuntime>();
-        CircuitServiceAccessor.Runtime = js;
-        //BrowserEssentials.SetModules(js, BrowserEssentials.InitializeAsync(js, false, "./BrowserEssentials.js"));
-        await BrowserEssentials.InitializeAsync(js, false, "./BrowserEssentials.js");
-
-        var connectivity = (BlazorConnectivity)provider.GetRequiredService<IConnectivity>();
-        await connectivity.InitializeAsync("./BlazorEssentials.js");
-
-        var appInfo = (BlazorAppInfo)provider.GetRequiredService<IAppInfo>();
-        await appInfo.InitializeAsync("./BlazorEssentials.js");
-
-        var filePicker = (BlazorFilePicker) provider.GetRequiredService<IFilePicker>();
-        await filePicker.InitializeAsync("./BlazorEssentials.js");
-    }
-    );
+    onCircuitProviderChanged: async provider => 
+    await BlazorEssentials.InitializeAsync(provider, "./BlazorEssentials.js", false));
 builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddCircuitOptions(options =>
     {
         options.DetailedErrors = true;
+    });
+builder.Services.AddServerSideBlazor()
+    .AddHubOptions(options =>
+    {
+        // Increase to e.g. 100 MB. Adjust based on your needs.
+        options.MaximumReceiveMessageSize = 100 * 1024 * 1024;
     });
 var app = builder.Build();
 app.UseRouting();

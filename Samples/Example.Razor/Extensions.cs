@@ -12,9 +12,9 @@ namespace Example.Razor;
 public static class Extensions
 {
     public static void UseSharedLibrary(this IServiceCollection services,
+        Runtime runtime,
         ServiceLifetime lifetime = ServiceLifetime.Singleton,
-        TypeRazorProject typeRazorProject = TypeRazorProject.Wasm,
-        Func<IServiceProvider, Task>? initialize = null)
+        Func<IServiceProvider, Task>? onCircuitProviderChanged = null)
     {
         services.AddNavigationRegion("main");
         services.AddNavigationRegion("side");
@@ -36,7 +36,6 @@ public static class Extensions
                 _ => throw new NotImplementedException()
             };
         });
-        services.AddSingleton<Func<IServiceProvider, Task>>(initialize ?? (_ => Task.CompletedTask));
         services.AddSingleton<IMvvmManager, MainViewModel>();
         services.RegisterViewFor<Home, HomeViewModel>(lifetime);
         services.RegisterViewFor<MenuView, MenuViewModel>(lifetime);
@@ -57,7 +56,8 @@ public static class Extensions
         services.AddPersonServiceRemote();
 
         services.UseAvae(
-            typeRazorProject,
+            runtime,
+            onCircuitProviderChanged,
             NotificationPosition.BottomLeft,
             5);
     }

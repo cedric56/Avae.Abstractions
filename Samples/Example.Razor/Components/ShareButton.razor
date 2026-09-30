@@ -1,0 +1,34 @@
+﻿@* @using Avae.Essentials
+@using Microsoft.JSInterop
+@using Microsoft.Maui.ApplicationModel.DataTransfer
+@implements IAsyncDisposable
+@inject IJSRuntime js
+@inject IAvaeShare browserShare
+
+<button @ref="_buttonRef" onclick="@browserShare." class="@Class">@ChildContent</button>
+
+@code {
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter, EditorRequired] public Func<Task<SharePayload?>> GetPayload { get; set; } = default!;
+
+    private ElementReference _buttonRef;
+    private DotNetObjectReference<ShareButton>? _ref;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _ref = DotNetObjectReference.Create(this);
+            await     browserShare.Module.InvokeVoidAsync("attachShareButton", _buttonRef, _ref);
+        }
+    }
+
+    [JSInvokable]
+    public async Task<SharePayload?> GetPayloadForShare() => await GetPayload();
+
+    public async ValueTask DisposeAsync()
+    {
+        _ref?.Dispose();
+    }
+} *@

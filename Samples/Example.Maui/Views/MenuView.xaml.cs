@@ -2,7 +2,7 @@ using Avae.ViewModels;
 
 namespace Example.Maui.Views;
 
-public partial class MenuView : ContentPage, IViewFor
+public partial class MenuView : ContentView, IViewFor
 {
     public MenuView()
     {

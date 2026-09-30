@@ -19,7 +19,8 @@ public static class Extensions
     /// <returns>The same <paramref name="builder"/>, for chaining.</returns>
     public static MauiAppBuilder UseAvae(this MauiAppBuilder builder)
     {
-        builder.Services.AddTransient<Router>();
+        builder.Services.RegisterNavigation();
+        builder.Services.RegisterEnvironments(Runtime.Maui);
         builder.Services.AddSingleton<IDialogService, DialogService>();
         builder.Services.AddSingleton<IContentDialogService, ContentDialogService>();
         builder.Services.AddSingleton<ITaskDialogService, TaskDialogService>();

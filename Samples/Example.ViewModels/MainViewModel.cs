@@ -55,27 +55,20 @@ public partial class MainViewModel : ObservableObject, IDisposable, IMvvmManager
     {
         if (value is null)
             return;
-        if (dico.TryGetValue(value, out var tuple))
+
+        var context = await router.GoToType(value.ViewModelType, context: NavigableContext.Create().WithAdditionalParameters(("Test", "This is a value pass as parameter")));
+        if (context.view != null)
         {
-            CurrentView = tuple.view;
-        }
-        else
-        {
-            var context = await router.GoToType(value.ViewModelType, context: NavigableContext.Create().WithAdditionalParameters(("Test", "This is a value pass as parameter")));
-            if (context.view != null)
-            {
-                CurrentView = context.view;
-                dico.TryAdd(value, (context.view, context.viewmodel));
-            }
+            CurrentView = context.view;
+            dico.TryAdd(value, (context.view, context.viewmodel));
         }
     }
 
-    Router router;
+    IRouter router;
 
-    public MainViewModel(Router router)
+    public MainViewModel(IRouter router)
     {
         this.router = router;
-        //SelectedNavigable = Navigables[0];
         _ = OnNavigableChanged(Navigables[0]);
     }
 }
