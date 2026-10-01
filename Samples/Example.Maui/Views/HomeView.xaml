@@ -30,5 +30,8 @@ HorizontalOptions="Center" />
         <Button Text="Messenger" Command="{Binding MessengerCommand}" 
                 VerticalOptions="Center"
 HorizontalOptions="Center" />
+        <Button Text="Environment" Command="{Binding EnvironmentCommand}" 
+                VerticalOptions="Center"
+HorizontalOptions="Center" />
     </VerticalStackLayout>
 </ContentView>
