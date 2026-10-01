@@ -17,7 +17,10 @@ public partial class HomeViewModel(
     IServiceProvider provider,
     INotificationService notificationService,
     IRequestedThemeService requestedTheme,
-    IDBMonitor<Person> monitor) :
+    IDBMonitor<Person> monitor, 
+    IRuntime runtime,
+    IDesktop desktop,
+    IDistribution distribution) :
     //ReactiveUI.ReactiveObject,
     //IRoutableViewModel,
     ObservableObject,
@@ -180,5 +183,13 @@ public partial class HomeViewModel(
 
             //unsuscribe = await monitor.AddSignalR(Constants.SignalHubUrl, factory: factory);
         }
+    }
+
+    [RelayCommand]
+    public void Environment()
+    {
+        notificationService.Show(
+            "Environment",
+            string.Join(System.Environment.NewLine, runtime.Current, desktop.Current, distribution.Current));
     }
 }

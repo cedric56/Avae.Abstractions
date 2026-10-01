@@ -1,11 +1,13 @@
 ﻿@using Avae.Razor
 @using Avae.Services
+@using CommunityToolkit.Mvvm.Messaging
 @using Example.ViewModels
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.Extensions.DependencyInjection
 @using MudBlazor
 @inherits AvaeComponentBase<HomeViewModel>
 @page "/"
+@inject Avae.Services.IDialogService dialogService
 <style>
     .rows
     {
@@ -23,15 +25,27 @@
     <MudButton OnClick="() => ViewModel.ShowNotification()">Show Snack</MudButton>
     <MudButton OnClick="() => ViewModel.ShowRequestedTheme()">Theme</MudButton>
     <MudButton OnClick="() => ViewModel.ShowSystemNotification()">Notification</MudButton>
+    <MudButton OnClick="() => ViewModel.Messenger()">Messenger</MudButton>
+    <MudButton OnClick="() => ViewModel.Environment()">Environment</MudButton>
 </div>
 
+
 @code
-{    
+{
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var service = Provider.GetService<ISystemNotificationService>();
-        if (firstRender && service != null)
-            await service.InitializeAsync();
+        if (firstRender)
+        {
+            var service = Provider.GetService<ISystemNotificationService>();
+            if (service != null)
+                await service.InitializeAsync();
+
+            WeakReferenceMessenger.Default.Register<string, HomeViewModel>(
+                this, ViewModel, async (o, s) =>
+                {
+                    await dialogService.ShowOkAsync(s, "Message from HomeViewModel");
+                });
+        }
         await base.OnAfterRenderAsync(firstRender);
     }
 }

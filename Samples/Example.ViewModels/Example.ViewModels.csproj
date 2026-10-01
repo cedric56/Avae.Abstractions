@@ -9,6 +9,12 @@
     <AvaeFeatures>;CommunityToolkit;</AvaeFeatures>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <_KernelRelease Condition="Exists('/proc/sys/kernel/osrelease')">$([System.IO.File]::ReadAllText('/proc/sys/kernel/osrelease').ToLowerInvariant())</_KernelRelease>
+    <IsWslOS Condition="$(_KernelRelease.Contains('microsoft')) OR $(_KernelRelease.Contains('wsl')) OR '$(WSL_DISTRO_NAME)' != '' OR '$(WSL_INTEROP)' != ''">true</IsWslOS>
+    <DefineConstants Condition="'$(IsWslOS)' == 'true'">$(DefineConstants);LINUX_OS</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Avae.Essentials" />
     <PackageReference Include="Avae.Services" />

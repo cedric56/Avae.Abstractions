@@ -47,13 +47,16 @@ public partial class App(IServiceProvider provider) : Application
                        _ => throw new NotImplementedException()
                    };
                });
-               services.AddSingleton<MainViewModel>();
+               services.AddSingleton<MainViewModel>();    
                services.Register<HomeView, HomeViewModel>();
                services.Register<MenuView, MenuViewModel>();
                services.Register<EssentialsView, EssentialsViewModel>();
+               services.Register<HomeView, HomeViewModel>("HomeView", nameof(HomeViewModel));
+               services.Register<MenuView, MenuViewModel>("MenuView", nameof(MenuViewModel));
+               services.Register<EssentialsView, EssentialsViewModel>("EssentialsView", nameof(EssentialsViewModel));
                services.Register<RegionsView, RegionsViewModel>();
                services.RegisterWithLifetime<FormView, FormViewModel>();
-               services.RegisterWithLifetime<FormPage1View, FormViewModel>(key: FormViewModel.KEY);
+               services.RegisterWithLifetime<FormPage1View, FormViewModel>(viewModelKey: FormViewModel.KEY);
                services.RegisterWithLifetime<FormPage2View, FormPage2ViewModel>();
                services.RegisterWithLifetime<FormPage3View, FormPage3ViewModel, Person>((sp, person) => new FormPage3View(person));
                services.RegisterWithLifetime<ModalWindow, ModalViewModel>();

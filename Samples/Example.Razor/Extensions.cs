@@ -37,21 +37,25 @@ public static class Extensions
             };
         });
         services.AddSingleton<IMvvmManager, MainViewModel>();
-        services.RegisterViewFor<Home, HomeViewModel>(lifetime);
-        services.RegisterViewFor<MenuView, MenuViewModel>(lifetime);
-        services.RegisterViewFor<EssentialsView, EssentialsViewModel>(lifetime);
+        services.RegisterViewFor<Home, HomeViewModel>(lifetime, lifetime);
+        services.RegisterViewFor<MenuView, MenuViewModel>(lifetime, lifetime);
+        services.RegisterViewFor<EssentialsView, EssentialsViewModel>(lifetime, lifetime);
+        services.RegisterViewFor<Home, HomeViewModel>(lifetime, lifetime, "HomeView", nameof(HomeViewModel));
+        services.RegisterViewFor<MenuView, MenuViewModel>(lifetime, lifetime, "MenuView", nameof(MenuViewModel));
+        services.RegisterViewFor<EssentialsView, EssentialsViewModel>(lifetime, lifetime, "EssentialsView", nameof(EssentialsViewModel));
+
         services.RegisterViewFor<RegionsView, RegionsViewModel>(lifetime);
         services.RegisterViewFor((sp) => new ModalFor<ModalView, ModalViewModel, string?> { Class = "center" });
         services.RegisterViewFor((sp) => new ViewFor<FormPage2, FormPage2ViewModel> { Class = "center" });
         services.RegisterViewFor<FormPage3, FormPage3ViewModel, Person>(
-            (sp, person) => new ViewFor<FormPage3, FormPage3ViewModel>(sp, null, new Dictionary<string, object>()
+            (sp, person) => new ViewFor<FormPage3, FormPage3ViewModel>(new Dictionary<string, object>()
                {
                    { nameof(Person), person }
                })
             {
                 Class = "center"
             });
-        services.RegisterViewFor<FormPage1, FormViewModel>(key: FormViewModel.KEY);
+        services.RegisterViewFor<FormPage1, FormViewModel>(viewModelKey: FormViewModel.KEY);
         services.RegisterViewFor<FormView, FormViewModel>();
         services.AddPersonServiceRemote();
 

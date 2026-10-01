@@ -1,12 +1,12 @@
+using Avae.Maui;
 using Avae.ViewModels;
 
 namespace Example.Maui.Views;
 
-public partial class EssentialsView : ContentView, IViewFor
+public partial class EssentialsView : ViewFor
 {
     public EssentialsView()
     {
         InitializeComponent();
     }
-    public object? Context { get => BindingContext; set => BindingContext = value; }
 }

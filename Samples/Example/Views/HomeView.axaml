@@ -14,7 +14,8 @@
             <Button Content="Notification" Command="{Binding ShowNotification}" />		
             <Button Content="System" Command="{Binding ShowSystemNotification}" />		
             <Button Content="Theme" Command="{Binding ShowRequestedTheme}" />	
-            <Button Content="Messenger" Command="{Binding MessengerCommand}" />	
+            <Button Content="Messenger" Command="{Binding MessengerCommand}" />
+          <Button Content="Environment" Command="{Binding EnvironmentCommand}" />
         </StackPanel>
         
     </Grid>

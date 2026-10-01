@@ -12,20 +12,8 @@ using Microsoft.Maui.Devices.Sensors;
 using Microsoft.Maui.Media;
 using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
-using System.Numerics.Colors;
-using System.Reflection;
 
 namespace Example.ViewModels;
-
-[System.AttributeUsage(System.AttributeTargets.Assembly, Inherited = false, AllowMultiple = false)]
-public sealed class ConfigurationLocationAttribute : System.Attribute
-{
-    public string ConfigurationLocation { get; }
-    public ConfigurationLocationAttribute(string configurationLocation)
-    {
-        this.ConfigurationLocation = configurationLocation;
-    }
-}
 
 public partial class EssentialsViewModel(
     INotificationService service,

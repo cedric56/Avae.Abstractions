@@ -5,7 +5,8 @@
         xmlns:vm="using:Example.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Example.ModalWindow"
-        Width="200" Height="80"
         x:DataType="{x:Type vm:ModalViewModel}">
-    <TextBox Text="{Binding Message, Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+    <TextBox Text="{Binding Message, Mode=TwoWay}" 
+             HorizontalAlignment="Stretch" 
+             VerticalAlignment="Center"/>
 </UserControl>

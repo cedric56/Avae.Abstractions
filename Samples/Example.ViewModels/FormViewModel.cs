@@ -70,7 +70,7 @@ public partial class FormViewModel(
             Person.Contacts.Update(
             SelectedItems,
             (person, contact) => person.Id == contact.IdPerson,
-            (person) => new Contact()
+            (person) => new Models.Contact()
             {
                 IdPerson = person.Id,
                 Person = person,

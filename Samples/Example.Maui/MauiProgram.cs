@@ -50,11 +50,16 @@ public static class MauiProgram
         //builder.Services.Register<MainPage, MainViewModel>();
         builder.Services.Register<HomeView, HomeViewModel>();
         builder.Services.Register<MenuView, MenuViewModel>();
-        builder.Services.Register<DefaultPage, RegionsViewModel>();
         builder.Services.Register<EssentialsView, EssentialsViewModel>();
+        builder.Services.Register<HomeView, HomeViewModel>("HomeView", nameof(HomeViewModel));
+        builder.Services.Register<MenuView, MenuViewModel>("MenuView", nameof(MenuViewModel));
+        builder.Services.Register<EssentialsView, EssentialsViewModel>("EssentialsView", nameof(EssentialsViewModel));
+
+        builder.Services.Register<DefaultView, RegionsViewModel>();
+        
         builder.Services.RegisterWithLifetime<ModalView, ModalViewModel>();
         builder.Services.RegisterWithLifetime<FormView, FormViewModel>();
-        builder.Services.RegisterWithLifetime<DefaultView, FormViewModel>(key: FormViewModel.KEY);
+        builder.Services.RegisterWithLifetime<DefaultView, FormViewModel>(viewModelKey: FormViewModel.KEY);
         builder.Services.AddPersonServiceLocal<SqliteConnection>();
 #if DEBUG
         builder.Logging.AddDebug();

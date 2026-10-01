@@ -4,7 +4,7 @@
     x:Class="Example.Maui.Views.HomeView">
     <VerticalStackLayout>
         <Button 
-            Text="Welcome to .NET MAUI!"
+            Text="Show Modal"
             Command="{Binding ShowModalCommand}"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
@@ -25,6 +25,9 @@ HorizontalOptions="Center" />
                 VerticalOptions="Center"
 HorizontalOptions="Center" />
         <Button Text="Theme" Command="{Binding ShowRequestedThemeCommand}" 
+                VerticalOptions="Center"
+HorizontalOptions="Center" />
+        <Button Text="Messenger" Command="{Binding MessengerCommand}" 
                 VerticalOptions="Center"
 HorizontalOptions="Center" />
     </VerticalStackLayout>

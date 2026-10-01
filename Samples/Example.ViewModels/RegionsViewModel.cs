@@ -25,19 +25,18 @@ public partial class RegionsViewModel : ObservableObject, INavigable
     public async Task Back()
     {
         await _main.BackAsync();
-        throw new Exception("TODO");
-        //MainView = _main.CurrentView;
+        MainView = _main.CurrentView;
     }
 
     public async Task OpenHomeAsync()
-        => MainView = (await _main.GoTo<HomeViewModel>()).view;
+        => MainView = (await _main.GoTo<HomeViewModel>("HomeView", nameof(HomeViewModel))).view;
 
     public async Task OpenEssentialsAsync()
         => SideView = (await _side.GoToType(
-            typeof(EssentialsViewModel))).view;
+            typeof(EssentialsViewModel), "EssentialsView", nameof(EssentialsViewModel))).view;
 
     public async Task OpenMenuAsync()
-        => MainView = (await _main.GoTo<MenuViewModel>()).view;
+        => MainView = (await _main.GoTo<MenuViewModel>("MenuView", nameof(MenuViewModel))).view;
 
     public async Task OnNavigatedTo(NavigableContext context)
     {

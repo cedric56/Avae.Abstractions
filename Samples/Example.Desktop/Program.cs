@@ -22,11 +22,11 @@ class Program
                 //services.AddPersonServiceRemote();
                 services.AddSingleton<ILogger>(LoggerFactory.Create(b => b.AddDebug()).CreateLogger<App>());
             })
-            .WithAppNotifications(new AppNotificationOptions()
-            {
-                AppIcon = Path.Combine(AppContext.BaseDirectory, "avalonia-logo.ico"),
-                AppName = "Example"
-            })
+            //.WithAppNotifications(new AppNotificationOptions()
+            //{
+            //    AppIcon = Path.Combine(AppContext.BaseDirectory, "avalonia-logo.ico"),
+            //    AppName = "Example"
+            //})
             .WithDataAnnotationsValidation()
             .UsePlatformDetect()
             .LogToTrace();
