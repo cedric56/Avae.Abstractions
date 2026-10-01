@@ -1,0 +1,43 @@
+<ContentView x:Class="Example.Maui.Views.Form1View"
+               x:DataType="vm:FormViewModel"
+               xmlns:model="clr-namespace:Example.Models;assembly=Example.Models"
+               xmlns:vm="clr-namespace:Example.ViewModels;assembly=Example.ViewModels"
+                          xmlns:avae="clr-namespace:Avae.Maui;assembly=Avae.Maui"
+>
+    
+    <Grid RowDefinitions="Auto,Auto,Auto,*">
+
+        <Grid ColumnDefinitions="Auto,*" Grid.Row="0">
+            <Label Text="First name" VerticalOptions="Center" />
+            <avae:AvaeEntry x:Name="tb"
+                Text="{Binding Person.FirstName}"
+                Grid.Column="1" />
+        </Grid>
+
+        <Grid ColumnDefinitions="Auto,*" Grid.Row="1">
+            <Label Text="Last name" VerticalOptions="Center" />
+            <avae:AvaeEntry Text="{Binding Person.LastName}"
+                Grid.Column="1" />
+        </Grid>
+
+        <Label Text="Contacts"
+            Grid.Row="2"
+            HorizontalOptions="Center" />
+
+        <CollectionView Grid.Row="3"
+                     ItemsSource="{Binding Persons}"
+                     SelectionMode="Multiple"
+                     SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
+                     Margin="5">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Person">
+                    <Grid ColumnDefinitions="100,100">
+                        <Label Text="{Binding FirstName}" />
+                        <Label Text="{Binding LastName}" Grid.Column="1" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentView>

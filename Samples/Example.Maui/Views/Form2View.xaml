@@ -1,0 +1,6 @@
+<ContentView x:Class="Example.Maui.Views.Form2View">
+    <Label 
+            Text="{Binding Title}"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+</ContentView>

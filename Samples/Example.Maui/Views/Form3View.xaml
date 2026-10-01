@@ -1,0 +1,8 @@
+<ContentView x:Class="Example.Maui.Views.Form3View">
+    <VerticalStackLayout>
+        <Label x:Name="lbl"
+            Text="Welcome to .NET MAUI!"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+    </VerticalStackLayout>
+</ContentView>

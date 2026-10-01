@@ -28,7 +28,7 @@ public partial class FormViewModel(
 
     public Person Person { get; private set; } = person;
 
-    public List<Person> Persons
+    public ObservableCollection<Person> Persons
     {
         get
         {
@@ -36,8 +36,8 @@ public partial class FormViewModel(
         }
     }
 
-    private List<Person> _selectedItems = [];
-    public List<Person> SelectedItems
+    private ObservableCollection<Person> _selectedItems = [];
+    public ObservableCollection<Person> SelectedItems
     {
         get
         {

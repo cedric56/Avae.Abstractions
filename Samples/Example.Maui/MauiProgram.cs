@@ -59,7 +59,9 @@ public static class MauiProgram
         
         builder.Services.RegisterWithLifetime<ModalView, ModalViewModel>();
         builder.Services.RegisterWithLifetime<FormView, FormViewModel>();
-        builder.Services.RegisterWithLifetime<DefaultView, FormViewModel>(viewModelKey: FormViewModel.KEY);
+        builder.Services.RegisterWithLifetime<Form2View, FormPage2ViewModel>();
+        builder.Services.RegisterWithLifetime<Form3View, FormPage3ViewModel>();
+        builder.Services.RegisterWithLifetime<Form1View, FormViewModel>(viewModelKey: FormViewModel.KEY);
         builder.Services.AddPersonServiceLocal<SqliteConnection>();
 #if DEBUG
         builder.Logging.AddDebug();
