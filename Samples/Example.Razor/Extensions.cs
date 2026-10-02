@@ -16,8 +16,8 @@ public static class Extensions
         ServiceLifetime lifetime = ServiceLifetime.Singleton,
         Func<IServiceProvider, Task>? onCircuitProviderChanged = null)
     {
-        services.AddNavigationRegion("main");
-        services.AddNavigationRegion("side");
+        services.AddNavigationRegion("main", lifetime);
+        services.AddNavigationRegion("side", lifetime);
         services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, parameters) =>
         {
             return parameters[0] switch
@@ -44,7 +44,7 @@ public static class Extensions
         services.RegisterViewFor<MenuView, MenuViewModel>(lifetime, lifetime, "MenuView", nameof(MenuViewModel));
         services.RegisterViewFor<EssentialsView, EssentialsViewModel>(lifetime, lifetime, "EssentialsView", nameof(EssentialsViewModel));
 
-        services.RegisterViewFor<RegionsView, RegionsViewModel>(lifetime);
+        services.RegisterViewFor<RegionsView, RegionsViewModel>(lifetime, lifetime);
         services.RegisterViewFor((sp) => new ModalFor<ModalView, ModalViewModel, string?> { Class = "center" });
         services.RegisterViewFor((sp) => new ViewFor<FormPage2, FormPage2ViewModel> { Class = "center" });
         services.RegisterViewFor<FormPage3, FormPage3ViewModel, Person>(

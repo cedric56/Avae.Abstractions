@@ -9,7 +9,7 @@ public partial class RegionsViewModel : ObservableObject, INavigable
     private readonly IRouter _main;
     private readonly IRouter _side;
 
-    public RegionsViewModel(IServiceProvider sp)
+    public RegionsViewModel(IServiceProvider sp, IRuntime runtime)
     {
         _main = sp.GetRegion("main");
         _side = sp.GetRegion("side");

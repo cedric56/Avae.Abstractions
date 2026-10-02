@@ -15,7 +15,7 @@ public static class Constants
     public static string OnionUrl = $"{ServerUrl}/{typeof(IMagicOnionLayer).Name}/";
 }
 
-public static class ServiceCollectionExtensions
+public static class Extensions
 {
     public static IServiceCollection AddPersonServiceLocal<TDBConnection>(this IServiceCollection services)// DbProviderFactory factory)
         where TDBConnection : DbConnection, new()

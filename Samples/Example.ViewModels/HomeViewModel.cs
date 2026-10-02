@@ -5,7 +5,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Example.Models;
-using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 
 namespace Example.ViewModels;
@@ -90,14 +89,14 @@ public partial class HomeViewModel(
             "Hello",
             "World",
             NotificationType.Success,
-            TimeSpan.FromSeconds(2),
+            TimeSpan.FromSeconds(5),
             () =>
             {
-                notificationService.Show("Clicked", "Click", NotificationType.Information);
+                notificationService.Show("Clicked", "Click", NotificationType.Information, TimeSpan.FromSeconds(1));
             },
             () =>
             {
-                notificationService.Show("Closed", "Close", NotificationType.Information);
+                notificationService.Show("Closed", "Close", NotificationType.Information, TimeSpan.FromSeconds(1));
             });
     }
 

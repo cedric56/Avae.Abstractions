@@ -14,7 +14,7 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 builder.Services.UseBlazorEssentials();
 //builder.Services.UseNotifications();
-builder.Services.UseSharedLibrary(Runtime.BlazorWebAssembly, ServiceLifetime.Scoped);
+builder.Services.UseSharedLibrary(Runtime.BlazorWebAssembly);
 //await builder.Services.UseEmbeddedAvaloniaApp("avalonia", b => b.WithAppNotifications());
 var app = builder.Build();
 await BlazorEssentials.InitializeAsync(app.Services, "./BlazorEssentials.js");
