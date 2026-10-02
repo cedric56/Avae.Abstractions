@@ -33,6 +33,7 @@ public partial class MainViewModel : ObservableObject, IDisposable, IMvvmManager
             Href = "regions"
         }
     ];
+    public EventHandler<IViewFor?>? CurrentViewChanged { get; set; }
 
     async partial void OnSelectedNavigableChanged(NavigableView? value)
     {
@@ -60,6 +61,7 @@ public partial class MainViewModel : ObservableObject, IDisposable, IMvvmManager
         if (context.view != null)
         {
             CurrentView = context.view;
+            CurrentViewChanged?.Invoke(this, context.view);
             dico.TryAdd(value, (context.view, context.viewmodel));
         }
     }

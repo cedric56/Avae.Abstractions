@@ -13,7 +13,7 @@ public static class ToastHelper
     const string HostTag = "Avae.ToastHost";
     const double CardWidth = 360;
 
-    public static Microsoft.UI.Xaml.FrameworkElement Show(
+    public static Microsoft.UI.Xaml.FrameworkElement? Show(
         string title,
         string message,
         NotificationType type,
@@ -21,8 +21,9 @@ public static class ToastHelper
         Action? onClick,
         Action? onClose)
     {
-        var host = GetOrCreateHost()
-            ?? throw new InvalidOperationException("No WinUI window/content to attach the notification.");
+        var host = GetOrCreateHost();
+        if(host is null)
+            return null!;
 
         var initialTheme = Application.Current?.RequestedTheme ?? AppTheme.Light;
         var resolvedInitialTheme = initialTheme == AppTheme.Unspecified
