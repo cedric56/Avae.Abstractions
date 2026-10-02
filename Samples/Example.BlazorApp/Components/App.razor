@@ -1,6 +1,5 @@
 ﻿@using Example.Razor.Layout
 @using Microsoft.AspNetCore.Components.Web
-@using static Microsoft.AspNetCore.Components.Web.RenderMode
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
-    @* <ResourcePreloader @rendermode="InteractiveWebAssembly" />*@
+    <ResourcePreloader @rendermode="_mode" />
     <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["Example.BlazorApp.styles.css"]" />
@@ -23,8 +22,7 @@
 <body>
     <Routes @rendermode="_mode" />
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-@*     <script src="_content/Avae.Essentials/BrowserEssentials.js"></script>
- *@    <script src="_framework/blazor.web.js"></script>
+    <script src="_framework/blazor.web.js"></script>
 </body>
 </html>
 @code {

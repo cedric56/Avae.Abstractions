@@ -4,7 +4,6 @@ using Avae.ViewModels;
 using Example.Models;
 using Example.Razor.Components;
 using Example.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 
 namespace Example.Razor;
@@ -13,9 +12,10 @@ public static class Extensions
 {
     public static void UseSharedLibrary(this IServiceCollection services,
         Runtime runtime,
-        ServiceLifetime lifetime = ServiceLifetime.Singleton,
         Func<IServiceProvider, Task>? onCircuitProviderChanged = null)
     {
+        var lifetime = ServiceLifetime.Scoped;
+
         services.AddNavigationRegion("main", lifetime);
         services.AddNavigationRegion("side", lifetime);
         services.RegisterWithLifetime(HomeViewModel.TaskDialogKey, (sp, parameters) =>
@@ -36,16 +36,15 @@ public static class Extensions
                 _ => throw new NotImplementedException()
             };
         });
-        services.AddSingleton<IMvvmManager, MainViewModel>();
-        services.RegisterViewFor<Home, HomeViewModel>(lifetime, lifetime);
-        services.RegisterViewFor<MenuView, MenuViewModel>(lifetime, lifetime);
-        services.RegisterViewFor<EssentialsView, EssentialsViewModel>(lifetime, lifetime);
-        services.RegisterViewFor<Home, HomeViewModel>(lifetime, lifetime, "HomeView", nameof(HomeViewModel));
-        services.RegisterViewFor<MenuView, MenuViewModel>(lifetime, lifetime, "MenuView", nameof(MenuViewModel));
-        services.RegisterViewFor<EssentialsView, EssentialsViewModel>(lifetime, lifetime, "EssentialsView", nameof(EssentialsViewModel));
-
-        services.RegisterViewFor<RegionsView, RegionsViewModel>(lifetime, lifetime);
-        services.RegisterViewFor((sp) => new ModalFor<ModalView, ModalViewModel, string?> { Class = "center" });
+        services.AddScoped<IMvvmManager, MainViewModel>();
+        services.RegisterViewFor<Home, HomeViewModel>();
+        services.RegisterViewFor<MenuView, MenuViewModel>();
+        services.RegisterViewFor<EssentialsView, EssentialsViewModel>();
+        services.RegisterViewFor<Home, HomeViewModel>("HomeView", nameof(HomeViewModel));
+        services.RegisterViewFor<MenuView, MenuViewModel>("MenuView", nameof(MenuViewModel));
+        services.RegisterViewFor<EssentialsView, EssentialsViewModel>("EssentialsView", nameof(EssentialsViewModel));
+        services.RegisterViewFor<RegionsView, RegionsViewModel>();
+        services.RegisterModalFor<ModalView, ModalViewModel, string?>();
         services.RegisterViewFor((sp) => new ViewFor<FormPage2, FormPage2ViewModel> { Class = "center" });
         services.RegisterViewFor<FormPage3, FormPage3ViewModel, Person>(
             (sp, person) => new ViewFor<FormPage3, FormPage3ViewModel>(new Dictionary<string, object>()

@@ -25,7 +25,6 @@ builder.Services.UseBlazorEssentials();
 //});
 builder.Services.UseSharedLibrary(
     Runtime.BlazorServer,
-    ServiceLifetime.Transient,
     onCircuitProviderChanged: async provider => 
     await BlazorEssentials.InitializeAsync(provider, "./BlazorEssentials.js"));
 builder.Services
