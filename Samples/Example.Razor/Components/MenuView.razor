@@ -1,5 +1,4 @@
-﻿@using System.ComponentModel
-@using Avae.Razor
+﻿@using Avae.Razor
 @using Avae.ViewModels
 @using Example.Models
 @using Example.ViewModels
@@ -35,21 +34,20 @@ else if(ViewModel != null)
 
     protected override void OnParametersSet()
     {
-        ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
-        ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+        ViewModel.CurrentViewChanged -= CurrentViewChanged;
+        ViewModel.CurrentViewChanged += CurrentViewChanged;
 
         base.OnParametersSet();
     }
 
-    private async void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private async void CurrentViewChanged(object? sender, IViewFor? e)
     {
-        if (e.PropertyName == nameof(MenuViewModel.CurrentView))
-            await InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
     public ValueTask DisposeAsync()
     {
-        ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+        ViewModel.CurrentViewChanged -= CurrentViewChanged;
         return ValueTask.CompletedTask;
     }
 }
