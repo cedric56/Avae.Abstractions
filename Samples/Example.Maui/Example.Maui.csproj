@@ -62,6 +62,7 @@
 
 	<ItemGroup>
     <PackageReference Include="AathifMahir.Maui.MauiIcons.FontAwesome.Solid" />
+    <PackageReference Include="Avae.Maui" />
     <!--<PackageReference Include="Avae.Notifications" />-->
     <PackageReference Include="Avae.ViewModels" />
     <PackageReference Include="CommunityToolkit.Maui" />
@@ -69,8 +70,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />		
 	</ItemGroup>
 
-	<ItemGroup>    
-	  <ProjectReference Include="..\..\Bases\Avae.Maui\Avae.Maui.csproj" />
+	<ItemGroup>
     <ProjectReference Include="..\Example.ViewModels\Example.ViewModels.csproj" />
 	</ItemGroup>
 

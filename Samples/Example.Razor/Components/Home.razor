@@ -39,7 +39,7 @@
             var service = Provider.GetService<ISystemNotificationService>();
             if (service != null)
                 await service.InitializeAsync();
-
+            WeakReferenceMessenger.Default.Unregister<string, HomeViewModel>(this, ViewModel);
             WeakReferenceMessenger.Default.Register<string, HomeViewModel>(
                 this, ViewModel, async (o, s) =>
                 {

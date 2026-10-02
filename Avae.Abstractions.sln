@@ -33,7 +33,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Windows", "Samples\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.macOS", "Samples\Example.macOS\Example.macOS.csproj", "{C92A9E1B-797D-4159-A914-40C07F060ECF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avae.Maui", "Bases\Avae.Maui\Avae.Maui.csproj", "{0767F1F6-1F95-4870-88CF-5ABD53C5925A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{90EE8670-EA72-492B-AC9D-EA2AB65EBA06}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,10 +110,6 @@ Global
 		{C92A9E1B-797D-4159-A914-40C07F060ECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C92A9E1B-797D-4159-A914-40C07F060ECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C92A9E1B-797D-4159-A914-40C07F060ECF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0767F1F6-1F95-4870-88CF-5ABD53C5925A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0767F1F6-1F95-4870-88CF-5ABD53C5925A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0767F1F6-1F95-4870-88CF-5ABD53C5925A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0767F1F6-1F95-4870-88CF-5ABD53C5925A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
