@@ -1,3 +1,7 @@
+> [!WARNING]
+> **`Avae.Abstractions` is under active development.**
+>
+
 # Avae.Abstractions
 
 MAUI and Blazor/Razor **host adapters** for the Avae stack — the pieces that turn Avae's
