@@ -6,11 +6,11 @@
 @using MudBlazor
 
 <EditForm Model="@ViewModel.Person">
-<MudTextField label="First name" 
+    <MudTextField label="First name" AutoFocus="true"
                 aria-required="true"
                 @bind-Value="@ViewModel.Person.FirstName"
                 For="@(() => @ViewModel.Person.FirstName)" />
-<MudTextField label="Last name" 
+    <MudTextField label="Last name"
                 aria-required="true"
                 For="@(() => @ViewModel.Person.LastName)"
                 @bind-Value="@ViewModel.Person.LastName" />
