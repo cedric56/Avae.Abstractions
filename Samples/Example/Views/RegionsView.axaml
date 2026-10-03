@@ -3,17 +3,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Example.ViewModels"
+             xmlns:fa="using:FluentAvalonia.UI.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Example.RegionsView"
              x:DataType="{x:Type vm:RegionsViewModel}">
   <Grid RowDefinitions="*,*">
-    <StackPanel Grid.Row="0" >
-      <ContentControl Content="{Binding MainView}" />
-      <StackPanel Orientation="Horizontal">
-        <Button Content="Back" Command="{Binding Back}"/>
-        <Button Content="Next" Command="{Binding Next}"/>
+    <GroupBox Grid.Row="0" Header="Main">
+      <StackPanel>
+        <ContentControl Content="{Binding MainView}" />
+        <StackPanel Orientation="Horizontal">
+          <Button Content="Back" Command="{Binding Back}"/>
+          <Button Content="Next" Command="{Binding Next}"/>
+        </StackPanel>
       </StackPanel>
-    </StackPanel>
-    <ContentControl Grid.Row="1" Content="{Binding SideView}" />
+    </GroupBox>
+
+    <GroupBox Grid.Row="1" Header="Side">
+      <ContentControl Content="{Binding SideView}" />
+    </GroupBox>
   </Grid>
 </UserControl>
