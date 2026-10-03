@@ -3,14 +3,30 @@
 @using Avae.Razor
 @using Example.ViewModels
 @using MudBlazor
-@if(ViewModel.MainView is ViewFor main)
-{
-    <DynamicComponent Type="@main.Type" Parameters="@main.Parameters" />
-}
-<MudButton OnClick="()=> ViewModel.Back()">Back</MudButton>
-<MudButton OnClick="() => ViewModel.Next()">Next</MudButton>
-@if(ViewModel.SideView is ViewFor side)
-{
-    <DynamicComponent Type="@side.Type" Parameters="@side.Parameters" />
-}
+<MudCard Outlined="true">
+    <MudCardHeader>
+        Main region
+    </MudCardHeader>
+    <MudCardContent>
+    @if(ViewModel.MainView is ViewFor main)
+    {
+        @main.Content
+    }
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton OnClick="()=> ViewModel.Back()">Back</MudButton>
+        <MudButton OnClick="() => ViewModel.Next()">Next</MudButton>
+    </MudCardActions>
+</MudCard>
+<MudCard Outlined="true">
+    <MudCardHeader>
+        Side region
+    </MudCardHeader>
+    <MudCardContent>
+    @if(ViewModel.SideView is ViewFor side)
+    {
+        @side.Content
+    }
+    </MudCardContent>
+</MudCard>
 

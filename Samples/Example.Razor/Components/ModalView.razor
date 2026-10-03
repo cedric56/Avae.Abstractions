@@ -1,23 +1,26 @@
 ﻿@inherits AvaeComponentBase<ModalViewModel>
 @using Avae.Razor
-@using Avae.Services
 @using Example.ViewModels
+@using Microsoft.AspNetCore.Components.Forms
 @using MudBlazor
-@inject IRequestedThemeService themeService
-<MudDialog Class="@($"wui-dialog {(Service.IsDarkMode ? "mud-theme-dark" : "")}")">
+<MudDialog>
     <TitleContent>
         <h6>@ViewModel.Title</h6>
         @* <MudTextField T="string" Typo="Typo.h6" @bind-Value="ViewModel.Title"/> *@
     </TitleContent>
 
     <DialogContent>
-        <MudTextField label="Message" @bind-Value="ViewModel.Message" />
+        <EditForm Model="@ViewModel">
+            @* <MudTextField Validation="@(new Func<string, string>(ViewModel.ValidateProperty))"
+                          Required="true" RequiredError="@ViewModel.ValidateProperty("Message")"
+                          label="Message" @bind-Value="ViewModel.Message" Immediate="true" /> *@
+            <MudTextField For="@(() => @ViewModel.Message)" aria-required="true"
+                          label="Message" AutoFocus="true"
+                          @bind-Value="ViewModel.Message" Immediate="true" />
+        </EditForm>
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Primary" onclick="@(() => ViewModel.Validate())">Validate</MudButton>
         <MudButton onclick="@(() => ViewModel.Cancel())">Cancel</MudButton>
     </DialogActions>
 </MudDialog>
-@code {
-    private RequestThemeService Service => (RequestThemeService)themeService;
-}

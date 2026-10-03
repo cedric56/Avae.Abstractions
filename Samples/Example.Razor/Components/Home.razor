@@ -32,10 +32,12 @@
 
 @code
 {
+    bool _isDone = false;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (!_isDone)
         {
+            _isDone = true;
             var service = Provider.GetService<ISystemNotificationService>();
             if (service != null)
                 await service.InitializeAsync();

@@ -44,18 +44,15 @@ public static class Extensions
         services.RegisterViewFor<MenuView, MenuViewModel>("MenuView", nameof(MenuViewModel));
         services.RegisterViewFor<EssentialsView, EssentialsViewModel>("EssentialsView", nameof(EssentialsViewModel));
         services.RegisterViewFor<RegionsView, RegionsViewModel>();
-        services.RegisterModalFor<ModalView, ModalViewModel, string?>();
-        services.RegisterViewFor((sp) => new ViewFor<FormPage2, FormPage2ViewModel> { Class = "center" });
-        services.RegisterViewFor<FormPage3, FormPage3ViewModel, Person>(
-            (sp, person) => new ViewFor<FormPage3, FormPage3ViewModel>(new Dictionary<string, object>()
-               {
-                   { nameof(Person), person }
-               })
+        services.RegisterModalFor<ModalView, ModalViewModel, string?>(viewModelLifetime: ServiceLifetime.Transient, viewLifetime: ServiceLifetime.Transient);
+        services.RegisterViewFor<FormPage2, FormPage2ViewModel>(viewLifetime: ServiceLifetime.Transient, viewModelLifetime: ServiceLifetime.Transient, centered: true);
+        services.RegisterViewFor<FormPage3, FormPage3ViewModel, Person>(viewLifetime: ServiceLifetime.Transient, viewModelLifetime: ServiceLifetime.Transient, centered: true, 
+            viewParameters: (person) => new Dictionary<string, object>()
             {
-                Class = "center"
+                { nameof(Person), person }
             });
-        services.RegisterViewFor<FormPage1, FormViewModel>(viewModelKey: FormViewModel.KEY);
-        services.RegisterViewFor<FormView, FormViewModel>();
+        services.RegisterViewFor<FormPage1, FormViewModel>(viewLifetime: ServiceLifetime.Transient, viewModelLifetime: ServiceLifetime.Transient, viewModelKey: FormViewModel.KEY);
+        services.RegisterViewFor<FormView, FormViewModel>(viewLifetime: ServiceLifetime.Transient, viewModelLifetime: ServiceLifetime.Transient);
         services.AddPersonServiceRemote();
 
         services.UseAvae(

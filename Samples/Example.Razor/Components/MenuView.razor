@@ -6,9 +6,9 @@
 @inherits AvaeComponentBase<MenuViewModel>
 @implements IAsyncDisposable
 @page "/menu"
-@if (CurrentView != null)
+@if (ViewModel.CurrentView is ViewFor viewFor)
 {
-    <DynamicComponent Type="@CurrentView.Type" Parameters="@CurrentView.Parameters"/>
+    @viewFor.Content
 }
 else if(ViewModel != null)
 {
@@ -29,8 +29,6 @@ else if(ViewModel != null)
 @code {
 
     private bool IsDisabled => ViewModel?.SelectedPerson == null;
-
-    private ViewFor? CurrentView => ViewModel?.CurrentView as ViewFor;
 
     protected override void OnParametersSet()
     {

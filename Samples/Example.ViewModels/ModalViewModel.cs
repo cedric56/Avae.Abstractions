@@ -8,6 +8,14 @@ using System.Windows.Input;
 
 namespace Example.ViewModels;
 
+public static class ObservableValidatorExtensions
+{
+    public static string ValidateProperty(this ObservableValidator validator, string propertyName)
+    {
+        return string.Join(Environment.NewLine, validator.GetErrors("Message"));
+    }
+}
+
 public partial class ModalViewModel(IDialogService dialogService) : ObservableValidator,
     ICloseableViewModel<string?>,
     IViewModelErrorInfo

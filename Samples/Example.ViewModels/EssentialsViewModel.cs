@@ -2,16 +2,6 @@
 using Avae.Services;
 using Avae.ViewModels;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Accessibility;
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.ApplicationModel.Communication;
-using Microsoft.Maui.ApplicationModel.DataTransfer;
-using Microsoft.Maui.Authentication;
-using Microsoft.Maui.Devices;
-using Microsoft.Maui.Devices.Sensors;
-using Microsoft.Maui.Media;
-using Microsoft.Maui.Networking;
-using Microsoft.Maui.Storage;
 
 namespace Example.ViewModels;
 
@@ -538,13 +528,18 @@ public partial class EssentialsViewModel(
     [RelayCommand]
     public async Task ShareCmdAsync()
     {
+        if (results == null && (runtime.Current == Runtime.BlazorServer ||
+                runtime.Current == Runtime.BlazorWebAssembly))
+        {
+            service.Show("Blazor environment", "Share needs to be user handled, you have to select files first then click again.");
+        }
+
         if (results == null)
         {
             results = await filePicker.PickMultipleAsync();
             if (runtime.Current == Runtime.BlazorServer ||
-                runtime.Current == Runtime.BlazorWebAssembly)
+                    runtime.Current == Runtime.BlazorWebAssembly)
             {
-                service.Show("Blazor environment", "Need to select files and then click again");
                 return;
             }
         }
