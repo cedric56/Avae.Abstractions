@@ -1,5 +1,5 @@
-> [!CAUTION]
-> **`Avae.Abstractions` is not ready for production.**
+> [!WARNING]
+> **`Avae.Abstractions` is under active development.**
 >
 
 # Avae.Abstractions
