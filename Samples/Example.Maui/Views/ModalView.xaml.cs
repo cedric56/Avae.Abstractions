@@ -6,15 +6,17 @@ namespace Example.Maui.Views;
 
 public partial class ModalView : ContentView, IModalFor<ModalViewModel, string?>
 {
+    IModalService service;
     public object? Context { get => BindingContext; set => BindingContext = value; }
 
-    public ModalView()
+    public ModalView(IModalService service)
     {
         InitializeComponent();
+        this.service = service;
     }
 
     public Task<string?> ShowModalAsync()
     {
-        return ModalService.ShowModalAsync<ModalViewModel, string?>(BindingContext, this);
+        return service.ShowModalAsync<ModalViewModel, string?>(BindingContext, this);
     }
 }

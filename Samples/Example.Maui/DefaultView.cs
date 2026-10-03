@@ -31,7 +31,7 @@ internal class DefaultView : ContentView, IViewFor
         if (vm.MainView is not null && vm.SideView is not null)
             return;
 
-        var tcs = new TaskCompletionSource();
+        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         void Handler(object? s, PropertyChangedEventArgs e)
         {
             if (vm.MainView is not null && vm.SideView is not null)
