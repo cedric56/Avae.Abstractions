@@ -1,4 +1,5 @@
 ﻿using MessagePack;
+using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,12 +9,13 @@ namespace Example.Models;
 
 [Table(nameof(Person))]
 [MessagePackObject]
-public partial class Person : INotifyPropertyChanged, IDataErrorInfo
+public partial class Person : INotifyPropertyChanged, INotifyDataErrorInfo
 {
     private string? _firstName;
     private string? _lastName;
 
     public event PropertyChangedEventHandler? PropertyChanged;
+    public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
     [MessagePack.Key(0)]
     public long Id { get; set; }
@@ -23,7 +25,13 @@ public partial class Person : INotifyPropertyChanged, IDataErrorInfo
     public string? FirstName
     {
         get => _firstName;
-        set { _firstName = value; OnPropertyChanged(nameof(FirstName)); OnPropertyChanged(nameof(FullName)); }
+        set
+        {
+            _firstName = value;
+            OnPropertyChanged(nameof(FirstName));
+            OnPropertyChanged(nameof(FullName));
+            OnErrorsChanged(nameof(FirstName));
+        }
     }
 
     [Required(ErrorMessage = "LastName must be set")]
@@ -31,7 +39,13 @@ public partial class Person : INotifyPropertyChanged, IDataErrorInfo
     public string? LastName
     {
         get => _lastName;
-        set { _lastName = value; OnPropertyChanged(nameof(LastName)); OnPropertyChanged(nameof(FullName)); }
+        set
+        {
+            _lastName = value;
+            OnPropertyChanged(nameof(LastName));
+            OnPropertyChanged(nameof(FullName));
+            OnErrorsChanged(nameof(LastName));
+        }
     }
 
     [MessagePack.Key(3)]
@@ -48,20 +62,20 @@ public partial class Person : INotifyPropertyChanged, IDataErrorInfo
 
     [IgnoreMember]
     [NotMapped]
-    public string Error => EntityValidator.Error(this) ?? string.Empty;
-
-    [IgnoreMember]
-    [NotMapped]
-    public string this[string columnName] => EntityValidator.ValidateProperty(this, columnName) ?? string.Empty;
-
-    [IgnoreMember]
-    [NotMapped]
     public string? FullName => FirstName + " " + LastName;
 
     [IgnoreMember]
     [NotMapped]
-    public bool IsValid => string.IsNullOrEmpty(Error);
+    public bool HasErrors => !string.IsNullOrWhiteSpace(EntityValidator.Error(this));
 
     private void OnPropertyChanged(string propertyName) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+    private void OnErrorsChanged(string propertyName) =>
+        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+
+    public IEnumerable GetErrors(string? propertyName)
+    {
+        return EntityValidator.ValidateErrorsProperty(this, propertyName) ?? [];
+    }
 }

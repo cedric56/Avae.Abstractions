@@ -3,7 +3,9 @@ using Avae.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Example.Models;
+using System.Collections;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Person = Example.Models.Person;
 
 namespace Example.ViewModels;

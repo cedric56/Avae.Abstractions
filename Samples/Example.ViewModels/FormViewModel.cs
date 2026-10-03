@@ -19,7 +19,7 @@ public partial class FormViewModel(
     IPersonGraph personGraph
     ) :
     NavigableViewModel<Person>(router),
-    IDataErrorInfo, INavigable
+    INavigable    
 {
     public const string KEY = "Page";
 
@@ -37,6 +37,7 @@ public partial class FormViewModel(
     }
 
     private ObservableCollection<Person> _selectedItems = [];
+
     public ObservableCollection<Person> SelectedItems
     {
         get
@@ -62,8 +63,8 @@ public partial class FormViewModel(
     [RelayCommand]
     public async Task Validate()
     {
-        if (!string.IsNullOrWhiteSpace(Error))
-            await dialogService.ShowOkAsync(Error, "Error");
+        if (Person.HasErrors)
+            await dialogService.ShowOkAsync(EntityValidator.Error(Person) ?? string.Empty, "Error");
         else
         {
             IsBusy = true;
@@ -114,10 +115,6 @@ public partial class FormViewModel(
 
         return base.GetView(value);
     }
-
-    public string Error => Person.Error;
-
-    public string this[string columnName] => Person[columnName];
 
     public override Task<bool> CanClose()
     {

@@ -11,9 +11,6 @@
 
     <DialogContent>
         <EditForm Model="@ViewModel">
-            @* <MudTextField Validation="@(new Func<string, string>(ViewModel.ValidateProperty))"
-                          Required="true" RequiredError="@ViewModel.ValidateProperty("Message")"
-                          label="Message" @bind-Value="ViewModel.Message" Immediate="true" /> *@
             <MudTextField For="@(() => @ViewModel.Message)" aria-required="true"
                           label="Message" AutoFocus="true"
                           @bind-Value="ViewModel.Message" Immediate="true" />

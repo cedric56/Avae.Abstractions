@@ -9,22 +9,14 @@ using System.Windows.Input;
 namespace Example.ViewModels;
 
 public partial class ModalViewModel(IDialogService dialogService) : ObservableValidator,
-    ICloseableViewModel<string?>,
-    IViewModelErrorInfo
+    ICloseableViewModel<string?>
 {
     [ObservableProperty]
+    [NotifyDataErrorInfo]
     [Required(ErrorMessage = "You have to enter a value.")]
     public partial string? Message { get; set; }
 
     public event EventHandler<string?>? CloseRequested;
-
-    public string Error
-    {
-        get
-        {
-            return EntityValidator.Error(this) ?? string.Empty;
-        }
-    }
 
     public ICommand? CloseCommand { get; }
 
@@ -36,22 +28,13 @@ public partial class ModalViewModel(IDialogService dialogService) : ObservableVa
 
     public string Title => "Modal";
 
-    public string this[string columnName]
-    {
-
-        get
-        {
-            return EntityValidator.ValidateProperty(this, columnName) ?? string.Empty;
-        }
-    }
-
     [RelayCommand()]
     public async Task Validate()
     {
         if (await CanClose())
             await Close(Message!);
         else
-            await dialogService.ShowOkAsync(Error, "Error");
+            await dialogService.ShowOkAsync(EntityValidator.Error(this) ?? string.Empty, "Error");
     }
 
     [RelayCommand]
@@ -62,17 +45,12 @@ public partial class ModalViewModel(IDialogService dialogService) : ObservableVa
 
     protected Task<bool> CanClose()
     {
-        return Task.FromResult(string.IsNullOrWhiteSpace(Error));
+        return Task.FromResult(string.IsNullOrWhiteSpace(EntityValidator.Error(this)));
     }
 
     public Task Close(string? value)
     {
         CloseRequested?.Invoke(this, value);
         return Task.CompletedTask;
-    }
-
-    public void RaiseColumnErrorChanged(string name = "Item")
-    {
-        this.OnPropertyChanged(name);
     }
 }
