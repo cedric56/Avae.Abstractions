@@ -1,3 +1,7 @@
+> [!CAUTION]
+> **`Avae.Abstractions` is not ready for production.**
+>
+
 # Avae.Abstractions
 
 MAUI and Blazor/Razor **host adapters** for the Avae stack — the pieces that turn Avae's
