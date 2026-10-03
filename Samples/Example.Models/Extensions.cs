@@ -79,7 +79,8 @@ public static class Extensions
     class RemoveFactory : IDBFactory
     {
         public List<IDBMonitor> Monitors { get; } = new();
-        public Dictionary<Type, string> Sessions { get; } = new();
+
+        public Dictionary<Type, (string session, Func<Task> unsubscribe)> Sessions { get; } = new();
 
         public DbConnection? CreateConnection()
         {

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Example.Models;
+using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 
 namespace Example.ViewModels;
@@ -163,18 +164,31 @@ public partial class HomeViewModel(
 
     public void Dispose()
     {
-        unsuscribe?.Invoke();
+        unsubscribe?.Invoke();
     }
 
     private bool _isfirstLoad = true;
-    Func<Task>? unsuscribe;
+    Func<Task>? unsubscribe;
     public async Task OnNavigatedTo(NavigableContext context)
     {
         if (_isfirstLoad)
         {
             _isfirstLoad = false;
+            _ = ConnectToServerAsync();
+        }
+    }
+
+    private async Task ConnectToServerAsync()
+    {
+        try
+        {
             var http = provider.GetService<HttpMessageHandler>();
-            unsuscribe = await monitor.AddStreamingHub(Constants.MagicHubUrl, provider.GetRequiredService<IDBFactory>(), http);
+
+            unsubscribe = await monitor.AddStreamingHub(
+                Constants.MagicHubUrl,
+                provider.GetRequiredService<IDBFactory>(),
+                http
+            ).WaitAsync(TimeSpan.FromSeconds(5));
 
             //Func<HttpMessageHandler, HttpMessageHandler> factory = null!;
             //if (http != null)
@@ -182,7 +196,16 @@ public partial class HomeViewModel(
 
             //unsuscribe = await monitor.AddSignalR(Constants.SignalHubUrl, factory: factory);
         }
+        catch (Exception ex) when (
+            ex is HttpRequestException ||
+            ex is OperationCanceledException ||
+            ex is TimeoutException)
+        {
+            System.Diagnostics.Debug.WriteLine(
+                $"Could not connect to server: {ex.Message}");
+        }
     }
+
 
     [RelayCommand]
     public void Environment()

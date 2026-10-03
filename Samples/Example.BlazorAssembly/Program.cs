@@ -17,5 +17,5 @@ builder.Services.UseBlazorEssentials();
 builder.Services.UseSharedLibrary(Runtime.BlazorWebAssembly);
 //await builder.Services.UseEmbeddedAvaloniaApp("avalonia", b => b.WithAppNotifications());
 var app = builder.Build();
-await BlazorEssentials.InitializeAsync(app.Services, "./BlazorEssentials.js");
+await BlazorEssentials.InitializeAsync(app.Services);
 await app.RunAsync();

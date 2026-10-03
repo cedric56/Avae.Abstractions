@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avae.Essentials;
 using Avalonia.Labs.Notifications;
 using Example.Models;
 using Microsoft.Data.Sqlite;
@@ -18,6 +19,9 @@ class Program
     public static AppBuilder BuildAvaloniaApp() =>
         App.CreateApp(services =>
             {
+                if (OperatingSystem.IsLinux())
+                    services.OnWslEssentials();
+
                 services.AddPersonServiceLocal<SqliteConnection>();
                 //services.AddPersonServiceRemote();
                 services.AddSingleton<ILogger>(LoggerFactory.Create(b => b.AddDebug()).CreateLogger<App>());

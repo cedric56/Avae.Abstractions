@@ -4,6 +4,7 @@ using Avae.ViewModels;
 using Example.Models;
 using Example.Razor.Components;
 using Example.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 
 namespace Example.Razor;

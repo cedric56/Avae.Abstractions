@@ -2,6 +2,16 @@
 using Avae.Services;
 using Avae.ViewModels;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Accessibility;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.ApplicationModel.Communication;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
+using Microsoft.Maui.Authentication;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.Devices.Sensors;
+using Microsoft.Maui.Media;
+using Microsoft.Maui.Networking;
+using Microsoft.Maui.Storage;
 
 namespace Example.ViewModels;
 
@@ -430,7 +440,7 @@ public partial class EssentialsViewModel(
             if (s != null)
             {
                 service.Show(s.FullPath, "File");
-                using var stream = await s.OpenReadAsync(true);
+                //using var stream = await s.OpenReadAsync(true);
             }
         }
     }
@@ -446,7 +456,6 @@ public partial class EssentialsViewModel(
             if (s != null)
             {
                 service.Show(s.FullPath, "File");
-
             }
         }
     }

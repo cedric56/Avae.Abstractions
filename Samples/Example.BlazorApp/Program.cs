@@ -26,7 +26,7 @@ builder.Services.UseBlazorEssentials();
 builder.Services.UseSharedLibrary(
     Runtime.BlazorServer,
     onCircuitProviderChanged: async provider => 
-    await BlazorEssentials.InitializeAsync(provider, "./BlazorEssentials.js"));
+    await BlazorEssentials.InitializeAsync(provider));
 builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents()

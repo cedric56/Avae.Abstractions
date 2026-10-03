@@ -27,7 +27,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
     <PackageReference Include="Optris.Icons.Avalonia.FontAwesome" />
     <PackageReference Include="ReactiveUI.Avalonia" />
-    <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 
   <ItemGroup>
